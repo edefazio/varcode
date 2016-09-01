@@ -62,7 +62,6 @@ public class _implements
 		return impl;
 	}
 	
-	@Override
 	public String toCode( Directive... directives ) 
 	{
 		VarContext vc = VarContext.of( "impls", impls );

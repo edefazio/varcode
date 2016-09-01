@@ -32,7 +32,6 @@ public class _throws
 		"{{+?throwsList:" + N +
 	    "    throws {+throwsList+}+}}" );
 	
-	@Override
 	public String toCode( Directive... directives ) 
 	{
 		VarContext vc = VarContext.of( "throwsException", throwsException );

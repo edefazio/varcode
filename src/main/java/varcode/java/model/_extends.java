@@ -76,7 +76,6 @@ public class _extends
 		return xtends;
 	}
 	
-	@Override
 	public String toCode( Directive... directives ) 
 	{
 		VarContext vc = VarContext.of( "extendsFrom", extendsFrom );

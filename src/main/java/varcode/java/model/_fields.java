@@ -202,7 +202,6 @@ public class _fields
 			return new field( new _modifiers(), t, name );
 		}
 		
-		@Override
 		public String toCode( Directive... directives ) 
 		{
 			return Author.code( FIELD, 

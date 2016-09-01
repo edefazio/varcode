@@ -130,7 +130,6 @@ public class _javadoc
 		return this;
 	}
 	
-	@Override
 	public String toCode( Directive... directives ) 
 	{
 		return Author.code( 

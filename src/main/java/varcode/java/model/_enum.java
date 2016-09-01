@@ -132,7 +132,6 @@ public class _enum
 			"methods", meth );
 	}
 	
-	@Override
 	public JavaCase toJavaCase(Directive... directives) 
 	{	
 		return JavaCase.of(
@@ -155,7 +154,6 @@ public class _enum
 		}
 	}
 	
-	@Override
 	public String toCode( Directive... directives ) 
 	{
 		return toJavaCase( directives ).toString();
@@ -450,7 +448,6 @@ public class _enum
 			public Dom VALUE_CONSTRUCT = BindML.compile(
 				"{+name*+}{+args+}" );
 					
-			@Override
 			public String toCode( Directive... directives ) 
 			{
 				VarContext vc = VarContext.of( "name", name );
@@ -472,7 +469,6 @@ public class _enum
 		 + "+}};" + N + N );
 		
 		
-		@Override
 		public String toCode( Directive... directives ) 
 		{
 			return Author.code( 
@@ -632,7 +628,6 @@ public class _enum
 		}	
 	}
 
-	@Override
 	public Dom getDom() 
 	{
 		return ENUM;

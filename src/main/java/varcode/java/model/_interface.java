@@ -34,7 +34,6 @@ public class _interface
 			"+}}" +
 			"}" );
 	
-	@Override
 	public VarContext getContext() 
 	{
 		String[] n = null;
@@ -445,7 +444,6 @@ public class _interface
 		}	
 	}
 
-	@Override
 	public JavaCase toJavaCase( Directive... directives ) 
 	{
 		return JavaCase.of( getFullyQualifiedClassName(), INTERFACE, getContext(), directives );
@@ -464,7 +462,6 @@ public class _interface
 		}
 	}
 	
-	@Override
 	public String toCode( Directive... directives ) 
 	{
 		return toJavaCase( directives ).toString();
@@ -475,7 +472,6 @@ public class _interface
 		return toCode();
 	}
 	
-	@Override
 	public Dom getDom() 
 	{
 		return INTERFACE;

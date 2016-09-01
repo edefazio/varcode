@@ -330,11 +330,9 @@ public class _modifiers
 		if( Integer.bitCount( modifiers & ( Modifier.PUBLIC | Modifier.PRIVATE | Modifier.PROTECTED ) ) > 1 )
 		{
 			throw new VarException( "can only be one of public, protected or private" );
-		}
-		
+		}		
 	}
 	
-	@Override
 	public String toCode( Directive... directives )  
 	{
 		validate( this.mods );		
