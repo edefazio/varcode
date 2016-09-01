@@ -1,6 +1,5 @@
 package varcode.java.model;
 
-import ex.varcode.java.model.howto.MultipleClassesWithDependencies;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -33,7 +32,7 @@ public class JavaModelTestSuite
 		suite.addTestSuite( _typeTest.class );
 		suite.addTestSuite( _varTest.class );
 		
-		suite.addTestSuite( MultipleClassesWithDependencies.class );
+		//suite.addTestSuite( MultipleClassesWithDependencies.class );
 		
 		return suite;
 	}
