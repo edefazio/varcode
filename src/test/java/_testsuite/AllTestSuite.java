@@ -85,118 +85,115 @@ import varcode.markup.repo.UrlRepoTest;
 
 public class AllTestSuite
 {
-	public static Test suite() 
-	{
-		TestSuite suite = new TestSuite( AllTestSuite.class.getName() );
+    public static Test suite() 
+    {
+        TestSuite suite = new TestSuite( AllTestSuite.class.getName() );
+        // $JUnit-BEGIN$
+	suite.addTestSuite( LangTest.class );
+	suite.addTestSuite( ClassToStringTranslatorTest.class );
+	suite.addTestSuite( TranslateBufferTest.class );
 
-		// $JUnit-BEGIN$
-		suite.addTestSuite( LangTest.class );
-		suite.addTestSuite( ClassToStringTranslatorTest.class );
-		suite.addTestSuite( TranslateBufferTest.class );
-
-		suite.addTestSuite( ResolveTest.class );
-		suite.addTestSuite( SmartScriptResolverTest.class );
-		suite.addTestSuite( VarBindingsTest.class );
-		suite.addTestSuite( VarContextTest.class );
-		suite.addTestSuite( VarScopeBindingsTest.class );				
+	suite.addTestSuite( ResolveTest.class );
+	suite.addTestSuite( SmartScriptResolverTest.class );
+	suite.addTestSuite( VarBindingsTest.class );
+	suite.addTestSuite( VarContextTest.class );
+	suite.addTestSuite( VarScopeBindingsTest.class );				
 		
 		
-		suite.addTestSuite( AuthorTest.class );
-		suite.addTestSuite( FillInTheBlanksTest.class );
+	suite.addTestSuite( AuthorTest.class );
+	suite.addTestSuite( FillInTheBlanksTest.class );
 	 	
-		suite.addTestSuite( _JavaCase_AllDirectivesTest.class );
-		suite.addTestSuite( _JavaCaseClassNameTest.class );
-		suite.addTestSuite( JavaCaseTest.class );
-		suite.addTestSuite( JavaTest.class );
-		suite.addTestSuite( JavaMarkupRepoTest.class );
-		suite.addTestSuite( JavaNamingTest.class );
-		suite.addTestSuite( ReflectTest.class );
+	suite.addTestSuite( _JavaCase_AllDirectivesTest.class );
+	suite.addTestSuite( _JavaCaseClassNameTest.class );
+	suite.addTestSuite( JavaCaseTest.class );
+	suite.addTestSuite( JavaTest.class );
+        suite.addTestSuite( JavaMarkupRepoTest.class );
+	suite.addTestSuite( JavaNamingTest.class );
+	suite.addTestSuite( ReflectTest.class );
 		
-		suite.addTestSuite( InMemoryJavacTest.class );
-		suite.addTestSuite( JavaWorkspaceTest.class );
+	suite.addTestSuite( InMemoryJavacTest.class );
+	suite.addTestSuite( JavaWorkspaceTest.class );
 		
-		suite.addTestSuite( DomTest.class );
+	suite.addTestSuite( DomTest.class );
 		
-		suite.addTestSuite( MarkupParserTest.class );
-		suite.addTestSuite( PathWalkTest.class );
-		suite.addTestSuite( UrlRepoTest.class );
-		suite.addTestSuite( VarNameAuditTest.class );
+	suite.addTestSuite( MarkupParserTest.class );
+	suite.addTestSuite( PathWalkTest.class );
+	//suite.addTestSuite( UrlRepoTest.class );
+	suite.addTestSuite( VarNameAuditTest.class );
 		
 		
-		suite.addTestSuite( BindMLCompilerTest.class );		
-		suite.addTestSuite( BindMLFunctionalTests_AddVar.class );
-		suite.addTestSuite( BindMLFunctionalTests_DefineVar.class );
-		suite.addTestSuite( CodeMLFunctionalTests_AddVar.class );
-		suite.addTestSuite( BindMLParserTest.class );
-		suite.addTestSuite( TestRequiredBindML.class );
+	suite.addTestSuite( BindMLCompilerTest.class );		
+	suite.addTestSuite( BindMLFunctionalTests_AddVar.class );
+	suite.addTestSuite( BindMLFunctionalTests_DefineVar.class );
+	suite.addTestSuite( CodeMLFunctionalTests_AddVar.class );
+	suite.addTestSuite( BindMLParserTest.class );
+	suite.addTestSuite( TestRequiredBindML.class );
 
 		
-		suite.addTestSuite( CodeMLCompilerTest.class );
-		suite.addTestSuite( CodeMLFunctionalTests_AddVar.class );
-		suite.addTestSuite( CodeMLFunctionalTests_DefineVar.class );
-		suite.addTestSuite( CodeMLParserMarkTest.class );
-		suite.addTestSuite( CodeMLParserTest.class );		
-		suite.addTestSuite( CodeMLStateTest.class );
-		suite.addTestSuite( TestRequiredCodeML.class );
+	suite.addTestSuite( CodeMLCompilerTest.class );
+	suite.addTestSuite( CodeMLFunctionalTests_AddVar.class );
+	suite.addTestSuite( CodeMLFunctionalTests_DefineVar.class );
+	suite.addTestSuite( CodeMLParserMarkTest.class );
+	suite.addTestSuite( CodeMLParserTest.class );		
+	suite.addTestSuite( CodeMLStateTest.class );
+	suite.addTestSuite( TestRequiredCodeML.class );
 
-		suite.addTestSuite( BetweenTokensTest.class );
-		suite.addTestSuite( SeparateFormsTest.class );
+        suite.addTestSuite( BetweenTokensTest.class );
+	suite.addTestSuite( SeparateFormsTest.class );
 		
-		suite.addTestSuite( ForMLCompilerTest.class ); 
-		suite.addTestSuite( ForMLParserTest.class );
-		suite.addTestSuite( ForMLTest.class );
-		suite.addTestSuite( FormTest.class );
-		suite.addTestSuite( VarFormTest.class );
+	suite.addTestSuite( ForMLCompilerTest.class ); 
+	suite.addTestSuite( ForMLParserTest.class );
+	suite.addTestSuite( ForMLTest.class );
+	suite.addTestSuite( FormTest.class );
+	suite.addTestSuite( VarFormTest.class );
 		
-		suite.addTestSuite( AddExpressionResultTest.class );
-		suite.addTestSuite( AddFormIfExpressionTest.class );
-		suite.addTestSuite( AddFormIfVarTest.class );
-		suite.addTestSuite( AddFormTest.class );
-		suite.addTestSuite( AddIfConditionTest.class );
-		suite.addTestSuite( AddIfVarTest.class );
-		suite.addTestSuite( AddScriptResultTest.class );
-		suite.addTestSuite( AddVarExpressionTest.class );
-		suite.addTestSuite( AddVarInlineTest.class );
-		suite.addTestSuite( AddVarOneOfTest.class );
-		suite.addTestSuite( AddVarTest.class );
+	suite.addTestSuite( AddExpressionResultTest.class );
+	suite.addTestSuite( AddFormIfExpressionTest.class );
+	suite.addTestSuite( AddFormIfVarTest.class );
+	suite.addTestSuite( AddFormTest.class );
+	suite.addTestSuite( AddIfConditionTest.class );
+	suite.addTestSuite( AddIfVarTest.class );
+	suite.addTestSuite( AddScriptResultTest.class );
+	suite.addTestSuite( AddVarExpressionTest.class );
+	suite.addTestSuite( AddVarInlineTest.class );
+	suite.addTestSuite( AddVarOneOfTest.class );
+	suite.addTestSuite( AddVarTest.class );
+	
+	suite.addTestSuite( CutCommentTest.class );
+	suite.addTestSuite( CutIfTest.class );
+	suite.addTestSuite( CutTest.class );
+	
+        suite.addTestSuite( DefineVarAsExpressionResultTest.class );
+	suite.addTestSuite( DefineVarAsFormTest.class );
+	suite.addTestSuite( DefineVarAsScriptResultTest.class );
+	suite.addTestSuite( DefineVarTest.class );
 		
-		suite.addTestSuite( CutCommentTest.class );
-		suite.addTestSuite( CutIfTest.class );
-		suite.addTestSuite( CutTest.class );
+	suite.addTestSuite( EvalExpressionTest.class );
+	suite.addTestSuite( RunScriptTest.class );
+	
+	suite.addTestSuite( FormFunctionalTest.class );
+		
+	suite.addTestSuite( ReplaceWithExpressionResultTest.class );
+	suite.addTestSuite( ReplaceWithFormTest.class );
+	suite.addTestSuite( ReplaceWithScriptResultTest.class );
+	suite.addTestSuite( ReplaceWithVarTest.class );
+	
+	suite.addTestSuite( DocDirectiveTest.class );
+	suite.addTestSuite( Eval_JavaScriptTest.class );
+	
+	suite.addTestSuite( CondenseMultipleBlankLinesTest.class );
+	suite.addTestSuite( PrintAsLiteralTest.class );
+	suite.addTestSuite( RemoveAllLinesWithTest.class );
+	suite.addTestSuite( SameCountTest.class );
+	suite.addTestSuite( StripMarksTest.class );
+	
+	suite.addTestSuite( SHA1ChecksumTest.class );
+	suite.addTestSuite( FirstCapsTest.class );
+	suite.addTestSuite( CountTest.class );
+	suite.addTestSuite( CountIndexTest.class );
+	suite.addTestSuite( RowifyTest.class );	
+	// $JUnit-END$
 
-		suite.addTestSuite( DefineVarAsExpressionResultTest.class );
-		suite.addTestSuite( DefineVarAsFormTest.class );
-		suite.addTestSuite( DefineVarAsScriptResultTest.class );
-		suite.addTestSuite( DefineVarTest.class );
-		
-		suite.addTestSuite( EvalExpressionTest.class );
-		suite.addTestSuite( RunScriptTest.class );
-		
-		suite.addTestSuite( FormFunctionalTest.class );
-		
-		suite.addTestSuite( ReplaceWithExpressionResultTest.class );
-		suite.addTestSuite( ReplaceWithFormTest.class );
-		suite.addTestSuite( ReplaceWithScriptResultTest.class );
-		suite.addTestSuite( ReplaceWithVarTest.class );
-		
-		suite.addTestSuite( DocDirectiveTest.class );
-
-		suite.addTestSuite( Eval_JavaScriptTest.class );
-		
-		suite.addTestSuite( CondenseMultipleBlankLinesTest.class );
-		suite.addTestSuite( PrintAsLiteralTest.class );
-		suite.addTestSuite( RemoveAllLinesWithTest.class );
-		suite.addTestSuite( SameCountTest.class );
-		suite.addTestSuite( StripMarksTest.class );
-		
-		suite.addTestSuite( SHA1ChecksumTest.class );
-		suite.addTestSuite( FirstCapsTest.class );
-		suite.addTestSuite( CountTest.class );
-		suite.addTestSuite( CountIndexTest.class );
-		suite.addTestSuite( RowifyTest.class );
-		
-		// $JUnit-END$
-
-		return suite;
-	}
+	return suite;
+    }
 }
