@@ -191,7 +191,7 @@ public class BindMLCompilerTest
 				"name", "havent got one" );
 			fail( "Expected Exception" );
 		}
-		catch( EvalException ee )
+		catch( VarBindException ee )
 		{
 			//expected
 		}
