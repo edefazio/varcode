@@ -6,6 +6,7 @@ import varcode.context.VarBindException.NullVar;
 import varcode.eval.EvalException;
 import varcode.markup.mark.AddVarIsExpression;
 import junit.framework.TestCase;
+import varcode.context.VarBindException;
 
 // {+name:((   ))+}
 // {+name:((   ))*+}
@@ -137,7 +138,7 @@ public class AddVarExpressionTest
 			ave.derive( VarContext.of( "access", "Q@&*(^$" ) );
 			fail("expected Exception for bad name");
 		}
-		catch( EvalException ee )
+		catch( VarBindException ee )
 		{
 			ee.printStackTrace();
 		}
