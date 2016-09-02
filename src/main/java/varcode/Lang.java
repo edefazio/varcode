@@ -77,7 +77,7 @@ public enum Lang
      * <PRE>"java/util/Map.java"</PRE>
      * ...and
      * <PRE>"someCProgram.c"</PRE>
-     * doesnt have a heirarchial path, but should be in a file 
+     * doesn't have a heirarchial path, but should be in a file 
      * <PRE>"someCProgram.c"</PRE>
      * 
      * @param markupId identifies the Markup file to be loaded from the repo
@@ -97,13 +97,13 @@ public enum Lang
         
         //PathResolver pathResolver = LANG_RESOLVER_MAP.get( theLang );
         //if( pathResolver == null )
-       // {
+        // {
         //    throw new VarException(
-         //       "No PathResolver registered for Lang \"" + theLang +"\"" );
-       // }
+        //       "No PathResolver registered for Lang \"" + theLang +"\"" );
+        // }
         String path = pathResolver.pathTo( 
             markupId.substring( 0, markupId.length() - fileExtension.length() ) )
-          + fileExtension;
+            + fileExtension;
         return path;                     
     }
     
@@ -116,13 +116,13 @@ public enum Lang
      */
     public static Lang fromCodeId( String codeId )
     {
-    	 for( int i = 0; i < Lang.values().length; i++ )
-         {
-             if( codeId.endsWith( Lang.values()[ i ].getSourceFileExtension() ) )
-             {
-                 return Lang.values()[ i ];
-             }
-         }
+        for( Lang value : Lang.values() ) 
+        {
+            if( codeId.endsWith(value.getSourceFileExtension()) ) 
+            {
+                return value;
+            }
+        }
          return null;
     }
     
@@ -130,16 +130,12 @@ public enum Lang
     {
         return name;
     }
-
+    
     public String getSourceFileExtension()
     {
         return sourceFileExtension;
     }
-    
-   
-
-
-    
+        
     public interface PathResolver
     {
         public String pathTo( String markupId );
@@ -152,9 +148,9 @@ public enum Lang
 
     	public String pathTo( String markupId )
     	{
-    		return markupId.replace( 
-    				'.', 
-    				File.separatorChar );
+            return markupId.replace( 
+    		'.', 
+    		File.separatorChar );
     	}        
     }
 
@@ -165,7 +161,7 @@ public enum Lang
 
     	public String pathTo( String markupId )
     	{
-    		return markupId;
+            return markupId;
     	}        
     }
 }

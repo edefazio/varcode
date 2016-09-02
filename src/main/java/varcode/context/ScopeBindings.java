@@ -189,7 +189,7 @@ public class ScopeBindings
         int count = 0;
         for( int i = 0; i < scopes.length; i++ )
         {
-            VarBindings vb = scopeToBindings.get( scopes );
+            VarBindings vb = scopeToBindings.get( scopes[ i ] );
             count += vb.size();
         }
         return count;

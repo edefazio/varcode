@@ -11,7 +11,7 @@ import varcode.script.VarScript;
 
 /**
  * Creates an index count (an array of sequential indexes) for all
- * elemnts in the array
+ * elements in the array
  * 
  * For example:
  * <PRE> 
@@ -38,7 +38,6 @@ public enum ValidatePackageName
       //the user passes in the NAME of the one I want index for
         //bject var = context.get( varName );
     	Object var = context.resolveVar( varName );
-        //System.out.println( "VarName "+varName+" : "+ context.getAttribute( varName ) );
         if( var != null )
         {
             if( var.getClass().isArray() )

@@ -7,12 +7,19 @@ import varcode.doc.Directive;
 import varcode.doc.DocState;
 import varcode.doc.lib.text.PostReplace;
 
+/**
+ * Replaces instances of "/+*" and "*+/" within a document to be 
+ * "real comments"
+ * 
+ * @author M. Eric DeFazio eric@varcode.io
+ */
 public enum CommentEscape 
 	implements Directive.PostProcessor
 {
 	INSTANCE;
 	
-    private static final Map<String, String>CommentEscapeMap = new HashMap<String, String>();
+    private static final Map<String, String>CommentEscapeMap = 
+        new HashMap<String, String>();
     
     static
     {
@@ -20,7 +27,8 @@ public enum CommentEscape
     	CommentEscapeMap.put( "*+/", "*/" );
     }
     
-    private static final PostReplace COMMENT_REPLACE = new PostReplace( CommentEscapeMap );
+    private static final PostReplace COMMENT_REPLACE = 
+        new PostReplace( CommentEscapeMap );
 
 
 	public void postProcess( DocState tailorState ) 

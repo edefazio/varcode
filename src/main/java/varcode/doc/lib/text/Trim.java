@@ -8,6 +8,12 @@ import varcode.context.VarContext;
 import varcode.eval.Eval_JavaScript;
 import varcode.script.VarScript;
 
+/**
+ * Trims the head and tail of the string representation of the
+ * var and returns it
+ * 
+ * @author M. Eric DeFazio eric@varcode.io
+ */
 public enum Trim
 	implements VarScript
 {

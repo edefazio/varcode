@@ -42,8 +42,6 @@ public class VarBindException
 		
 		private final int lineNumber;
 		
-
-		
 		public NullResult( String scriptName, String markText, int lineNumber )
 		{
 			super( "Required* script \"" + scriptName 
@@ -54,7 +52,8 @@ public class VarBindException
 			this.lineNumber = lineNumber;
 		}
 
-		public NullResult( String scriptName, String scriptInput, String markText, int lineNumber )
+		public NullResult( 
+            String scriptName, String scriptInput, String markText, int lineNumber )
 		{
 			super( "Required* script \"" + scriptName +"\" with input (" + scriptInput + ")"
 		            + " for mark: " + N + markText + N + "on line [" 
@@ -95,7 +94,7 @@ public class VarBindException
 				String varName, String markText )
 		{
 			super( "Required* var \"" + varName 
-			           + "*\" for mark: " + N + markText + N + "... is null" );
+			     + "*\" for mark: " + N + markText + N + "... is null" );
 			this.varName = varName;
 			this.markText = markText;
 			this.lineNumber = -1;

@@ -23,16 +23,32 @@ import varcode.eval.Eval_JavaScript;
 import varcode.markup.VarNameAudit;
 import varcode.script.VarScript;
 
-/**   
- * This class will initialize EVERY new VarContext
- * to provide default functionality for: 
- * <UL>
- *   <LI>parsing Markup into a {@code Dom}
- *   <LI>filling a {@code Dom} as a tailored document  
- * </UL>   
+/**
+ * Bootstrap "binds" the standard library to EVERY new {@code VarContext}
+ * for authoring documents.<BR/>
  * 
- * Separated out (from VarContext) for easy access /  changing
- *  
+ * <U>for instance</U>: 
+ * <PRE>
+ * Dom dom = BindML.compile("{+$#(arr)+}");
+ * 
+ * the mark "{+$#(arr)+}" signifies:
+ *           ^^       ^^  "{+ +}" add
+ *             ^          "$" script
+ *              ^         "#" is the "name" of the script
+ *               ^^^^^    "(arr)" the varName passed to the script is "arr"    
+ * </PRE>
+ * 
+ * the bootstrap will "bind" the "#" name to the 
+ * {@code varcode.doc.lib.Count} implementation script, 
+ * so that when the mark is encountered, it is interpreted 
+ * and the derived value is added to the document.
+ * <PRE>
+ * Author.code( 
+ *     dom, 
+ *     "arr", new int[]{1,2,3,4,5,6} );
+ * 
+ * ...returns "6" (the count of items in the "arr"
+ * </PRE>
  * @author M. Eric DeFazio eric@varcode.io
  */
 public enum Bootstrap 

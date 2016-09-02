@@ -18,11 +18,10 @@ public enum CondenseMultipleBlankLines
 {	
 	INSTANCE;
 		
-
-	public void postProcess( DocState tailorState ) 
+	public void postProcess( DocState docState ) 
 	{
-		String original = tailorState.getTranslateBuffer().toString();
-		tailorState.getTranslateBuffer().replaceBuffer( condenseEmptyLines( original ).toString() ) ;
+		String original = docState.getTranslateBuffer().toString();
+		docState.getTranslateBuffer().replaceBuffer( condenseEmptyLines( original ).toString() ) ;
 		//tailorState.setTextBuffer( new TranslateBuffer().replaceWith( condenseEmptyLines( original ) ) );			
 	}
 

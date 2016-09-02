@@ -25,8 +25,8 @@ public class PrefixWithLineNumber
 	public void postProcess( DocState tailorState ) 
 	{
 		String original = tailorState.getTranslateBuffer().toString();
-		tailorState.getTranslateBuffer().replaceBuffer( doPrefixLineNumber( original ).toString() );
-		//tailorState.setTextBuffer( new FillBuffer( doPrefixLineNumber( original ) ) );			
+		tailorState.getTranslateBuffer().replaceBuffer( 
+            doPrefixLineNumber( original ).toString() );
 	}
 
 	public StringBuilder doPrefixLineNumber( String input )
@@ -67,15 +67,6 @@ public class PrefixWithLineNumber
 	public void collectAllVarNames( Set<String> collection, String input ) 
 	{
 	}
-	
-	/*
-	public Object eval( VarContext context, String input ) 
-	{
-		//String s = (String)this.getInputParser().parse( context, input );	
-		String s = (String)context.resolveVar( input );
-		return doPrefixLineNumber( s ).toString();
-	}
-	*/
 	
 	public static String doPrefix( String string )
 	{

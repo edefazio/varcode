@@ -155,7 +155,8 @@ public class VarBindings
         }
         catch( Exception e )
         {
-        	throw new VarException("Unable to populate all public fields of \""+ bean );
+        	throw new VarException(
+                "Unable to populate all public fields of \""+ bean );
         }
     }
     /** 
@@ -168,6 +169,7 @@ public class VarBindings
      * and populates the values based on the name
      * 
      * @param bean a bean containing getter methods
+     * @return this
      */
     public VarBindings setBeanProperties( Object bean )
     {

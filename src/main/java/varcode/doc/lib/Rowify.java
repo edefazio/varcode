@@ -23,16 +23,38 @@ import varcode.doc.lib.text.PrintAsLiteral;
  * row[2] = "C, 3" 
  * row[3] = "D, 4"
  * 
- * </PRE>      
- * @author M. Eric DeFazio
+ * </PRE>       * 
+ * @author M. Eric DeFazio eric@varcode.io
  */
 public class Rowify 
 {
-	
-    public static String[] doRowify( VarContext context, String varNamesArray )
+	/** 
+     * API interface that allows a single var passed in varNamesArray
+     * <PRE>
+     * VarContext vc = VarContext.of( 
+     *    "columns", new String[]{"letters", "numbers"},
+     *    "letters", new String[]{"A", "B", "C", "D"},
+     *    "numbers", new int[]{ 1, 2, 3, 4} );
+     * 
+     * Rowify.doRowify( vc, "columns" );
+     * 
+     * ...returns a String[] of rows:
+     * row[0] = "A, 1" 
+     * row[1] = "B, 2"
+     * row[2] = "C, 3" 
+     * row[3] = "D, 4"
+     * 
+     * </PRE>      
+     * 
+     * @param context
+     * @param columnNamesArray the name of the array containing the names of 
+     * columns to be rowified
+     * @return 
+     */
+    public static String[] doRowify( VarContext context, String columnNamesArray )
     {
     	//System.out.println( "FIELD NAME "+ varNamesArray );
-    	Object varNames = context.resolveVar( varNamesArray );
+    	Object varNames = context.resolveVar(columnNamesArray );
     	
     	if( varNames.getClass().isArray() )
     	{
@@ -46,6 +68,7 @@ public class Rowify
     	return rowify( context, new Object[] { varNames } );
     }
     	
+    /** Makes this VarScript callable */
     public static String[] rowify( VarContext context, Object...columnVarNames )
     {
     	//First collect all of the values for these vars

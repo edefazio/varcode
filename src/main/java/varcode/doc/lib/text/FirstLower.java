@@ -23,7 +23,7 @@ public enum FirstLower
      * <LI>"FirstCap" if the string is "firstCap"
      * </UL> 
      */
-    private static final String lowercaseFirstChar( String string )
+    private static String lowercaseFirstChar( String string )
     {
         if( string == null )
         {

@@ -70,6 +70,5 @@ public enum Count
 	public void collectAllVarNames( Set<String> collection, String input ) 
 	{
 		collection.add( input );
-		//return collection;
 	}
 }

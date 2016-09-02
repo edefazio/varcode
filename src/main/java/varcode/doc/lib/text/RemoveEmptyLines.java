@@ -28,7 +28,7 @@ import varcode.script.VarScript;
    // empty lines
 /*)}*/
 /* 
- * 
+ * @author M. Eric DeFazio eric@varcode.io
  */
 public enum RemoveEmptyLines
     implements VarScript, Directive.PostProcessor
@@ -85,7 +85,8 @@ public enum RemoveEmptyLines
 	
 	public void postProcess( DocState tailorState ) 
 	{		
-		String theResult = RemoveEmptyLines.from( tailorState.getTranslateBuffer().toString() );
+		String theResult = RemoveEmptyLines.from( 
+            tailorState.getTranslateBuffer().toString() );
 		tailorState.getTranslateBuffer().clear();
 		tailorState.getTranslateBuffer().append( theResult );
 	}

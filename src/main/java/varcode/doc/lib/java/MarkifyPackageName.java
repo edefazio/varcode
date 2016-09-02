@@ -6,6 +6,11 @@ import varcode.doc.DocState;
 import varcode.doc.lib.text.MarkTarget;
 import varcode.java.JavaNaming;
 
+/**
+ * 
+ * 
+ * @author M. Eric DeFazio eric@varcode.io
+ */
 public class MarkifyPackageName
 	implements Directive.PreProcessor
 {
@@ -22,12 +27,13 @@ public class MarkifyPackageName
 		this.varName = varName;		
 	}
 	
-	public void preProcess( DocState tailorState ) 
+	public void preProcess( DocState docState ) 
 	{
 		if( this.markTarget == null )
 		{
 			//                                                       JavaCase.MARKUP_CLASS_VAR_NAME
-			Class<?> clazz = (Class<?>)tailorState.getContext().resolveVar( "markup.class" );
+			Class<?> clazz = (Class<?>)docState.getContext().resolveVar( 
+                "markup.class" );
 			//String className = null;
 			String packageName = null;
 			if( clazz != null )
@@ -36,22 +42,22 @@ public class MarkifyPackageName
 			}
 			else
 			{
-				String className = JavaNaming.ClassName.extractFromSource( 
-					tailorState.getDom().getMarkupText() );
+				String className = JavaNaming.ClassName.extractFromSource(docState.getDom().getMarkupText() );
 				try 
 				{
 					clazz = Class.forName( className );
 				} 
 				catch( Exception ve ) 
 				{
-					throw new VarException( "Could not get Class Name from Source ", ve );
+					throw new VarException( 
+                        "Could not get Class Name from Source ", ve );
 				}
 				packageName = clazz.getPackage().getName();
 			}
 			//Class.forName( className ).getPackage().getName();
 			this.markTarget = new MarkTarget( packageName, varName );
 		}
-		this.markTarget.preProcess( tailorState );
+		this.markTarget.preProcess( docState );
 	}
 
 	

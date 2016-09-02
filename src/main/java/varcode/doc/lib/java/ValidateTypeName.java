@@ -11,7 +11,7 @@ import varcode.script.VarScript;
 
 /**
  * Creates an index count (an array of sequential indexes) for all
- * elemnts in the array
+ * elements in the array
  * 
  * For example:
  * <PRE> 
@@ -27,7 +27,6 @@ public enum ValidateTypeName
 {
     INSTANCE;
         
-    
     public Object eval( VarContext context, String input )
     {
         return validate( context, input );
@@ -47,7 +46,6 @@ public enum ValidateTypeName
         {
         	return var;
         }
-        //System.out.println( "VarName "+varName+" : "+ context.getAttribute( varName ) );
         if( var != null )
         {
             if( var.getClass().isArray() )
@@ -90,8 +88,8 @@ public enum ValidateTypeName
                     else
                     {
                         throw new VarException( 
-                            "type name for \"" + varName + "\" at [" + i + "] null "
-                            + "identifier name at index [" + i + "]" );
+                            "type name for \"" + varName + "\" at [" + i 
+                          + "] null " + "identifier name at index [" + i + "]" );
                     }
                 }
                 return var;

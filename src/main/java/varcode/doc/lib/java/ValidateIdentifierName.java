@@ -11,7 +11,7 @@ import varcode.script.VarScript;
 
 /**
  * Creates an index count (an array of sequential indexes) for all
- * elemnts in the array
+ * elements in the array
  * 
  * For example:
  * <PRE> 

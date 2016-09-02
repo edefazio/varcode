@@ -9,7 +9,11 @@ import varcode.eval.Eval_JavaScript;
 import varcode.script.VarScript;
 
 /**
- * Count of the number of Elements of a  bound variable 
+ * Count of the number of Elements of a bound variable 
+ * Verify that the varNames (given as a comma separated list)
+ * have the same count (or throws an exception)
+ * 
+ * @author M. Eric DeFazio eric@varcode.io
  */
 public enum SameCount
     implements VarScript

@@ -16,7 +16,8 @@ import varcode.eval.Evaluator;
 import varcode.script.VarScript;
 
 /**
- * Algorithms for resolving values for named Vars and Scripts
+ * Algorithms for resolving values for named 
+ * vars (key value pairs) {@code VarScript}s, and {@code Directive}s
  * 
  * @author M. Eric DeFazio eric@varcode.io
  */

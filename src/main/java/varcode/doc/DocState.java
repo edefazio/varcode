@@ -145,7 +145,8 @@ public class DocState
 		this.translateBuffer = translateBuffer;
 	}        
 	
-	private static Directive[] collectDirectives( Dom dom, VarContext context, Directive[] directives )
+	private static Directive[] collectDirectives( 
+        Dom dom, VarContext context, Directive[] directives )
 	{
 	    List<Directive> allDirectives = 
 	        new ArrayList<Directive>();
@@ -162,10 +163,11 @@ public class DocState
 	    		if( d == null )
 	    		{
 	    			throw new VarException( 
-	    			   "Could not find Directive by name \"" + directiveMark.getName() + "\"" 
-	    		      +" for Mark : " + System.lineSeparator() + 
-	    		      directiveMark.getText() + System.lineSeparator() +
-	    		      "on line [" + directiveMark.getLineNumber() + "]"  );
+	    			   "Could not find Directive by name \"" 
+                     + directiveMark.getName() + "\"" 
+	    		     + " for Mark : " + System.lineSeparator()
+	    		     + directiveMark.getText() + System.lineSeparator() 
+                     + "on line [" + directiveMark.getLineNumber() + "]"  );
 	    		}
 	    		allDirectives.add( d );
 	        }

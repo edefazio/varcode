@@ -48,7 +48,7 @@ public class PostReplace
 	
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for( int i = 0; i < lookFor.length; i++ )
 		{
 			sb.append( System.lineSeparator() );

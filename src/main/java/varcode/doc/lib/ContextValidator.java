@@ -26,8 +26,7 @@ public abstract class ContextValidator
 	{
 		validateContext( tailorState.getContext() );
 	}
-	
-	
+		
 	public abstract void validateContext( VarContext context );
 	
 	public static String getString( VarContext context, String name )
@@ -48,21 +47,24 @@ public abstract class ContextValidator
 	public static Integer assertCount( VarContext context, String varName, Integer count )
 	{
 		Integer actual = getCount( context, varName );
-		if( count !=  actual )
+		if( !java.util.Objects.equals(actual, count ) )
 		{
 			throw new VarException(
-				"Count of var \"" + varName + "\" is (" + actual + ") expected (" + count + ")" ); 
+				"Count of var \"" + varName + "\" is (" + actual 
+                + ") expected (" + count + ")" ); 
 		}			
 		return actual;
 	}
 
-	public static Integer assertCount( VarContext context, String varName, int min, int max )
+	public static Integer assertCount( 
+        VarContext context, String varName, int min, int max )
 	{
 		Integer actual = getCount( context, varName );
 		if ( actual == null || actual < min || actual > max )
 		{
 			throw new VarException(
-				"Count of var \"" + varName+"\" is (" + actual + ") expected value in [" + min + "..." + max + "]" ); 
+				"Count of var \"" + varName+"\" is (" + actual 
+              + ") expected value in [" + min + "..." + max + "]" ); 
 		}			
 		return actual;
 	}
@@ -74,7 +76,9 @@ public abstract class ContextValidator
 		{
 			if( all.contains( arr[ i ] ) )
 			{
-				throw new VarException( "Not unique, contains value \"" + arr[ i ] + "\" multiple times" );
+				throw new VarException( 
+                    "Not unique, contains value \"" 
+                  + arr[ i ] + "\" multiple times" );
 			}
 			all.add( arr[ i ] );
 		}

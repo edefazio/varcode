@@ -8,6 +8,12 @@ import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import varcode.VarException;
 import varcode.buffer.TranslateBuffer.Translator;
 
+/**
+ * Translates a Javascript array to a Java-array
+ * (they are not compatible by default)
+ * 
+ * @author M. Eric DeFazio eric@varcode.io
+ */
 public enum JSArrayToArrayTranslate 
 	implements Translator
 {

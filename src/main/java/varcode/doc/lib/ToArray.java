@@ -5,6 +5,12 @@ import java.util.Collection;
 import varcode.context.VarContext;
 import varcode.eval.Eval_JavaScript;
 
+/**
+ * Normalize the value of a var to be a Java Object[]
+ * and return it.
+ * handles Javascript arrays, single elements, and Collection types.
+ * @author M. Eric DeFazio eric@varcode.io
+ */
 public class ToArray 
 {
 	public static Object from( VarContext context, String varName )

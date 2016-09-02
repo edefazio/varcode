@@ -3,6 +3,7 @@ package varcode.doc.lib.text;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
+import varcode.VarException;
 
 import varcode.doc.Directive;
 import varcode.doc.DocState;
@@ -31,6 +32,7 @@ import varcode.doc.DocState;
  * F
  * </PRE>
  * excluding the lines with "A" and "E". 
+ * 
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class RemoveAllLinesWith
@@ -43,17 +45,16 @@ public class RemoveAllLinesWith
 		this.strings = strings;
 	}
 	
-	
 	public void postProcess( DocState tailorState ) 
 	{			
 		String allTheSource = tailorState.getTranslateBuffer().toString();
 		
-		tailorState.getTranslateBuffer().replaceBuffer( removeAllLinesContaining( allTheSource, strings ).toString() );
-		//tailorState.setTextBuffer( 
-		//	); 			        
+		tailorState.getTranslateBuffer().replaceBuffer( 
+            removeAllLinesContaining( allTheSource, strings ).toString() );
 	}
 	
-	public static final StringBuffer removeAllLinesContaining( String source, String... strings )
+	public static final StringBuffer removeAllLinesContaining( 
+        String source, String... strings )
 	{
 		StringBuffer withLinesRemoved = new StringBuffer();
 		BufferedReader br = new BufferedReader( new StringReader( source ) );
@@ -64,7 +65,7 @@ public class RemoveAllLinesWith
 			while( line != null )
 			{
 				boolean printIt = true;
-				for(int i = 0; i < strings.length; i++ )
+				for( int i = 0; i < strings.length; i++ )
 				{
 					if( line.contains( strings[ i ] ) )
 					{
@@ -86,8 +87,7 @@ public class RemoveAllLinesWith
 		} 			
 		catch( IOException e ) 
 		{
-			e.printStackTrace();
-			throw new RuntimeException(e); 
+			throw new VarException( e ); 
 		}			
 	}
 	

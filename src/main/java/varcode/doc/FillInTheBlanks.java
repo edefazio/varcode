@@ -152,9 +152,8 @@ public enum FillInTheBlanks
 		
 		/** the current character index */
 		private int cursorIndex;
-		
-		/** the character indexes where the blanks are within the text */
-		private BitSet blankIndexes = new BitSet();
+
+		private final BitSet blankIndexes;
 		
 		public Builder()
 		{
@@ -163,12 +162,13 @@ public enum FillInTheBlanks
 		
 		public Builder( String...strings )
 		{
+            this.blankIndexes = new BitSet();
 			sb = new StringBuilder();
 			cursorIndex = 0;
 			of( strings );
 		}
 		
-		public Builder of( String ...params )
+		public final Builder of( String ...params )
 		{
 			for( int i = 0; i < params.length; i++ )
 			{
@@ -343,7 +343,7 @@ public enum FillInTheBlanks
 		}
 		
 		/** fills and returns the filled document as a String */
-		public String fill( Object...fillsInOrder )
+        public String fill( Object...fillsInOrder )
 		{
 			TranslateBuffer buff = 
 			   new TranslateBuffer(); 
@@ -379,7 +379,7 @@ public enum FillInTheBlanks
             int nextBlankAt = blankIndexes.nextSetBit( 0 );
             int fillIndex = 0;
             int charsBetweenCount = 
-                ( nextBlankAt - previousBlankAt ) -1; //count characters BETWEEN previous blank and next blank
+                ( nextBlankAt - previousBlankAt ) -1; //chars BETWEEN previous blank and next blank
             
             while( nextBlankAt >= 0 )
             {               
@@ -429,7 +429,7 @@ public enum FillInTheBlanks
 		    {
 		        fillMarkers[ i ] = "<" + ( i + 1 ) +">";
 		    }
-		    return fill( fillMarkers ).toString();
+		    return fill( fillMarkers );
 		}
 
 		/** 
@@ -493,7 +493,7 @@ public enum FillInTheBlanks
          * String hundreth fo.getTextAfterBlank( 100 ); // ""
          * </PRE>
          * 
-         * @param index the 0-based blank index that demarcates the text to 
+         * @param blankIndex the 0-based blank index that demarcates the text to 
          * retrieve
          * @return the text between the {@index}<SUP>th</SUP> blank and the 
          * blank after 
@@ -542,7 +542,7 @@ public enum FillInTheBlanks
          * String hundreth fo.getTextAfterBlank( 100 ); // ""
          * </PRE>
          * 
-         * @param index the 0-based blank index that demarcates the text to retrieve
+         * @param blankIndex the 0-based blank index that demarcates the text to retrieve
          * @return the text between the {@index}<SUP>th</SUP> blank and the blank after 
          * (or the remaining text if the {@index}<SUP>th</SUP> blank is the last blank  
          */

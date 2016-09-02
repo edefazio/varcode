@@ -40,6 +40,4 @@ public abstract class JavaContextValidator
 	{
 		ValidateTypeName.INSTANCE.eval( context, typeName );
 	}
-	
-
 }

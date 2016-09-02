@@ -5,10 +5,39 @@ import varcode.doc.DocState;
 import varcode.doc.lib.text.MarkTarget;
 import varcode.java.JavaNaming;
 
+/**
+ * Looks at the source of a Class and tries to add a Mark on the text around the 
+ * className
+ * 
+ * for instance if we have a class <PRE>
+ * public class MyClass()
+ * {
+ *     private final int age;
+ * 
+ *     public MyClass( int age )
+ *     {
+ *        this.age = age;
+ *     } 
+ * }
+ * 
+ * will convert the text to:
+ * public class /*{+className*+/MyClass()/+*}*+/
+ * {
+ *     private final int age;
+ * 
+ *     public /*{+className*+/MyClass/+*}*+/( int age )
+ *     {
+ *        this.age = age;
+ *     } 
+ * }
+ * </PRE>
+ * @author M. Eric DeFazio eric@varcode.io
+ */
 public class MarkifyClassName
 	implements Directive.PreProcessor
 {
 	private final String varName;
+    
 	private final boolean isRequired;
 	
 	private MarkTarget markTarget;
@@ -24,14 +53,13 @@ public class MarkifyClassName
 		this.isRequired = isRequired;
 	}
 	
-	public void preProcess( DocState tailorState ) 
+	public void preProcess( DocState docState ) 
 	{
 		if( this.markTarget == null )
 		{
-			
 			//tailorState.getTextBuffer().append( "/*{$" + "!className(" + varName + ")*$}*/" );
 			//                                                       JavaCase.MARKUP_CLASS_VAR_NAME
-			Class<?> clazz = (Class<?>)tailorState.getContext().resolveVar( "markup.class" );
+			Class<?> clazz = (Class<?>)docState.getContext().resolveVar( "markup.class" );
 			String className = null;
 			if( clazz != null )
 			{
@@ -39,12 +67,12 @@ public class MarkifyClassName
 			}
 			else
 			{
-				className = JavaNaming.ClassName.extractFromSource( 
-					tailorState.getDom().getMarkupText() );
+				className = JavaNaming.ClassName.extractFromSource(
+                    docState.getDom().getMarkupText() );
 			}
 			this.markTarget = new MarkTarget( className, varName, false, isRequired );
 		}
-		this.markTarget.preProcess( tailorState );
+		this.markTarget.preProcess(docState );
 	}
 
 	

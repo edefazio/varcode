@@ -8,13 +8,18 @@ import varcode.context.VarContext;
 import varcode.eval.Eval_JavaScript;
 import varcode.script.VarScript;
 
+/**
+ * Adds a prefix and Postfix to Elements
+ * 
+ * @author M. Eric DeFazio eric@varcode.io
+ */
 public class WrapText
 	implements VarScript
 {    
 	private final String prefix;
 	private final String postfix;
 	
-	public WrapText(String prefix, String postfix )
+	public WrapText( String prefix, String postfix )
 	{
 		this.prefix = prefix;
 		this.postfix = postfix;

@@ -23,8 +23,8 @@ public class SetMarkupClass
 		this.scope = scope;
 	}
 	
-	public void preProcess( DocState tailorState ) 
+	public void preProcess( DocState docState ) 
 	{
-		tailorState.getContext().set( "markup.class", clazz, this.scope );		
+		docState.getContext().set( "markup.class", clazz, this.scope );		
 	}
 }

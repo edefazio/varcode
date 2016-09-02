@@ -72,8 +72,9 @@ public enum Quote
 				Object idx = jsArray[ i ];
 				if( idx != null )
 				{
-					 quoted[ i ] =
-		                        "\"" + EscapeString.escapeJavaString( idx.toString() ) + "\"";
+					quoted[ i ] =
+		                "\"" + EscapeString.escapeJavaString( idx.toString() ) 
+                      + "\"";
 				}
 				else
 				{ //watch out for NPEs!
@@ -82,7 +83,7 @@ public enum Quote
 			}
 			return quoted;
 		}
-        return "\"" + EscapeString.escapeJavaString( target.toString() ) + "\"" ;        
+        return "\"" + EscapeString.escapeJavaString( target.toString() ) + "\"";        
     }
 
     

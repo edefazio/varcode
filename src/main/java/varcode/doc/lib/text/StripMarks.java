@@ -12,7 +12,7 @@ import varcode.markup.mark.Mark;
 import varcode.markup.mark.Mark.WrapsText;
 
 /**
- * Creates a new {@code TailorState} where all of the {@code Mark}s are removed and 
+ * Creates a new {@code DocState} where all of the {@code Mark}s are removed and 
  * replaced with the text {@code Dom}  
  * 
  * @author M. Eric DeFazio eric@varcode.io
@@ -22,10 +22,10 @@ public enum StripMarks
 {
 	INSTANCE;
 	
-	public static String stripFrom( Dom markup )
+	public static String stripFrom( Dom dom )
 	{
-		FillTemplate allMarksTemplate = markup.getAllMarksTemplate(); 
-		Mark[] markActions = markup.getMarks();
+		FillTemplate allMarksTemplate = dom.getAllMarksTemplate(); 
+		Mark[] markActions = dom.getMarks();
 		
 		int blanksCount = allMarksTemplate.getBlanksCount();
 		StringBuilder sb = new StringBuilder();
@@ -62,13 +62,13 @@ public enum StripMarks
 		return sb.toString();
 	}
 
-	public void preProcess( DocState tailorState ) 
+	public void preProcess( DocState docState ) 
 	{
 		String markupWithoutMarks = 
-			stripFrom( tailorState.getDom() );
+			stripFrom(docState.getDom() );
 		
 		VarContext context = VarContext.of( );
-		context.merge( tailorState.getDom().getDomContext() );
+		context.merge(docState.getDom().getDomContext() );
 		
 		Dom markupSansMarks = 
 			new Dom( 
@@ -76,9 +76,8 @@ public enum StripMarks
 				new Mark[ 0 ],
 		        new BitSet(), 
 		        context );
-		//,
-		//        tailorState.getDom().getMetadataBindings() );		
-		tailorState.setDom( markupSansMarks );
+	
+		docState.setDom( markupSansMarks );
 	}
 	
 	public String toString()

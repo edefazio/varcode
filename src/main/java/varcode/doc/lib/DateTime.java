@@ -7,6 +7,11 @@ import java.util.Set;
 import varcode.context.VarContext;
 import varcode.script.VarScript;
 
+/**
+ * Current Date time (with optional format)
+ * 
+ * @author M. Eric DeFazio eric@varcode.io
+ */
 public enum DateTime
 {
     ; //singleton enum idiom
