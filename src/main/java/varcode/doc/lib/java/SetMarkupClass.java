@@ -4,7 +4,11 @@ import varcode.context.VarScope;
 import varcode.doc.Directive;
 import varcode.doc.DocState;
 
-/** Sets the Markup Class as an instance var on teh context */
+/** 
+ * Sets the Markup Class "markup.class" as an instance var on the context 
+ * 
+ * @author M. Eric DeFazio eric@varcode.io
+ */
 public class SetMarkupClass
 	implements Directive.PreProcessor
 {

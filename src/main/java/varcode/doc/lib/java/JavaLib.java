@@ -32,7 +32,6 @@ public enum JavaLib
 		
 		bindings.put( getName() + "." + getVersion(), this );
 		
-		
 		bindings.put( "validateClassName", ValidateClassName.INSTANCE );
 		bindings.put( "!className", ValidateClassName.INSTANCE );
 		

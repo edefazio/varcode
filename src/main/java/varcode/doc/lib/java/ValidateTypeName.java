@@ -21,6 +21,8 @@ import varcode.script.VarScript;
  * if I have the input String[]{"Yes" "No", "Maybe"};
  * it will return int[]{ 0, 1, 2 };
  * </PRE>
+ * 
+ * @author M. Eric DeFazio eric@varcode.io
  */
 public enum ValidateTypeName
     implements VarScript

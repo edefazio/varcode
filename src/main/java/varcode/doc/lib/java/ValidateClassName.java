@@ -10,17 +10,8 @@ import varcode.java.JavaNaming;
 import varcode.script.VarScript;
 
 /**
- * Creates an index count (an array of sequential indexes) for all
- * elements in the array
+ * Validates a var represents a valid Java Class name
  * 
- * For example:
- * <PRE> 
- * if I have the input String[]{ "A", "B", "C", "D", "E" };
- * it will return int[]{ 0, 1, 2, 3, 4 };
- * 
- * if I have the input String[]{"Yes" "No", "Maybe"};
- * it will return int[]{ 0, 1, 2 };
- * </PRE>
  */
 public enum ValidateClassName
     implements VarScript
