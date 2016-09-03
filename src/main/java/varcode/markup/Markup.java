@@ -5,8 +5,6 @@ import java.util.Map;
 
 import varcode.doc.Directive;
 import varcode.doc.lib.SHA1Checksum;
-import varcode.doc.lib.java.MarkifyClassName;
-import varcode.doc.lib.java.MarkifyPackageName;
 import varcode.doc.lib.text.CondenseMultipleBlankLines;
 import varcode.doc.lib.text.MarkTarget;
 import varcode.doc.lib.text.PostReplace;
@@ -23,31 +21,6 @@ public enum Markup
 		return new MarkTarget( target, varName );
     }
 	
-	public static Directive className()
-	{
-		return className( "className" );
-	}
-		
-	public static Directive className( String varName )
-	{
-		return className( varName, true );
-	}
-		
-	public static Directive className( String varName, boolean isRequired )
-	{
-		return new MarkifyClassName( varName, isRequired );
-	}
-		
-	public static Directive packageName()
-	{
-		return packageName( "packageName" );
-	}
-		
-	public static Directive packageName( String varName )
-	{
-		return new MarkifyPackageName( varName );
-	}
-		
 	public static Directive required( String... targetVarNamePairs )
 	{
 		return MarkTarget.ofRequired( targetVarNamePairs );

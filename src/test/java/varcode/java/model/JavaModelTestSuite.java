@@ -10,6 +10,7 @@ public class JavaModelTestSuite
 		TestSuite suite = new TestSuite( JavaModelTestSuite.class.getName() );
 
 		// $JUnit-BEGIN$
+        suite.addTestSuite( InLinerTest.class );
 		suite.addTestSuite( _argumentsTest.class );
 		suite.addTestSuite( _classTest.class );
 		suite.addTestSuite( _cloneTest.class );
