@@ -92,7 +92,7 @@ public enum Reflect
     }
 
     /**
-     * Try and "match" the arguments of a method with the 
+     * Try and "match" the arguments of a method with the arguments provided
      * 
      * @param target the target arguments
      * @param arg the actual arguments
@@ -100,11 +100,14 @@ public enum Reflect
      */
     protected static boolean allArgsAssignable( Class<?>[] target, Object... arg )
     {
-        if( target == null && arg == null 
-            || target.length == 0 && arg.length == 0 )
+        if( target == null )
         {
-            return true;
+            return arg == null || arg.length == 0; 
         }
+        if( target.length == 0 )
+        {
+            return arg == null || arg.length == 0;
+        }        
         if( target.length == arg.length )
         {   //they have the same number of arguments, but are they type compatible?
             for( int pt = 0; pt < target.length; pt++ )

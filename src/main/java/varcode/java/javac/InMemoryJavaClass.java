@@ -19,13 +19,14 @@ public class InMemoryJavaClass
     extends SimpleJavaFileObject
 {	
     /** Binary in-memory representation of the Class' bytecodes */
-    private ByteArrayOutputStream inMemoryBytecode = 
+    private final ByteArrayOutputStream inMemoryClassBytecode = 
         new ByteArrayOutputStream();
 
     /**
-     * Initialize 
-     * @param className
-     * @throws Exception
+     * Initialize an in memory Java Class for a given class Name
+     * @param className the full class name "io.varcode.MyValueObject"
+     * @throws IllegalArgumentException
+     * @throws URISyntaxException
      */
     public InMemoryJavaClass( String className ) 
         throws IllegalArgumentException, URISyntaxException 
@@ -33,26 +34,18 @@ public class InMemoryJavaClass
         super( new URI( className ), Kind.CLASS );
     }
 
-    @Override
     /** The"FileManager"/"ClassLoader" writes the class' bytecodes to the local 
      * {@code ByteArrayOutputStream}) {@code inMemoryClassBytes}
      */
     public OutputStream openOutputStream() 
         throws IOException 
     {
-        return inMemoryBytecode;
+        return inMemoryClassBytecode;
     }
 
     /** gets the Class bytecodes as an array of Bytes */
     public byte[] toByteArray() 
     {
-        return inMemoryBytecode.toByteArray();
+        return inMemoryClassBytecode.toByteArray();
     }
-
-    /*
-    public Lang getLanguage()
-    {
-        return Lang.JAVA;
-    }
-    */
 }

@@ -32,7 +32,8 @@ import varcode.VarException;
 public class InMemoryJavaWorkspace 
     extends ForwardingJavaFileManager<JavaFileManager> 
 {
-    /** ClassLoader for loading Java Code that exists in memory (as a byte array) vs from a file */
+    /** ClassLoader for loading Java Code that exists in memory 
+     * (as a byte array) vs from a file */
     private final InMemoryJavaClassLoader inMemoryClassLoader;
 
     /**
@@ -43,15 +44,15 @@ public class InMemoryJavaWorkspace
      */
     public InMemoryJavaWorkspace(
         JavaFileManager fileManager, 
-        List<InMemoryJavaClass> tailoredClasses, 
+        //List<InMemoryJavaClass> tailoredClasses,  //TODO REMOCVE I DONT USE
         InMemoryJavaClassLoader tailoredClassLoader ) 
     {
         super( fileManager );
         this.inMemoryClassLoader = tailoredClassLoader;
-        for( int i = 0; i < tailoredClasses.size(); i++)
-        {
-        	inMemoryClassLoader.introduce( tailoredClasses.get( i ) );
-        }        
+        //for( int i = 0; i < tailoredClasses.size(); i++)
+        //{
+        // 	inMemoryClassLoader.introduce( tailoredClasses.get( i ) );
+        //}        
     }
     
     public Map<String, InMemoryJavaClass> getClassNameToClass()
@@ -82,7 +83,8 @@ public class InMemoryJavaWorkspace
     	}
     	catch( Exception e )
     	{
-    		throw new VarException( "Unable to create output class for class \""+className+"\"" );
+    		throw new VarException( 
+                "Unable to create output class for class \""+className+"\"" );
     	}
     }
 

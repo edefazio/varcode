@@ -122,7 +122,7 @@ public enum JavaWorkspace
 				InMemoryJavaCode javaCode = javaCase[ i ].javaCode();
 				javaSourceFiles.add( javaCode );
 				//TODO Should I Just do this Lazily??
-				addTailorClassTargetFor( javaCode.getClassName() );
+				//addTailorClassTargetFor( javaCode.getClassName() );
 			}
 			return this;
 		}
@@ -133,7 +133,7 @@ public enum JavaWorkspace
 			for( int i = 0; i < javaSourceCode.length; i++ )
 			{
 				javaSourceFiles.add( javaSourceCode[ i ] );
-				addTailorClassTargetFor( javaSourceCode[ i ].getClassName() );
+				//addTailorClassTargetFor( javaSourceCode[ i ].getClassName() );
 			}
 			return this;
 		}
@@ -212,7 +212,7 @@ public enum JavaWorkspace
 			InMemoryJavaWorkspace fileManager =  
 		        new InMemoryJavaWorkspace(
 		            baseFileManager, 
-		            tailorClassTargets, 
+		            //tailorClassTargets, 
 		            classLoader );
 		        
 			Iterable<String>options = JavacOptions.optionsFrom( compilerOptions );

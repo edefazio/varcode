@@ -31,7 +31,7 @@ public class InMemoryJavaCode
         return code;
     }
     
-    public static InMemoryJavaCode of ( JavaFileObject jfo )
+    public static InMemoryJavaCode of( JavaFileObject jfo )
     {
     	String code = null;
     	try
@@ -40,17 +40,27 @@ public class InMemoryJavaCode
     	}
     	catch( IOException ioe )
     	{
-    		throw new VarException("Unable to read codwe from JavaFileObject \"" + jfo+"\"" );
+    		throw new VarException(
+                "Unable to read code from JavaFileObject \"" + jfo + "\"", ioe );
     	}
-    	String fullName = jfo.getName().replace(".java", ""); 
+        //the className does not have the 
+        String fullName = null;
+        if( jfo.getName().endsWith( ".java" ) )
+        {
+            fullName = jfo.getName().substring(0, jfo.getName().lastIndexOf( ".java" ) );
+        }
+        else
+        {
+            fullName = jfo.getName();
+        }
     	fullName = fullName.replace("\\", ".");
     	fullName = fullName.replace("/", ".");
     	String packageName = null;
     	String className = null;
     	if( fullName.contains( "." ) )
     	{
-    		className = fullName.substring( fullName.lastIndexOf(".") + 1 );
-    		packageName = fullName.substring( 0, fullName.lastIndexOf(".") );
+    		className = fullName.substring( fullName.lastIndexOf( "." ) + 1 );
+    		packageName = fullName.substring( 0, fullName.lastIndexOf( "." ) );
     		return new InMemoryJavaCode( packageName, className, code );
     	}
     	else
@@ -66,13 +76,12 @@ public class InMemoryJavaCode
             URI.create( "string:///" + className.replace('.', '/') + Kind.SOURCE.extension ), 
             Kind.SOURCE );
         
-        
         this.className = className;
         this.code = code;
-        //System.out.println( "setting \""+ className+"\" to "+ uri );
     }
     
-    public InMemoryJavaCode( String packageName, String className, String sourceCode )
+    public InMemoryJavaCode( 
+        String packageName, String className, String code )
     {
         super( 
             URI.create( 
@@ -80,7 +89,7 @@ public class InMemoryJavaCode
                 + Kind.SOURCE.extension ), 
             Kind.SOURCE );
         this.className = JavaNaming.ClassName.toFullClassName( packageName, className );
-        this.code = sourceCode;
+        this.code = code;
     }
     
     public String getClassName()
@@ -100,11 +109,6 @@ public class InMemoryJavaCode
     public String getRelativeFilePath()
     {
         return JavaNaming.ClassName.toSourcePath( this.className );
-    }
-
-    public String getCodeId()
-    {
-        return className + ".java";
     }
     
     public String toString()

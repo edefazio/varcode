@@ -1,5 +1,6 @@
 package varcode.java.javac;
 
+import java.util.ArrayList;
 import varcode.VarException;
 import varcode.java.javac.InMemoryJavaClassLoader;
 import varcode.java.javac.InMemoryJavaCode;
@@ -16,27 +17,23 @@ public class InMemoryJavacTest
 	
 	public void testSimpleWithCompilerFlag()
 	{
-		String className = "MyClass";
-		String code = "public class MyClass{}";
+		final String className = "MyClass";
+		final String code = "public class MyClass{}";
 		
 		InMemoryJavac.compile(
 			new InMemoryJavaClassLoader(), 
-			new InMemoryJavaCode( 
-				className, 
-				code ),
+			new ArrayList(){{ add( new InMemoryJavaCode( className, code ));}},
 			JavacOptions.Flags.STORE_FORMAL_PARAMETER_NAMES_FOR_REFLECTION );
 	}
 
 	public void testSimpleWithMultipleCompilerFlags()
 	{
-		String className = "MyClass";
-		String code = "public class MyClass{}";
+		final String className = "MyClass";
+		final String code = "public class MyClass{}";
 		
 		InMemoryJavac.compile(
 			new InMemoryJavaClassLoader(), 
-			new InMemoryJavaCode( 
-				className, 
-				code ),
+			new ArrayList(){{ add(new InMemoryJavaCode( className, code )); }} ,
 			JavacOptions.Flags.ALL_DEBUG_INFORMATION,
 			JavacOptions.Flags.NO_ANNOTATION_PROCESSING,
 			JavacOptions.Flags.STORE_FORMAL_PARAMETER_NAMES_FOR_REFLECTION );
@@ -44,22 +41,20 @@ public class InMemoryJavacTest
 	
 	public void testSimpleWithCompilerOptions()
 	{
-		String className = "MyClass";
-		String code = "public class MyClass{}";
+		final String className = "MyClass";
+		final String code = "public class MyClass{}";
 		
 		InMemoryJavac.compile(
 			new InMemoryJavaClassLoader(), 
-			new InMemoryJavaCode( 
-				className, 
-				code ),
+			new ArrayList(){{ add( new InMemoryJavaCode( className, code ) );}},
 			//compiles with Java 1.3 source code compatibility
 			JavacOptions.JavaSourceVersion.MajorVersion._1_3 );
 	} 
 
 	public void testSimpleCompilerOptions()
 	{
-		String className = "MyClass";
-		String code = 
+		final String className = "MyClass";
+		final String code = 
 		    "import java.util.*;" + N 	
 		  + "public class MyClass" + N
 		  + "{" + N
@@ -70,9 +65,7 @@ public class InMemoryJavacTest
 		  + "}";
 		InMemoryJavac.compile(
 			new InMemoryJavaClassLoader(), 
-			new InMemoryJavaCode( 
-					className, 
-					code ),
+			new ArrayList(){{ add( new InMemoryJavaCode( className, code ) );}},
 			//compiles with Java 1.3 source code compatibility			
 			JavacOptions.DebugOptions.of(
 				DebugOptions.KeyWord.VARS,
@@ -82,8 +75,8 @@ public class InMemoryJavacTest
 	
 	public void testSimpleWithFailedCompilerOptions()
 	{
-		String className = "MyClass";
-		String code = 
+		final String className = "MyClass";
+		final String code = 
 		    "import java.util.*;" + N 	
 		  + "public class MyClass" + N
 		  + "{" + N
@@ -96,9 +89,7 @@ public class InMemoryJavacTest
 		{
 			InMemoryJavac.compile(
 				new InMemoryJavaClassLoader(), 
-				new InMemoryJavaCode( 
-						className, 
-						code ),
+				new ArrayList(){{ add( new InMemoryJavaCode( className, code ) );}},
 				//compiles with Java 1.3 source code compatibility			
 				JavacOptions.JavaSourceVersion.MajorVersion._1_3 );
 			fail( "expected Exception for Source not compatible " );	
@@ -114,8 +105,8 @@ public class InMemoryJavacTest
 	/** Figure out how well the Diagnostics return errors */
 	public void testErrorMessages()
 	{
-		String className = "MyClass";
-		String code = 
+		final String className = "MyClass";
+		final String code = 
 			"public class MyClass" + N
 		   +"{" + N
 		   +"    @Deprecated" + N
@@ -129,11 +120,9 @@ public class InMemoryJavacTest
 		{
 			
 			InMemoryJavac.compile(
-					new InMemoryJavaClassLoader(), 
-					new InMemoryJavaCode( 
-						className, 
-						code ), 
-					JavacOptions.JavaSourceVersion.MajorVersion._1_3 );
+				new InMemoryJavaClassLoader(), 
+				new ArrayList(){{ add( new InMemoryJavaCode( className, code ) );}},
+				JavacOptions.JavaSourceVersion.MajorVersion._1_3 );
 				//JavacCompiler.Flags.VERSION );
 			fail( "Expected Exception for Trying to Compile annotations with old Java Version" );
 		}

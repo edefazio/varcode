@@ -67,7 +67,7 @@ public enum InMemoryJavac
      * @param compilerOptions options for compiler
      * @return the bytecode (Java class)
      * @throws VarException
-     */
+     
     public static InMemoryJavaClass compile(
     	InMemoryJavaClassLoader inMemoryClassLoader, 
         InMemoryJavaCode javaCode, 
@@ -80,16 +80,27 @@ public enum InMemoryJavac
     		compile( inMemoryClassLoader, codeList, compilerOptions );
     	return retList.get( 0 );
     }
-    
+    */
+    /*
+    public static Map<String, InMemoryJavaClass> compile(
+        InMemoryJavaClassLoader inMemoryClassLoader, 
+        List<InMemoryJavaCode> listOfJavaCode, 
+        JavacOptions.CompilerOption... compilerOptions )
+    	throws JavacException
+    {
+        
+    }
+    */
     /**
      * Compiles the Tailored Java Code and returns a {@code TailoreClass} 
      * representing the bytes of the compiled class
      * 
      * @param inMemoryClassLoader the classLoader
      * @param listOfJavaCode the Code to be compiled
+     * @param compilerOptions all of the options for calling javac at runtime
      * @return the Class representing the compiled 
      */
-    public static List<InMemoryJavaClass> compile( 
+    public static Map<String, InMemoryJavaClass> compile( 
         InMemoryJavaClassLoader inMemoryClassLoader, 
         List<InMemoryJavaCode> listOfJavaCode, 
         JavacOptions.CompilerOption... compilerOptions )
@@ -126,6 +137,7 @@ public enum InMemoryJavac
     		  + "\" make sure you have a JDK (NOT A JRE) running", e ); 
     	}
 
+        /*
         List<InMemoryJavaClass> tailorClassTargets = 
         	new ArrayList<InMemoryJavaClass>();
         
@@ -149,11 +161,11 @@ public enum InMemoryJavac
 					+ listOfJavaCode.get( i ).getClassName() + "\"", e );
 			}
         } 
-   
-        InMemoryJavaWorkspace fileManager = 
+        */
+        InMemoryJavaWorkspace workspace = 
             new InMemoryJavaWorkspace(
                 baseFileManager, 
-                tailorClassTargets, 
+                //tailorClassTargets, 
                 inMemoryClassLoader );
        
         DiagnosticCollector<JavaFileObject> diagnostics = 
@@ -162,9 +174,8 @@ public enum InMemoryJavac
         Iterable<String>javacOptions = JavacOptions.optionsFrom( compilerOptions );
 
         JavaCompiler.CompilationTask task = 
-            INSTANCE.JAVAC.getTask( 
-                null, //use System.err for "additional" output from the compiler
-                fileManager, 
+            INSTANCE.JAVAC.getTask(null, //use System.err for "additional" output from the compiler
+                workspace, 
                 diagnostics, 
                 javacOptions, 
                 null, //classes
@@ -177,7 +188,8 @@ public enum InMemoryJavac
         }
         catch( RuntimeException rte )
         {
-        	throw new VarException(" Unable to compile workspace ", rte.getCause() );
+        	throw new VarException(
+                "Unable to compile workspace ", rte.getCause() );
         }        
         if( !compiledWithoutErrors )
         { 
@@ -207,6 +219,8 @@ public enum InMemoryJavac
         	LOG.warn( "Error closing BaseFileManager ", ioe);
         }
         LOG.debug( "Done Compiling {"+ javaSourceNames + "}" );
-        return tailorClassTargets;            
+        
+        return inMemoryClassLoader.getInMemoryClassMap();
+        //return tailorClassTargets;            
     }
 }
