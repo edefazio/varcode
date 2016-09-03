@@ -14,6 +14,13 @@ import org.slf4j.LoggerFactory;
 
 import varcode.VarException;
 
+/**
+ * Methods to simplify using Java Reflection
+ * specifically for finding a specific method on a class, or for 
+ * capturing CheckedExceptions and throwing RuntimeExceptions
+ * 
+ * @author M. Eric DeFazio eric@varcode.io
+ */
 public enum Reflect 
 {
 	;
@@ -71,23 +78,38 @@ public enum Reflect
         return false;
     }
         
-    protected static boolean isParamAssignable( Class<?> target, Object source )
+    /**
+     * is this arg assignable to the target class?
+     * @param target
+     * @param arg
+     * @return 
+     */
+    protected static boolean isArgAssignable( Class<?> target, Object arg )
     {
-        return source == null || source.getClass().isInstance( target ) 
-              || ( source.getClass().isPrimitive() && ( translatesTo( source, target ) ) );
+        return arg == null || arg.getClass().isInstance( target ) 
+              || ( arg.getClass().isPrimitive() 
+                  && ( translatesTo(arg, target ) ) );
     }
 
-    protected static boolean allParamsAssignable( Class<?>[] target, Object... source )
+    /**
+     * Try and "match" the arguments of a method with the 
+     * 
+     * @param target the target arguments
+     * @param arg the actual arguments
+     * @return 
+     */
+    protected static boolean allArgsAssignable( Class<?>[] target, Object... arg )
     {
-        if( target == null && source == null || target.length == 0 && source.length == 0 )
+        if( target == null && arg == null 
+            || target.length == 0 && arg.length == 0 )
         {
             return true;
         }
-        if( target.length == source.length )
+        if( target.length == arg.length )
         {   //they have the same number of arguments, but are they type compatible?
             for( int pt = 0; pt < target.length; pt++ )
             {
-                if( !isParamAssignable( source[ pt ].getClass(), target[ pt ] ) )
+                if( !isArgAssignable(arg[ pt ].getClass(), target[ pt ] ) )
                 {
                     return false;
                 }
@@ -98,14 +120,15 @@ public enum Reflect
     }
 
     
-    public static Method getStaticMethod( Method[] methods, String methodName, Object[] params )
+    public static Method getStaticMethod( 
+        Method[] methods, String methodName, Object[] args )
     {
         for( int i = 0; i < methods.length; i++ )
         {
             if( Modifier.isStatic( methods[ i ].getModifiers() )
                 && methods[ i ].getName().equals( methodName ) )
             {
-                if( allParamsAssignable( methods[ i ].getParameterTypes(), params ) )
+                if( allArgsAssignable(methods[ i ].getParameterTypes(), args ) )
                 {
                     return methods[ i ];
                 }
@@ -114,13 +137,14 @@ public enum Reflect
         return null;
     }
 
-    public static Method getMethod( Method[] methods, String methodName, Object... params )
+    public static Method getMethod( 
+        Method[] methods, String methodName, Object... args )
     {
         for( int i = 0; i < methods.length; i++ )
         {
             if( methods[ i ].getName().equals( methodName ) )
             {
-                if( allParamsAssignable( methods[ i ].getParameterTypes(), params ) )
+                if( allArgsAssignable(methods[ i ].getParameterTypes(), args ) )
                 {
                     return methods[ i ];
                 }
@@ -128,10 +152,6 @@ public enum Reflect
         }
         return null;
     }
-    
-  
-
-    
     
 	public static Object getStaticFieldValue( Class<?> clazz, String fieldName ) 
 	{

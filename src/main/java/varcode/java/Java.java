@@ -272,7 +272,7 @@ public enum Java
         for( int i = 0; i < constructors.length; i++ )
         {
             Class<?>[] paramTypes = constructors[ i ].getParameterTypes();
-            if( Reflect.allParamsAssignable( paramTypes, constructorParams ) )
+            if( Reflect.allArgsAssignable( paramTypes, constructorParams ) )
             {
              	return construct( constructors[ i ], constructorParams );
             }

@@ -306,112 +306,8 @@ public enum JavaNaming
                 }
             }
             return fileName.substring( 0, lastCharInClassName + 1 );
-        }
-        
-        /**
-         * Given Java source code, extracts the ClassName from it
-         * 
-         * TODO: So I realize this is kinda a hack, but I didnt want to 
-         * have to force a Lexer and parser
-         * @param javaSource
-         * @return
-         
-        public static String extractFromSource( String javaSource )
-        { //maybe we arent changing the packageName
-            List<String>potentialClassName = 
-                getExcerpts( javaSource, "class", "{" );
-
-            for( int i = 0; i < potentialClassName.size(); i++ )
-            {
-                String candidate = potentialClassName.get( i );
-                try
-                {
-                    return validateSimpleName( candidate.trim() );
-                }
-                catch( VarException pe )
-                {
-                    //not ideal, but swallow this one
-                }
-            }
-            
-             potentialClassName =
-                getExcerpts( javaSource, "class", "extends" );
-
-            for( int i = 0; i < potentialClassName.size(); i++ )
-            {
-                String candidate = potentialClassName.get( i );
-                try
-                {
-                    return validateSimpleName( candidate.trim() );
-                }
-                catch( VarException pe )
-                {
-                    //not ideal, but swallow this one
-                }
-            }
-
-            potentialClassName = getExcerpts( javaSource, "class", "implements" );
-
-            for( int i = 0; i < potentialClassName.size(); i++ )
-            {
-                String candidate = potentialClassName.get( i );
-                try
-                {
-                    return validateSimpleName( candidate.trim() );
-                }
-                catch( VarException pe )
-                {
-                    //not ideal, but swallow this one
-                }
-            }
-            
-            potentialClassName = getExcerpts( javaSource, "interface", "extends" );
-
-            for( int i = 0; i < potentialClassName.size(); i++ )
-            {
-                String candidate = potentialClassName.get( i );
-                try
-                {
-                    return validateSimpleName( candidate.trim() );
-                }
-                catch( VarException pe )
-                {
-                    //not ideal, but swallow this one
-                }
-            }
-            potentialClassName = getExcerpts( javaSource, "enum", "{" );
-
-            for( int i = 0; i < potentialClassName.size(); i++ )
-            {
-                String candidate = potentialClassName.get( i );
-                try
-                {
-                    return validateSimpleName( candidate.trim() );
-                }
-                catch( VarException pe )
-                {
-                    //not ideal, but swallow this one
-                }
-            }
-            potentialClassName = getExcerpts( javaSource, "interface", "{" );
-
-            for( int i = 0; i < potentialClassName.size(); i++ )
-            {
-                String candidate = potentialClassName.get( i );
-                try
-                {
-                    return validateSimpleName( candidate.trim() );
-                }
-                catch( VarException pe )
-                {
-                    //not ideal, but swallow this one
-                }
-            }
-            return null;
-        }
-        */
-    }
-    
+        }        
+    }    
 
     /** 
      * Constraints on Java Identifiers     
@@ -526,7 +422,7 @@ public enum JavaNaming
             	}
             	String braces = typeName.substring( arrayStart );
             	
-            	braces.replace(" ", "");
+            	braces = braces.replace( " ", "" );
             	if( !arrayDimensions.contains( braces ) )
             	{
             		throw new VarException( 
@@ -577,6 +473,7 @@ public enum JavaNaming
     }
 
     /**
+     * Conventions for Java Class Names 
      */
     public static class PackageName
     {
@@ -644,90 +541,5 @@ public enum JavaNaming
             validate( packageName );
             return packageName.replace( ".", File.separator ) + File.separator;
         }
-        
-        /*
-        public static String extractFromSource( String javaSource )
-        {
-            //maybe we arent changing the packageName
-            List<String> potentialPkgNames =
-                getExcerpts( javaSource, "package", ";" );
-            
-            if( potentialPkgNames.size() > 0 )
-            {
-                for( int i = 0; i < potentialPkgNames.size(); i++ )
-                {
-                    String candidate = potentialPkgNames.get( i );
-                    try
-                    {
-                        return JavaNaming.PackageName.validate( candidate.trim() );
-                    }
-                    catch( VarException pe )
-                    {
-                        //not ideal, but swallow this one
-                    }
-                }
-            }
-            return null;
-        }
-        */
     } //Package
-
-    
-    /**
-     * This ASSUMES the source will have something like
-     * "package io.varcode.data;"
-     * ...where the package AND contents are on the same line
-     *  
-     * getExcerpts(..., "package" ";")
-     * <PRE>
-     * "package io.varcode.something.anotherthing;"
-     *         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^       
-     * returns " io.varcode.something.anotherthing"
-     * </PRE>
-     * 
-     * <PRE>
-     * getExcerpts(..., "class" "extends");
-     * getExcerpts(..., "class" "implements");
-     * getExcerpts(..., "class" "{");
-     * 
-     * "public class Blammo {"  
-     *              ^^^^^^^^
-     * returns " Blammo "
-     * 
-     *               
-     * "public abstract class AbstractClass extends BaseClass implements Serielizable"
-     *                       ^^^^^^^^^^^^^^^ 
-     * returns " AbstractClass "
-     *  
-     * @param source
-     * @param targetString
-     * @return
-     
-    public static final List<String> getExcerpts( 
-        String source, //the entire data  
-        String open, //i.e. "package" 
-        String close ) //i.e. ";"
-    {
-        int openFromIndex = source.indexOf( open, 0 );
-        int closeFromIndex;
-        
-        List<String> excerpts = new ArrayList<String>();
-        //int nextCloseCharIndex = source.indexOf( close, closeFromIndex );
-        while( openFromIndex > -1 )
-        {
-            closeFromIndex = source.indexOf( close, openFromIndex );
-            if( closeFromIndex > -1 )
-            {                    
-                excerpts.add( 
-                    source.substring( openFromIndex + open.length(), closeFromIndex ) );
-            }
-            else
-            {
-                return excerpts;
-            }
-            openFromIndex = source.indexOf( open, openFromIndex + open.length() );
-        }            
-        return excerpts;
-    }
-    */
 }
