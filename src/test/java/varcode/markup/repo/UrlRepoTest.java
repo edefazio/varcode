@@ -48,7 +48,7 @@ public class UrlRepoTest
 		
     	JavaCase jc = JavaCase.of( 
     		urlRepo, 
-    		"ex.varcode._1.java", 
+    		"ex.varcode._1", 
     		"ex.varcode.GitHubGistTailored",
     		VarContext.of( 
     			"className", "GitHubGistTailored",
