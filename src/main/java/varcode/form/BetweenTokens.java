@@ -26,7 +26,7 @@ import java.util.HashSet;
  *  //argList = "int a, String b"
  *  //** (Notice, there is no need to use the ',' after "String b" since it is 
  *  the last form item in the list) **
- * </PRE></CODE>
+ * </CODE></PRE>
  *   
  * @author M. Eric DeFazio eric@varcode.io
  */
@@ -48,9 +48,9 @@ public interface BetweenTokens
      * @param formTail the "tail" content of the form 
      * (information after the last Blank/Fill/Mark) of the {@code Form}
      *  
-     * @return
+     * @return the token or null
      */
-    public String endsWithToken ( String formTail );
+    public String endsWithToken( String formTail );
     
     /**
      * These tokens are used between multiple entities
@@ -65,7 +65,7 @@ public interface BetweenTokens
     public static class BaseBetweenTokens
         implements BetweenTokens
     {        
-        public static HashSet<String> BETWEEN = new HashSet<String>();
+        public final static HashSet<String> BETWEEN = new HashSet<String>();
         
         static
         {

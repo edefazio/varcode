@@ -24,7 +24,6 @@ import java.util.Set;
 
 import varcode.VarException;
 
-
 /**
  * Conventions About Java Source Code 
  * constraints / invariants (of Naming, Packaging, Reading  etc.)
@@ -45,12 +44,14 @@ public enum JavaNaming
      * Java Reserved Words
      */
     public static final String[] RESERVED_WORDS =
-        { "abstract", "assert", "boolean", "break", "byte", "case", "catch", "char",
-          "class", "const", "continue", "default", "do", "double", "else", "enum", "extends",
-          "final", "finally", "float", "for", "goto", "if", "implements", "import", "instanceof",
-          "int", "interface", "long", "native", "new", "package", "private", "protected", "public",
-          "return", "short", "static", "strictfp", "super", "switch", "synchronized", "this",
-          "throw", "throws", "transient", "try", "void", "volatile", "while" };
+        { "abstract", "assert", "boolean", "break", "byte", "case", "catch", 
+          "char", "class", "const", "continue", "default", "do", "double", 
+          "else", "enum", "extends", "final", "finally", "float", "for", "goto", 
+          "if", "implements", "import", "instanceof", "int", "interface", 
+          "long", "native", "new", "package", "private", "protected", "public",
+          "return", "short", "static", "strictfp", "super", "switch", 
+          "synchronized", "this", "throw", "throws", "transient", "try", 
+          "void", "volatile", "while" };
 
     /**
      * Understands Code constraints on Java Class Names
@@ -106,10 +107,12 @@ public enum JavaNaming
          * <LI>String[1] is the "Simple" className (i.e. "String")
          * </OL>
          */
-        public static String[] parsePackageAndClassName( String fullyQualifiedClassName )
+        public static String[] parsePackageAndClassName( 
+            String fullyQualifiedClassName )
             throws VarException
         {
-        	String[] packageAndClassName = extractPackageAndClassName( fullyQualifiedClassName );
+        	String[] packageAndClassName = extractPackageAndClassName( 
+                fullyQualifiedClassName );
         	if( packageAndClassName[ 0 ].equals( "" ) )
         	{
         		 validateSimpleName( fullyQualifiedClassName );
@@ -122,15 +125,18 @@ public enum JavaNaming
         	return packageAndClassName;
         }
 
-        public static String[] extractPackageAndClassName( String fullyQualifiedClassName )
+        public static String[] extractPackageAndClassName( 
+            String fullyQualifiedClassName )
         {
         	 int lastDotIndex = fullyQualifiedClassName.lastIndexOf( '.' );
              if( lastDotIndex > 0 )
              {
-                 String packageName = fullyQualifiedClassName.substring( 0, lastDotIndex );
+                 String packageName = fullyQualifiedClassName.substring( 
+                    0, lastDotIndex );
 
-                 String simpleClassName = fullyQualifiedClassName.substring( lastDotIndex + 1,
-                     fullyQualifiedClassName.length() );
+                 String simpleClassName = fullyQualifiedClassName.substring( 
+                    lastDotIndex + 1,
+                    fullyQualifiedClassName.length() );
                  return new String[]{ packageName, simpleClassName };
              }
              return new String[]{ "", fullyQualifiedClassName };
@@ -145,28 +151,30 @@ public enum JavaNaming
             }
             if( Arrays.binarySearch( RESERVED_WORDS, simpleClassName ) >= 0 )
             {
-                throw new VarException( "Class name: \"" + simpleClassName + "\" reserved word" );
+                throw new VarException( 
+                    "Class name: \"" + simpleClassName + "\" reserved word" );
             }
             char[] chars = simpleClassName.toCharArray();
             if( !Character.isJavaIdentifierStart( chars[ 0 ] ) )
             {
                 throw new VarException(
-                    "Class name: \"" + simpleClassName + "\" is invalid, char at [" + 0 + "] is '"
-                        + chars[ 0 ] + "' invalid for Java Class name" );
+                    "Class name: \"" + simpleClassName + "\" is invalid, char at [" 
+                  + 0 + "] is '" + chars[ 0 ] + "' invalid for Java Class name" );
             }
             for( int i = 1; i < chars.length; i++ )
             {
                 if( !Character.isJavaIdentifierPart( chars[ i ] ) )
                 {
                     throw new VarException(
-                        "Class name: \"" + simpleClassName + "\" is invalid, char at [" + i
-                            + "] is '" + chars[ i ] + "' invalid for Java class name" );
+                        "Class name: \"" + simpleClassName + "\" is invalid, char at [" 
+                      + i + "] is '" + chars[ i ] + "' invalid for Java class name" );
                 }
             }
             if( simpleClassName.length() > 512 )
             {
                 throw new VarException( "Class name \"" + simpleClassName
-                    + "\" is > 512 characters in length;" + "Java allows this, but we don't" );
+                    + "\" is > 512 characters in length;" 
+                    + "Java allows this, but we don't" );
             }
             return simpleClassName;
         }
@@ -248,7 +256,8 @@ public enum JavaNaming
         {
             String[] packageAndClass = parsePackageAndClassName( canonicalClassName );
 
-            String packagePath = packageAndClass[ 0 ].replace( '.', File.separatorChar );
+            String packagePath = packageAndClass[ 0 ].replace( 
+                '.', File.separatorChar );
             if( packagePath.length() > 0 )
             {
                 packagePath += File.separatorChar;
@@ -285,7 +294,8 @@ public enum JavaNaming
 
             while( charIndex >= 0 )
             {
-                if( charIndex > 0 && Character.isJavaIdentifierPart( fileName.charAt( charIndex ) )
+                if( charIndex > 0 
+                    && Character.isJavaIdentifierPart( fileName.charAt( charIndex ) )
                     || Character.isJavaIdentifierStart( fileName.charAt( charIndex ) ) )
                 {
                     charIndex--;
@@ -305,7 +315,7 @@ public enum JavaNaming
          * have to force a Lexer and parser
          * @param javaSource
          * @return
-         */
+         
         public static String extractFromSource( String javaSource )
         { //maybe we arent changing the packageName
             List<String>potentialClassName = 
@@ -399,7 +409,9 @@ public enum JavaNaming
             }
             return null;
         }
+        */
     }
+    
 
     /** 
      * Constraints on Java Identifiers     

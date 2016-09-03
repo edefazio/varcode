@@ -6,7 +6,7 @@ import varcode.markup.repo.MarkupRepo;
 
 /**
  * Where/How to FIND the Java Markup Source Code 
- * to Compile into a Dom.
+ * to Compile into a {@code Dom}.
  * 
  * This provides some "conventional" places where the source code might be
  * (as it relates to System Properties, specifically "user.dir" and "markup.dir")
@@ -70,8 +70,7 @@ public enum JavaMarkupRepo
     {
     	 return markupStream( localClass.getCanonicalName() + ".java" );
     }
-    
-    
+        
     public String describe()
     {
         return SOURCE_PATH.describe();

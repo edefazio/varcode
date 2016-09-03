@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import varcode.VarException;
 
 import varcode.context.VarContext;
 import varcode.doc.Directive;
@@ -21,10 +22,10 @@ import varcode.markup.repo.MarkupRepo.MarkupStream;
 
 /**
  * Represents the combination of {@code Dom} and {@code VarContext} to 
- * represent authored / tailored Java Source code.
+ * authored / tailored Java Source code.
  * 
  * Stores the JavaCode as an <CODE>InMemoryJavaCode</CODE> object 
- * which can be compiled in memory or exported
+ * which can be compiled in memory or exported as a String or File.
  *  
  * @author M. Eric DeFazio eric@varcode.io
  */
@@ -43,13 +44,19 @@ public class JavaCase
      * Using the Class, lookup the source for the class (assuming it is in the
      * Standard {@code JavaSrcPath}
      * @param markupClazz the clazz (whos source is VarSource)
+     * @param authorTargetClassName name of the class that will be created
+     * (i.e. "io.varcode.somepackage.AuthoredMap"
      * @param keyValuePairs key-value pairs of vars and scripts 
      * @return the Case (representing the Markup and VarContext) 
      */ 
     public static final JavaCase of( 
-    		Class<?> markupClazz, String fullyQualifiedTargetClassName, Object... keyValuePairs )
+    	Class<?> markupClazz, String authorTargetClassName, Object... keyValuePairs )
     {
-        return of( JavaMarkupRepo.INSTANCE, markupClazz, fullyQualifiedTargetClassName, VarContext.of( keyValuePairs ) );
+        return of( 
+            JavaMarkupRepo.INSTANCE, 
+            markupClazz, 
+            authorTargetClassName, 
+            VarContext.of( keyValuePairs ) );
     }
     
     public String getClassName()
@@ -58,26 +65,55 @@ public class JavaCase
     }
     
     public static final JavaCase of( 
-    	Class<?> markupClazz, String fullyQualifiedTargetClassName, VarContext context, Directive...directives )
+    	Class<?> markupClazz, 
+        String authorTargetClassName, 
+        VarContext context, 
+        Directive...directives )
     {
-        return of( JavaMarkupRepo.INSTANCE, markupClazz, fullyQualifiedTargetClassName, context, directives );
+        return of(JavaMarkupRepo.INSTANCE, 
+            markupClazz, 
+            authorTargetClassName, 
+            context, 
+            directives );
     } 
     
     /**
      * 
      * @param markupRepo the repository location of markup (java source code) 
-     * @param fullClassName (i.e. "java.lang.String.java")
-     * @param keyValuePairs key/Values to comprise the {@code VarContext}
-     * @return
+     * @param markupClassName the name of the Template to create the Dom 
+     * (i.e. "varcode.ex._ValueObject.java")
+     * @param authoredTargetClassName the authored class name to write 
+     * (i.e. varcode.ex.MyValueObject")
+     * @param context binding of name values and scripts for processing 
+     * @param directives pre and post processing directives 
+     * @return the JavaCase
      */
     public static final JavaCase of( 
-    	MarkupRepo markupRepo, String fullClassName, String fullyQualifiedClasName, VarContext context, Directive...directives )
-    {
-    	 MarkupStream markupStream = markupRepo.markupStream( fullClassName );
-    	 
-    	 Dom markup = CodeML.compile( markupStream ); 
+    	MarkupRepo markupRepo, 
+        String markupClassName, 
+        String authoredTargetClassName, 
+        VarContext context, 
+        Directive...directives )
+    {       
+        MarkupStream markupStream = null;
+        
+        if( markupClassName.endsWith( ".java" ) ) 
+        {
+    	    markupStream = markupRepo.markupStream( markupClassName );
+        }
+        else
+        {
+            markupStream = markupRepo.markupStream( markupClassName + ".java" );
+        } 
+        if( markupStream == null )
+        {
+            throw new VarException( 
+                "Could not find \"" + markupClassName + "\" Markup Class" );
+        } 
+    	Dom markup = CodeML.compile( markupStream ); 
     	       
-    	 return new JavaCase( fullyQualifiedClasName, markup,  context, directives );
+    	return new JavaCase( 
+            authoredTargetClassName, markup,  context, directives );
     }
     
     /**
@@ -85,16 +121,18 @@ public class JavaCase
      * a new Case based on a {@code VarContext} containing {@code pairs} 
      * (pairs is data passed in as alternating key,value, key, value)
      *  
-     * @param sourcePath the path to use to resolve the source
-     * @param markupClass the class
-     * @param keyValuePairs
+     * @param markupRepo the repository location of markup (java source code) 
+     * @param markupClass the class containing markup to tailor
+     * @param authoredTargetClassName the name of the class 
+     * @param context  containing bind key values and functionality for processing
+     * @param directives pre and post processing 
      * @return
      */
     public static final JavaCase of( 
         MarkupRepo markupRepo, 
         Class<?> markupClass, 
-        String fullyQualifiedTargetClassName,
-        VarContext varContext, 
+        String authoredTargetClassName,
+        VarContext context, 
         Directive...directives )
     {
         MarkupStream markupStream = markupRepo.markupStream( 
@@ -102,38 +140,56 @@ public class JavaCase
 
         Dom dom = CodeML.compile( markupStream ); 
         
-        List<Directive> staticDirectives = JavaMarkup.bindStaticFields( markupClass, varContext );
+        List<Directive> staticDirectives = 
+            JavaMarkup.bindStaticFields( markupClass, context );
+        
         List<Directive> allDirectives = new ArrayList<Directive>();
         
         allDirectives.add( CommentEscape.INSTANCE );
         allDirectives.addAll( Arrays.asList( directives ) );
         allDirectives.addAll( staticDirectives );
 
-        return new JavaCase( fullyQualifiedTargetClassName, dom, varContext, allDirectives.toArray( new Directive[ 0 ] ) );
+        return new JavaCase( 
+            authoredTargetClassName, 
+            dom, 
+            context, 
+            allDirectives.toArray( new Directive[ 0 ] ) );
     }
 
     public static final JavaCase of( 
-    	String fullyQualifiedTargetClassName, Dom dom, VarContext context, Directive...directives )
+    	String authoredTargetClassName, 
+        Dom dom, 
+        VarContext context, 
+        Directive...directives )
     {
-    	return new JavaCase( fullyQualifiedTargetClassName, dom, context, directives );
+    	return new JavaCase( 
+            authoredTargetClassName, dom, context, directives );
     }
         
     /**
      * Using the Class, lookup the source for the class (assuming it is in the
      * Standard {@code JavaSrcPath}
-     * @param clazz the clazz (whos source is VarSource)
+     * @param authoredTargetClassName the target class name of the authored source
+     * @param dom the Dom containing the document structure
      * @param keyValuePairs key-value pairs of vars and scripts 
      * @return the Case (representing the Markup and VarContext) 
      */
-    public static final JavaCase of( String fullyQualifiedTargetClassName, Dom dom, Object... keyValuePairs )
+    public static final JavaCase of( 
+        String authoredTargetClassName, Dom dom, Object... keyValuePairs )
     {
-    	return new JavaCase( fullyQualifiedTargetClassName, dom, VarContext.of( keyValuePairs) );
+    	return new JavaCase( 
+            authoredTargetClassName, dom, VarContext.of( keyValuePairs) );
     }
         
-    private JavaCase( String fullyQualifiedTargetClassName, Dom dom, VarContext context, Directive...directives )
+    private JavaCase( 
+        String authoredTargetClassName, 
+        Dom dom, 
+        VarContext context, 
+        Directive...directives )
     {    	
     	
-    	this.javaCode = Java.author( fullyQualifiedTargetClassName, dom, context, directives );
+    	this.javaCode = Java.author(
+            authoredTargetClassName, dom, context, directives );
     }
 
     public String toString()

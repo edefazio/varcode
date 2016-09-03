@@ -40,8 +40,8 @@ public enum JavaMarkup
 	 */
 	public static Directive[] MARKUP_DIRECTIVES = new Directive[] {
 		JavaLib.INSTANCE,   //load java library (for validation, etc.)	
-		Markup.className(), // add Mark around the ClassName
-		Markup.packageName(), // add Mark around the packageName
+		//Markup.className(), // add Mark around the ClassName
+		//Markup.packageName(), // add Mark around the packageName
 		Markup.condenseMultipleBlankLines(), //
 		Markup.removeAllLinesWith( 
 			"import varcode", 
@@ -120,7 +120,7 @@ public enum JavaMarkup
         				{
         					for( int j = 0; j < dirs.length; j++ )
         					{
-        						LOG.trace("Added static Directive [" + j +"]"+ dirs[ j ]);
+        						LOG.trace( "Added static Directive [" + j +"]"+ dirs[ j ]);
         					}
         				}
         			}

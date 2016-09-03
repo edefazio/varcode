@@ -115,6 +115,7 @@ public class FormTemplate
      * @param template {@code FillInTheBlanks.FillOrder} static text and 
      * blanks in the document
      * @param allMarksSequence the marks that occur within the document (in order)
+     * @param allMarkLocations set bits indicate a {@code Mark} within the content
      */
     public FormTemplate( 
         FillInTheBlanks.FillTemplate template, 
@@ -153,8 +154,7 @@ public class FormTemplate
 
     /**
      * @see varcode.VarCodeMark#getBlanksCount()
-     */
-    
+     */    
     public int getBlanksCount()
     {
         return blankFillerMarksTemplate.getBlanksCount();
@@ -175,10 +175,9 @@ public class FormTemplate
         return theForms.toArray( new Form[ 0 ] );
     }
 
-    /* (non-Javadoc)
+    /**
      * @see varcode.VarCodeMark#getAllMarkIndexes()
-     */
-    
+     */    
     public BitSet getMarkIndicies()
     {
         return this.markIndicies;
@@ -187,7 +186,6 @@ public class FormTemplate
     /* (non-Javadoc)
      * @see varcode.VarCodeMark#getFillBlanks()
      */
-    
     public FillTemplate getFillTemplate()
     {
         return blankFillerMarksTemplate;

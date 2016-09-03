@@ -45,7 +45,7 @@ public interface Form
 
         public void collectVarNames( Set<String> varNames, VarContext context )
         {
-            //do nothing
+            //do nothing... static forms have no var names
         }
 
         public String toString()

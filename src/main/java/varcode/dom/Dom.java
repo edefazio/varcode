@@ -73,39 +73,18 @@ import varcode.markup.mark.Mark.HasVars;
  * String tailored = Tailor.code( dom, 
  *     VarContext.of( 
  *         "className", "MyClass" ) ); // = "public class MyClass {}";
- * </PRE>
+ * </CODE></PRE>
  */
 public class Dom 
     implements MarkupTemplate
-{	
-
-	/** 
-	 * Creates and returns a NEW Dom that merges all of the  the {@code tailMarks} 
-	 * (after all other Marks on the Dom)...
-	 * 
-	 * @param sourceDom the originalDom
-	 * @param prefixMarks Marks that are added to the beginning of the Document 
-	 * (BEFORE ALL other Marks)
-	 * @return the Dom
-	 
-	public static Dom merge( Dom...domsInOrder )
-	{
-		List<Mark>allMarks = new ArrayList<Mark>();
-		
-		for(int i = 0; i < domsInOrder.length; i++ )
-		{
-			
-		}
-	}
-	*/
-	
+{		
 	/** ALL {@code Mark}s on the document */
 	private final Mark[] marks;  
 	
 	/** 
-	 * Static Text and "blanks" where ALL {@code MarkActions}s occur
+	 * Static Text and "blanks" where ALL {@code Mark}s occur
 	 * (Useful if we want to "derive" the original markup text  
-	 * {@code MarkAction}s) 
+	 * {@code Mark}s) 
 	 */ 	 
 	private final FillTemplate marksTemplate;
      
@@ -155,9 +134,8 @@ public class Dom
 	 * @param fillTemplate {@code FillInTheBlanks.FillOrder} static text and 
 	 * blanks in the document
 	 * @param marks the marks that occur within the document (in order)
-	 * @param allMarkLocations the set bits marking the character index of Marks within the text
-	 * @param staticBindings statically defined vars, forms, scripts for the Markup
-	 * @param metadata metadata about the 
+	 * @param allMarkLocations the set bits mark the character index of Marks
+     * @param domContext context for storing dom components
 	 */
 	public Dom(
 	    FillInTheBlanks.FillTemplate fillTemplate, 
@@ -199,8 +177,6 @@ public class Dom
 		this.marksTemplate = marksTemplate;
 		this.marks = marks;
 		this.domContext = domContext;
-		//this.staticBindings = staticBindings;
-		//this.metadataBindings = metadataBindings;
 	}
 	
 	public Mark[] getMarks()

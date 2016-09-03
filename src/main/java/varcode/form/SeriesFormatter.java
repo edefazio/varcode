@@ -33,20 +33,20 @@ package varcode.form;
  *   <LI> (default) AlwaysAfter - add some static String after each Form... 
  *   for instance: with<PRE><CODE> 
  *   CodeForm form = CodeForm.of( 
- *       "int {+fieldName}; " );</PRE></CODE>
+ *       "int {+fieldName}; " );</CODE></PRE>
  *   
  *       
  *   if we are populating (1) fieldName:<BR><PRE><CODE>
  *   StringBuilder sb = new new StringBuilder();
  *   String one = form.tailorAll( Pairs.of( "fieldName", "count" ), sb );
- *    //one = "int count; "</PRE></CODE>
+ *    //one = "int count; "</CODE></PRE>
  *    
  *   ...if we have multiple field Names with the form: <PRE><CODE>
  *   String threeFields = 
  *       form.tailorAll( 
  *           Pairs.of( "fieldName", new String[]{"one", "two", "three"} ), sb );
  *   //threeFields = int one; int two; int three;        
- *   </PRE>        
+ *   </CODE></PRE>        
  *    
  *   <LI> OnlyBetween - here we add separators "between" each of the form 
  *   instances (a good simple example is an arguments list)

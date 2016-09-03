@@ -81,7 +81,7 @@ public enum Eval_JavaScript
 
 	public String getName() 
 	{
-		return "JavaScript_ExpressionEvaluator";
+		return this.getClass().getSimpleName();
 	}
 
 	public String getVersion() 
@@ -95,23 +95,23 @@ public enum Eval_JavaScript
 	}
 	
     public static final Class<?> JAVASCRIPT_OBJECT_CLASS = 
-        	jdk.nashorn.api.scripting.ScriptObjectMirror.class;
+        jdk.nashorn.api.scripting.ScriptObjectMirror.class;
         
-        private static Method getMethod(String methodName) 
+    private static Method getMethod(String methodName) 
+    {
+        try 
         {
-        	try 
-        	{
-    			return JAVASCRIPT_OBJECT_CLASS.getMethod( methodName );
-    		} 
-        	catch( NoSuchMethodException e ) 
-        	{
-        		throw new VarException ("unable to get isArrayMethod", e);
-    		} 
-        	catch (SecurityException e) 
-        	{
-        		throw new VarException ("unable to get isArrayMethod", e) ;
-    		}
-        }
+            return JAVASCRIPT_OBJECT_CLASS.getMethod( methodName );
+    	} 
+        catch( NoSuchMethodException e ) 
+        {
+            throw new VarException ("unable to get isArrayMethod", e);
+    	} 
+        catch (SecurityException e) 
+        {
+        	throw new VarException ("unable to get isArrayMethod", e) ;
+    	}
+    }
         
     public static final Method IS_ARRAY_METHOD = getMethod( "isArray" );
     
@@ -121,7 +121,8 @@ public enum Eval_JavaScript
 	{    
 		try
 	    {
-	    	if( obj != null && JAVASCRIPT_OBJECT_CLASS.isAssignableFrom( obj.getClass() ) ) 
+	    	if( obj != null 
+                && JAVASCRIPT_OBJECT_CLASS.isAssignableFrom( obj.getClass() ) ) 
 	    	{            
 	    		final Object result = IS_ARRAY_METHOD.invoke( obj );
 	    		if( result != null && result.equals( true ) ) 
@@ -155,8 +156,8 @@ public enum Eval_JavaScript
 	static
 	{
 		String[] reserved = {
-			"abstract","else","instanceof","super", "arguments", 
-			"boolean","enum","int","switch",  
+		"abstract","else","instanceof","super", "arguments", 
+		"boolean","enum","int","switch",  
 		"break","export","interface","synchronized",  
 		"byte","extends","let","this",  
 		"case","false","long","throw",  
@@ -171,7 +172,8 @@ public enum Eval_JavaScript
 		"do","import","short","while",  
 		"double","in","static","with",
 		"alert","frames","outerHeight",
-		"all","frameRate","outerWidth","anchor","function","packages","anchors","getClass","pageXOffset",
+		"all","frameRate","outerWidth","anchor","function","packages","anchors",
+        "getClass","pageXOffset",
 		"area","hasOwnProperty","pageYOffset",
 		"Array","hidden","parent",
 		"assign","history","parseFloat",
@@ -218,6 +220,4 @@ public enum Eval_JavaScript
 	{
 		return RESERVED_WORDS.contains( name );	
 	}
-
-
 }

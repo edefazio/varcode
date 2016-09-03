@@ -22,14 +22,16 @@ import varcode.markup.mark.Mark.BlankFiller;
  * 
  * for example:<PRE>String form = "{+type*} {+fieldName*}, "</PRE>
  * 
- * <PRE>VarForm declareField = ForMLParser.INSTANCE.fromString( form );
+ * <PRE>
+ * VarForm declareField = ForMLParser.INSTANCE.fromString( form );
  * if we pass in the (2) required* vars to derive the {@code VarForm}:
- * <PRE>VarContext vc = VarContext.of( 
+ * 
+ * VarContext vc = VarContext.of( 
  *   "type", "int", 
- *   "fieldName", "age" );</PRE>
+ *   "fieldName", "age" );
  * 
  * when we derive() the form with the VarContext; we get:
- * <PRE>"int age"
+ * "int age"
  * 
  * NOTE: since we only have (1) instance of the VarForm, the trailing ", " 
  * from the Form Definition:
@@ -221,7 +223,8 @@ public class VarForm
         for( int i = 0; i < varNames.length; i++ )
         {            
             //Object thisOne = context.get( varNames[ i ] );
-            Object thisOne = context.getVarResolver().resolveVar( context, varNames[ i ] );
+            Object thisOne = context.getVarResolver().resolveVar( 
+                context, varNames[ i ] );
             
             //System.out.println( varNames[ i ] + "=" + thisOne );
             if( thisOne != null )
@@ -242,8 +245,8 @@ public class VarForm
                     	{
                     		throw new VarException(
                     			"Cardinality Mismatch for Required Var \"" 
-                    		    + varNames[ i ] + "\" of Form " + N + getText() + N 
-                    		    + "failed at [" + index + "]" );
+                    		    + varNames[ i ] + "\" of Form " + N + getText() 
+                                + N + "failed at [" + index + "]" );
                     	}
                     	//failed range check (it's null, but "" will suffice)
                         loopBindings.put( varNames[ i ], "" );
@@ -258,11 +261,9 @@ public class VarForm
                         loopBindings.put( 
                         	varNames[ i ], 
                         	l.toArray( new Object[0] )[ index  ] );
-                        	//Collectionsl.get( index ) ) ;
                     }
                     else
                     {
-                    	//if( requiredVars.contains( varNames[ i ] ) )
                     	if( this.formTemplate.isRequiredVar( varNames[ i ] ) )
                     	{
                     		throw new VarException(

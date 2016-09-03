@@ -28,6 +28,11 @@ import varcode.markup.codeml.CodeML;
 import varcode.markup.repo.MarkupRepo;
 import varcode.markup.repo.MarkupRepo.MarkupStream;
 
+/**
+ *  
+ * 
+ * @author M. Eric DeFazio eric@varcode.io
+ */
 public enum Java 
 {
 	;
