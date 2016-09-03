@@ -476,8 +476,8 @@ public enum JavaNaming
     		if( ( typeName == null ) || typeName.length() < 1 )
             {
     			throw new VarException( 
-                    	"Invalid type name : \"" + typeName 
-                    	+ "\" Standard Identifiers must be at least 1 character" );
+                    "Invalid type name : \"" + typeName 
+                  + "\" Standard Identifiers must be at least 1 character" );
             }
             if( !Character.isJavaIdentifierStart( typeName.charAt( 0 ) ) )
             {
@@ -521,14 +521,17 @@ public enum JavaNaming
             	int arrayStart = typeName.indexOf( "[" );
             	if( arrayStart < 0 )
             	{
-            		throw new VarException( "Invalid Type, expected \"[\" to match \"]\"" );
+            		throw new VarException( 
+                        "Invalid Type, expected \"[\" to match \"]\"" );
             	}
             	String braces = typeName.substring( arrayStart );
             	
             	braces.replace(" ", "");
             	if( !arrayDimensions.contains( braces ) )
             	{
-            		throw new VarException( "Invalid Type, ArrayDimensions \""+braces+"\" invalid" );
+            		throw new VarException( 
+                        "Invalid Type, ArrayDimensions \"" 
+                         + braces + "\" invalid" );
             	}            	
             	for( int i = 1; i < arrayStart; i++ )
             	{
@@ -642,6 +645,7 @@ public enum JavaNaming
             return packageName.replace( ".", File.separator ) + File.separator;
         }
         
+        /*
         public static String extractFromSource( String javaSource )
         {
             //maybe we arent changing the packageName
@@ -665,6 +669,7 @@ public enum JavaNaming
             }
             return null;
         }
+        */
     } //Package
 
     
@@ -697,7 +702,7 @@ public enum JavaNaming
      * @param source
      * @param targetString
      * @return
-     */
+     
     public static final List<String> getExcerpts( 
         String source, //the entire data  
         String open, //i.e. "package" 
@@ -724,4 +729,5 @@ public enum JavaNaming
         }            
         return excerpts;
     }
+    */
 }
