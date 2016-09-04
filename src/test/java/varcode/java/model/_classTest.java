@@ -14,9 +14,12 @@ import junit.framework.TestCase;
 import varcode.VarException;
 import varcode.doc.lib.text.Prefix;
 import varcode.java.JavaCase;
+import varcode.java.javac.Workspace;
+/*
 import varcode.java.javac.JavaWorkspace;
 import varcode.java.javac.JavaWorkspace.CompiledWorkspace;
-import varcode.java.javac.JavaWorkspace.SourceWorkspace;
+import varcode.java.javac.JavaWorkspace.CodeWorkspace;
+*/
 import varcode.java.model._class.signature;
 
 public class _classTest
@@ -270,6 +273,7 @@ public class _classTest
 	
 	
 	public void testCycle()
+        throws ClassNotFoundException
 	{
 		//NOTE One relies on Two and Two relies on One
 		_class one = 
@@ -284,11 +288,11 @@ public class _classTest
 		
 		JavaCase oneCase = one.toJavaCase( );
 		JavaCase twoCase = two.toJavaCase( );
-		SourceWorkspace sw = JavaWorkspace.of( "Cyclic Dependency", oneCase, twoCase );
+		Workspace sw = Workspace.of( "Cyclic Dependency", oneCase, twoCase );
 		
-		CompiledWorkspace cw = sw.compile( );
-		Class<?> oneClass = cw.getClass( "varcode.java.model.One" );
-		Class<?> twoClass = cw.getClass( "varcode.java.model.Two" );
+		ClassLoader cl = sw.compileC( );
+		Class<?> oneClass = cl.loadClass( one.getFullyQualifiedClassName() );
+		Class<?> twoClass = cl.loadClass( two.getFullyQualifiedClassName() );
 		assertTrue( oneClass != null );
 		assertEquals( "One", oneClass.getSimpleName() );
 		assertEquals( "Two", twoClass.getSimpleName() );

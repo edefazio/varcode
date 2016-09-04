@@ -4,7 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import varcode.VarException;
-import varcode.java.Reflect;
+import varcode.java.Java;
 
 public class test 
 {
@@ -32,7 +32,7 @@ public class test
 	public test fail( Class<?> exceptionClass, String methodName, Object... arguments )
 	{
 		Method m = 
-			Reflect.getMethod( 
+			Java.getMethod( 
 				this.instance.getClass().getDeclaredMethods(), methodName, arguments );
 		
 		Object o = null;
@@ -63,7 +63,7 @@ public class test
 	public test fail( String methodName, Object...arguments )
 	{
 		Method m = 
-			Reflect.getMethod( 
+			Java.getMethod( 
 				this.instance.getClass().getDeclaredMethods(), methodName, arguments );
 		
 		Object o = null;
@@ -86,8 +86,8 @@ public class test
 	public test ok( String methodName, Object...arguments )
 	{
 		Method m = 
-				Reflect.getMethod( 
-					this.instance.getClass().getDeclaredMethods(), methodName, arguments );
+			Java.getMethod( 
+				this.instance.getClass().getDeclaredMethods(), methodName, arguments );
 		if( m == null )
 		{
 			throw new VarException( "Could not find method with name \""+methodName+"\"" );
@@ -106,7 +106,7 @@ public class test
 	public test is( Object expected, String methodName, Object...arguments )
 	{
 		Method m = 
-			Reflect.getMethod( 
+			Java.getMethod( 
 				this.instance.getClass().getDeclaredMethods(), methodName, arguments );
 		if( m == null )
 		{

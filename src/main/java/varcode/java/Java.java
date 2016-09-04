@@ -4,32 +4,48 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import varcode.VarException;
-import varcode.buffer.TranslateBuffer;
 import varcode.context.VarContext;
 import varcode.context.VarScope;
 import varcode.doc.Author;
 import varcode.doc.Directive;
 import varcode.doc.DocState;
 import varcode.dom.Dom;
-import varcode.java.javac.InMemoryJavaClassLoader;
-import varcode.java.javac.InMemoryJavaCode;
-import varcode.java.javac.InMemoryJavac;
+import varcode.java.javac.AdHocClassLoader;
+import varcode.java.javac.AdHocJavaFile;
 import varcode.java.javac.JavacOptions;
+import varcode.java.javac.Workspace;
 import varcode.markup.MarkupException;
 import varcode.markup.codeml.CodeML;
 import varcode.markup.repo.MarkupRepo;
 import varcode.markup.repo.MarkupRepo.MarkupStream;
 
 /**
- *  
+ * Java Meta-programming convenience API to: 
+ * <OL>
+ * <LI>Author AdHoc Java Source Code
+ *   <UL>
+ *     <LI>resolve and read in the (.java) source code for a java (.class) 
+ *       <I><B>at Runtime</B></I>
+ *     <LI>compile the CodeML of a .java source file to a {@code Dom}
+ *     <LI>author a new {@code AdHocJavaFile} using a {@code Dom} and {@code VarContext}
+ *   </UL>
+ * <LI>Compile {@code AdHocJavaFile}s to bytecode (.class) using javac at runtime
+ * <LI>Load {@code AdHocClass}es into a new {@code AdHocClassLoader}
+ * <LI>use (construct new instances, call methods on) AdHoc compiled classes.   
+ * </OL>
  * 
  * @author M. Eric DeFazio eric@varcode.io
  */
@@ -79,13 +95,13 @@ public enum Java
      * 
      * NOTE: the markupClazz MUST BE a TOP LEVEL class (not an inner class)
      * 
-     * @param markupClazz the class marked up with CodeML marks to be compiled to a Dom
+     * @param markupClass the class marked up with CodeML marks to be compiled to a Dom
      * @return the dom the Dom representation of the Java source document
      */
-    public static final Dom compileDom( Class<?> markupClazz )
+    public static final Dom compileCodeML( Class<?> markupClass )
     	throws MarkupException
     {
-         return compileDom( JavaMarkupRepo.INSTANCE, markupClazz );
+         return compileCodeML( JavaMarkupRepo.INSTANCE, markupClass );
     }
     
     /**
@@ -94,17 +110,18 @@ public enum Java
      * {@code markupClass} to compile the {@code Dom} and return it.<BR><BR>
      * 
      * NOTE: the markupClazz MUST BE a TOP LEVEL class (not an inner class)
-     * 
+     * @param markupRepo where to find the markupClass
      * @param markupClazz the class marked up with CodeML marks to be compiled to a Dom
      * @return the dom the Dom representation of the Java source document
      */
-    public static final Dom compileDom( MarkupRepo markupRepo, Class<?> markupClazz )
+    public static final Dom compileCodeML( 
+        MarkupRepo markupRepo, Class<?> markupClazz )
     { 
     	MarkupStream markupStream = markupRepo.markupStream( 
             markupClazz.getCanonicalName() + ".java" );
                 
         Dom dom = CodeML.compile( markupStream );
-        LOG.debug( "Compiled Dom from \""+ markupClazz +"\"" );
+        LOG.debug( "Compiled Dom from \"" + markupClazz + "\"" );
         return dom;
     }
     
@@ -115,105 +132,71 @@ public enum Java
     public static final String JAVA_PACKAGE_NAME = "packageName";
     
 	/**
+     * Authors and returns an {@code AdHocJavaFile} with name {@code className} 
+     * using a {@code Dom} and based on the specialization provided in the
+     * {@code context} and {@code directives}
      * 
-     * @param fullyQualifiedJavaClassName (i.e. "io.varcode.ex.MyClass") 
-     * @param dom the document template to be filled
-     * @param varContext containing the specialization to be applied to the Dom
+     * @param className the class name to be authored (i.e. "io.varcode.ex.MyClass") 
+     * @param dom the document object template to be specialized
+     * @param context the specialization/functionality to be applied to the Dom
      * @param directives optional pre and post processing commands 
-     * @return an InMemoryJavaCode
+     * @return an AdHocJavaFile
      */
-    public static InMemoryJavaCode author(
-    	String fullyQualifiedJavaClassName, 	
-    	Dom dom, VarContext context, Directive...directives )    
+    public static AdHocJavaFile author(
+    	String className, Dom dom, VarContext context, Directive...directives )    
     {       	
     	DocState docState = 
         	new DocState( dom, context, directives ); 
-    	String[] pckgClass = JavaNaming.ClassName.extractPackageAndClassName(fullyQualifiedJavaClassName);
+        
+    	String[] pckgClass = 
+            JavaNaming.ClassName.extractPackageAndClassName( className );
     	
-    	context.set( JAVA_CLASS_NAME, fullyQualifiedJavaClassName, VarScope.INSTANCE );
+    	context.set( JAVA_CLASS_NAME, className, VarScope.INSTANCE );
     	context.set( JAVA_PACKAGE_NAME, pckgClass[ 0 ], VarScope.INSTANCE );
     	context.set( JAVA_SIMPLE_CLASS_NAME, pckgClass[ 1 ], VarScope.INSTANCE );
     	
-        Author.bind( docState );
+        //author the Document by binding the {@code Dom} with the {@code context}
+        docState = Author.bind( docState );
         
-        return CodeFactory.doCreate( fullyQualifiedJavaClassName, docState );            
-    }
-    
-    /**
-     * Author the Java Source Code, 
-     * Compile the Tailored Source Code into a Class
-     * Load the Class into a ClassLoader
-     * return  
-     * @param context
-     * @param codeExporter
-     * @return
-     */
-    public static Class<?> loadClass(
-    	String fullyQualifiedJavaClassName,
-        Dom markup, 
-        VarContext context, 
-        InMemoryJavaClassLoader memClassLoader,
-        JavacOptions.CompilerOption...compilerOptions )
-    {
-        InMemoryJavaCode javaCode = author( fullyQualifiedJavaClassName, markup, context );
-        
-        List<InMemoryJavaCode> codeList = new ArrayList<InMemoryJavaCode>();
-        
-        Map<String, Class<?>> codeMap = 
-        	InMemoryJavac.compileLoadClasses( memClassLoader, codeList, compilerOptions );
-        return codeMap.get( javaCode.getClassName() ); 
+        if( pckgClass[ 0 ] != null )
+        {
+            AdHocJavaFile adHocJavaFile =
+                new AdHocJavaFile( 
+                    pckgClass[ 0 ], 
+                    pckgClass[ 1 ], 
+                    docState.getTranslateBuffer().toString() );
+                
+            LOG.debug( "Authored AdHoc : \"" + pckgClass[ 0 ] + "." + pckgClass[ 1 ] + ".java\"" );
+            return adHocJavaFile;
+        }
+        LOG.debug( "Authored AdHoc : \"" + pckgClass[ 1 ] + ".java\"" );
+        return new AdHocJavaFile( 
+            pckgClass[ 1 ], docState.getTranslateBuffer().toString() ); 
     }
     
     /**
      * 
-     * @param javaCode
+     * @param javaFile
      * @param compilerOptions Optional Compiler Arguments (@see JavacOptions)
      * @return
      */
     public static Class<?> loadClass( 
-    	InMemoryJavaCode javaCode,
+    	AdHocJavaFile javaFile,
     	JavacOptions.CompilerOption...compilerOptions )
     {
-        InMemoryJavaClassLoader inMemClassLoader = new InMemoryJavaClassLoader();
-        return loadClass( inMemClassLoader, javaCode, compilerOptions );        
-    }
-    
-    public static Map<String, Class<?>> loadClasses(
-    	List<InMemoryJavaCode> javaCode,
-    	JavacOptions.CompilerOption...compilerOptions )
-    {
-    	InMemoryJavaClassLoader inMemClassLoader = new InMemoryJavaClassLoader();
-        return loadClasses( inMemClassLoader, javaCode, compilerOptions );        
-    }
-    
-    public static Map<String, Class<?>> loadClasses(
-    	InMemoryJavaClassLoader classLoader,	
-       	List<InMemoryJavaCode> javaCode,
-       	JavacOptions.CompilerOption...compilerOptions )
-    {
-    	Map<String, Class<?>> compiled = 
-    		InMemoryJavac.compileLoadClasses(
-    			classLoader, 
-    			javaCode, 
-    			compilerOptions );
-    	return compiled;        
+        AdHocClassLoader adHocClassLoader = new AdHocClassLoader();
+        return loadClass( adHocClassLoader, javaFile, compilerOptions );        
     }
     
     public static Class<?> loadClass( 
-    	InMemoryJavaClassLoader classLoader, 
-    	InMemoryJavaCode javaCode,
+    	AdHocClassLoader adHocClassLoader, 
+    	AdHocJavaFile javaFile,
     	JavacOptions.CompilerOption...compilerOptions )
     {
-    	List<InMemoryJavaCode> codeList = new ArrayList<InMemoryJavaCode>();
-        codeList.add( javaCode );
-        Map<String, Class<?>> codeMap = 
-        	InMemoryJavac.compileLoadClasses( 
-        		classLoader, 
-        		codeList, 
-        		compilerOptions );
-        
-        LOG.debug( "Loaded Class \"" + javaCode.getClassName() + "\"" );
-        return codeMap.get( javaCode.getClassName() );       
+        Workspace ws = new Workspace( adHocClassLoader );
+        ws.addCode( javaFile );
+        adHocClassLoader = ws.compileC( compilerOptions );
+        return adHocClassLoader.findClass( javaFile.getClassName() );
 	}
     
     private static Object construct( Constructor<?> constructor, Object[] arguments )
@@ -244,7 +227,7 @@ public enum Java
      * (given the constructor params)
      * <LI>returns an instance of the Tailored Class.
      * </UL>
-     * 
+     * @param theClass the class to create an instance of
      * @param constructorParams params passed into the constructor
      * @return an Object instance of the tailored class
      */
@@ -272,7 +255,7 @@ public enum Java
         for( int i = 0; i < constructors.length; i++ )
         {
             Class<?>[] paramTypes = constructors[ i ].getParameterTypes();
-            if( Reflect.allArgsAssignable( paramTypes, constructorParams ) )
+            if( allArgsAssignable( paramTypes, constructorParams ) )
             {
              	return construct( constructors[ i ], constructorParams );
             }
@@ -280,10 +263,9 @@ public enum Java
         throw new VarException( "Could not find a matching constructor for input" );
     }
 
-   
     /**
      * Invokes the instance method and returns the result
-     * @param instance the target instance to invoke the method on
+     * @param target the target instance to invoke the method on
      * @param methodName the name of the method
      * @param params the parameters to pass to the method
      * @return the result of the call
@@ -293,16 +275,12 @@ public enum Java
     {         	 
     	 try
          {
-    		 Method method = null;
-    		 
     		 if( target instanceof Class )
     		 {
     			 return invokeStatic( (Class<?>)target, methodName, params );
     		 }     		 
-    		 else
-    		 {	
-    			 method = Reflect.getMethod( target.getClass().getMethods(), methodName, params );
-    		 }
+    		 Method method = getMethod( target.getClass().getMethods(), methodName, params );
+    		 
              if( method == null )
               {
                   throw new VarException(
@@ -338,9 +316,10 @@ public enum Java
      * @return
      */
     public static Object getFieldValue( Object instanceOrClass, String fieldName )
-    {
+    {        
     	if( instanceOrClass instanceof Class )
     	{
+            if( LOG.isDebugEnabled() ) { LOG.debug( "getting static field \"" + fieldName + "\"" );}
     		return getStaticField( (Class<?>)instanceOrClass, fieldName );
     	}
     	try 
@@ -348,7 +327,7 @@ public enum Java
 			Field f = instanceOrClass.getClass().getField( fieldName );			
 			return f.get( instanceOrClass );
 		}
-    	catch(IllegalAccessException iae )
+    	catch( IllegalAccessException iae )
     	{
     		iae.printStackTrace();
     		throw new VarException( iae );
@@ -364,7 +343,7 @@ public enum Java
     {
     	try
         {
-    		Method method = Reflect.getMethod( 
+    		Method method = getMethod( 
                 clazz.getMethods(), methodName, params );
             if( method == null )
             {
@@ -391,46 +370,157 @@ public enum Java
         }
     }
     
+    private static final Map<Class<?>, Set<Class<?>>> SOURCE_CLASS_TO_TARGET_CLASSES= 
+        new HashMap<Class<?>, Set<Class<?>>>();
+        
+    static
+    {
+        Set<Class<?>>byteMapping = new HashSet<Class<?>>();
+        byteMapping.addAll( 
+            Arrays.asList( 
+                new Class<?>[] 
+                {   byte.class, Byte.class, short.class, Short.class, int.class, 
+                    Integer.class, long.class, Long.class} ) );
+            
+        SOURCE_CLASS_TO_TARGET_CLASSES.put( byte.class, byteMapping );
+            
+        Set<Class<?>>shortMapping = new HashSet<Class<?>>();
+        shortMapping.addAll( 
+            Arrays.asList( 
+                new Class<?>[] 
+                {   short.class, Short.class, int.class, 
+                    Integer.class, long.class, Long.class } ) );
+         
+        SOURCE_CLASS_TO_TARGET_CLASSES.put( short.class, shortMapping );
+           
+        Set<Class<?>>intMapping = new HashSet<Class<?>>();
+        intMapping.addAll( 
+            Arrays.asList( 
+                new Class<?>[] 
+                {   int.class, Integer.class, long.class, Long.class } ) );
+         
+        SOURCE_CLASS_TO_TARGET_CLASSES.put( int.class, intMapping );
+         
+        Set<Class<?>>longMapping = new HashSet<Class<?>>();
+        longMapping.addAll( 
+            Arrays.asList( 
+                new Class<?>[] 
+                {   long.class, Long.class } ) );
+            
+        SOURCE_CLASS_TO_TARGET_CLASSES.put( long.class, longMapping );
+    }
+        
+    protected static boolean translatesTo( Object source, Class<?>target )
+    {
+        Set<Class<?>> clazzes = SOURCE_CLASS_TO_TARGET_CLASSES.get( source.getClass() );
+        if( target != null )
+        {
+            return clazzes.contains( target );
+        }
+        return false;
+    }
+        
     /**
-     * For the record, I'm not too fond of having any "factories"
-     * in the code, but (unfortunately) as it turns out I can't know
-     * (apriori) what the "tailored" class name is BEFORE tailoring,
-     * and I need a mutable abstraction to follow through the lifecycle
-     * from the time the code is generated to the time it is exported 
-     * or compiled.
+     * is this arg assignable to the target class?
+     * @param target
+     * @param arg
+     * @return 
      */
-    public static class CodeFactory
-    {   
-    	public static final CodeFactory INSTANCE = new CodeFactory();
-    	
-    	public static InMemoryJavaCode doCreate( String fullyQualifiedJavaClassName, DocState tailorState )
-    	{
-    		return doCreate( 
-    			fullyQualifiedJavaClassName,	
-    			tailorState.getDom(), 
-    			tailorState.getContext(), 
-    			tailorState.getTranslateBuffer() ); 
-    	}
-    	
-    	public static InMemoryJavaCode doCreate( 
-    		String fullyQualifiedJavaClassName, Dom dom, VarContext context, TranslateBuffer buffer )
-    	{   		
-    		String tailoredSource = buffer.toString();
-    		
-    		String[] packageClassName = JavaNaming.ClassName.extractPackageAndClassName(fullyQualifiedJavaClassName);
-    		String packageName = packageClassName[ 0 ];
-    		String theClassName = packageClassName[ 1 ];
- 
-            if( packageName != null )
+    protected static boolean isArgAssignable( Class<?> target, Object arg )
+    {
+        return arg == null || arg.getClass().isInstance( target ) 
+              || ( arg.getClass().isPrimitive() 
+                  && ( translatesTo(arg, target ) ) );
+    }
+
+    /**
+     * Try and "match" the arguments of a method with the arguments provided
+     * 
+     * @param target the target arguments
+     * @param arg the actual arguments
+     * @return 
+     */
+    protected static boolean allArgsAssignable( Class<?>[] target, Object... arg )
+    {
+        if( target == null )
+        {
+            return arg == null || arg.length == 0; 
+        }
+        if( target.length == 0 )
+        {
+            return arg == null || arg.length == 0;
+        }        
+        if( target.length == arg.length )
+        {   //they have the same number of arguments, but are they type compatible?
+            for( int pt = 0; pt < target.length; pt++ )
             {
-                InMemoryJavaCode tailoredJavaSource =
-                    new InMemoryJavaCode( packageName, theClassName, tailoredSource );
-                
-                LOG.debug( "Authored : \"" + packageName + "." + theClassName + ".java\"" );
-                return tailoredJavaSource;
+                if( !isArgAssignable(arg[ pt ].getClass(), target[ pt ] ) )
+                {
+                    return false;
+                }
             }
-            LOG.debug( "Authored : \"" + theClassName + "\"" );
-            return new InMemoryJavaCode( theClassName, tailoredSource );            
-    	}
+            return true;
+        }
+        return false;
+    }
+
+    
+    public static Method getStaticMethod( 
+        Method[] methods, String methodName, Object[] args )
+    {
+        for( int i = 0; i < methods.length; i++ )
+        {
+            if( Modifier.isStatic( methods[ i ].getModifiers() )
+                && methods[ i ].getName().equals( methodName ) )
+            {
+                if( allArgsAssignable(methods[ i ].getParameterTypes(), args ) )
+                {
+                    return methods[ i ];
+                }
+            }
+        }
+        return null;
+    }
+
+    public static Method getMethod( 
+        Method[] methods, String methodName, Object... args )
+    {
+        for( int i = 0; i < methods.length; i++ )
+        {
+            if( methods[ i ].getName().equals( methodName ) )
+            {
+                if( allArgsAssignable(methods[ i ].getParameterTypes(), args ) )
+                {
+                    return methods[ i ];
+                }
+            }
+        }
+        return null;
+    }
+    
+	public static Object getStaticFieldValue( Class<?> clazz, String fieldName ) 
+	{
+		try 
+		{
+			Field f = clazz.getField( fieldName );
+			return f.get( clazz );
+		} 
+		catch( Exception e ) 
+		{
+			throw new VarException( e );
+		} 		
+	}
+	
+    public static Object getStaticFieldValue( Field field )
+	{
+    	try 
+	    {
+	    	return field.get( null );
+	    } 
+	    catch( Exception e ) 
+	    {
+	    	LOG.debug( "Unable to get Field \"" + field + "\"" );
+	    	return null;
+	    } 	    
     }
 }

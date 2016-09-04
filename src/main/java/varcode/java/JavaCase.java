@@ -13,8 +13,8 @@ import varcode.doc.Directive;
 import varcode.doc.lib.java.CommentEscape;
 import varcode.doc.lib.text.PrefixWithLineNumber;
 import varcode.dom.Dom;
-import varcode.java.javac.InMemoryJavaClassLoader;
-import varcode.java.javac.InMemoryJavaCode;
+import varcode.java.javac.AdHocClassLoader;
+import varcode.java.javac.AdHocJavaFile;
 import varcode.java.javac.JavacException;
 import varcode.markup.codeml.CodeML;
 import varcode.markup.repo.MarkupRepo;
@@ -24,7 +24,7 @@ import varcode.markup.repo.MarkupRepo.MarkupStream;
  * Represents the combination of {@code Dom} and {@code VarContext} to 
  * authored / tailored Java Source code.
  * 
- * Stores the JavaCode as an <CODE>InMemoryJavaCode</CODE> object 
+ * Stores the JavaCode as an <CODE>AdHocJavaCode</CODE> object 
  * which can be compiled in memory or exported as a String or File.
  *  
  * @author M. Eric DeFazio eric@varcode.io
@@ -38,41 +38,40 @@ public class JavaCase
      * The authored / tailored Java Source Code 
      * manufactured from ({@code Dom} + {@code VarContext}) 
      */
-    private final InMemoryJavaCode javaCode;
+    private final AdHocJavaFile adHocJavaFile;
     
     /**
      * Using the Class, lookup the source for the class (assuming it is in the
      * Standard {@code JavaSrcPath}
-     * @param markupClazz the clazz (whos source is VarSource)
-     * @param authorTargetClassName name of the class that will be created
+     * @param markupClass the clazz (whos source is VarSource)
+     * @param adHocClassName name of the class that will be created
      * (i.e. "io.varcode.somepackage.AuthoredMap"
      * @param keyValuePairs key-value pairs of vars and scripts 
      * @return the Case (representing the Markup and VarContext) 
      */ 
     public static final JavaCase of( 
-    	Class<?> markupClazz, String authorTargetClassName, Object... keyValuePairs )
+    	Class<?> markupClass, String adHocClassName, Object... keyValuePairs )
     {
-        return of( 
-            JavaMarkupRepo.INSTANCE, 
-            markupClazz, 
-            authorTargetClassName, 
+        return of( JavaMarkupRepo.INSTANCE, 
+            markupClass, 
+            adHocClassName, 
             VarContext.of( keyValuePairs ) );
     }
     
     public String getClassName()
     {
-    	return javaCode.getClassName();
+    	return adHocJavaFile.getClassName();
     }
     
     public static final JavaCase of( 
-    	Class<?> markupClazz, 
-        String authorTargetClassName, 
+    	Class<?> markupClass, 
+        String adHocClassName, 
         VarContext context, 
         Directive...directives )
     {
-        return of(JavaMarkupRepo.INSTANCE, 
-            markupClazz, 
-            authorTargetClassName, 
+        return of( JavaMarkupRepo.INSTANCE, 
+            markupClass, 
+            adHocClassName, 
             context, 
             directives );
     } 
@@ -82,7 +81,7 @@ public class JavaCase
      * @param markupRepo the repository location of markup (java source code) 
      * @param markupClassName the name of the Template to create the Dom 
      * (i.e. "varcode.ex._ValueObject.java")
-     * @param authoredTargetClassName the authored class name to write 
+     * @param adHocClassName the authored class name to write 
      * (i.e. varcode.ex.MyValueObject")
      * @param context binding of name values and scripts for processing 
      * @param directives pre and post processing directives 
@@ -91,7 +90,7 @@ public class JavaCase
     public static final JavaCase of( 
     	MarkupRepo markupRepo, 
         String markupClassName, 
-        String authoredTargetClassName, 
+        String adHocClassName, 
         VarContext context, 
         Directive...directives )
     {       
@@ -110,10 +109,10 @@ public class JavaCase
             throw new VarException( 
                 "Could not find \"" + markupClassName + "\" Markup Class" );
         } 
-    	Dom markup = CodeML.compile( markupStream ); 
+    	Dom dom = CodeML.compile( markupStream ); 
     	       
     	return new JavaCase( 
-            authoredTargetClassName, markup,  context, directives );
+            adHocClassName, dom,  context, directives );
     }
     
     /**
@@ -123,7 +122,7 @@ public class JavaCase
      *  
      * @param markupRepo the repository location of markup (java source code) 
      * @param markupClass the class containing markup to tailor
-     * @param authoredTargetClassName the name of the class 
+     * @param adHocClassName the name of the class (i.e. "ex.varcode.MyEnum")
      * @param context  containing bind key values and functionality for processing
      * @param directives pre and post processing 
      * @return
@@ -131,7 +130,7 @@ public class JavaCase
     public static final JavaCase of( 
         MarkupRepo markupRepo, 
         Class<?> markupClass, 
-        String authoredTargetClassName,
+        String adHocClassName,
         VarContext context, 
         Directive...directives )
     {
@@ -145,80 +144,79 @@ public class JavaCase
         
         List<Directive> allDirectives = new ArrayList<Directive>();
         
+        //we ALWAYS want to escape "/+*" and "*+/"
         allDirectives.add( CommentEscape.INSTANCE );
         allDirectives.addAll( Arrays.asList( directives ) );
         allDirectives.addAll( staticDirectives );
 
         return new JavaCase( 
-            authoredTargetClassName, 
+            adHocClassName, 
             dom, 
             context, 
             allDirectives.toArray( new Directive[ 0 ] ) );
     }
 
     public static final JavaCase of( 
-    	String authoredTargetClassName, 
+    	String adHocClassName, 
         Dom dom, 
         VarContext context, 
         Directive...directives )
     {
     	return new JavaCase( 
-            authoredTargetClassName, dom, context, directives );
+            adHocClassName, dom, context, directives );
     }
         
     /**
      * Using the Class, lookup the source for the class (assuming it is in the
      * Standard {@code JavaSrcPath}
-     * @param authoredTargetClassName the target class name of the authored source
+     * @param adHocClassName the target class name of the authored source
      * @param dom the Dom containing the document structure
      * @param keyValuePairs key-value pairs of vars and scripts 
      * @return the Case (representing the Markup and VarContext) 
      */
     public static final JavaCase of( 
-        String authoredTargetClassName, Dom dom, Object... keyValuePairs )
+        String adHocClassName, Dom dom, Object... keyValuePairs )
     {
     	return new JavaCase( 
-            authoredTargetClassName, dom, VarContext.of( keyValuePairs) );
+            adHocClassName, dom, VarContext.of( keyValuePairs) );
     }
         
     private JavaCase( 
-        String authoredTargetClassName, 
+        String adHocClassName, 
         Dom dom, 
         VarContext context, 
         Directive...directives )
-    {    	
-    	
-    	this.javaCode = Java.author(
-            authoredTargetClassName, dom, context, directives );
+    {    	    	
+    	this.adHocJavaFile = 
+            Java.author( adHocClassName, dom, context, directives );
     }
 
     public String toString()
     {
-    	return this.javaCode.getCode();
+    	return this.adHocJavaFile.getCode();
     }
     
-    public InMemoryJavaCode javaCode()
+    public AdHocJavaFile javaCode()
     {
-        return this.javaCode;
+        return this.adHocJavaFile;
     }
         
-    public Class<?> loadClass( InMemoryJavaClassLoader classLoader )
+    public Class<?> loadClass( AdHocClassLoader classLoader )
     {
-    	return Java.loadClass( 
-    		classLoader, this.javaCode );
+    	return Java.loadClass( classLoader, this.adHocJavaFile );
     }
     
     public Class<?> loadClass()
     {
     	try
     	{
-    		return Java.loadClass( this.javaCode );    		
+    		return Java.loadClass( this.adHocJavaFile );    		
     	}
     	catch( JavacException je)
     	{   //if an error occurs compiling the source, 
     		//prefix the source with line numbers and print it out to help debugging
     		String codePrefixed = 
-    			PrefixWithLineNumber.doPrefix( this.javaCode.getCode() );
+    			PrefixWithLineNumber.doPrefix( this.adHocJavaFile.getCode() );
     		LOG.error( codePrefixed );
     		throw je;
     	}

@@ -6,9 +6,8 @@ import java.util.TreeSet;
 
 import junit.framework.TestCase;
 import varcode.context.VarContext;
-import varcode.doc.lib.text.PrintAsLiteral;
 import varcode.dom.Dom;
-import varcode.java.Reflect;
+import varcode.java.Java;
 import varcode.java.JavaCase;
 import varcode.markup.codeml.CodeML;
 
@@ -49,7 +48,7 @@ public class PrintAsLiteralTest
 		Class<?> clazz = 
 			JavaCase.of( "C", dom,  VarContext.of( "type", char.class, "value", unicode ) ).loadClass();
 		
-		char resolved = (Character)Reflect.getStaticFieldValue( clazz, "F" );
+		char resolved = (Character)Java.getStaticFieldValue( clazz, "F" );
 		assertEquals( unicode, resolved );
 		
 		char[] unicodeArray = new char[]{ '\u00ea', '\u00f1', '\u00fc' };
@@ -57,7 +56,7 @@ public class PrintAsLiteralTest
 		Class<?> arrayClazz = 
 			JavaCase.of( "C", dom,  VarContext.of( "type", char[].class, "value", unicodeArray ) ).loadClass();
 		
-		char[] resolvedArr = (char[])Reflect.getStaticFieldValue( arrayClazz, "F" );
+		char[] resolvedArr = (char[])Java.getStaticFieldValue( arrayClazz, "F" );
 		for( int i = 0; i < resolvedArr.length; i++ )
 		{
 			assertEquals( unicode, resolved );
@@ -76,7 +75,7 @@ public class PrintAsLiteralTest
 		Class<?> clazz = 
 			JavaCase.of( "C", dom, VarContext.of( "type", Object.class, "value", unicode ) ).loadClass();
 		
-		Object resolved = Reflect.getStaticFieldValue( clazz, "F" );
+		Object resolved = Java.getStaticFieldValue( clazz, "F" );
 		assertEquals( unicode, resolved );
 		
 		//array with some unicode
@@ -85,7 +84,7 @@ public class PrintAsLiteralTest
 		Class<?> arrayClazz = 
 			JavaCase.of( "C", dom,  VarContext.of( "type", Object[].class, "value", unicodeArray ) ).loadClass();
 		
-		Object[] resolvedArr = (Object[])Reflect.getStaticFieldValue( arrayClazz, "F" );
+		Object[] resolvedArr = (Object[])Java.getStaticFieldValue( arrayClazz, "F" );
 		for( int i = 0; i < resolvedArr.length; i++ )
 		{
 			assertEquals( unicode, resolved );

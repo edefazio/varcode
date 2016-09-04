@@ -84,37 +84,37 @@ public enum JavaMarkup
         		if( fieldType.isAssignableFrom( VarBindings.class ) )
         		{   //add VarBindings at Static scope        			
         			staticBindings.merge( 
-    					(VarBindings)Reflect.getStaticFieldValue( fields[ i ] ) );
+    					(VarBindings)Java.getStaticFieldValue( fields[ i ] ) );
         			LOG.trace( "Adding static filed bindings " +
-    					(VarBindings)Reflect.getStaticFieldValue( fields[ i ] ) );
+    					(VarBindings)Java.getStaticFieldValue( fields[ i ] ) );
         		}
         		else if( fieldType.isAssignableFrom( Var.class ) )
         		{   //Add Vars at "Static" scope
         			staticBindings.put( 
-        				(Var)Reflect.getStaticFieldValue( fields[ i ] ) );
+        				(Var)Java.getStaticFieldValue( fields[ i ] ) );
         			LOG.trace( "Adding static Var " +
-        				(Var)Reflect.getStaticFieldValue( fields[ i ] ) );
+        				(Var)Java.getStaticFieldValue( fields[ i ] ) );
         		}
         		else if( fieldType.isAssignableFrom( VarScript.class ) )
         		{   //Add Vars at "Static" scope
         			staticBindings.put( fields[ i ].getName(),  
-        				(VarScript)Reflect.getStaticFieldValue( fields[ i ] ) );
+        				(VarScript)Java.getStaticFieldValue( fields[ i ] ) );
         			LOG.trace( "Adding static VarScript \"" +fields[ i ].getName()+"\" "
-        				+(VarScript)Reflect.getStaticFieldValue( fields[ i ] ) );
+        				+(VarScript)Java.getStaticFieldValue( fields[ i ] ) );
         		}
         		else if( fieldType.isAssignableFrom( Directive.class ) )
         		{
         			directives.add( 
-        				(Directive)Reflect.getStaticFieldValue( fields[ i ] ) );
+        				(Directive)Java.getStaticFieldValue( fields[ i ] ) );
         			LOG.trace( "Adding Directive \"" +fields[ i ].getName()+"\" "
-            			+ (Directive)Reflect.getStaticFieldValue( fields[ i ] ) );
+            			+ (Directive)Java.getStaticFieldValue( fields[ i ] ) );
         		}
         		else if( fieldType.isArray() ) 
         		{	//arrays of Directives and Vars
         			if( fieldType.getComponentType().isAssignableFrom( Directive.class ) )
                 	{
         				Directive[] dirs = 
-        					(Directive[])Reflect.getStaticFieldValue( fields[ i ] );
+        					(Directive[])Java.getStaticFieldValue( fields[ i ] );
         				directives.addAll( Arrays.asList(dirs) );
         				if( LOG.isTraceEnabled() )
         				{
@@ -126,7 +126,7 @@ public enum JavaMarkup
         			}
         			if( fieldType.getComponentType().isAssignableFrom( Var.class ) )
                 	{
-        				Var[] vars = (Var[])Reflect.getStaticFieldValue( fields[ i ] );
+        				Var[] vars = (Var[])Java.getStaticFieldValue( fields[ i ] );
         				for( int j = 0; j < vars.length; j++ )
         				{
         					staticBindings.put( vars[ i ] );

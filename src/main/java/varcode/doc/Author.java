@@ -17,7 +17,7 @@ import varcode.markup.mark.Mark.BoundStatically;
 
 /**
  * Specialize the {@code Dom} using functionality and data bound to 
- * the {@code VarContext} to build "tailored" documents. 
+ * the {@code VarContext} to author text documents. 
  * 
  * @author M. Eric DeFazio eric@varcode.io
  */

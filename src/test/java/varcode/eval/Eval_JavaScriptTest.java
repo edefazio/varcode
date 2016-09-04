@@ -96,7 +96,7 @@ public class Eval_JavaScriptTest
 	    
 	public static void main( String[] args )
 	{
-		Dom dom = Java.compileDom( Eval_JavaScriptTest.class ); 
+		Dom dom = Java.compileCodeML( Eval_JavaScriptTest.class ); 
 		System.out.println( dom );
 	}
 }

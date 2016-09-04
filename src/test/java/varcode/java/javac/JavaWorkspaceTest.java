@@ -4,7 +4,7 @@ import junit.framework.TestCase;
 import varcode.VarException;
 import varcode.java.Java;
 import varcode.java.javac.JavaWorkspace.CompiledWorkspace;
-import varcode.java.javac.JavaWorkspace.SourceWorkspace;
+import varcode.java.javac.JavaWorkspace.CodeWorkspace;
 
 public class JavaWorkspaceTest
 	extends TestCase
@@ -12,7 +12,7 @@ public class JavaWorkspaceTest
 
 	public void testCompileEmptyWorkspace()
 	{
-		SourceWorkspace sw = new SourceWorkspace( "NO files" );		
+		CodeWorkspace sw = new CodeWorkspace( "NO files" );		
 		try
 		{
 			sw.compile( );
@@ -26,9 +26,9 @@ public class JavaWorkspaceTest
 	
 	public void testCompileWorkspace()
 	{
-		SourceWorkspace sw = new SourceWorkspace("Single File");
+		CodeWorkspace sw = new CodeWorkspace( "Single File" );
 		
-		sw.addJavaSource( "A", "public class A {}");
+		sw.addCode( "A", "public class A {}");
 		CompiledWorkspace cw = sw.compile( );
 		assertEquals( "A", cw.getClass( "A" ).getSimpleName() );
 	}
@@ -40,8 +40,8 @@ public class JavaWorkspaceTest
 	// we want the compiler to be able to Load these classes at the same time 
 	public void testCompileBijectiveDependency()
 	{
-		SourceWorkspace sw = new SourceWorkspace("Bijective Dependency");
-		sw.addJavaSource("A_ReliesOn_B", 
+		CodeWorkspace sw = new CodeWorkspace("Bijective Dependency");
+		sw.addCode("A_ReliesOn_B", 
 			"public class A_ReliesOn_B {" + N +
 		    N +
 		    "    public static final B_ReliesOn_A INSTANCE = " + N +
@@ -57,7 +57,7 @@ public class JavaWorkspaceTest
 			"        this.b = b;" + N +
 			"    }" + N + 
 			"}");
-		sw.addJavaSource("B_ReliesOn_A", 
+		sw.addCode("B_ReliesOn_A", 
 			"public class B_ReliesOn_A {" + N +
 			N +
 			"    public static final A_ReliesOn_B INSTANCE = " + N +
@@ -87,8 +87,8 @@ public class JavaWorkspaceTest
 	
 	public void testOneFile()
 	{
-		SourceWorkspace sws = JavaWorkspace.of( "A alone" );
-		sws.addJavaSource( "A", "public class A {}" );
+		CodeWorkspace sws = JavaWorkspace.of( "A alone" );
+		sws.addCode( "A", "public class A {}" );
 		CompiledWorkspace cw = sws.compile( );
 		Class<?> AClass = cw.getClass( "A" );
 		assertTrue( AClass != null );
@@ -99,7 +99,7 @@ public class JavaWorkspaceTest
 		try
 		{
 			JavaWorkspace.of( "EXPECT COMPILER EXCEPTION" )
-		    	.addJavaSource( "A", "asdfklhjasdjklf" )
+		    	.addCode( "A", "asdfklhjasdjklf" )
 		    	.compile( );
 			fail( "Expected Compiler Exception" );
 		}
@@ -116,7 +116,7 @@ public class JavaWorkspaceTest
 	{
 		CompiledWorkspace cw = 
 			JavaWorkspace.of( "A AND B")
-			    .addJavaSource( 
+			    .addCode( 
 			        "A", 
 			        "public class A" + N 
 			       +"{" + N
@@ -126,7 +126,7 @@ public class JavaWorkspaceTest
 			       +"        this.theB = theB;" + N
 			       +"    }" + N 
 			       +"}" )
-			   .addJavaSource( 
+			   .addCode( 
 			       "B",
 			       "public class B" + N
 			       +"{" + N
@@ -147,7 +147,7 @@ public class JavaWorkspaceTest
 	{
 		CompiledWorkspace cw = 
 			JavaWorkspace.of( "A AND B")
-			    .addJavaSource( 
+			    .addCode( 
 			        "A", 
 			        "public class A" + N 
 			       +"{" + N
@@ -157,7 +157,7 @@ public class JavaWorkspaceTest
 			       +"        this.theB = theB;" + N
 			       +"    }" + N 
 			       +"}" )
-			   .addJavaSource( 
+			   .addCode( 
 			       "B",
 			       "public class B" + N
 			       +"{" + N
@@ -173,9 +173,9 @@ public class JavaWorkspaceTest
 	
 	public void testCompilerException()
 	{
-		SourceWorkspace sw = 
+		CodeWorkspace sw = 
 			JavaWorkspace.of( "EXCEPTION ON LINE 3" )
-			.addJavaSource( "ExceptionLine3",
+			.addCode( "ExceptionLine3",
 				"public class ExceptionLine3 {" + N 
 			   +"    public int a = 0;" + N
 			   +"    public Exception here; " + N
@@ -196,8 +196,8 @@ public class JavaWorkspaceTest
 	
 	public void testTwoClassesFailCompilerOption()
 	{
-		SourceWorkspace sw = JavaWorkspace.of( "COMPILER EXCEPTION EXPECTED")
-	    .addJavaSource( 
+		CodeWorkspace sw = JavaWorkspace.of( "COMPILER EXCEPTION EXPECTED")
+	    .addCode( 
 	        "A", 
 	        "public class A" + N 
 	       +"{" + N
@@ -207,7 +207,7 @@ public class JavaWorkspaceTest
 	       +"        this.theB = theB;" + N
 	       +"    }" + N 
 	       +"}" )
-	   .addJavaSource( 
+	   .addCode( 
 	       "B",
 	       "import java.util.*;" + N 
 	       +"public class B" + N

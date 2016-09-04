@@ -1,7 +1,6 @@
 package varcode.java.javac;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +16,7 @@ import varcode.VarException;
 import varcode.java.JavaCase;
 
 /**
- * A Workspace contains 1...N "tailored" java Files which are
+ * A Workspace contains 1...N "authored" java Files which are
  * constructed / compiled together (there may be dependencies between the 
  * Java Source Code being created)
  * 
@@ -58,20 +57,20 @@ public enum JavaWorkspace
 {
 	;
 	
-	/** Creates an empty named workspace*/
-	public static SourceWorkspace of( String workspaceName )
+	/** Creates an empty named workspace */
+	public static CodeWorkspace of( String workspaceName )
 	{
-		return new SourceWorkspace( workspaceName );
+		return new CodeWorkspace( workspaceName );
 	}
 	
-	public static SourceWorkspace of( String name, InMemoryJavaCode...javaCode )
+	public static CodeWorkspace of( String name, AdHocJavaFile...javaCode )
 	{
-		SourceWorkspace sw = new SourceWorkspace( name );
-		sw.addJavaSource( javaCode );
+		CodeWorkspace sw = new CodeWorkspace( name );
+		sw.addCode( javaCode );
 		return sw;
 	}
 	
-	public static SourceWorkspace of( JavaCase...javaCases )
+	public static CodeWorkspace of( JavaCase...javaCases )
 	{
 		return of( null, javaCases );
 	}
@@ -81,93 +80,66 @@ public enum JavaWorkspace
 		return of( null, javaCases ).compile();
 	}
 	
-	public static SourceWorkspace of( String name, JavaCase... javaCases )
+	public static CodeWorkspace of( String name, JavaCase... javaCases )
 	{
-		SourceWorkspace sw = new SourceWorkspace( name );
-		sw.addJavaSource( javaCases );
+		CodeWorkspace sw = new CodeWorkspace( name );
+		sw.addCode( javaCases );
 		return sw;
 	}
 	
-	public static class SourceWorkspace
+	public static class CodeWorkspace
 	{
-		/** Name of the workspace*/
+		/** (optional) Name of the workspace*/
 		public String name;
 		
 		/** Java source files of the Workspace */
-		private final List<InMemoryJavaCode> javaSourceFiles = 
-			new ArrayList<InMemoryJavaCode>();
-		
-		
-		private final List<InMemoryJavaClass> tailorClassTargets = 
-			new ArrayList<InMemoryJavaClass>();	
+		private final List<AdHocJavaFile> javaSourceFiles = 
+			new ArrayList<AdHocJavaFile>();
 		
 		/**
-		 * 
+		 * Adds a class with code to the workspace
 		 * @param className the fully qualified class name:
 		 * (i.e. "java.util.HashMap") 
-		 * @param sourceCode the text of the source code
+		 * @param code the text of the source code
+         * @return the updated workspace
 		 */
-		public SourceWorkspace addJavaSource( String className, String sourceCode )
+		public final CodeWorkspace addCode( String className, String code )
 		{
-			InMemoryJavaCode code = 
-				new InMemoryJavaCode( className, sourceCode );
-			addJavaSource( code );
+			AdHocJavaFile adHocCode = 
+				new AdHocJavaFile( className, code );
+			addCode( adHocCode );
 			return this;
 		}
 		
-		public SourceWorkspace addJavaSource( JavaCase...javaCase )
+		public final CodeWorkspace addCode( JavaCase...javaCase )
 		{
 			for( int i = 0; i < javaCase.length; i++ )
 			{
-				InMemoryJavaCode javaCode = javaCase[ i ].javaCode();
+				AdHocJavaFile javaCode = javaCase[ i ].javaCode();
 				javaSourceFiles.add( javaCode );
-				//TODO Should I Just do this Lazily??
-				//addTailorClassTargetFor( javaCode.getClassName() );
 			}
 			return this;
 		}
 		
 		/** adds a java source code to the Workspace */
-		public SourceWorkspace addJavaSource( InMemoryJavaCode... javaSourceCode )
+		public final CodeWorkspace addCode( AdHocJavaFile... javaCode )
 		{
-			for( int i = 0; i < javaSourceCode.length; i++ )
+			for( int i = 0; i < javaCode.length; i++ )
 			{
-				javaSourceFiles.add( javaSourceCode[ i ] );
-				//addTailorClassTargetFor( javaSourceCode[ i ].getClassName() );
+				javaSourceFiles.add( javaCode[ i ] );
 			}
 			return this;
 		}
-		
-		/** TODO this needs to handle Nested Classes */
-		private void addTailorClassTargetFor( String className )
-		{
-			try	 
-    		{
-				tailorClassTargets.add(
-					new InMemoryJavaClass( className ) );
-    		}
-			catch( IllegalArgumentException e ) 
-    		{
-    			throw new VarException( 
-    				"Could not create (In Memory) Java Class for \"" 
-    				+ className + "\"", e );
-    		} 
-    		catch( URISyntaxException e ) 
-    		{
-    			throw new VarException( 
-    				"Could not create (In Memory) Java Class for \"" 
-    				+ className + "\"", e );
-    		}
-		}
-		public SourceWorkspace( 
+        
+		public CodeWorkspace( 
 			String workspaceName, 
-			InMemoryJavaCode...javaSource )
+			AdHocJavaFile...javaSource )
 		{
 			this.name = workspaceName;
 			     
 	    	for( int i = 0; i < javaSource.length; i++ )
 			{
-	    		addJavaSource( javaSource[ i ] );								
+	    		addCode( javaSource[ i ] );								
 			}	    	
 		}
 		
@@ -186,16 +158,17 @@ public enum JavaWorkspace
 		{
 			if( javaSourceFiles.size() < 1 )
 			{
-				throw new VarException( "Workspace \""+ name+"\" has no java source files ");
+				throw new VarException( 
+                    "Workspace \"" + name + "\" has no java source files ");
 			}
-			InMemoryJavaClassLoader classLoader = 
-		    	new InMemoryJavaClassLoader();	    	
+			AdHocClassLoader classLoader = 
+		    	new AdHocClassLoader();	    	
 		    
 			StandardJavaFileManager baseFileManager = null; 
 	    	try
 	    	{
 	    		baseFileManager = 
-	    			InMemoryJavac.INSTANCE.JAVAC.getStandardFileManager( 
+	    			Workspace.JAVAC.getStandardFileManager( 
 	    				null, //use default DiagnosticListener
 	    				null, //use default Locale
 	    				null );//use default CharSet 
@@ -203,16 +176,15 @@ public enum JavaWorkspace
 	    	catch( Exception e )
 	    	{
 	    		throw new JavacException (
-	    			"JDK version 1.6 or greater (NOT a JRE) MUST BE used to compile "
+	    			"**JDK** version 1.6 or greater (NOT a JRE) MUST BE used to compile "
 	    		  + "Java  at Runtime, you are currently using \"" 
 	    		  + System.getProperty( "java.version" ) 
 	    		  + "\" make sure you have a JDK (NOT A JRE) running" ); 
 	    	}
 	    	
-			InMemoryJavaWorkspace fileManager =  
-		        new InMemoryJavaWorkspace(
+			AdHocJavaWorkspace fileManager =  
+		        new AdHocJavaWorkspace(
 		            baseFileManager, 
-		            //tailorClassTargets, 
 		            classLoader );
 		        
 			Iterable<String>options = JavacOptions.optionsFrom( compilerOptions );
@@ -220,7 +192,7 @@ public enum JavaWorkspace
 			DiagnosticCollector<JavaFileObject> diagnostics = 
 			    new DiagnosticCollector<JavaFileObject>();
 			
-			CompilationTask task = InMemoryJavac.INSTANCE.JAVAC.getTask(
+			CompilationTask task = Workspace.JAVAC.getTask(
 				null, //use System.err if the tool fails 
 				fileManager, 
 				diagnostics, 
@@ -239,7 +211,7 @@ public enum JavaWorkspace
 	        }
 	        	        
 	        Map<String, Class<?>> loadedClasses = new HashMap<String, Class<?>>();
-	        Map<String, InMemoryJavaClass>clClasses =  classLoader.getInMemoryClassMap();
+	        Map<String, AdHocClassFile>clClasses =  classLoader.getAdHocClassMap();
 	        String[] authoredClassNames = clClasses.keySet().toArray( new String[ 0 ] );
 	        
 	        for( int i = 0; i < authoredClassNames.length; i++ )

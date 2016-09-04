@@ -4,8 +4,8 @@ import junit.framework.TestCase;
 import varcode.VarException;
 import varcode.java.Java;
 import varcode.java.JavaCase;
-import varcode.java.javac.JavaWorkspace;
-import varcode.java.javac.JavaWorkspace.CompiledWorkspace;
+import varcode.java.javac.AdHocClassLoader;
+import varcode.java.javac.Workspace;
 
 /**
  * 
@@ -58,10 +58,16 @@ public class _cloneTest
 		JavaCase originalCase = ORIGINAL_ENUM.toJavaCase( );
 				
 		//now compile the modified clone and the original
-		CompiledWorkspace cw = JavaWorkspace.compile( cloneCase, originalCase );
+		//CompiledWorkspace cw = JavaWorkspace.compileNow( cloneCase, originalCase );
 		
-		Class<?> cloneClass = cw.getClass( cloneCase.getClassName() );
-		Class<?> originalClass = cw.getClass( originalCase.getClassName() );
+        AdHocClassLoader adHocClassLoader = 
+            Workspace.compileNow( cloneCase, originalCase );
+        
+		Class<?> cloneClass = adHocClassLoader.findClass( 
+            cloneCase.getClassName() );
+        
+		Class<?> originalClass = adHocClassLoader.findClass( 
+            originalCase.getClassName() );
 		
 		//TODO for some reason getting the package (from the compiled class)
 		//  returns null 
@@ -117,10 +123,12 @@ public class _cloneTest
 		JavaCase originalCase = ORIGINAL_CLASS.toJavaCase( );
 				
 		//now compile the modified clone and the original
-		CompiledWorkspace cw = JavaWorkspace.compile( cloneCase, originalCase );
-		
-		Class<?> cloneClass = cw.getClass( cloneCase.getClassName() );
-		Class<?> originalClass = cw.getClass( originalCase.getClassName() );
+		//CompiledWorkspace cw = JavaWorkspace.compile( cloneCase, originalCase );
+		AdHocClassLoader adHocClassLoader = 
+            Workspace.compileNow( cloneCase, originalCase );
+        
+		Class<?> cloneClass = adHocClassLoader.findClass( cloneCase.getClassName() );
+		Class<?> originalClass = adHocClassLoader.findClass( originalCase.getClassName() );
 		
 		//TODO for some reason getting the package (from the compiled class)
 		//  returns null 

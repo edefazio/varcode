@@ -1,6 +1,7 @@
 package varcode.java.javac;
 
 import java.io.BufferedReader;
+import java.util.Collection;
 import java.util.List;
 
 import javax.tools.Diagnostic;
@@ -26,7 +27,7 @@ public final class JavacException
 	public final List<Diagnostic<? extends JavaFileObject>> diagnostics;
 	
 	public static String composeStackTrace( 
-		List<InMemoryJavaCode> javaCode, 	
+		Collection<AdHocJavaFile> javaCode, 	
 		DiagnosticCollector<JavaFileObject>diagnosticsCollector )
 	{			
 		List<Diagnostic<? extends JavaFileObject>> diagnostics = 
@@ -45,7 +46,7 @@ public final class JavacException
 			}
 			sb.append( d.getMessage( null ) );
 		
-			String className = ((InMemoryJavaCode)d.getSource()).getClassName(); 
+			String className = ((AdHocJavaFile)d.getSource()).getClassName(); 
 			sb.append( N );
 			sb.append( className ); //javaCode.className );
 			sb.append( ".class" );		
@@ -80,7 +81,7 @@ public final class JavacException
 	
 	public JavacException(
 	    String workspaceName,
-		List<InMemoryJavaCode> javaCode,
+		Collection<AdHocJavaFile> javaCode,
 		DiagnosticCollector<JavaFileObject> diagnostics )
 	{
 		super(
