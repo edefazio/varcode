@@ -33,8 +33,6 @@ import varcode.java.JavaMarkupRepoTest;
 import varcode.java.JavaNamingTest;
 import varcode.java._JavaCaseClassNameTest;
 import varcode.java._JavaCase_AllDirectivesTest;
-import varcode.java.javac.AdHocJavacTest;
-import varcode.java.javac.JavaWorkspaceTest;
 import varcode.java.javac.WorkspaceTest;
 import varcode.java.model.FluentTest;
 import varcode.java.model.InLinerTest;
@@ -133,9 +131,8 @@ public class AllTestSuite
         suite.addTestSuite( JavaNamingTest.class );
         //suite.addTestSuite( ReflectTest.class );
 		
-        suite.addTestSuite( AdHocJavacTest.class );
+        //suite.addTestSuite( AdHocJavacTest.class );
         suite.addTestSuite( WorkspaceTest.class );
-        suite.addTestSuite( JavaWorkspaceTest.class );
         
         suite.addTestSuite( DomTest.class );
         
