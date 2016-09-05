@@ -1,5 +1,10 @@
 package varcode.java.javac;
 
+import varcode.java.adhoc.JavacException;
+import varcode.java.adhoc.Workspace;
+import varcode.java.adhoc.AdHocJavaFile;
+import varcode.java.adhoc.AdHocClassLoader;
+import varcode.java.adhoc.JavacOptions;
 import java.util.ArrayList;
 import static junit.framework.Assert.fail;
 import junit.framework.TestCase;

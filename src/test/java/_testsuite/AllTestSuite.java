@@ -1,5 +1,6 @@
 package _testsuite;
 
+import ex.varcode.java.model.ModelFeatureTest;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import varcode.LangTest;
@@ -237,6 +238,9 @@ public class AllTestSuite
         suite.addTestSuite( _throwsTest.class );
         suite.addTestSuite( _typeTest.class );
         suite.addTestSuite( _varTest.class );
+        
+        //Functional / Integration Tests
+        suite.addTestSuite( ModelFeatureTest.class );
         // $JUnit-END$
         return suite;
     }

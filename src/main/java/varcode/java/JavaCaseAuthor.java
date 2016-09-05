@@ -1,11 +1,10 @@
-package varcode.java.model;
+package varcode.java;
 
 import varcode.doc.Directive;
-import varcode.java.JavaCase;
 
 /**
- * A "builder"-like entity that is procedurally / dynamically built
- * to programmatically build and output Java source code. 
+ * Entity that has the ability to author (output)
+ * a {@code JavaCase} Java source code. 
  * 
  * @author M. Eric DeFazio eric@varcode.io
  */

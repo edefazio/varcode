@@ -166,10 +166,10 @@ public enum Java
                     pckgClass[ 1 ], 
                     docState.getTranslateBuffer().toString() );
                 
-            LOG.debug( "Authored AdHoc : \"" + pckgClass[ 0 ] + "." + pckgClass[ 1 ] + ".java\"" );
+            LOG.debug( "Authored : \"" + pckgClass[ 0 ] + "." + pckgClass[ 1 ] + ".java\"" );
             return adHocJavaFile;
         }
-        LOG.debug( "Authored AdHoc : \"" + pckgClass[ 1 ] + ".java\"" );
+        LOG.debug( "Authored : \"" + pckgClass[ 1 ] + ".java\"" );
         return new AdHocJavaFile( 
             pckgClass[ 1 ], docState.getTranslateBuffer().toString() ); 
     }

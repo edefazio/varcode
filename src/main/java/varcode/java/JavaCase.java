@@ -24,8 +24,8 @@ import varcode.markup.repo.MarkupRepo.MarkupStream;
  * Represents the combination of {@code Dom} and {@code VarContext} to 
  * authored / tailored Java Source code.
  * 
- * Stores the JavaCode as an <CODE>AdHocJavaCode</CODE> object 
- * which can be compiled in memory or exported as a String or File.
+ * Stores the Java Code as an <CODE>AdHocJavaFile</CODE> object 
+ * which can be compiled in memory and/or exported as a String or File.
  *  
  * @author M. Eric DeFazio eric@varcode.io
  */
@@ -43,7 +43,7 @@ public class JavaCase
     /**
      * Using the Class, lookup the source for the class (assuming it is in the
      * Standard {@code JavaSrcPath}
-     * @param markupClass the clazz (whos source is VarSource)
+     * @param markupClass the class (containing CodeML markup)
      * @param adHocClassName name of the class that will be created
      * (i.e. "io.varcode.somepackage.AuthoredMap"
      * @param keyValuePairs key-value pairs of vars and scripts 
@@ -78,12 +78,12 @@ public class JavaCase
     
     /**
      * 
-     * @param markupRepo the repository location of markup (java source code) 
-     * @param markupClassName the name of the Template to create the Dom 
-     * (i.e. "varcode.ex._ValueObject.java")
-     * @param adHocClassName the authored class name to write 
+     * @param markupRepo the repository location of markup (where .java files are) 
+     * @param markupClassName the name of the class (marked up with CodeML) 
+     * to create the Dom (i.e. "varcode.ex._ValueObject")
+     * @param adHocClassName the adhoc class name to author
      * (i.e. varcode.ex.MyValueObject")
-     * @param context binding of name values and scripts for processing 
+     * @param context binding of name values and scripts for authoring
      * @param directives pre and post processing directives 
      * @return the JavaCase
      */

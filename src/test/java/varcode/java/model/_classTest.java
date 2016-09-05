@@ -14,7 +14,7 @@ import junit.framework.TestCase;
 import varcode.VarException;
 import varcode.doc.lib.text.Prefix;
 import varcode.java.JavaCase;
-import varcode.java.javac.Workspace;
+import varcode.java.adhoc.Workspace;
 /*
 import varcode.java.javac.JavaWorkspace;
 import varcode.java.javac.JavaWorkspace.CompiledWorkspace;

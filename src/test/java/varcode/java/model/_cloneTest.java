@@ -4,8 +4,8 @@ import junit.framework.TestCase;
 import varcode.VarException;
 import varcode.java.Java;
 import varcode.java.JavaCase;
-import varcode.java.javac.AdHocClassLoader;
-import varcode.java.javac.Workspace;
+import varcode.java.adhoc.AdHocClassLoader;
+import varcode.java.adhoc.Workspace;
 
 /**
  * 

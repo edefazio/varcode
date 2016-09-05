@@ -1,5 +1,6 @@
 package varcode.java.model;
 
+import varcode.java.JavaCaseAuthor;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;

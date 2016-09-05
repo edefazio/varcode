@@ -6,8 +6,8 @@ import static junit.framework.Assert.assertNotNull;
 import junit.framework.TestCase;
 import varcode.context.VarContext;
 import varcode.dom.Dom;
-import varcode.java.javac.AdHocJavaFile;
-import varcode.java.javac.JavacOptions;
+import varcode.java.adhoc.AdHocJavaFile;
+import varcode.java.adhoc.JavacOptions;
 import varcode.markup.bindml.BindML;
 
 public class JavaTest
