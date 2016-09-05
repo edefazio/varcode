@@ -1,4 +1,4 @@
-package varcode.java.javac;
+package varcode.java.adhoc;
 
 import java.io.BufferedReader;
 import java.util.Collection;

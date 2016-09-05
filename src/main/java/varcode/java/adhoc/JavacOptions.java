@@ -1,4 +1,4 @@
-package varcode.java.javac;
+package varcode.java.adhoc;
 
 import java.util.ArrayList;
 import java.util.Arrays;
