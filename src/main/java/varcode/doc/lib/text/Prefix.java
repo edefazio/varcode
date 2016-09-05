@@ -22,6 +22,12 @@ public class Prefix
 	implements VarScript, Directive.PostProcessor
 {
 	public static Prefix INDENT_4_SPACES = new Prefix( "    " );
+    
+    public static Prefix INDENT_8_SPACES = new Prefix( "        " );
+    
+    public static Prefix INDENT_12_SPACES = new Prefix( "            " );
+    
+    public static Prefix INDENT_16_SPACES = new Prefix( "                " );
 	
 	public static Prefix INDENT_TAB = new Prefix( '\t' + "" );
 	

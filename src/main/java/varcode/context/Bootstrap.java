@@ -77,11 +77,16 @@ public enum Bootstrap
 	    bindScript( bindings, RemoveEmptyLines.INSTANCE, "-{}", "removeEmptyLines" );  
 	    
 	    
-	    bindDirective( bindings, CondenseMultipleBlankLines.INSTANCE, "condenseBlankLines" );	    
+	    bindDirective( bindings, CondenseMultipleBlankLines.INSTANCE, 
+            "condenseMultipleBlankLines", "condenseBlankLines", "collapseBlankLines" );	    
 	    bindDirective( bindings, StripMarks.INSTANCE , "stripMarks" );
 	    
-	    bindScript( bindings, Prefix.INDENT_4_SPACES, "indent", "indent4", "indent4Spaces" );
+	    bindScript( bindings, Prefix.INDENT_4_SPACES, ">", "indent", "indent4", "indent4Spaces" );
 	    bindScript( bindings, Prefix.INDENT_TAB, "tab" );
+        
+        bindScript( bindings, Prefix.INDENT_8_SPACES, ">>" );
+        bindScript( bindings, Prefix.INDENT_12_SPACES, ">>>" );
+        bindScript( bindings, Prefix.INDENT_16_SPACES, ">>>>" );
 	    
 	    bindDirective( bindings, JavaLib.INSTANCE, "java" );
 	    

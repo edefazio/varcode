@@ -1,5 +1,6 @@
 package _testsuite;
 
+import ex.varcode.java.model.CodeMLModelTest;
 import ex.varcode.java.model.ModelFeatureTest;
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -241,6 +242,7 @@ public class AllTestSuite
         
         //Functional / Integration Tests
         suite.addTestSuite( ModelFeatureTest.class );
+        suite.addTestSuite( CodeMLModelTest.class );
         // $JUnit-END$
         return suite;
     }
