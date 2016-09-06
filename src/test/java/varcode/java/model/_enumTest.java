@@ -35,6 +35,31 @@ public class _enumTest
 		js.loadClass();		
 	}
 	
+    
+    public void testConstructors()
+    {
+        _enum e = _enum.of( "public enum E" );
+        try
+        {
+            e.constructor("public E()" );            
+            fail("Expected Exception for public constructor");
+        }
+        catch( VarException ve )
+        {
+            //e
+        }
+        
+        try
+        {
+            e.constructor("protected E()" );            
+            fail("Expected Exception for protected constructor");
+        }
+        catch( VarException ve )
+        {
+            //e
+        }
+        
+    }
 	public void testEnumValueConstructs()
 	{
 		enumValueConstructs es = new enumValueConstructs();

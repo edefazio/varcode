@@ -216,6 +216,7 @@ public class _enum
 		return this;
 	}
 	
+
 	/**
 	 * <PRE>{@code 
 	 * _class MyAClass = new _class("public A")
@@ -227,13 +228,25 @@ public class _enum
 	 */
 	public _enum constructor( String constructorSignature, Object... body )
 	{
-		_constructors.constructor c = new _constructors.constructor( constructorSignature ).body( body );
+		_constructors.constructor c = 
+            new _constructors.constructor( constructorSignature )
+                .body( body );
+        if( c.getSignature().getModifiers().containsAny( 
+                Modifier.PUBLIC, Modifier.PROTECTED ) )
+        {
+            throw new VarException( "Enum constructors cannot be public or protected" );
+        }
 		return constructor( c );
 	}
 	
 	public _enum constructor( constructor c )
 	{
 		constructors.addConstructor( c );
+        if( c.getSignature().getModifiers().containsAny( 
+                Modifier.PUBLIC, Modifier.PROTECTED ) )
+        {
+            throw new VarException( "Enum constructors cannot be public or protected" );
+        }
 		return this;
 	}
 	
@@ -290,30 +303,16 @@ public class _enum
 		this.values.addEnumValue( valueConstruct );
 		return this;
 	}
-	
-	
-	public _enum field( String modifiers, _var var )
+    
+    /** 
+     * adds a field to the enum<PRE> 
+     * myEnum.field( "public final int value;" );
+     * myEnum.field( "private String value = \"Butler\";" );
+     * </PRE>
+     */
+	public _enum field( String field )
 	{
-		_fields.field m = 
-			new _fields.field(
-				_modifiers.of( modifiers ), new _type( var.type ), _identifier.from( var.varName ) );
-		
-		fields.addFields( m );
-		return this;
-	}
-	
-	public _enum field( String modifiers, Object t, Object name )
-	{
-		_fields.field m = 
-			new _fields.field(
-			    _modifiers.of( modifiers ), new _type( t ), _identifier.of( name ) );
-		fields.addFields( m );
-		return this;		
-	}
-	
-	public _enum field( String member )
-	{
-		fields.addFields( _fields.field.of( member ) );		
+		fields.addFields(_fields.field.of( field ) );		
 		return this;
 	}
 	

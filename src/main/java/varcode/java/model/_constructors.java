@@ -149,6 +149,11 @@ public class _constructors
 			this.constructorSig = signature.of( constructorSignature );
 		}
 	
+        public signature getSignature()
+        {
+            return constructorSig;
+        }
+        
 		public constructor body( Object... bodyLines )
 		{
 			if( bodyLines == null || bodyLines.length == 0 )
@@ -236,6 +241,11 @@ public class _constructors
 				this.throwsExceptions = throwsExceptions;
 			}
 
+            public _modifiers getModifiers()
+            {
+                return modifiers;
+            }
+            
 			/**
 			 * 
 			 * @param commaAndSpaceSeparatedTokens
@@ -344,9 +354,8 @@ public class _constructors
 					Modifier.STRICT, Modifier.SYNCHRONIZED, Modifier.TRANSIENT, Modifier.VOLATILE ) )
 				{
 					throw new VarException(
-						"Invalid Modifier(s) Constructors may only be one of [public, protected, private]" );
+						"Invalid Modifier(s) Constructors may only be private" );
 				}
-				
 				return new signature( mods, className, params, throwsExceptions );			
 			}
 

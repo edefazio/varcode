@@ -1,14 +1,23 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>varcode.io</groupId>
+  <groupId>io.varcode</groupId>
   <artifactId>varcode</artifactId>
+  
+  <packaging>jar</packaging>
   <version>0.0.1-SNAPSHOT</version>
   <name>varcode</name>
+  <properties>
+    <jdk.version>1.6</jdk.version>
+	<junit.version>3.8.1</junit.version>
+	<log4j.version>1.2.17</log4j.version>
+   </properties>
    <dependencies>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8.1</version>
+      <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -26,8 +35,52 @@
         <dependency>
         <groupId>log4j</groupId>
         <artifactId>log4j</artifactId>
-        <version>1.2.17</version>
+        <version>${log4j.version}</version>
         <scope>test</scope>
     </dependency>
   </dependencies>
+  <build>
+    <finalName>varcode</finalName>
+    <plugins>
+       <!-- download source code in Eclipse, best practice -->
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-eclipse-plugin</artifactId>
+			<version>2.9</version>
+			<configuration>
+				<downloadSources>true</downloadSources>
+				<downloadJavadocs>false</downloadJavadocs>
+			</configuration>
+		</plugin>
+        
+        <!-- Set a JDK compiler level -->
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-compiler-plugin</artifactId>
+			<version>2.3.2</version>
+			<configuration>
+				<source>${jdk.version}</source>
+				<target>${jdk.version}</target>
+			</configuration>
+		</plugin>
+        
+        <plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-jar-plugin</artifactId>
+            <version>3.0.2</version>
+			<configuration>
+				<!-- DO NOT include log4j.properties file in your Jar -->
+				<excludes>
+				   <exclude>**/log4j.properties</exclude>
+				</excludes>
+				<archive>
+					<manifest>
+						<!-- Jar file entry point 
+						<mainClass>com.mkyong.core.utils.App</mainClass> -->
+					</manifest>
+				  </archive>
+			</configuration>
+		</plugin>        
+    </plugins>    
+  </build>    
 </project>
