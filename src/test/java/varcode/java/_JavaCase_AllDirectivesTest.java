@@ -39,7 +39,7 @@ public class _JavaCase_AllDirectivesTest
 		catch( VarException ve )
 		{
 			//expected
-			System.out.println( ve );
+			//System.out.println( ve );
 		}
 	}
 	
