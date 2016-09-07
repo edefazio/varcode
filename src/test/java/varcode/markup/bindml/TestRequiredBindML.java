@@ -31,7 +31,7 @@ public class TestRequiredBindML
 		catch( NullVar rbn )
 		{	
 			//expected
-			System.out.println(rbn );
+			//System.out.println(rbn );
 		}
 	}
 
@@ -45,7 +45,7 @@ public class TestRequiredBindML
 		catch( NullResult rbn )
 		{	
 			//expected
-			System.out.println(rbn );
+			//System.out.println(rbn );
 		}
 	}
 	
