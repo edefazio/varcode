@@ -64,7 +64,7 @@ public enum Java
 			sb.append( propertyName );
 			sb.append( " = " );
 			sb.append( propertyValue );
-			sb.append( System.lineSeparator() );
+			sb.append( "\r\n" );
 		}		
 	}
 	
@@ -77,14 +77,14 @@ public enum Java
 	{
 		StringBuilder sb = new StringBuilder();
 		sb.append( "--- Current Java Environment --- " );
-		sb.append( System.lineSeparator() );
+		sb.append( "\r\n" );
 		addPropertyIfNonNull( sb, "java.vm.name" );
 		addPropertyIfNonNull( sb, "java.runtime.version" );
 		addPropertyIfNonNull( sb, "java.library.path" );
 		addPropertyIfNonNull( sb, "java.vm.version" );
 		addPropertyIfNonNull( sb, "sun.boot.library.path" );
 		sb.append( "--------------------------------- " );
-		sb.append( System.lineSeparator() );
+		sb.append( "\r\n" );
 		return sb.toString();
 	}
 	
@@ -98,7 +98,7 @@ public enum Java
      * @param markupClass the class marked up with CodeML marks to be compiled to a Dom
      * @return the dom the Dom representation of the Java source document
      */
-    public static final Dom compileCodeML( Class<?> markupClass )
+    public static Dom compileCodeML( Class<?> markupClass )
     	throws MarkupException
     {
          return compileCodeML( JavaMarkupRepo.INSTANCE, markupClass );
@@ -114,7 +114,7 @@ public enum Java
      * @param markupClazz the class marked up with CodeML marks to be compiled to a Dom
      * @return the dom the Dom representation of the Java source document
      */
-    public static final Dom compileCodeML( 
+    public static Dom compileCodeML(
         MarkupRepo markupRepo, Class<?> markupClazz )
     { 
     	MarkupStream markupStream = markupRepo.markupStream( 
@@ -243,7 +243,8 @@ public enum Java
         }
         for( int i = 0; i < constructors.length; i++ )
         {
-         	if( constructors[ i ].getParameters().length == constructorParams.length )
+            //noinspection Since15
+            if( constructors[ i ].getParameters().length == constructorParams.length )
            	{
           		sameArgCount.add( constructors[ i ] );
            	}
