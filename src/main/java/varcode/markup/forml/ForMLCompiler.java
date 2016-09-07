@@ -1,11 +1,8 @@
 package varcode.markup.forml;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
+import java.io.*;
 
+import varcode.VarException;
 import varcode.context.VarContext;
 import varcode.form.BetweenTokens;
 import varcode.form.Form;
@@ -25,7 +22,7 @@ import varcode.markup.MarkupException;
  */
 public class ForMLCompiler
 {    
-	public static final String N = System.lineSeparator();
+	public static final String N = "\r\n";
 	
 	/** The standard Context used for Parsing */
 	private static final VarContext PARSE_CONTEXT = VarContext.of( );
@@ -64,14 +61,20 @@ public class ForMLCompiler
         return fromString( parseContext, lineNumber, name, forMLDoc );
     }
    
-    private static final BufferedReader readerFromString( String forMLDoc )
+    protected static BufferedReader readerFromString( String forMLDoc )
     {
-        ByteArrayInputStream bais = 
-            new ByteArrayInputStream( 
-                forMLDoc.getBytes( StandardCharsets.UTF_8 ) );
-        
-         return new BufferedReader( 
-            new InputStreamReader( bais ) );
+        try
+        {
+            ByteArrayInputStream bais =
+               new ByteArrayInputStream(
+                    forMLDoc.getBytes( "UTF-8" ) );
+            return new BufferedReader(
+                    new InputStreamReader( bais ) );
+        }
+        catch( UnsupportedEncodingException e )
+        {
+            throw new VarException("Unsupported Encoding", e);
+        }
     }
     
    
