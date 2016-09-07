@@ -72,7 +72,7 @@ public class CodeMLCompiler
 		{
 			ByteArrayInputStream bais =
 					new ByteArrayInputStream(
-							codeMLText.getBytes( "UTF_8" ));
+							codeMLText.getBytes( "UTF-8" ));
 			return fromInputStream( bais );
 		}
 		catch( UnsupportedEncodingException e )
