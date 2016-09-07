@@ -20,7 +20,7 @@ public class FormTest
     extends TestCase
 {
     
- public static final String N = System.lineSeparator();
+ public static final String N = "\r\n";
     
     public static final String FIELD_FORM = 
        "public String {+field+};" + N;
@@ -165,8 +165,8 @@ public class FormTest
     public void testLineFeeds()
     {
         String form = 
-            "import {+logger+};" + System.lineSeparator() 
-          + "import {+loggerFactory+};" + System.lineSeparator();
+            "import {+logger+};" + "\r\n"
+          + "import {+loggerFactory+};" + "\r\n";
         
         Form f = ForMLCompiler.INSTANCE.compile( form );
         
@@ -185,8 +185,8 @@ public class FormTest
         //System.out.println("   RES \""+ res  +"\"");
         assertTrue( 
             res.equals( 
-            "import org.slf4j.Logger;" + System.lineSeparator()
-         +  "import org.slf4j.LoggerFactory;" + System.lineSeparator() ) );
+            "import org.slf4j.Logger;" + "\r\n"
+         +  "import org.slf4j.LoggerFactory;" + "\r\n" ) );
     }
     
     public void testFormMissingRequired()
@@ -368,7 +368,7 @@ public class FormTest
     public void testNewLinesNoBetween()
     {
         Form p = ForMLCompiler.INSTANCE.compile( "name", 
-             "    {+a+}" + System.lineSeparator() + ";" );
+             "    {+a+}" + "\r\n" + ";" );
         assertTrue(
             "null bindings evaluate to ",
             "".equals(  p.derive( VarContext.of( ) ) ) );
