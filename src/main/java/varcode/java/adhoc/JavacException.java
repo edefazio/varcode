@@ -20,7 +20,7 @@ import varcode.VarException;
 public final class JavacException
 	extends VarException
 {
-    private static final String N = System.lineSeparator();
+    private static final String N = "\r\n";
 	
     private static final long serialVersionUID = 1L;
 
@@ -68,7 +68,7 @@ public final class JavacException
 						String theLine = br.readLine();
 						
 						sb.append( theLine );
-						sb.append( System.lineSeparator() );					  
+						sb.append( "\r\n" );
 					}
 					catch( Exception e )
 					{
