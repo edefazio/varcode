@@ -1703,10 +1703,10 @@ public class BindMLParser
             {
                 throw new MarkupException( 
                     "Text for DefineStaticVarAsForm cannot be null ",
-                    text, 
+                    null,
                     lineNumber );
             }
-            if( !( text.startsWith( OPEN_TAG) ) ) 
+            if( !( text.startsWith( OPEN_TAG ) ) )
             {
                 throw new MarkupException( 
                     "DefineStaticVarAsForm must start with \"" + OPEN_TAG + "\"" 
@@ -1813,7 +1813,7 @@ public class BindMLParser
             {
                 throw new MarkupException( 
                     "Text for DefineStaticVarAsExpressionResult cannot be null ",
-                    text, 
+                    null,
                     lineNumber );
             }
             if( !( text.startsWith( OPEN_TAG) ) ) 
@@ -1884,7 +1884,7 @@ public class BindMLParser
             {
                 throw new MarkupException( 
                     "Text for DefineStaticVarAsForm cannot be null ",
-                    text, 
+                    null,
                     lineNumber );
             }
             if( !( text.startsWith( OPEN_TAG) ) ) 
@@ -1996,7 +1996,7 @@ public class BindMLParser
             {
                 throw new MarkupException( 
                     "Text for DefineInstanceVarAsExpressionResult cannot be null ",
-                    text, 
+                    null,
                     lineNumber );
             }
             if( !( text.startsWith( OPEN_TAG) ) ) 
@@ -2067,7 +2067,7 @@ public class BindMLParser
             {
                 throw new MarkupException( 
                     "Text for DefineInstanceVarAsForm cannot be null ",
-                    text, 
+                    null,
                     lineNumber );
             }
             if( !( text.startsWith( OPEN_TAG ) ) ) 
@@ -2185,7 +2185,7 @@ public class BindMLParser
             {
                 throw new MarkupException( 
                     "Text for DefineInstanceVarAsForm cannot be null ",
-                    text, 
+                    null,
                     lineNumber );
             }
             if( !( text.startsWith( OPEN_TAG ) ) ) 

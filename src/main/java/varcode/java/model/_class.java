@@ -218,7 +218,7 @@ public class _class
 		}
 		else
 		{
-			return this.classSignature.className.name.toString();
+			return this.classSignature.className.name;
 		}
 	}
 	

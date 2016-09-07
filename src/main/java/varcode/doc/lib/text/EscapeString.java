@@ -162,7 +162,8 @@ public enum EscapeString
 						break;					
 				default:					
 					// i.e.          '\u03A9' (greek Omega character)					
-					sb.append( "\\u" + String.format( "%04X", (int)c)  );
+					sb.append( "\\u" );
+					sb.append(String.format( "%04X", (int)c)  );
 					break;
 				}
 			}			

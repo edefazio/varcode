@@ -1,7 +1,6 @@
 package varcode.markup.codeml;
 
 import java.io.*;
-import java.util.UnknownFormatConversionException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

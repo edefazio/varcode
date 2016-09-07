@@ -15,7 +15,6 @@
  */
 package varcode.markup.mark;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import varcode.buffer.TranslateBuffer;

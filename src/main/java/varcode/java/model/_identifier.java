@@ -1,5 +1,6 @@
 package varcode.java.model;
 
+import varcode.VarException;
 import varcode.java.JavaNaming;
 
 public class _identifier
@@ -31,7 +32,11 @@ public class _identifier
 		if( identifierName != null )
 		{
 			JavaNaming.IdentifierName.validate( identifierName.toString() );
-		}			
+		}
+		else
+		{
+			throw new VarException( "identifier name cannot be null" );
+		}
 		this.identifierName = identifierName.toString();
 	}
 		
