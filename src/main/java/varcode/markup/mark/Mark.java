@@ -26,7 +26,7 @@ import varcode.markup.MarkupParseState;
  */
 public abstract class Mark
 {
-    protected static final String N = System.lineSeparator();
+    protected static final String N = "\r\n";
     
     /** text representation the {@code Mark} i.e. "{+name+}" */
     protected final String text;
