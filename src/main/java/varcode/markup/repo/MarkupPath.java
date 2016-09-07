@@ -144,7 +144,7 @@ public class MarkupPath
         for( int i = 0; i < repos.size(); i++ )
         {
             sb.append(  repos.get( i ).describe() );
-            sb.append( System.lineSeparator() );
+            sb.append( "\r\n" );
         }
         return sb.toString();
     }
