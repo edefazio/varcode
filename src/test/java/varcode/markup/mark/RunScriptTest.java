@@ -61,7 +61,7 @@ public class RunScriptTest
         }
         catch( Exception e )
         {
-            System.out.println( e );
+            //System.out.println( e );
         }        
     }
     
