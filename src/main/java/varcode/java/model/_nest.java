@@ -72,7 +72,7 @@ public interface _nest
 			StringBuilder sb = new StringBuilder();
 			for( int i = 0; i < components.size(); i++ )
 			{
-				sb.append( System.lineSeparator() );
+				sb.append( "\r\n" );
 				sb.append( components.get(i).toCode( directives ) );				
 			}
 			return sb.toString();

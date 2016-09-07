@@ -74,7 +74,7 @@ public enum JavaNaming
             return fullyQualifiedClassName;
         }
 
-        public static final String toFullClassName( 
+        public static String toFullClassName(
             String packageName, String className )
         {
             if( packageName == null )

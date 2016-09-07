@@ -53,13 +53,13 @@ public class ScopeBindings
     }
 
     /**
-     * Merges the non-comflicting scopeBindings to this ScopeBindings
-     * @param scopeBindings
+     * Merges the non-conflicting scopeBindings to this ScopeBindings
+     * @param mergeScopeBindings
      */
     public void merge( ScopeBindings mergeScopeBindings )
     {
     	Integer[] mergeScopes = 
-    		mergeScopeBindings.scopeToBindings.keySet().toArray(new Integer[0]);
+    		mergeScopeBindings.scopeToBindings.keySet().toArray( new Integer[ 0 ] );
     	for( int i = 0; i < mergeScopes.length; i++ )
     	{
     		VarBindings toMergeAtScope =

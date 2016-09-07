@@ -40,7 +40,6 @@ public interface MarkupParser
 	 * @param parseContext contains variables and scripts previously encountered / loaded
 	 * @param markText text that represents a {@code MarkAction}
 	 * @param lineNumber the line number the mark text appears on
-	 * @param nameAudit audits VarNames
 	 * @return the {@code MarkAction} for the markText
 	 * @throws MarkupException
 	 */
@@ -62,8 +61,7 @@ public interface MarkupParser
      *  <LI>{@code String[ 0 ]} is the name
      *  <LI>{@code String[ 1 ]} is the default (NULLABLE)
      * </UL> 
-     * 
-     * @param tag the tag being parsed
+     *
      * @return a String[ 2 ] where:
      * <UL>
      *  <LI>{@code String[ 0 ]} is the name
@@ -74,7 +72,7 @@ public interface MarkupParser
 	{
 		;
 		
-        public static final String[] byChar( String text, char separator )
+        public static String[] byChar( String text, char separator )
         {
             if( text == null )
             {

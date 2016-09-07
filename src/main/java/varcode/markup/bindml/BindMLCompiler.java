@@ -1,11 +1,6 @@
 package varcode.markup.bindml;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
+import java.io.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +42,7 @@ public class BindMLCompiler
 	private static final Logger LOG = 
 	   LoggerFactory.getLogger( BindMLCompiler.class );
 	
-	private static final String N = System.lineSeparator();
+	private static final String N = "\r\n";
 	
     public static final BindMLCompiler INSTANCE = 
         new BindMLCompiler( );
@@ -57,12 +52,19 @@ public class BindMLCompiler
     
     /** Base Method for compiling a {@code Dom} from markup */
     public static Dom fromString( String markup )
-    {   
-        ByteArrayInputStream bais = 
-            new ByteArrayInputStream( 
-                markup.getBytes( StandardCharsets.UTF_8 ) ); 
-        
-        return fromInputStream( bais );
+    {
+    	try
+		{
+			ByteArrayInputStream bais =
+					new ByteArrayInputStream(
+							markup.getBytes("UTF-8"));
+
+			return fromInputStream( bais );
+		}
+        catch( UnsupportedEncodingException e )
+		{
+			throw new VarException("UTF-8 unsupported Encoding" );
+		}
     }
     
     public static Dom fromMarkupStream( MarkupStream ms )

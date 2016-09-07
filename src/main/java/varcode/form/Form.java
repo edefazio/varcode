@@ -50,7 +50,7 @@ public interface Form
 
         public String toString()
         {
-            return "STATIC FORM :" + System.lineSeparator() + text;
+            return "STATIC FORM :" + "\r\n" + text;
         }
 
         /** Gets the form in textual form */

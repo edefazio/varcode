@@ -13,17 +13,17 @@ import varcode.markup.bindml.BindML;
 public class _modifiers
 	implements SelfAuthored	
 {
-	public static final _modifiers from( _modifiers mods )
+	public static _modifiers from( _modifiers mods )
 	{
 		return of( mods.getBits() );
 	}
 	
-	public static final _modifiers of( int modifiers )
+	public static _modifiers of( int modifiers )
 	{
 		return new _modifiers( modifiers );
 	}
 	
-	public static final _modifiers of( String...keywords )
+	public static _modifiers of( String...keywords )
 	{
 		_modifiers m = new _modifiers();
 		m.set( keywords );

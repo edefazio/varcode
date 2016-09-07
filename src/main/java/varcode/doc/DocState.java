@@ -165,8 +165,8 @@ public class DocState
 	    			throw new VarException( 
 	    			   "Could not find Directive by name \"" 
                      + directiveMark.getName() + "\"" 
-	    		     + " for Mark : " + System.lineSeparator()
-	    		     + directiveMark.getText() + System.lineSeparator() 
+	    		     + " for Mark : " + "\r\n"
+	    		     + directiveMark.getText() + "\r\n"
                      + "on line [" + directiveMark.getLineNumber() + "]"  );
 	    		}
 	    		allDirectives.add( d );

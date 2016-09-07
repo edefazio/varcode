@@ -54,7 +54,7 @@ public enum RemoveEmptyLines
         return source.split( "\\r?\\n" );           
     }
     
-    public static final String from( String sourceCode )
+    public static String from( String sourceCode )
     {
         String[] lines = separateOmitBlanks( sourceCode );
         StringBuilder sb = new StringBuilder();

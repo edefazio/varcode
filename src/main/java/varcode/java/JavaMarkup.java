@@ -83,17 +83,17 @@ public enum JavaMarkup
         		Class<?> fieldType = fields[ i ].getType();
         		if( fieldType.isAssignableFrom( VarBindings.class ) )
         		{   //add VarBindings at Static scope        			
-        			staticBindings.merge( 
-    					(VarBindings)Java.getStaticFieldValue( fields[ i ] ) );
+        			staticBindings.merge(
+        					(VarBindings)Java.getStaticFieldValue( fields[ i ] ) );
         			LOG.trace( "Adding static filed bindings " +
-    					(VarBindings)Java.getStaticFieldValue( fields[ i ] ) );
+    					Java.getStaticFieldValue( fields[ i ] ) );
         		}
         		else if( fieldType.isAssignableFrom( Var.class ) )
         		{   //Add Vars at "Static" scope
         			staticBindings.put( 
         				(Var)Java.getStaticFieldValue( fields[ i ] ) );
         			LOG.trace( "Adding static Var " +
-        				(Var)Java.getStaticFieldValue( fields[ i ] ) );
+        				Java.getStaticFieldValue( fields[ i ] ) );
         		}
         		else if( fieldType.isAssignableFrom( VarScript.class ) )
         		{   //Add Vars at "Static" scope

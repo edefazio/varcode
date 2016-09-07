@@ -417,14 +417,15 @@ public class _enum
 			 * <PRE>
 			 * ERIC( 42, "Michael" ),
 			 * ^^^^  ^^^^^^^^^^^^^
-			 * name    parameters
+			 * name    arguments
 			 * 
 			 * ERIC,
 			 * ^^^^
 			 * name
 			 * </PRE>
 			 * 
-			 * @param signature
+			 * @param name
+			 * @param arguments
 			 * @return
 			 */
 			public static enumValueConstruct of( String name, Object... arguments )

@@ -58,7 +58,7 @@ public class BindMLParseState
 	private static final Logger LOG = 
 	    LoggerFactory.getLogger( BindMLParseState.class );
 	
-    public static final String N = System.lineSeparator();
+    public static final String N = "\r\n";
     
     /** Contains Utilities and Statically defined vars in the {@code Dom}*/
     public final VarContext parseContext;

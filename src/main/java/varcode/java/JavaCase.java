@@ -49,7 +49,7 @@ public class JavaCase
      * @param keyValuePairs key-value pairs of vars and scripts 
      * @return the Case (representing the Markup and VarContext) 
      */ 
-    public static final JavaCase of( 
+    public static JavaCase of(
     	Class<?> markupClass, String adHocClassName, Object... keyValuePairs )
     {
         return of( JavaMarkupRepo.INSTANCE, 
@@ -63,7 +63,7 @@ public class JavaCase
     	return adHocJavaFile.getClassName();
     }
     
-    public static final JavaCase of( 
+    public static JavaCase of(
     	Class<?> markupClass, 
         String adHocClassName, 
         VarContext context, 
@@ -87,7 +87,7 @@ public class JavaCase
      * @param directives pre and post processing directives 
      * @return the JavaCase
      */
-    public static final JavaCase of( 
+    public static JavaCase of(
     	MarkupRepo markupRepo, 
         String markupClassName, 
         String adHocClassName, 
@@ -127,7 +127,7 @@ public class JavaCase
      * @param directives pre and post processing 
      * @return
      */
-    public static final JavaCase of( 
+    public static JavaCase of(
         MarkupRepo markupRepo, 
         Class<?> markupClass, 
         String adHocClassName,
@@ -156,7 +156,7 @@ public class JavaCase
             allDirectives.toArray( new Directive[ 0 ] ) );
     }
 
-    public static final JavaCase of( 
+    public static JavaCase of(
     	String adHocClassName, 
         Dom dom, 
         VarContext context, 
@@ -174,7 +174,7 @@ public class JavaCase
      * @param keyValuePairs key-value pairs of vars and scripts 
      * @return the Case (representing the Markup and VarContext) 
      */
-    public static final JavaCase of( 
+    public static JavaCase of(
         String adHocClassName, Dom dom, Object... keyValuePairs )
     {
     	return new JavaCase( 

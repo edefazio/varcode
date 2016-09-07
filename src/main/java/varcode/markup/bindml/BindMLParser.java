@@ -50,7 +50,7 @@ public class BindMLParser
     public static final BindMLParser INSTANCE = 
        new BindMLParser( FORM_COMPILER );
     
-    public static final String N = System.lineSeparator();
+    public static final String N = "\r\n";
        
     private final ForMLCompiler forMLCompiler;
     
@@ -261,7 +261,7 @@ public class BindMLParser
     }
 
     
-    public static final boolean charIs( String string, int index, char expect )
+    public static boolean charIs( String string, int index, char expect )
     {
         return  string != null  
             && string.length() > index 
@@ -308,11 +308,12 @@ public class BindMLParser
      * Given Text return the appropriate Mark
      * 
      * NOTE: I could make this more efficient, but it's fine 
-     * 
-     * @param markText the text of the entire mark
-     * @param the line number where the mark appears
-     * @param nameAudit audits the name of the Mark for validity
-     * @throws CodemarkException if the Mark is invalid
+     *
+     * @param parseContext the context
+     * @param text the text of the entire mark
+     * @param lineNumber the line number where the mark appears
+     * @param forMLCompiler the compiler for forms
+     * @throws MarkupException if the Mark is invalid
      */
     public static Mark parseMark(
         VarContext parseContext,
@@ -2812,7 +2813,7 @@ public class BindMLParser
         
         public static final String CLOSE_TAG = "@}";
         
-        public static final SetMetadata of( String text, int lineNumber )
+        public static SetMetadata of( String text, int lineNumber )
         {
             if( ! text.startsWith( OPEN_TAG ) )
             {

@@ -68,9 +68,7 @@ public class AddVarIsExpression
 	
 	/** is a value for this varName required to be bound at "tailor-time" */
 	private final boolean isRequired;
-	
-	
-	private final Set<String> vars;
+
 	
 	/**
 	 * 
@@ -120,9 +118,6 @@ public class AddVarIsExpression
 	    {
 	    	this.validationExpression = null;
 	    }
-	    
-	    this.vars = new HashSet<String>();
-	    vars.add( varName );
 	}
 
 

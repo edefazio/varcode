@@ -25,7 +25,7 @@ public enum FirstCap
      * <LI>"FirstCap" if the string is "firstCap"
      * </UL> 
      */
-    public static final String capitalizeFirstChar( String string )
+    public static String capitalizeFirstChar( String string )
     {
         if( string == null )
         {

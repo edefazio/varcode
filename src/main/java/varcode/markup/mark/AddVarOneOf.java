@@ -73,8 +73,7 @@ public class AddVarOneOf
 	private final String defaultValue;
 	
 	private final boolean isRequired;
-	
-	private final Set<String> vars;
+
 	
 	public AddVarOneOf( 
 	    String text, 
@@ -95,8 +94,6 @@ public class AddVarOneOf
 	    this.array = array;
 	    this.arrayDescription = arrayDescription;
 	    this.isRequired = isRequired;
-	    this.vars = new HashSet<String>();
-	    vars.add( varName );
 	}
 
 	public String getVarName()

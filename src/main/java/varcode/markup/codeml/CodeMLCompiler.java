@@ -1,11 +1,7 @@
 package varcode.markup.codeml;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
+import java.io.*;
+import java.util.UnknownFormatConversionException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,7 +54,7 @@ import varcode.markup.repo.MarkupRepo.MarkupStream;
  */
 public class CodeMLCompiler
 {
-	private static final String N = System.lineSeparator();
+	private static final String N = "\r\n";
 	
 	private static final Logger LOG = 
 	    LoggerFactory.getLogger( CodeMLCompiler.class );
@@ -71,12 +67,19 @@ public class CodeMLCompiler
     
     /** Base Method for compiling CodeML text source to a {@code Markup} */
     public static Dom fromString( String codeMLText )
-    {   
-        ByteArrayInputStream bais = 
-            new ByteArrayInputStream( 
-                codeMLText.getBytes( StandardCharsets.UTF_8 ) ); 
-        
-        return fromInputStream( bais );
+    {
+    	try
+		{
+			ByteArrayInputStream bais =
+					new ByteArrayInputStream(
+							codeMLText.getBytes( "UTF_8" ));
+			return fromInputStream( bais );
+		}
+		catch( UnsupportedEncodingException e )
+		{
+			throw new VarException("Unsupported Format Conversion");
+		}
+
     }
     
     public static Dom fromMarkupStream( MarkupStream codeMLStream )
