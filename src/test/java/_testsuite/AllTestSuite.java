@@ -35,7 +35,7 @@ import varcode.java.JavaMarkupRepoTest;
 import varcode.java.JavaNamingTest;
 import varcode.java._JavaCaseClassNameTest;
 import varcode.java._JavaCase_AllDirectivesTest;
-import varcode.java.javac.WorkspaceTest;
+import varcode.java.adhoc.WorkspaceTest;
 import varcode.java.model.FluentTest;
 import varcode.java.model.InLinerTest;
 import varcode.java.model._argumentsTest;

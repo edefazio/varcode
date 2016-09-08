@@ -1,4 +1,4 @@
-package varcode.java.javac;
+package varcode.java.adhoc;
 
 import varcode.java.adhoc.JavacException;
 import varcode.java.adhoc.Workspace;
