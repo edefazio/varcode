@@ -139,7 +139,7 @@ public class _class
 			"+}}" +
 			"}" );
 			
-	public String toCode( Directive... directives ) 
+	public String author( Directive... directives ) 
 	{
 		return toJavaCase( directives ).toString();				
 	}
@@ -334,7 +334,7 @@ public class _class
 	
 	public String toString( )
 	{
-		return toCode();
+		return author();
 	}
 	
 	public _class packageName( String packageName )
@@ -354,7 +354,7 @@ public class _class
 		public static final Dom CLASS_SIGNATURE = 
 			BindML.compile("{+modifiers+}class {+className*+}{+extendsFrom+}{+implementsFrom+}" );
 
-		public String toCode( Directive... directives ) 
+		public String author( Directive... directives ) 
 		{
 			return Author.code( CLASS_SIGNATURE, 
 				VarContext.of(
@@ -371,7 +371,7 @@ public class _class
 		
 		public String toString()
 		{
-			return toCode();
+			return author();
 		}
 
 		public String getName()

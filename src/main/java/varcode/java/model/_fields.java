@@ -202,7 +202,7 @@ public class _fields
 			return new field( new _modifiers(), t, name );
 		}
 		
-		public String toCode( Directive... directives ) 
+		public String author( Directive... directives ) 
 		{
 			return Author.code( FIELD, 
 				VarContext.of( 
@@ -216,7 +216,7 @@ public class _fields
 		
 		public String toString()
 		{
-			return toCode();
+			return author();
 		}
 		
 		private _javadoc javadoc;
@@ -266,7 +266,7 @@ public class _fields
 		}
 	}
 	
-	public String toCode( Directive... directives ) 
+	public String author( Directive... directives ) 
 	{		
 		StringBuilder staticFields = new StringBuilder();
 		StringBuilder nonStaticFields = new StringBuilder();
@@ -276,12 +276,12 @@ public class _fields
 			field mem = fields.get( allKeys[ i ] );
 			if( mem.mods.containsAny( Modifier.STATIC ) )
 			{
-				staticFields.append( mem.toCode( directives ) );
+				staticFields.append(mem.author( directives ) );
 				staticFields.append( N );				
 			}
 			else
 			{
-				nonStaticFields.append( mem.toCode( directives ) );
+				nonStaticFields.append(mem.author( directives ) );
 				nonStaticFields.append( N );
 			}
 		}
@@ -293,7 +293,7 @@ public class _fields
 	
 	public String toString()
 	{
-		return toCode();
+		return author();
 	}
 	
 	/** Field Initialization
@@ -333,7 +333,7 @@ public class _fields
 
 		public static final Dom INIT = BindML.compile( " ={+initCode*+}" );
 	
-		public String toCode( Directive... directives ) 
+		public String author( Directive... directives ) 
 		{
 			if( initCode != null )
 			{
@@ -344,7 +344,7 @@ public class _fields
 	
 		public String toString()
 		{
-			return toCode();
+			return author();
 		}
 		
 		public String getCode()

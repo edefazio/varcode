@@ -76,7 +76,7 @@ public class _extends
 		return xtends;
 	}
 	
-	public String toCode( Directive... directives ) 
+	public String author( Directive... directives ) 
 	{
 		VarContext vc = VarContext.of( "extendsFrom", extendsFrom );
 		return Author.code( EXTENDS, vc, directives );
@@ -84,6 +84,6 @@ public class _extends
 	
 	public String toString()
 	{
-		return toCode();
+		return author();
 	}
 }

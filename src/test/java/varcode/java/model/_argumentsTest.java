@@ -12,21 +12,21 @@ public class _argumentsTest
 		test.with(_arguments.of() ).toString("(  )" );
 		assertEquals("(  )", _arguments.of( ).toString() );
 		assertEquals("(  )", new _arguments().toString() );
-		assertEquals("( 10 )", _arguments.of( "10" ).toCode( ) );
-		assertEquals("( true )", _arguments.of( "true" ).toCode( ) );
-		assertEquals("( 10.34d )", _arguments.of( "10.34d" ).toCode( ) );
-		assertEquals("( 10.34d )", _arguments.of( "10.34d" ).toCode( ) );
-		assertEquals("( \"A\" )", _arguments.of( "\"A\"" ).toCode( ) );
+		assertEquals("( 10 )", _arguments.of( "10" ).author( ) );
+		assertEquals("( true )", _arguments.of( "true" ).author( ) );
+		assertEquals("( 10.34d )", _arguments.of( "10.34d" ).author( ) );
+		assertEquals("( 10.34d )", _arguments.of( "10.34d" ).author( ) );
+		assertEquals("( \"A\" )", _arguments.of( "\"A\"" ).author( ) );
 		
-		assertEquals("( null )", _arguments.of( "null" ).toCode( ) );
-		assertEquals("(  )", _arguments.of( (Object[])null ).toCode( ) );
-		assertEquals("( null )", _arguments.of( new Object[] {null} ).toCode( ) );
+		assertEquals("( null )", _arguments.of( "null" ).author( ) );
+		assertEquals("(  )", _arguments.of( (Object[])null ).author( ) );
+		assertEquals("( null )", _arguments.of( new Object[] {null} ).author( ) );
 		//a Reference
-		assertEquals("( A )", _arguments.of( "A" ).toCode( ) );
+		assertEquals("( A )", _arguments.of( "A" ).author( ) );
 		//field reference
-		assertEquals("( A.field )", _arguments.of( "A.field" ).toCode( ) );
+		assertEquals("( A.field )", _arguments.of( "A.field" ).author( ) );
 		
-		assertEquals("( A.method() )", _arguments.of( "A.method()" ).toCode( ) );	
+		assertEquals("( A.method() )", _arguments.of( "A.method()" ).author( ) );	
 	}
 	
 	public void testMultipleArugments()

@@ -63,7 +63,7 @@ public class _constructors
 	public static final Dom CONSTRUCTORS = BindML.compile(
 		"{{+?constructors:{+constructors+}" + N + "+}}" );
 
-	public String toCode( Directive... directives ) 
+	public String author( Directive... directives ) 
 	{
 		if( constructors.size() > 0 )
 		{
@@ -78,7 +78,7 @@ public class _constructors
 
 	public String toString()
 	{
-		return toCode();
+		return author();
 	}
 
 	public void verifyNoConflicts( constructor constructor )	
@@ -206,7 +206,7 @@ public class _constructors
 				"{+$indent4Spaces(body)+}" + N +
 				"}" );
 	
-		public String toCode( Directive... directives ) 
+		public String author( Directive... directives ) 
 		{
 			return Author.code(
 				CONSTRUCTOR, 
@@ -218,7 +218,7 @@ public class _constructors
 	
 		public String toString()
 		{
-			return toCode();
+			return author();
 		}
 	
 		public static class signature
@@ -371,7 +371,7 @@ public class _constructors
 			public static final Dom CONSTRUCTOR_SIGNATURE = 
 				BindML.compile( "{+modifiers+}{+className+}{+params+}{+throwsExceptions+}" );
 
-			public String toCode( Directive... directives ) 
+			public String author( Directive... directives ) 
 			{
 				return Author.code( CONSTRUCTOR_SIGNATURE, 
 					VarContext.of(
@@ -384,7 +384,7 @@ public class _constructors
 
 			public String toString()
 			{
-				return toCode();
+				return author();
 			}		
 		}			
 	}

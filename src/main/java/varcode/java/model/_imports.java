@@ -52,7 +52,7 @@ public class _imports
 		return importClasses.contains( s ) || staticImports.contains( s );
 	}
 	
-	public String toCode( Directive... directives ) 
+	public String author( Directive... directives ) 
 	{
 		return Author.code( 
 			IMPORTS, 
@@ -149,7 +149,7 @@ public class _imports
 
 	public String toString()
 	{
-		return toCode();
+		return author();
 	}
 
 	public void merge( _imports toMerge ) 

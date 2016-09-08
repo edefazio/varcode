@@ -321,7 +321,7 @@ public class _interface
 		public static final Dom INTERFACE_SIGNATURE = 
 			BindML.compile("{+modifiers+}interface {+interfaceName*+}{+extendsFrom+}" );
 
-		public String toCode( Directive... directives ) 
+		public String author( Directive... directives ) 
 		{
 			return Author.code( INTERFACE_SIGNATURE, 
 				VarContext.of(
@@ -348,7 +348,7 @@ public class _interface
 		
 		public String toString()
 		{
-			return toCode();
+			return author();
 		}
 		
 		public _extends getExtends()
@@ -463,14 +463,14 @@ public class _interface
 		}
 	}
 	
-	public String toCode( Directive... directives ) 
+	public String author( Directive... directives ) 
 	{
 		return toJavaCase( directives ).toString();
 	}
 
 	public String toString()
 	{
-		return toCode();
+		return author();
 	}
 	
 	public Dom getDom() 

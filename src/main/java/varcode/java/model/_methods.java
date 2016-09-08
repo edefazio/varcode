@@ -46,7 +46,7 @@ public class _methods
 		"{{+?nonStaticMethods:" + N + "{+nonStaticMethods+}+}}" +
 		"{{+?abstractMethods:" + N + "{+abstractMethods+};+}}" );
 	
-	public String toCode( Directive... directives ) 
+	public String author( Directive... directives ) 
 	{
 		List<_method>nonStaticMethods = new ArrayList<_method>();
 		List<_method>staticMethods = new ArrayList<_method>();
@@ -84,7 +84,7 @@ public class _methods
 	
 	public String toString()
 	{
-		return toCode();
+		return author();
 	}
 	
 	public int count()
@@ -297,7 +297,7 @@ public class _methods
 	
 		public String toString()
 		{
-			return toCode();
+			return author();
 		}
 	
 		/*
@@ -323,7 +323,7 @@ public class _methods
 		}
 		*/
 	
-		public String toCode( Directive... directives ) 
+		public String author( Directive... directives ) 
 		{
 			if( this.isAbstract() )
 			{
@@ -528,7 +528,7 @@ public class _methods
 			public static final Dom METHOD_SIGNATURE = 
 				BindML.compile("{+modifiers+}{+returnType+} {+methodName+}{+params+}{+throwsExceptions+}");
 	
-			public String toCode( Directive... directives ) 
+			public String author( Directive... directives ) 
 			{
 				return Author.code( METHOD_SIGNATURE, 
 					VarContext.of(
@@ -542,7 +542,7 @@ public class _methods
 	
 			public String toString()
 			{
-				return toCode();
+				return author();
 			}		
 		}
 

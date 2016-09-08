@@ -64,7 +64,7 @@ public class _staticBlock
 		return this;
 	}
 	
-	public String toCode( Directive... directives ) 
+	public String author( Directive... directives ) 
 	{
 		if( !body.isEmpty() )
 		{
@@ -75,7 +75,7 @@ public class _staticBlock
 
 	public String toString()
 	{
-		return toCode(); 
+		return author(); 
 	}
 
 }

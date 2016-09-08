@@ -56,10 +56,10 @@ public class _package
 	
 	public String toString()
 	{
-		return toCode();
+		return author();
 	}
 
-	public String toCode( Directive... directives ) 
+	public String author( Directive... directives ) 
 	{
 		return Author.code( PACKAGE, VarContext.of( "name", this.name ), directives );
 	}

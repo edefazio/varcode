@@ -73,7 +73,7 @@ public class _enumTest
 		
 		es.addEnumValue( enumValueConstruct.of( "B" ) );
 		assertEquals( "    A," + System.lineSeparator() + 
-				      "    B;" + System.lineSeparator(), es.toCode( ) );
+				      "    B;" + System.lineSeparator(), es.author( ) );
 		
 		try
 		{
@@ -90,7 +90,7 @@ public class _enumTest
 		
 		assertEquals( "    A," + System.lineSeparator() + 
 			          "    B," + System.lineSeparator() +
-			          "    C( \"Hey\", 1 );"+ System.lineSeparator(), es.toCode( ) );
+			          "    C( \"Hey\", 1 );"+ System.lineSeparator(), es.author( ) );
 		
 		//System.out.println( es.toCode( SelfAuthored.INDENT ) );
 	}
@@ -248,7 +248,7 @@ public class _enumTest
 		e.method("public int getAge()", 
 			"return this.age;");
 			
-		System.out.println( e.toCode( ) );
+		System.out.println( e.author( ) );
 		Class<?> c = e.toJavaCase( ).loadClass();
 		assertTrue( c.isEnum() );
 		assertEquals( 3, c.getEnumConstants().length );

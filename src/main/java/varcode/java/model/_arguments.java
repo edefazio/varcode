@@ -35,7 +35,7 @@ public class _arguments
 	public static final Dom ARGUMENTS_LIST = 
 		BindML.compile( "( {{+:{+args+}, +}} )" );
 	
-	public String toCode( Directive... directives ) 
+	public String author( Directive... directives ) 
 	{
 		return Author.code( 
 			ARGUMENTS_LIST, 
@@ -108,7 +108,7 @@ public class _arguments
 	
 	public String toString()
 	{
-		return toCode();
+		return author();
 	}
 	
 	//an argument COULD be

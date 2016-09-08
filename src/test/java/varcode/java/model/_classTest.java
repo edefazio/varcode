@@ -377,25 +377,25 @@ public class _classTest
 	public void testClassSignature()
 	{
 		signature cs = signature.of( "class MyClass" );
-		assertEquals( "class MyClass", cs.toCode( ) );
+		assertEquals( "class MyClass", cs.author( ) );
 		
 		cs = signature.of( "private class MyClass");
-		assertEquals( "private class MyClass", cs.toCode( ) );
+		assertEquals( "private class MyClass", cs.author( ) );
 		
 		cs = signature.of( "private final class MyClass");
-		assertEquals( "private final class MyClass", cs.toCode( ) );
+		assertEquals( "private final class MyClass", cs.author( ) );
 		
 		cs = signature.of( "private static class MyClass");
-		assertEquals( "private static class MyClass", cs.toCode( ) );
+		assertEquals( "private static class MyClass", cs.author( ) );
 		
 		cs = signature.of( "private static final class MyClass");
-		assertEquals( "private static final class MyClass", cs.toCode( ) );
+		assertEquals( "private static final class MyClass", cs.author( ) );
 		
 		cs = signature.of( "protected class MyClass");
-		assertEquals( "protected class MyClass", cs.toCode( ) );
+		assertEquals( "protected class MyClass", cs.author( ) );
 		
 		cs = signature.of( "protected abstract class MyClass");
-		assertEquals( "protected abstract class MyClass", cs.toCode( ) );
+		assertEquals( "protected abstract class MyClass", cs.author( ) );
 		
 		
 		cs = 
@@ -409,7 +409,7 @@ public class _classTest
 		signature cs = signature.of( "class MyClass implements fss" );
 		
 		assertEquals( "class MyClass" + System.lineSeparator()
-		             +"    implements fss", cs.toCode( ) );
+		             +"    implements fss", cs.author( ) );
 		
 		cs = signature.of( "class MyClass implements fss great" );
 		
@@ -501,7 +501,7 @@ public class _classTest
 		
 		System.out.println( sig );
 		
-		System.out.println( sig.toCode( Prefix.INDENT_4_SPACES ) );
+		System.out.println( sig.author( Prefix.INDENT_4_SPACES ) );
 		
 		sig = _class.signature.of( "class MyClass" );
 		

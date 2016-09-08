@@ -132,7 +132,7 @@ public class _javadoc
 		return this;
 	}
 	
-	public String toCode( Directive... directives ) 
+	public String author( Directive... directives ) 
 	{
 		return Author.code( 
 			this.getClass(), 
@@ -143,7 +143,7 @@ public class _javadoc
 	
 	public String toString()
 	{
-		return toCode();
+		return author();
 	}
 	
 

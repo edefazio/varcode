@@ -19,7 +19,7 @@ public class _methodsTest
 		
 		assertEquals( 4, m.count() );
 		
-		m.toCode( );
+		m.author( );
 		
 		//System.out.println( m );
 		//System.out.println( m.toCode( m.INDENT ) );
@@ -41,7 +41,7 @@ public class _methodsTest
 		//		"protected synchronized Map<String, List<Integer>> someMethod() throws SomeException",
 		//		"return null;" );
 				
-		m.toCode( );
+		m.author( );
 		//System.out.println( m );
 	}
 	
@@ -137,7 +137,7 @@ public class _methodsTest
 			"}",
 			m.toString() );
 		
-		String indented = m.toCode( SelfAuthored.INDENT );
+		String indented = m.author( SelfAuthored.INDENT );
 		assertEquals(
 		"    public final String getX(  )" + System.lineSeparator()+ 
 		"    {" + N +

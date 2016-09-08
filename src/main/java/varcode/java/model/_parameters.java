@@ -130,13 +130,13 @@ public class _parameters
 		return this.params;
 	}
 	
-	public String toCode( Directive... directives ) 
+	public String author( Directive... directives ) 
 	{
 		return Author.code( PARAMS_LIST, VarContext.of( "params", params ), directives );
 	}	
 	public String toString()
 	{
-		return toCode();
+		return author();
 	}
 
     public void replace( String target, String replacement )

@@ -164,7 +164,7 @@ public class _code
 		return TRY_CATCH_FINALLY_BLOCK;
 	}
 	
-	public String toCode( Directive... directives ) 
+	public String author( Directive... directives ) 
 	{			
 		return Author.code(
 			getDom(), 
@@ -269,7 +269,7 @@ public class _code
 	
 	public String toString()
 	{
-		return toCode();
+		return author();
 	}
 	
 	public _code catchHandleException( Class<?> catchException, Object... handleCode )

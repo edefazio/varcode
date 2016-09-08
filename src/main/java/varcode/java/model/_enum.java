@@ -155,14 +155,14 @@ public class _enum
 		}
 	}
 	
-	public String toCode( Directive... directives ) 
+	public String author( Directive... directives ) 
 	{
 		return toJavaCase( directives ).toString();
 	}
 
 	public String toString()
 	{
-		return toCode();
+		return author();
 	}
 	
 	public static _enum of( String enumSignature )
@@ -449,7 +449,7 @@ public class _enum
 			public Dom VALUE_CONSTRUCT = BindML.compile(
 				"{+name*+}{+args+}" );
 					
-			public String toCode( Directive... directives ) 
+			public String author( Directive... directives ) 
 			{
 				VarContext vc = VarContext.of( "name", name );
 				if( args != null && args.count() > 0 )
@@ -461,7 +461,7 @@ public class _enum
 			
 			public String toString()
 			{
-				return toCode(); 
+				return author(); 
 			}
 		}
 
@@ -470,7 +470,7 @@ public class _enum
 		 + "+}};" + N + N );
 		
 		
-		public String toCode( Directive... directives ) 
+		public String author( Directive... directives ) 
 		{
 			return Author.code( 
 				VALUE_CONSTRUCTORS, 
@@ -485,7 +485,7 @@ public class _enum
 		
 		public String toString()
 		{
-			return toCode();
+			return author();
 		}
 	}
 	
@@ -499,7 +499,7 @@ public class _enum
 		public static final Dom CLASS_SIGNATURE = 
 			BindML.compile("{+modifiers+}enum {+enumName*+}{+implementsFrom+}" );
 
-		public String toCode( Directive... directives ) 
+		public String author( Directive... directives ) 
 		{
 			return Author.code( CLASS_SIGNATURE, 
 				VarContext.of(
@@ -521,7 +521,7 @@ public class _enum
 
 		public String toString()
 		{
-			return toCode();
+			return author();
 		}
 
 		public _modifiers getModifiers()

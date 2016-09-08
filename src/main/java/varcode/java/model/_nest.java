@@ -63,7 +63,7 @@ public interface _nest
 			return components.size();
 		}
 		
-		public String toCode( Directive... directives ) 
+		public String author( Directive... directives ) 
 		{
 			if( components == null || components.size() == 0 )
 			{
@@ -73,14 +73,14 @@ public interface _nest
 			for( int i = 0; i < components.size(); i++ )
 			{
 				sb.append( "\r\n" );
-				sb.append( components.get(i).toCode( directives ) );				
+				sb.append(components.get(i).author( directives ) );				
 			}
 			return sb.toString();
 		}		
 		
 		public String toString()
 		{
-			return toCode();
+			return author();
 		}
 
 		public static _nestGroup from( _nestGroup nests ) 

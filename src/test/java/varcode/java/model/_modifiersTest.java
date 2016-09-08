@@ -49,15 +49,15 @@ public class _modifiersTest
 	public void testMods()
 	{
 		_modifiers m = _modifiers.of("private");
-		assertEquals( "private ", m.toCode( ) );
+		assertEquals( "private ", m.author( ) );
 		
 	}
 	
 	public static void main(String[] args)
 	{
 		System.out.println( new _modifiers().setPrivate() );
-		System.out.println( new _modifiers().setFinal().setSynchronized().toCode() );
-		System.out.println( new _modifiers().setPrivate().setFinal().setSynchronized().toCode() );
+		System.out.println( new _modifiers().setFinal().setSynchronized().author() );
+		System.out.println( new _modifiers().setPrivate().setFinal().setSynchronized().author() );
 	}
 	
 	

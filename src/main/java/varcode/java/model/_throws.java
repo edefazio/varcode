@@ -32,7 +32,7 @@ public class _throws
 		"{{+?throwsList:" + N +
 	    "    throws {+throwsList+}+}}" );
 	
-	public String toCode( Directive... directives ) 
+	public String author( Directive... directives ) 
 	{
 		VarContext vc = VarContext.of( "throwsException", throwsException );
 		return Author.code( THROWS, vc, directives );
@@ -110,6 +110,6 @@ public class _throws
 	
 	public String toString()
 	{
-		return toCode();
+		return author();
 	}
 }

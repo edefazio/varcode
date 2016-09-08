@@ -333,7 +333,7 @@ public class _modifiers
 		}		
 	}
 	
-	public String toCode( Directive... directives )  
+	public String author( Directive... directives )  
 	{
 		validate( this.mods );		
 		return Author.code( BindML.compile( bitsToKeywords() ), VarContext.of( ), directives );

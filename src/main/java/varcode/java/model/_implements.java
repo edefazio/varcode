@@ -62,7 +62,7 @@ public class _implements
 		return impl;
 	}
 	
-	public String toCode( Directive... directives ) 
+	public String author( Directive... directives ) 
 	{
 		VarContext vc = VarContext.of( "impls", impls );
 		return Author.code( IMPLEMENTS, vc, directives );
@@ -70,7 +70,7 @@ public class _implements
 	
 	public String toString()
 	{
-		return toCode();
+		return author();
 	}
 
 	public String get( int index ) 
