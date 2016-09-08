@@ -12,8 +12,8 @@ public class _package
 {
 	public static final Dom PACKAGE = 
 		BindML.compile( 
-			"{{+:package {+name+};" + N + N +
-			"+}}" );
+            "{{+?name:package {+name+};" + N + N +
+			"+}}" );    			
 	
 	public static _package from ( _package prototype )
 	{		

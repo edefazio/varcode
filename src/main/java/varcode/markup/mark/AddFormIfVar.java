@@ -101,7 +101,7 @@ public class AddFormIfVar
             Object resolved = 
             	context.getVarResolver().resolveVar( context, varName );
             
-            if( resolved == null )
+            if( resolved == null || resolved.toString().length() == 0 )
             {        	
                 return null;
             }
