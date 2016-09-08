@@ -45,7 +45,7 @@ public class ForMLParser
     public static final ForMLParser INSTANCE = 
         new ForMLParser( ); 
 
-    public static final String N = System.lineSeparator();
+    public static final String N = "\r\n";
 
     private static final Map<String, String> OPENTAG_TO_CLOSETAG = 
         new HashMap<String, String>();
@@ -82,7 +82,7 @@ public class ForMLParser
         return closeTag;
     }
 
-    public static final boolean charIs( String string, int index, char expect )
+    public static boolean charIs( String string, int index, char expect )
     {
         return  string != null  
                 && string.length() > index 
@@ -142,19 +142,18 @@ public class ForMLParser
      * <LI>{+$ +}
      * <LI>{+? +}
      * <LI>{+(( ))+}
-     * 
+     *
+     * @param parseContext context for parsing the document
      * @param markText the text of the entire mark
-     * @param the line number where the mark appears
-     * @param nameAudit audits the name of the Mark for validity
-     * @throws CodemarkException if the Mark is invalid
+     * @param lineNumber the line number where the mark appears
+     * @throws MarkupException if the Mark is invalid
      */
     public Mark parseMark(
         VarContext parseContext,
         String markText, 
         int lineNumber )
         throws MarkupException
-    {          
-    	//System.out.println( parseContext );
+    {
     	VarNameAudit nameAudit = parseContext.getVarNameAudit();
     	
         if( markText.startsWith( AddScriptResultMark.OPEN_TAG ) ) // "{+$"

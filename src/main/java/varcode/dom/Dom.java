@@ -287,10 +287,10 @@ public class Dom
     
 	public String toString()
 	{
-	    return getMarkupText() + System.lineSeparator()
-	      + "/*{- SUMMARY " + System.lineSeparator() 
-	      + "  MARKS  : (" + marks.length + ")" + System.lineSeparator()          
-          + "  BLANKS : (" + blankFillMarks.length+")" + System.lineSeparator()
+	    return getMarkupText() + "\r\n"
+	      + "/*{- SUMMARY " + "\r\n"
+	      + "  MARKS  : (" + marks.length + ")" + "\r\n"
+          + "  BLANKS : (" + blankFillMarks.length+")" + "\r\n"
 	      + "-}*/";
 	}
 }

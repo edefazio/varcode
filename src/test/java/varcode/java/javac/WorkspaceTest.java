@@ -180,11 +180,11 @@ public class WorkspaceTest
 		catch( JavacException ce )
 		{
 			ce.printStackTrace();
-			System.out.println( ce );
+			//System.out.println( ce );
 		}
 	}
 
-	public static String N = System.lineSeparator();
+	public static String N = "\r\n";
 	
 	public void testTwoClasses()
 	{
@@ -302,7 +302,7 @@ public class WorkspaceTest
 		}
 		catch( JavacException e )
 		{
-			System.out.print( e );
+			//System.out.print( e );
 		}		
 	}
     
@@ -312,7 +312,7 @@ public class WorkspaceTest
 		final String code = "public class MyClass{}";
 		
 		Workspace.compileNow( 
-			new ArrayList(){{ add(new AdHocJavaFile( className, code ));}},
+			new ArrayList<AdHocJavaFile>(){{ add(new AdHocJavaFile( className, code ));}},
 			JavacOptions.Flags.STORE_FORMAL_PARAMETER_NAMES_FOR_REFLECTION );
 	}
 
@@ -322,7 +322,7 @@ public class WorkspaceTest
 		final String code = "public class MyClass{}";
 		
 		Workspace.compileNow( 
-			new ArrayList(){{ add(new AdHocJavaFile( className, code )); }} ,
+			new ArrayList<AdHocJavaFile>(){{ add(new AdHocJavaFile( className, code )); }} ,
 			JavacOptions.Flags.ALL_DEBUG_INFORMATION,
 			JavacOptions.Flags.NO_ANNOTATION_PROCESSING,
 			JavacOptions.Flags.STORE_FORMAL_PARAMETER_NAMES_FOR_REFLECTION );
@@ -334,7 +334,7 @@ public class WorkspaceTest
 		final String code = "public class MyClass{}";
 		
 		Workspace.compileNow(
-			new ArrayList(){{ add(new AdHocJavaFile( className, code ) );}},
+			new ArrayList<AdHocJavaFile>(){{ add(new AdHocJavaFile( className, code ) );}},
 			//compiles with Java 1.3 source code compatibility
 			JavacOptions.JavaSourceVersion.MajorVersion._1_3 );
 	} 
@@ -352,7 +352,7 @@ public class WorkspaceTest
 		  + "    }"  + N
 		  + "}";
 		Workspace.compileNow(
-			new ArrayList(){{ add(new AdHocJavaFile( className, code ) );}},
+			new ArrayList<AdHocJavaFile>(){{ add(new AdHocJavaFile( className, code ) );}},
 			//compiles with Java 1.3 source code compatibility			
 			JavacOptions.DebugOptions.of(
 			JavacOptions.DebugOptions.KeyWord.VARS,
@@ -375,7 +375,7 @@ public class WorkspaceTest
 		try
 		{
 			Workspace.compileNow(  
-				new ArrayList(){{ add(new AdHocJavaFile( className, code ) );}},
+				new ArrayList<AdHocJavaFile>(){{ add(new AdHocJavaFile( className, code ) );}},
 				//compiles with Java 1.3 source code compatibility			
 				JavacOptions.JavaSourceVersion.MajorVersion._1_3 );
 			fail( "expected Exception for Source not compatible " );	
@@ -405,7 +405,7 @@ public class WorkspaceTest
 		try
 		{
 			Workspace.compileNow( 
-				new ArrayList(){{ add(new AdHocJavaFile( className, code ) );}},
+				new ArrayList<AdHocJavaFile>(){{ add(new AdHocJavaFile( className, code ) );}},
 				JavacOptions.JavaSourceVersion.MajorVersion._1_3 );
 				//JavacCompiler.Flags.VERSION );
 			fail( "Expected Exception for Trying to Compile annotations with old Java Version" );

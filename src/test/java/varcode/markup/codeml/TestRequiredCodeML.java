@@ -31,7 +31,7 @@ public class TestRequiredCodeML
 		catch( NullVar rbn )
 		{	
 			//expected
-			System.out.println(rbn );
+			//System.out.println(rbn );
 		}
 	}
 	

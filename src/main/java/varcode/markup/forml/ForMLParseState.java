@@ -46,7 +46,7 @@ import varcode.markup.mark.Mark.BlankFiller;
 public class ForMLParseState 
     implements ParseState
 {
-    public static final String N = System.lineSeparator();
+    public static final String N = "\r\n";
     
     /** All static text and a BitSet indicating {@code MarkAction}s locations */
     public final FillInTheBlanks.Builder fillBuilder;

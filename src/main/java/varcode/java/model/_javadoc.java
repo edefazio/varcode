@@ -40,8 +40,9 @@ public class _javadoc
 		"{+$formatCommentLines(comment)+}" + N +
 		" */" + N + 
 		"+}}");
-	
-	public static final String formatCommentLines( VarContext ctx, String varName )
+
+
+	public static String formatCommentLines( VarContext ctx, String varName )
 	{
 		String val = (String)ctx.get( varName );
 		if( val == null )
@@ -50,6 +51,7 @@ public class _javadoc
 		}
 		return formatCommentLines( val );
 	}
+
 	
 	public static String formatCommentLines( String input )
 	{
@@ -71,7 +73,7 @@ public class _javadoc
 			{
 				if(! firstLine )
 				{
-					fb.append( System.lineSeparator() );					
+					fb.append( "\r\n" );
 				}
 				fb.append( " * " );
 				fb.append( EscapeString.escapeJavaString( line ) );
@@ -103,7 +105,7 @@ public class _javadoc
 			{
 				if( i > 0 )
 				{
-					sb.append( System.lineSeparator() );
+					sb.append( "\r\n" );
 				}
 				sb.append( commentLines[ i ] );
 			}

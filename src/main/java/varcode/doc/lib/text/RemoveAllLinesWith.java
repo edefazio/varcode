@@ -53,7 +53,7 @@ public class RemoveAllLinesWith
             removeAllLinesContaining( allTheSource, strings ).toString() );
 	}
 	
-	public static final StringBuffer removeAllLinesContaining( 
+	public static StringBuffer removeAllLinesContaining(
         String source, String... strings )
 	{
 		StringBuffer withLinesRemoved = new StringBuffer();

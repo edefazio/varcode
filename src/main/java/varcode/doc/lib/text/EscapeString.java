@@ -36,7 +36,7 @@ public enum EscapeString
 	    }
 	    if( target instanceof String )
 	    {
-	    	return "\"" + (String)target + "\"";
+	    	return "\"" + target + "\"";
 	    }
 	    if( target.getClass().isArray() )
 	    { //need to "escape" each element within the array
@@ -103,7 +103,7 @@ public enum EscapeString
 	 * @param source
 	 * @return
 	 */		
-	public static final String escapeJavaString( String source )
+	public static String escapeJavaString( String source )
 	{
 		if( source == null )
 		{
@@ -162,7 +162,8 @@ public enum EscapeString
 						break;					
 				default:					
 					// i.e.          '\u03A9' (greek Omega character)					
-					sb.append( "\\u" + String.format( "%04X", (int)c)  );
+					sb.append( "\\u" );
+					sb.append(String.format( "%04X", (int)c)  );
 					break;
 				}
 			}			

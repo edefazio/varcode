@@ -152,9 +152,6 @@ public class FormTemplate
         return blankFillerMarks;
     }
 
-    /**
-     * @see varcode.VarCodeMark#getBlanksCount()
-     */    
     public int getBlanksCount()
     {
         return blankFillerMarksTemplate.getBlanksCount();
@@ -175,9 +172,6 @@ public class FormTemplate
         return theForms.toArray( new Form[ 0 ] );
     }
 
-    /**
-     * @see varcode.VarCodeMark#getAllMarkIndexes()
-     */    
     public BitSet getMarkIndicies()
     {
         return this.markIndicies;
@@ -207,11 +201,11 @@ public class FormTemplate
 
     public String toString()
     {
-        return getMarkup() + System.lineSeparator() 
-            + "/**{- "+ System.lineSeparator()
-            + "  ForML Dom" + System.lineSeparator()
-            + "    marks  : (" + marks.length + ")" + System.lineSeparator() 
-            + "    blanks : (" + blankFillerMarks.length + ")" + System.lineSeparator()
+        return getMarkup() + "\r\n"
+            + "/**{- "+ "\r\n"
+            + "  ForML Dom" + "\r\n"
+            + "    marks  : (" + marks.length + ")" + "\r\n"
+            + "    blanks : (" + blankFillerMarks.length + ")" + "\r\n"
             + "-}*/";
     }
 

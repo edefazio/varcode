@@ -43,11 +43,16 @@ public abstract class ContextValidator
 	{
 		return Count.INSTANCE.getCount( context, varName );
 	}
-	
+
+	private static boolean equalsTo( Integer a, Integer b )
+	{
+		return (a == b) || (a != null && a.equals(b));
+	}
+
 	public static Integer assertCount( VarContext context, String varName, Integer count )
 	{
 		Integer actual = getCount( context, varName );
-		if( !java.util.Objects.equals(actual, count ) )
+		if( !equalsTo(actual, count ) )
 		{
 			throw new VarException(
 				"Count of var \"" + varName + "\" is (" + actual 

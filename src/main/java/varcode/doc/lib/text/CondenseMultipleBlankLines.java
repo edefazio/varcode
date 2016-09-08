@@ -55,7 +55,7 @@ public enum CondenseMultipleBlankLines
 					}
 					else
 					{   //this line is empty but the previous line was not empty
-						fb.append( System.lineSeparator() );
+						fb.append( "\r\n" );
 						wasPreviousLineEmpty = true;
 					}
 				}
@@ -64,7 +64,7 @@ public enum CondenseMultipleBlankLines
 					wasPreviousLineEmpty = false;
 					if (! firstLine )
 					{
-						fb.append( System.lineSeparator() );						
+						fb.append( "\r\n" );
 					}
 					firstLine = false;
 					fb.append( line );

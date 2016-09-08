@@ -15,7 +15,6 @@
  */
 package varcode.markup.mark;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import varcode.VarException;
@@ -75,9 +74,7 @@ public class ReplaceWithVar
 	
 	/** is this field REQUIRED to be bound when resolving  */
 	private final boolean isRequired;
-	
-	private final Set<String> vars;
-	
+
 	public ReplaceWithVar( 
 	    String text, 
 	    int lineNumber, 
@@ -96,9 +93,7 @@ public class ReplaceWithVar
 	    }
 	    this.wrappedContent = wrappedContent; //Text.replaceComment( wrappedContent );
 	    this.defaultValue = defaultValue;
-	    this.isRequired = isRequired;	
-	    this.vars = new HashSet<String>();
-	    this.vars.add( varName );
+	    this.isRequired = isRequired;
 	}
 
 	public String getVarName() 

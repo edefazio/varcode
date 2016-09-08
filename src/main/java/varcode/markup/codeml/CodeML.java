@@ -86,7 +86,7 @@ public enum CodeML
 	
 	/**
 	 * Parses a single Mark from the {@code MarkText} 
-	 * @param varContext context with which to parse the Mark
+	 * @param context context with which to parse the Mark
 	 * (NOTE: Some Marks are Statically Derived at Parse-Time and need access to
 	 * {@code VarScripts}, or Variables, for instance I might have a statically
 	 * defined variable CIRCUMFERENCE which is equal to "PI * R * 2",  To parse
@@ -105,7 +105,7 @@ public enum CodeML
 
 	/**
 	 * Parses a single Mark from the {@code MarkText} 
-	 * @param varContext context with which to parse the Mark
+	 * @param context context with which to parse the Mark
 	 * (NOTE: Some Marks are Statically Derived at Parse-Time and need access to
 	 * {@code VarScripts}, or Variables, for instance I might have a statically
 	 * defined variable CIRCUMFERENCE which is equal to "PI * R * 2",  To parse
@@ -113,7 +113,6 @@ public enum CodeML
 	 * the variables {"PI" ,"R"} (at Parse-Time). 
 	 * @param codeMLMark textual representation of the {@code Mark}
 	 * @param lineNumber the lineNumber where the mark occurs within the Markup
-	 * @param nameAudit verifies Mark names are valid. 
 	 * @return {@code Mark} Dom-based Object representation of the Mark
 	 * @throws MarkupException if there is a problem converting the Textual Markup
 	 * to a {@code Dom}

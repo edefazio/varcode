@@ -180,7 +180,7 @@ public class _methods
 			BindML.compile(
 				"{+methodSignature*+};" + N );
 	
-		public static final _method of( String methodSignature )
+		public static _method of( String methodSignature )
 		{
 			_method m = new _method( methodSignature );
 			return m;
@@ -205,7 +205,7 @@ public class _methods
 			return methodSignature;
 		}
 		
-		public static final _method of( String comment, String signature, String... body )
+		public static _method of( String comment, String signature, String... body )
 		{
 			_method m = new _method( signature );
 			if( body != null && body.length > 0 )
@@ -228,7 +228,7 @@ public class _methods
 					{
 						if( i > 0 )
 						{
-							sb.append( System.lineSeparator() );							
+							sb.append( "\r\n" );
 						}
 						sb.append( body[ i ] );
 					}

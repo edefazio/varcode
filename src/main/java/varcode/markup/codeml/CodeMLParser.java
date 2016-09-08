@@ -58,7 +58,7 @@ public class CodeMLParser
     public static final CodeMLParser INSTANCE = 
        new CodeMLParser();
     
-    public static final String N = System.lineSeparator();
+    public static final String N = "\r\n";
        
     private CodeMLParser()
     { }
@@ -351,7 +351,7 @@ public class CodeMLParser
     }
 
     
-    public static final boolean charIs( String string, int index, char expect )
+    public static boolean charIs( String string, int index, char expect )
     {
         return  string != null  
                 && string.length() > index 
@@ -398,11 +398,12 @@ public class CodeMLParser
      * Given Text return the appropriate Mark
      * 
      * NOTE: I could make this more efficient, but it's fine 
-     * 
-     * @param markText the text of the entire mark
-     * @param the line number where the mark appears
-     * @param nameAudit audits the name of the Mark for validity
-     * @throws CodemarkException if the Mark is invalid
+     *
+     * @param parseContext context for parsing
+     * @param text the text of the entire mark
+     * @param lineNumber the line number where the mark appears
+     * @param compiler the forMLCompiler
+     * @throws MarkupException if the Mark is invalid
      */
     public static Mark parseMark(
         VarContext parseContext,
@@ -3014,7 +3015,7 @@ public class CodeMLParser
                 text.length() - CLOSE_TAG.length() );
         }
         
-        public static final CutJavaDoc of( String text, int lineNumber )
+        public static CutJavaDoc of( String text, int lineNumber )
         {            
             if( !( text.startsWith( OPEN_TAG ) 
                 &&  text.endsWith( CLOSE_TAG ) ) )    
@@ -3629,7 +3630,7 @@ public class CodeMLParser
         
         public static final String CLOSE_TAG = "}*/";
         
-        public static final SetMetadata of( String text, int lineNumber )
+        public static SetMetadata of( String text, int lineNumber )
         {
             if( ! text.startsWith( OPEN_TAG ) )
             {
@@ -3669,7 +3670,7 @@ public class CodeMLParser
         
         public static final String CLOSE_TAG = "}*/";
         
-        public static final SetMetadata of( String text, int lineNumber )
+        public static SetMetadata of( String text, int lineNumber )
         {
             if( ! text.startsWith( OPEN_TAG ) )
             {

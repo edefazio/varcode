@@ -27,14 +27,10 @@ public enum Eval_JavaScript
 {
     INSTANCE;
 	  
-    private final AtomicBoolean isLoaded = new AtomicBoolean( false );
-    
-    private ScriptEngineManager scriptManager = null; 
-    
+    private AtomicBoolean isLoaded = new AtomicBoolean( false );
+
     private ScriptEngine JSEngine = null;
-                   
-    private Eval_JavaScript()
-    { }
+
     
     /**
      * Added this Lazy load, since it was taking 3+ seconds to bootstrap 
@@ -44,7 +40,7 @@ public enum Eval_JavaScript
      */
     private synchronized void loadLazily()
     {
-        scriptManager = new ScriptEngineManager();
+        ScriptEngineManager scriptManager = new ScriptEngineManager();
         JSEngine = scriptManager.getEngineByName( "JavaScript" );
         isLoaded.set( true );
     }

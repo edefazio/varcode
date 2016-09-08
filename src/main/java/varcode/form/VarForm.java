@@ -128,7 +128,7 @@ public class VarForm
      * @param context
      * @return
      */
-    private final int getFormInstanceCount( VarContext context )
+    private int getFormInstanceCount( VarContext context )
     {
         Set<String> varNames = new HashSet<String>();
         collectVarNames( varNames, context );

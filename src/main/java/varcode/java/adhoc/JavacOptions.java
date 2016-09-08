@@ -15,7 +15,7 @@ import varcode.VarException;
  * MOST OF these come from:
  * http://docs.oracle.com/javase/7/docs/technotes/tools/windows/javac.html#options
  *  
- * @see InMemoryJavac
+ * @see varcode.java.adhoc.Workspace
  *  
  * @author M. Eric DeFazio eric@varcode.io
  */

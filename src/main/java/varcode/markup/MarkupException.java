@@ -19,7 +19,7 @@ public class MarkupException
 	
 	public int lineNumber = -1;
 	
-	public static String N = System.lineSeparator();
+	public static String N = "\r\n";
 	
     public MarkupException( String message, Throwable throwable )
     {

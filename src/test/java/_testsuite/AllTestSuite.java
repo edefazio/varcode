@@ -131,7 +131,6 @@ public class AllTestSuite
         suite.addTestSuite( JavaTest.class );
         suite.addTestSuite( JavaMarkupRepoTest.class );
         suite.addTestSuite( JavaNamingTest.class );
-        //suite.addTestSuite( ReflectTest.class );
 		
         //suite.addTestSuite( AdHocJavacTest.class );
         suite.addTestSuite( WorkspaceTest.class );

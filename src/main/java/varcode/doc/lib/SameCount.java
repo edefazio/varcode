@@ -51,10 +51,10 @@ public enum SameCount
     			"Expected at least (2) comma separated varNames, got (" + varNames.length + ") "
     				+ " from \"" + input + "\"" );
     	}
-    	Integer count = Count.INSTANCE.getCount(context, varNames[ 0 ] );
+    	Integer count = Count.INSTANCE.getCount( context, varNames[ 0 ] );
     	for( int i = 1; i < varNames.length; i++ )
     	{
-    		Integer thisCount = Count.INSTANCE.getCount(context, varNames[ i ] );
+    		Integer thisCount = Count.INSTANCE.getCount( context, varNames[ i ] );
     		if( thisCount != count )
     		{
     			throw new VarException( 

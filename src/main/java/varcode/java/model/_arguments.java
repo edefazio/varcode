@@ -53,7 +53,7 @@ public class _arguments
 	 * "int", "x"
 	 * "String", "name"
 	 * "double", 
-	 * @param tokens
+	 * @param arguments the arugments
 	 * @return
 	 */
 	public static _arguments of( Object... arguments )

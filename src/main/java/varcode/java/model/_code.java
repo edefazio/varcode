@@ -139,7 +139,7 @@ public class _code
 		{
 			if( i > 0 )
 			{
-				sb.append( System.lineSeparator() );
+				sb.append( "\r\n" );
 			}
 			sb.append( codeComponents.get( i ).toString() );			
 		}
@@ -284,7 +284,7 @@ public class _code
 	
 	/**
 	 * Catches and exception by name (it may be an exception that is being authored)
-	 * @param exception the name of the exception (i.e. "IOException", "FileNotFoundException")
+	 * @param simpleExceptionName the name of the exception (i.e. "IOException", "FileNotFoundException")
 	 * @param handleCode the 
 	 * @return
 	 */

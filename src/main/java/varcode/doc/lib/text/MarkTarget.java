@@ -151,7 +151,7 @@ public class MarkTarget
 		StringBuilder sb = new StringBuilder();
 		for( int i = 0; i < targetMarks.length; i++ )
 		{
-			sb.append( System.lineSeparator() );
+			sb.append( "\r\n" );
 			sb.append( "    \"" );
 			sb.append( this.targets[ i ] );
 			sb.append( "\" -> \"" );			

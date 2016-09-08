@@ -55,7 +55,7 @@ public class CodeMLParseState
 	private static final Logger LOG = 
 		LoggerFactory.getLogger( CodeMLParseState.class );
 	
-    public static final String N = System.lineSeparator();
+    public static final String N = "\r\n";
     
     /** Contains the state of Variables as they are being parsed */
     public final VarContext parseContext;
