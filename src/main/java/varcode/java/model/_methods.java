@@ -136,6 +136,34 @@ public class _methods
 			methodsWithTheSameName.add( m );
 		}
 	}
+
+    public void replace( String target, String replacement )
+    {
+        Map<String, List<_method>> replacedMethods = new HashMap<String, List<_method>>();
+        
+        String[] names = this.methodsByName.keySet().toArray( new String[ 0 ] );        
+        for( int i = 0; i < names.length; i++ )
+        {
+            List<_method> methods = this.methodsByName.get(names[ i ] );
+            
+            for( int j=0; j<methods.size(); j++  )
+            {
+                _method thisOne = methods.get( j );
+                thisOne.replace( target, replacement );
+                List<_method> ex = 
+                    replacedMethods.get( thisOne.getName() );
+                if( ex == null )
+                {
+                    ex = new ArrayList<_method>();        
+                    replacedMethods.put( thisOne.getName(), ex );
+                }
+                ex.add( thisOne );
+                //replacedMethods.add( thisOne.methodSignature.methodName )
+            }
+        }
+        this.methodsByName = replacedMethods;
+    }
+    
 	
 	public static class _method		
 		implements SelfAuthored
@@ -157,7 +185,12 @@ public class _methods
 			_method m = new _method( methodSignature );
 			return m;
 		}
-				
+		
+        public String getName()
+        {
+            return this.methodSignature.getName();
+        }
+        
 		public static _method from(_method prototype ) 
 		{
 			_method m = 
@@ -257,7 +290,7 @@ public class _methods
 		}
 	
 		public _method comment( String javadocComment )
-		{
+		{            
 			this.javadocComment = new _javadoc( javadocComment );
 			return this;
 		}
@@ -346,6 +379,14 @@ public class _methods
 			{
 				return returnType;
 			}
+            
+            public void replace( String target, String replacement )
+            {
+                this.returnType = _type.of( this.returnType.getName().replace( target, replacement) );
+                this.params.replace( target, replacement ); 
+                this.methodName = _identifier.of( this.methodName.toString().replace( target, replacement ) );
+                throwsExceptions.replace(target, replacement);
+            }
 			
 			public String getName()
 			{
@@ -508,7 +549,15 @@ public class _methods
 		/** searches through the contents to find target and replaces with replacement */
 		public void replace( String target, String replacement ) 
 		{
-			this.javadocComment.replace( target, replacement );
+			if( this.javadocComment != null )
+            {
+                this.javadocComment.replace( target, replacement );
+            }
+            if( this.methodBody != null )
+            {
+                this.methodBody.replace( target, replacement );
+            }
+            this.methodSignature.replace( target, replacement );
 		}	
 	}
 }

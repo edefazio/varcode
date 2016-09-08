@@ -63,9 +63,18 @@ public class _throws
 		{
 			addThrows( (name)throwsClass );			
 		}
-		//throwsException.add( throwsClassName );
 		return this;
 	}
+    
+    public void replace( String target, String replacement )
+    {
+        List<name> replacedNames = new ArrayList<name>();
+        for(int i=0; i<this.throwsException.size(); i++)
+        {
+            replacedNames.add( 
+                name.of( this.throwsException.get( i ).toString().replace( target, replacement ) ) );
+        }
+    }
 	
 	public _throws addThrows( name throwsClassName )
 	{

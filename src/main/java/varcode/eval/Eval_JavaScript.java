@@ -27,7 +27,7 @@ public enum Eval_JavaScript
 {
     INSTANCE;
 	  
-    private AtomicBoolean isLoaded = new AtomicBoolean( false );
+    private final AtomicBoolean isLoaded = new AtomicBoolean( false );
     
     private ScriptEngineManager scriptManager = null; 
     
@@ -128,7 +128,6 @@ public enum Eval_JavaScript
 	    		if( result != null && result.equals( true ) ) 
 	    		{                
 	    			final Object vals = VALUES_METHOD.invoke( obj );    				
-	    			//System.out.println( "GOT VALS " + vals );
 	    			if( vals instanceof Collection<?> ) 
 	    			{
 	    				final Collection<?> coll = (Collection<?>) vals;

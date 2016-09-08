@@ -2,10 +2,13 @@ package varcode.markup.mark;
 
 import varcode.context.VarContext;
 import varcode.eval.EvalException;
-import varcode.markup.mark.AddExpressionResult;
-import varcode.markup.mark.EvalExpression;
 import junit.framework.TestCase;
 
+/**
+ * NOTE This is using JavaScript
+ * 
+ * @author eric
+ */
 public class EvalExpressionTest
 	extends TestCase
 {
@@ -47,6 +50,8 @@ public class EvalExpressionTest
 		}
 	}
 	
+    //Closures
+
 	public void testLoadFunctionAsVar()
 	{
 		VarContext vc = VarContext.of();
@@ -69,7 +74,8 @@ public class EvalExpressionTest
 		//ok, now lets actually CALL the function (the var fun1() I defined previously)
 		expression = "fun1()";
 		bindMLMark = "{+((" + expression + "))+}";
-		AddExpressionResult aer = new AddExpressionResult( bindMLMark, 0, expression );
+		AddExpressionResult aer = 
+            new AddExpressionResult( bindMLMark, 0, expression );
 		assertEquals( "HEY", aer.derive( vc ) );
 		
 		expression = "fun2('eric')"; //pass in a literal to a function

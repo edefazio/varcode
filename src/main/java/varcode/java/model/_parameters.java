@@ -138,6 +138,20 @@ public class _parameters
 	{
 		return toCode();
 	}
+
+    public void replace( String target, String replacement )
+    {
+        List<parameter> modifiedParams = new ArrayList<parameter>();
+        for( int i = 0; i < this.params.size(); i++ )
+        {
+            modifiedParams.add(
+                parameter.of( 
+                    params.get( i ).type.toString().replace( target, replacement ),
+                    params.get( i ).varName.toString().replace( target, replacement ) ) 
+            );
+        }        
+        this.params = modifiedParams;
+    }
 	
 	public static class parameter		
 	{			

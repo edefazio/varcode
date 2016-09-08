@@ -154,6 +154,43 @@ public enum JavaNaming
                 throw new VarException( 
                     "Class name: \"" + simpleClassName + "\" reserved word" );
             }
+            if( simpleClassName.endsWith( ">" ) )
+            {
+                //it's a Generic Class
+                int openGenericIndex =  simpleClassName.indexOf( "<" );
+                if( openGenericIndex < 0 )
+                {
+                    throw new VarException("className contains no matching '<' for '>'");
+                }
+                //convert all < and > and , s to spaces so I can tokenize
+                String removeAll = simpleClassName.replace("<", " ");
+                removeAll = removeAll.replace( ">", " " );
+                removeAll = removeAll.replace( ",", " " );
+                removeAll = removeAll.replace( "extends", " " );
+                removeAll = removeAll.replace( "super", " " );
+                removeAll = removeAll.replace( "?", " " );
+                
+                //bounded generics
+                //"extends"
+                // "? extends ..."
+                // ? super Integer
+                
+                String[] components = removeAll.split(" ");
+                for(int i=0; i<components.length; i++ )
+                {
+                    try
+                    {
+                        validateSimpleName( components[ i ] ); 
+                    }
+                    catch( VarException ve )
+                    {
+                        throw new VarException( 
+                           "Generic class Definition of \""+ simpleClassName
+                            +"\" is not valid", ve );
+                    }
+                }
+                return simpleClassName;
+            }
             char[] chars = simpleClassName.toCharArray();
             if( !Character.isJavaIdentifierStart( chars[ 0 ] ) )
             {

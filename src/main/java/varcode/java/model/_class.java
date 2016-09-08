@@ -670,5 +670,6 @@ public class _class
 				f.setType( f.getType().getName().replace(target, replacement ) );
 			}			
 		}
+        this.methods.replace( target, replacement );
 	}
 }
