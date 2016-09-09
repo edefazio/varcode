@@ -5,7 +5,6 @@
  */
 package varcode;
 
-import varcode.CodeAuthor;
 import varcode.context.VarContext;
 import varcode.doc.Author;
 import varcode.doc.Directive;
@@ -60,6 +59,13 @@ public interface Template
     public static abstract class Base
         implements Template, CodeAuthor
     {        
+        /**
+         * 
+         * @param context contains bound variables and scripts to bind data into
+         * the template
+         * @param directives pre-and post document directives 
+         * @return the populated Template bound with Data from the context
+         */
         public final String bind( VarContext context, Directive...directives )
         {
             Dom dom = BindML.compile( author( ) ); 
