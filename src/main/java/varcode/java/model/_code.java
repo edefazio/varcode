@@ -1,5 +1,6 @@
 package varcode.java.model;
 
+import varcode.CodeAuthor;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +23,7 @@ import varcode.markup.bindml.BindML;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _code
-	implements SelfAuthored
+	implements CodeAuthor
 {
 	/**
 	 * Creates a code from the objects (Strings, _code) for instance:<PRE>

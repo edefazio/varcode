@@ -1,5 +1,6 @@
 package varcode.java.model;
 
+import varcode.CodeAuthor;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +22,7 @@ import varcode.markup.bindml.BindML;
  *
  */
 public class _parameters
-	implements SelfAuthored
+	implements CodeAuthor
 {
 	public static final Dom PARAMS_LIST = BindML.compile( "( {{+:{+params+}, +}} )" );
 	

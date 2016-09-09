@@ -1,5 +1,6 @@
 package varcode.java.model;
 
+import varcode.CodeAuthor;
 import varcode.java.JavaCaseAuthor;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -340,6 +341,12 @@ public class _enum
 		this.fields.addFields( fields );
 		return this;
 	}
+
+    @Override
+    public JavaCase toJavaCase(VarContext context, Directive... directives)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 	
 	/**
 	 * When we construct enums each enum value
@@ -366,7 +373,7 @@ public class _enum
 	 * 
 	 */
 	public static class enumValueConstructs
-		implements SelfAuthored
+		implements CodeAuthor
 	{
 		private Set<String> valueNames = new HashSet<String>();
 		
@@ -408,7 +415,7 @@ public class _enum
 
 		public static class enumValueConstruct
 			//extends _model
-			implements SelfAuthored 
+			implements CodeAuthor 
 		{
 			private _identifier name;
 			private _arguments args;
@@ -490,7 +497,7 @@ public class _enum
 	}
 	
 	public static class signature
-		implements SelfAuthored
+		implements CodeAuthor
 	{
 		private _class.simpleName enumName;		
 		private _implements implementsFrom;

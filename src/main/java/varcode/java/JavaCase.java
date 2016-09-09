@@ -237,4 +237,38 @@ public class JavaCase
         Class<?> theClass = loadClass();
         return Java.instance( theClass, constructorArgs );
     }                 
+    
+    /**
+     * Entity that can author and return a 
+     * {@code JavaCase} container of Java source code. 
+     * 
+     * These are "Top Level Containers"  (_class, _interface, _enum)
+     * that can be passed to the Java Compiler as an implementation of a 
+     * {@code JavaFileObject} to be compiled
+     * 
+     * @author M. Eric DeFazio eric@varcode.io
+     */
+    public interface JavaCaseAuthor 
+    {
+        /**
+         * Return the Java Code (class, interface, Enum, etc)
+         * that represents this abstraction
+         * 
+         * @param directives directives applied to 
+         * @return
+         */
+        public JavaCase toJavaCase( Directive...directives );
+    
+        /**
+         * Return the Java Code (class, interface, Enum, etc)
+         * that represents this abstraction
+         * 
+         * @param context the context providing bound variables and functionality
+         * to author the document
+         * @param directives directives applied pre and post code/document creation 
+         * @return the JavaCase
+         */
+        public JavaCase toJavaCase( 
+            VarContext context, Directive...directives );
+    }
 }

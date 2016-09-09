@@ -1,5 +1,6 @@
 package varcode.java.model;
 
+import varcode.CodeAuthor;
 import java.lang.reflect.Modifier;
 import java.util.Map;
 import java.util.TreeMap;
@@ -20,7 +21,7 @@ import varcode.markup.bindml.BindML;
  *  
  */
 public class _fields
-	implements SelfAuthored
+	implements CodeAuthor
 {
 	//private static final Logger LOG = LoggerFactory.getLogger( _members.class );
 	
@@ -84,7 +85,7 @@ public class _fields
 	}
 	
 	public static class field
-		implements SelfAuthored
+		implements CodeAuthor
 	{
 		public static final Dom FIELD = BindML.compile(
 			"{+javadocComment+}{+modifiers+}{+type+} {+varName+}{+init+};" ); 
@@ -305,7 +306,7 @@ public class _fields
 	 * </PRE>        
 	 */
 	public static class _init 
-		implements SelfAuthored
+		implements CodeAuthor
 	{
 		private final String initCode;
 	

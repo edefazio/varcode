@@ -1,5 +1,6 @@
 package varcode.java.model;
 
+import varcode.CodeAuthor;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +26,7 @@ import varcode.dom.Dom;
 public interface _nest 
 {	
 	public interface component 
-	    extends SelfAuthored
+	    extends CodeAuthor
 	{
 		public Dom getDom();
 		
@@ -44,7 +45,7 @@ public interface _nest
 	}
 	
 	public static class _nestGroup
-		implements SelfAuthored
+		implements CodeAuthor
 	{
 		public List<component>components = new ArrayList<component>();
 

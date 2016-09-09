@@ -1,5 +1,6 @@
 package varcode.java.model;
 
+import varcode.CodeAuthor;
 import junit.framework.TestCase;
 import varcode.VarException;
 import varcode.java.model._methods._method;
@@ -137,7 +138,7 @@ public class _methodsTest
 			"}",
 			m.toString() );
 		
-		String indented = m.author( SelfAuthored.INDENT );
+		String indented = m.author( CodeAuthor.INDENT );
 		assertEquals(
 		"    public final String getX(  )" + System.lineSeparator()+ 
 		"    {" + N +

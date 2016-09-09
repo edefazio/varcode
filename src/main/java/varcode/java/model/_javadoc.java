@@ -1,5 +1,6 @@
 package varcode.java.model;
 
+import varcode.CodeAuthor;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
@@ -13,7 +14,7 @@ import varcode.dom.Dom;
 import varcode.markup.bindml.BindML;
 
 public class _javadoc
-	implements SelfAuthored
+	implements CodeAuthor
 {
 	public static _javadoc from( _javadoc jdoc )
 	{

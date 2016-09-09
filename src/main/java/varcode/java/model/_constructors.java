@@ -1,5 +1,6 @@
 package varcode.java.model;
 
+import varcode.CodeAuthor;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +22,7 @@ import varcode.markup.bindml.BindML;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _constructors
-	implements SelfAuthored
+	implements CodeAuthor
 {
 	private List<constructor>constructors = new ArrayList<constructor>();
 
@@ -124,7 +125,7 @@ public class _constructors
 	
 	/** Constructor model */
 	public static class constructor
-		implements SelfAuthored
+		implements CodeAuthor
 	{
 		public static constructor from( constructor prototype )
 		{
@@ -222,7 +223,7 @@ public class _constructors
 		}
 	
 		public static class signature
-			implements SelfAuthored
+			implements CodeAuthor
 		{
 			private _identifier className;
 			private _modifiers modifiers; //public protected private

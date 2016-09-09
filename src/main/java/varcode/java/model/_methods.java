@@ -1,5 +1,6 @@
 package varcode.java.model;
 
+import varcode.CodeAuthor;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,7 +15,7 @@ import varcode.dom.Dom;
 import varcode.markup.bindml.BindML;
 
 public class _methods
-	implements SelfAuthored
+	implements CodeAuthor
 {
 	private Map<String, List<_method>>methodsByName = 
 		new HashMap<String, List<_method>>();
@@ -166,7 +167,7 @@ public class _methods
     
 	
 	public static class _method		
-		implements SelfAuthored
+		implements CodeAuthor
 	{
 		public static final Dom METHOD = 
 			BindML.compile(
@@ -341,7 +342,7 @@ public class _methods
 		}
 		
 		public static class signature
-			implements SelfAuthored
+			implements CodeAuthor
 		{
 			public static signature from( signature prototype )
 			{

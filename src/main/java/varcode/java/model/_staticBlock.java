@@ -1,5 +1,6 @@
 package varcode.java.model;
 
+import varcode.CodeAuthor;
 import varcode.context.VarContext;
 import varcode.doc.Author;
 import varcode.doc.Directive;
@@ -7,7 +8,7 @@ import varcode.dom.Dom;
 import varcode.markup.bindml.BindML;
 
 public class _staticBlock
-	implements SelfAuthored	
+	implements CodeAuthor	
 {	
 	public static final Dom STATIC_BLOCK = 
 		BindML.compile(

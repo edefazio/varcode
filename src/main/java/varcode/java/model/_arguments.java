@@ -1,5 +1,6 @@
 package varcode.java.model;
 
+import varcode.CodeAuthor;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +21,7 @@ import varcode.markup.bindml.BindML;
  *
  */
 public class _arguments
-	implements SelfAuthored
+	implements CodeAuthor
 {
 	public static _arguments from( _arguments prototype ) 
 	{

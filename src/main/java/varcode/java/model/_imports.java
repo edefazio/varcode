@@ -1,5 +1,6 @@
 package varcode.java.model;
 
+import varcode.CodeAuthor;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -23,7 +24,7 @@ import varcode.markup.bindml.BindML;
  * @author M. Eric DeFazio
  */
 public class _imports
-	implements SelfAuthored
+	implements CodeAuthor
 {
 	/** Create and return a mutable clone given the imports */
 	public static _imports from( _imports imports )

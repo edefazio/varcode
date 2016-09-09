@@ -1,5 +1,6 @@
 package varcode.java.model;
 
+import varcode.CodeAuthor;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +12,7 @@ import varcode.doc.Directive;
 import varcode.markup.bindml.BindML;
 
 public class _modifiers
-	implements SelfAuthored	
+	implements CodeAuthor	
 {
 	public static _modifiers from( _modifiers mods )
 	{

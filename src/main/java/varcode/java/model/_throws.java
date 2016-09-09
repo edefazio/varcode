@@ -1,5 +1,6 @@
 package varcode.java.model;
 
+import varcode.CodeAuthor;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +12,7 @@ import varcode.java.model._class.name;
 import varcode.markup.bindml.BindML;
 
 public class _throws
-	implements SelfAuthored
+	implements CodeAuthor
 {
 	public static final _throws NONE = new _throws();
 	

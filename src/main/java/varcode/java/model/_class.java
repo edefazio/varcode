@@ -1,5 +1,6 @@
 package varcode.java.model;
 
+import varcode.CodeAuthor;
 import varcode.java.JavaCaseAuthor;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -342,9 +343,15 @@ public class _class
 		this.classPackage = _package.of( packageName );
 		return this;
 	}
+
+    @Override
+    public JavaCase toJavaCase(VarContext context, Directive... directives)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 	
 	public static class signature
-		implements SelfAuthored
+		implements CodeAuthor
 	{
 		private _modifiers modifiers = new _modifiers();
 		private _class.simpleName className;

@@ -1,5 +1,6 @@
 package varcode.java.model;
 
+import varcode.CodeAuthor;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +12,7 @@ import varcode.dom.Dom;
 import varcode.markup.bindml.BindML;
 
 public class _extends
-	implements SelfAuthored
+	implements CodeAuthor
 {
 	public static final _extends NONE = new _extends();
 	
