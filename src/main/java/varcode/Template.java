@@ -68,8 +68,32 @@ public interface Template
          */
         public final String bind( VarContext context, Directive...directives )
         {
-            Dom dom = BindML.compile( author( ) ); 
+            //System.out.println( author( ) );
+            Dom dom = BindML.compile( author() ); 
             return Author.code( dom, context, directives );
+        }
+        
+        private static final String[] INDENT = new String[]
+    {
+        "",
+        "    ", 
+        "        ", 
+        "            ",
+        "                ",
+        "                    ",
+        "                        ",
+        "                            ",
+        "                                ",
+        "                                    ",
+        "                                        ",
+        "                                            ",
+        "                                                ",
+        "                                                    ",
+        "                                                        "        
+    };
+        public String indent( int count )
+        {
+            return INDENT[ count ];
         }
     }
 }

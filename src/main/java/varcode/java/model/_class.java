@@ -1,7 +1,7 @@
 package varcode.java.model;
 
 import varcode.CodeAuthor;
-import varcode.java.JavaCaseAuthor;
+import varcode.java.JavaCase.JavaCaseAuthor;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
