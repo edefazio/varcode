@@ -2,7 +2,6 @@ package varcode.java.code;
 
 import java.util.ArrayList;
 import java.util.List;
-import varcode.CodeAuthor;
 import varcode.Template;
 import varcode.VarException;
 
@@ -10,7 +9,6 @@ import varcode.context.VarContext;
 import varcode.doc.Author;
 import varcode.doc.Directive;
 import varcode.dom.Dom;
-import varcode.Template.Base;
 import varcode.markup.bindml.BindML;
 
 /**

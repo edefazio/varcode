@@ -31,11 +31,11 @@ public class /*{+className*/CodeMLModelTest/*+}*/ /*{-*/extends TestCase/*-}*/
             
         JavaCase thisCase = JavaCase.of(
             CodeMLModelTest.class, 
-            "ex.varcode.java.model.AddMethodClass", 
+            "ex.varcode.java.code.AddMethodClass", 
             "addMethodHere", m );
             
         System.out.println( thisCase.toString() );
-        assertEquals( "ex.varcode.java.model.AddMethodClass", 
+        assertEquals( "ex.varcode.java.code.AddMethodClass", 
             thisCase.instance( ).toString() );        
     }   
     
@@ -44,7 +44,7 @@ public class /*{+className*/CodeMLModelTest/*+}*/ /*{-*/extends TestCase/*-}*/
         _field f = _field.of( "public static final int VERSION = 1;" );
         JavaCase thisCase = JavaCase.of(
             CodeMLModelTest.class, 
-            "ex.varcode.java.model.AddFieldClass", 
+            "ex.varcode.java.code.AddFieldClass", 
             "addFieldHere", f );
         
         Object instance = thisCase.instance( );
@@ -63,7 +63,7 @@ public class /*{+className*/CodeMLModelTest/*+}*/ /*{-*/extends TestCase/*-}*/
         
         JavaCase thisCase = JavaCase.of(
             CodeMLModelTest.class, 
-            "ex.varcode.java.model.AddNestedClass", 
+            "ex.varcode.java.code.AddNestedClass", 
             "addNestedClassHere", nestedClass );
         
         Class theClass = thisCase.loadClass();
@@ -88,7 +88,7 @@ public class /*{+className*/CodeMLModelTest/*+}*/ /*{-*/extends TestCase/*-}*/
         
         JavaCase thisCase = JavaCase.of(
             CodeMLModelTest.class, 
-            "ex.varcode.java.model.AddNestedInterface", 
+            "ex.varcode.java.code.AddNestedInterface", 
             "addNestedInterfaceHere", nestedInterface );
         
         Class theClass = thisCase.loadClass();
@@ -119,7 +119,7 @@ public class /*{+className*/CodeMLModelTest/*+}*/ /*{-*/extends TestCase/*-}*/
                 .value("BLUE",  0x0000FF );
         JavaCase jc = JavaCase.of( 
             CodeMLModelTest.class,                 
-            "ex.varcode.java.model.NestedEnumClass",            
+            "ex.varcode.java.code.NestedEnumClass",            
             "addNestedEnumHere", nestedEnum );
         
         Class topClass = jc.loadClass();

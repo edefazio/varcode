@@ -36,6 +36,23 @@ import varcode.java.JavaNamingTest;
 import varcode.java._JavaCaseClassNameTest;
 import varcode.java._JavaCase_AllDirectivesTest;
 import varcode.java.adhoc.WorkspaceTest;
+import varcode.java.code._argumentsTest;
+import varcode.java.code._classTest;
+import varcode.java.code._codeTest;
+import varcode.java.code._constructorsTest;
+import varcode.java.code._enumTest;
+import varcode.java.code._extendsTest;
+import varcode.java.code._fieldsTest;
+import varcode.java.code._implementsTest;
+import varcode.java.code._importsTest;
+import varcode.java.code._interfaceTest;
+import varcode.java.code._javadocTest;
+import varcode.java.code._methodsTest;
+import varcode.java.code._modifiersTest;
+import varcode.java.code._packageTest;
+import varcode.java.code._parametersTest;
+import varcode.java.code._staticBlockTest;
+import varcode.java.code._throwsTest;
 /*
 import varcode.java.model.FluentTest;
 import varcode.java.model.InLinerTest;
@@ -216,6 +233,28 @@ public class AllTestSuite
         suite.addTestSuite( CountIndexTest.class );
         suite.addTestSuite( RowifyTest.class );	
     
+        suite.addTestSuite( _argumentsTest.class );
+        suite.addTestSuite( _classTest.class );
+        suite.addTestSuite( _codeTest.class );
+        suite.addTestSuite( _constructorsTest.class );
+        suite.addTestSuite( _enumTest.class );
+        suite.addTestSuite( _extendsTest.class );        
+        suite.addTestSuite( _fieldsTest.class );
+        
+        suite.addTestSuite( _interfaceTest.class );
+        suite.addTestSuite( _implementsTest.class );
+        suite.addTestSuite( _importsTest.class );
+        //javacode
+        suite.addTestSuite( _javadocTest.class );
+        
+        suite.addTestSuite( _methodsTest.class );
+        suite.addTestSuite( _modifiersTest.class );
+        
+        suite.addTestSuite( _packageTest.class );
+        suite.addTestSuite( _parametersTest.class );
+        suite.addTestSuite( _staticBlockTest.class );
+        suite.addTestSuite( _throwsTest.class );
+        
         //java.model component functional tests
         /*
         suite.addTestSuite( FluentTest.class );
