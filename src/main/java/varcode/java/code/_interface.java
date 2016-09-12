@@ -4,7 +4,6 @@ import varcode.java.JavaCase.JavaCaseAuthor;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
-import varcode.CodeAuthor;
 import varcode.Template;
 
 import varcode.VarException;

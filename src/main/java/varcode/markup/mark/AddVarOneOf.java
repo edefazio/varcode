@@ -125,10 +125,10 @@ public class AddVarOneOf
 		}
 		if( !found )
 		{
-			for( int i = 0; i < array.length; i++ )
-			{
+			//for( int i = 0; i < array.length; i++ )
+			//{
 				
-			}
+			//}
 			throw new VarBindException( 
 				"Count not bind value \"" + resolved + " to \"" + varName + "\" for mark " 
 			    + N + text + N + "on line ["+lineNumber+"] must be one of " + N + arrayDescription  );

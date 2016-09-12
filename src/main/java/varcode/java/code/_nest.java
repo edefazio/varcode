@@ -33,7 +33,7 @@ public interface _nest
 		
 		/**
 		 * get the Context used to author the Dom into a Class
-		 * @return 
+		 * @return the context for this nest component
 		 */
 		public VarContext getContext();
 		

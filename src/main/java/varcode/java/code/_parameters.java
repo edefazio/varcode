@@ -51,8 +51,8 @@ public class _parameters
 	 * "int", "x"
 	 * "String", "name"
 	 * "double", 
-	 * @param tokens
-	 * @return
+	 * @param tokens tokens comprised of parameters
+	 * @return _parameters representing parsed tokens
 	 */
 	public static _parameters of( String[] tokens )
 	{

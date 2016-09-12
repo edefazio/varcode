@@ -75,13 +75,13 @@ public interface MarkupTemplate
     /** gets of the {@code Mark}s in the template */
     Mark[] getMarks();
 
-    /** {@code Mark.BlankFiller}s (fill text into the {@Dom} at Tailor-Time */
+    /** {@code Mark.BlankFiller}s (fill text into the {@code Dom} at Tailor-Time */
     BlankFiller[] getBlankFillers();
 
     /** the number of blanks within the markup template */
     int getBlanksCount();
 
-    /** get the indices for all {@Mark}s within template */
+    /** get the indices for all {@code Mark}s within template */
     BitSet getMarkIndicies();
 
     /** 

@@ -61,8 +61,7 @@ public interface MarkupParser
      *  <LI>{@code String[ 0 ]} is the name
      *  <LI>{@code String[ 1 ]} is the default (NULLABLE)
      * </UL> 
-     *
-     * @return a String[ 2 ] where:
+     * a String[ 2 ] where:
      * <UL>
      *  <LI>{@code String[ 0 ]} is the name
      *  <LI>{@code String[ 1 ]} is the default (NULLABLE)

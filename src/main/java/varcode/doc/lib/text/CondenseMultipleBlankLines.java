@@ -48,12 +48,7 @@ public enum CondenseMultipleBlankLines
 			{
 				if( line.trim().length() == 0 )
 				{
-					if( wasPreviousLineEmpty )
-					{  
-						//this line is empty and the previous line was empty
-						//System.out.println("CHOMP " + linesChomped++);
-					}
-					else
+					if( ! wasPreviousLineEmpty )
 					{   //this line is empty but the previous line was not empty
 						fb.append( "\r\n" );
 						wasPreviousLineEmpty = true;
