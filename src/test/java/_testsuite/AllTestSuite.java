@@ -1,7 +1,7 @@
 package _testsuite;
 
-import ex.varcode.java.model.CodeMLModelTest;
-import ex.varcode.java.model.ModelFeatureTest;
+import ex.varcode.java.code.CodeMLModelTest;
+import ex.varcode.java.code.ModelFeatureTest;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import varcode.LangTest;
@@ -36,6 +36,7 @@ import varcode.java.JavaNamingTest;
 import varcode.java._JavaCaseClassNameTest;
 import varcode.java._JavaCase_AllDirectivesTest;
 import varcode.java.adhoc.WorkspaceTest;
+/*
 import varcode.java.model.FluentTest;
 import varcode.java.model.InLinerTest;
 import varcode.java.model._argumentsTest;
@@ -59,6 +60,7 @@ import varcode.java.model._staticBlockTest;
 import varcode.java.model._throwsTest;
 import varcode.java.model._typeTest;
 import varcode.java.model._varTest;
+*/
 import varcode.markup.MarkupParserTest;
 import varcode.markup.VarNameAuditTest;
 import varcode.markup.bindml.BindMLCompilerTest;
@@ -215,6 +217,7 @@ public class AllTestSuite
         suite.addTestSuite( RowifyTest.class );	
     
         //java.model component functional tests
+        /*
         suite.addTestSuite( FluentTest.class );
         suite.addTestSuite( InLinerTest.class );
         suite.addTestSuite( _argumentsTest.class );
@@ -238,6 +241,7 @@ public class AllTestSuite
         suite.addTestSuite( _throwsTest.class );
         suite.addTestSuite( _typeTest.class );
         suite.addTestSuite( _varTest.class );
+        */
         
         //Functional / Integration Tests
         suite.addTestSuite( ModelFeatureTest.class );
