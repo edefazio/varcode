@@ -35,7 +35,7 @@ public class _class
 	private _package classPackage;
 	private _imports imports;
 	private _javadoc javadoc;
-	private final signature classSignature;
+	private final _signature classSignature;
 	
 	private _constructors constructors;
 	private _fields fields;
@@ -85,7 +85,7 @@ public class _class
 	{
 		this.classPackage = _package.of( packageName );
 		this.javadoc = new _javadoc();
-		this.classSignature = signature.of( classSignature );
+		this.classSignature = _signature.of( classSignature );
 		this.imports = new _imports();	
 		this.fields = new _fields();
 		this.methods = new _methods();
@@ -102,7 +102,7 @@ public class _class
 	{
 		this.classPackage = _package.from( prototype.classPackage );
 		this.imports = _imports.from( prototype.imports );
-		this.classSignature = signature.from( prototype.classSignature  );
+		this.classSignature = _signature.from( prototype.classSignature  );
 		
 		this.javadoc = _javadoc.from( prototype.javadoc );
 		this.methods = _methods.from( prototype.methods );
@@ -350,7 +350,7 @@ public class _class
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 	
-	public static class signature
+	public static class _signature
 		implements CodeAuthor
 	{
 		private _modifiers modifiers = new _modifiers();
@@ -372,7 +372,7 @@ public class _class
 				directives );
 		} 
 		
-		private signature()
+		private _signature()
 		{			
 		}
 		
@@ -386,9 +386,9 @@ public class _class
 			return className.getName();
 		}
 		
-		public static signature from ( signature prototype )
+		public static _signature from ( _signature prototype )
 		{
-			signature clone = new signature();
+			_signature clone = new _signature();
 			clone.className = (_class.simpleName)
 				simpleName.from( prototype.className );
 			clone.extendsFrom = _extends.from( prototype.extendsFrom );
@@ -398,9 +398,9 @@ public class _class
 			return clone;
 		}
 		
-		public static signature of( String classSignature )
+		public static _signature of( String classSignature )
 		{
-			signature sig = new signature();
+			_signature sig = new _signature();
 		
 			//MUST have sequence
 			//   ...class 

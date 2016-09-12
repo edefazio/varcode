@@ -20,7 +20,7 @@ import varcode.java.javac.JavaWorkspace;
 import varcode.java.javac.JavaWorkspace.CompiledWorkspace;
 import varcode.java.javac.JavaWorkspace.CodeWorkspace;
 */
-import varcode.java.model._class.signature;
+import varcode.java.model._class._signature;
 
 public class _classTest
 	extends TestCase
@@ -376,52 +376,52 @@ public class _classTest
 	
 	public void testClassSignature()
 	{
-		signature cs = signature.of( "class MyClass" );
+		_signature cs = _signature.of( "class MyClass" );
 		assertEquals( "class MyClass", cs.author( ) );
 		
-		cs = signature.of( "private class MyClass");
+		cs = _signature.of( "private class MyClass");
 		assertEquals( "private class MyClass", cs.author( ) );
 		
-		cs = signature.of( "private final class MyClass");
+		cs = _signature.of( "private final class MyClass");
 		assertEquals( "private final class MyClass", cs.author( ) );
 		
-		cs = signature.of( "private static class MyClass");
+		cs = _signature.of( "private static class MyClass");
 		assertEquals( "private static class MyClass", cs.author( ) );
 		
-		cs = signature.of( "private static final class MyClass");
+		cs = _signature.of( "private static final class MyClass");
 		assertEquals( "private static final class MyClass", cs.author( ) );
 		
-		cs = signature.of( "protected class MyClass");
+		cs = _signature.of( "protected class MyClass");
 		assertEquals( "protected class MyClass", cs.author( ) );
 		
-		cs = signature.of( "protected abstract class MyClass");
+		cs = _signature.of( "protected abstract class MyClass");
 		assertEquals( "protected abstract class MyClass", cs.author( ) );
 		
 		
 		cs = 
-			_class.signature.of("public static final class MyClass extends A implements B, C, D" );
+			_class._signature.of("public static final class MyClass extends A implements B, C, D" );
 		System.out.println( cs );		
 	}
 	
 	
 	public void testImplements()
 	{
-		signature cs = signature.of( "class MyClass implements fss" );
+		_signature cs = _signature.of( "class MyClass implements fss" );
 		
 		assertEquals( "class MyClass" + System.lineSeparator()
 		             +"    implements fss", cs.author( ) );
 		
-		cs = signature.of( "class MyClass implements fss great" );
+		cs = _signature.of( "class MyClass implements fss great" );
 		
 	}
 	
 	public void testsExtends()
 	{
-		signature.of( "class MyClass extends ABaseClass" );
+		_signature.of( "class MyClass extends ABaseClass" );
 		
 		try
 		{
-			signature.of( "class MyClass extends implements" );
+			_signature.of( "class MyClass extends implements" );
 		}
 		catch(VarException ve )
 		{
@@ -429,7 +429,7 @@ public class _classTest
 		}
 		try
 		{
-			signature.of( "class MyClass extends ABaseClass, AnotherClass" );
+			_signature.of( "class MyClass extends ABaseClass, AnotherClass" );
 			fail("expected exception");
 		}
 		catch(VarException ve)
@@ -444,7 +444,7 @@ public class _classTest
 	{ 
 		try
 		{
-			signature.of( "abstract final class MyClass");
+			_signature.of( "abstract final class MyClass");
 			fail("expected Exception");
 		}
 		catch ( VarException ve )
@@ -454,7 +454,7 @@ public class _classTest
 		}
 		try
 		{
-			signature.of( "synchronized class MyClass");
+			_signature.of( "synchronized class MyClass");
 			fail("expected Exception");
 		}
 		catch ( VarException ve )
@@ -464,7 +464,7 @@ public class _classTest
 		}
 		try
 		{
-			signature.of( "native class MyClass");
+			_signature.of( "native class MyClass");
 			fail("expected Exception");
 		}
 		catch ( VarException ve )
@@ -474,7 +474,7 @@ public class _classTest
 		}
 		try
 		{
-			signature.of( "transient class MyClass");
+			_signature.of( "transient class MyClass");
 			fail("expected Exception");
 		}
 		catch ( VarException ve )
@@ -484,7 +484,7 @@ public class _classTest
 		}
 		try
 		{
-			signature.of( "volatile class MyClass");
+			_signature.of( "volatile class MyClass");
 			fail("expected Exception");
 		}
 		catch ( VarException ve )
@@ -496,14 +496,14 @@ public class _classTest
 	
 	public static void main( String[] args )
 	{
-		_class.signature sig = _class.signature.of(
+		_class._signature sig = _class._signature.of(
 			"public static final class MyClass extends Something implements Serializable,Externalizable");
 		
 		System.out.println( sig );
 		
 		System.out.println( sig.author( Prefix.INDENT_4_SPACES ) );
 		
-		sig = _class.signature.of( "class MyClass" );
+		sig = _class._signature.of( "class MyClass" );
 		
 		System.out.println( sig );		
 	}

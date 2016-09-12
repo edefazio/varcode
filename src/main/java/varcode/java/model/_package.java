@@ -26,6 +26,11 @@ public class _package
 		return new _package( packageName );
 	}
 	
+    public void replace( String target, String replacement )
+    {
+        this.name = this.name.replace( target, replacement );
+    }
+    
 	private String name;
 	
 	public boolean isEmpty()
