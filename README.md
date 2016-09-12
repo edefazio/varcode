@@ -39,3 +39,53 @@ Object inst = Java.instance(theClass);
 Java.invoke( inst, "setFoo", 12345L );
 assertEquals( 12345L, Java.invoke(inst, "getFoo" ) );   
 ```
+
+The .java source generated
+```java
+package com.foo;
+
+public class Bar
+{
+    private double bar;
+    private Long foo;
+
+    public void setBar( double bar )
+    {
+        this.bar = bar;
+    }
+    public double getBar(  )
+    {
+        return bar;
+    }
+    public void setFoo( Long foo )
+    {
+        this.foo = foo;
+    }
+    public Long getFoo(  )
+    {
+        return foo;
+    }
+    public enum REPORT_COLUMNS
+    {
+        FOO_BAR( "fooBar", true );
+
+        private final String column;
+        private final boolean filterable;
+        private REPORT_COLUMNS( String column, boolean filterable )
+        {
+            this.column = column;
+            this.filterable = filterable;
+        }
+
+        public boolean isFilterable(  )
+        {
+            return filterable;
+        }
+        public String getColumn(  )
+        {
+            return column;
+        }
+    }
+}
+
+```
