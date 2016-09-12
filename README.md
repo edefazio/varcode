@@ -9,12 +9,12 @@ _class c = _class.of( "public class HelloInstance" )
 // "author" the .java source  
 JavaCase helloCase = c.toJavaCase( );
         
-//print the ,java source to the console
+//print the .java source to the console
 System.out.println( helloCase );
         
 // compile (javac) the .java to a .class, 
 // load the .class
-// call the constructor with "Eric" to create a new instance
+// call the `HelloInstance` constructor with "Eric" to create a new instance
 Object helloInstance = helloCase.instance( "Eric" );
 ```
 ...will print the generated source:
@@ -27,8 +27,8 @@ public class HelloInstance
     }
 }
 ```
-...will print "Hello Eric!" since it loaded and constructed 
-an instance of the "authored" class at runtime.
+...will print "Hello Eric!" since it ***compiled, loaded, and constructed*** 
+a new instance of `HelloInstance` class at runtime.
 
 varcode is the easiest code generator for Java.  
 It is natural and intuitive, and it also lets you compile,
@@ -70,7 +70,7 @@ Class theClass = c.toJavaCase().loadClass();
 //create a new instance
 Object inst = Java.instance(theClass);
     
-//invoke methods on the instance
+//Test methods on the authored instance
 Java.invoke( inst, "setFoo", 12345L );
 assertEquals( 12345L, Java.invoke(inst, "getFoo" ) );   
 ```
@@ -121,5 +121,16 @@ public class Bar
         }
     }
 }
-
 ```
+
+varcode allows you to interatively build new enums, classes, and interfaces.
+you can use varcode directly to build/compile/load classes, or use your own custom 
+abstraction layer on top to "author" source code.
+
+varcode provides some advanced features for handling more complicated jobs: 
+Workspaces (authoring compiling and loading multiple Java files at once)
+Nesting
+Prototypes
+Clones
+Refactoring (use replace)
+Generate Source code in other languages
