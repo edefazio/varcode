@@ -1,6 +1,41 @@
 ![alt text](https://github.com/edefazio/varcode/blob/master/varcode_greenOnWhite.png?raw=true "Ad Hoc Source Code Generation & metaprogramming")
 ad-hoc source code generation and metaprogramming (Java)
 ```java
+// build a model of the new .java class
+_class c = _class.of( "public class HelloInstance" )
+.constructor( "public HelloInstance( String name )",
+    "System.out.println( \"Hello \" + name + \"!\" );" );
+        
+// "author" the .java source  
+JavaCase helloCase = c.toJavaCase( );
+        
+//print the ,java source to the console
+System.out.println( helloCase );
+        
+// compile (javac) the .java to a .class, 
+// load the .class
+// call the constructor with "Eric" to create a new instance
+Object helloInstance = helloCase.instance( "Eric" );
+```
+...will print the generated source:
+```java
+public class HelloInstance
+{
+    public HelloInstance( String name )
+    {
+        System.out.println( "Hello " + name + "!" );
+    }
+}
+```
+...will print "Hello Eric!" since it loaded and constructed 
+an instance of the "authored" class at runtime.
+
+varcode is the easiest code generator for Java.  
+It is natural and intuitive, and it also lets you compile,
+load, use and test adhoc classes interactively.
+
+here is larger example:
+```java        
 // author new source code (a new .java file)
 _class c = 
     _class.of( "com.foo", "public class Bar" )
@@ -39,8 +74,7 @@ Object inst = Java.instance(theClass);
 Java.invoke( inst, "setFoo", 12345L );
 assertEquals( 12345L, Java.invoke(inst, "getFoo" ) );   
 ```
-
-The .java source generated
+The generated .java source
 ```java
 package com.foo;
 
