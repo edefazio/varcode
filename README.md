@@ -3,8 +3,8 @@ ad-hoc source code generation and metaprogramming (Java)
 ```java
 // build a model of the new .java class
 _class c = _class.of( "public class HelloInstance" )
-.constructor( "public HelloInstance( String name )",
-    "System.out.println( \"Hello \" + name + \"!\" );" );
+    .constructor( "public HelloInstance( String name )",
+        "System.out.println( \"Hello \" + name + \"!\" );" );
         
 // "author" the .java source  
 JavaCase helloCase = c.toJavaCase( );
