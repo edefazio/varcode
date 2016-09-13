@@ -250,7 +250,7 @@ public class _methods
 			}			
 			if( comment != null && comment.trim().length() > 0 )
 			{
-				m.comment( comment );
+				m.javadoc( comment );
 			}			
 			return m;
 		}
@@ -302,7 +302,7 @@ public class _methods
 			return this;
 		}
 	
-		public _method comment( String javadocComment )
+		public _method javadoc( String javadocComment )
 		{            
 			this.javadocComment = new _javadoc( javadocComment );
 			return this;

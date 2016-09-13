@@ -237,6 +237,7 @@ public class _enum
 		return author();
 	}
 	
+    
 	public static _enum of( String enumSignature )
 	{
 		_signature sig = _signature.of( enumSignature );
@@ -251,6 +252,15 @@ public class _enum
 		e.packageName( packageName );
 		return e;
 	}
+    
+    public static _enum of( String javadoc, String packageName, String enumSignature )
+    {
+        _signature sig = _signature.of( enumSignature );
+		_enum e = new _enum( sig );
+		e.packageName( packageName );
+        e.javaDoc( javadoc );
+		return e;
+    }
 	
 	public _enum( _signature signature )
 	{

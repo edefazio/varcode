@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package varcode.java.adhoc;
 
 import java.io.IOException;
@@ -21,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import varcode.VarException;
 import varcode.java.JavaCase;
+import varcode.java.JavaCase.JavaCaseAuthor;
 
 /**
  * A collection of AdHocJavaFiles (java source code) to be compiled.
@@ -48,6 +44,16 @@ public class Workspace
 		sw.addCode( javaCases );
 		return sw;
 	}
+    
+    public static AdHocClassLoader compileNow( JavaCaseAuthor...javaCases )
+    {
+        JavaCase[] jc = new JavaCase[ javaCases.length ];
+        for(int i=0; i<javaCases.length; i++)
+        {
+            jc[ i ] = javaCases[i].toJavaCase( );
+        }
+        return compileNow( jc );
+    }
     
     public static AdHocClassLoader compileNow( JavaCase...javaCases )
     {

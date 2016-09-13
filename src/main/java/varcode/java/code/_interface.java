@@ -218,10 +218,14 @@ public class _interface
 		return this.imports;
 	}
 	
-	public _interface method( String signature )
-	{
-		_method method = _method.of( signature );
+    public _interface method( String javadoc, String signature )
+    {
+        _method method = _method.of( signature );
 		
+        if( javadoc != null  )
+        {
+            method.javadoc( javadoc );
+        }
 		_methods._method.signature sig = method.getSignature();
 		
 		//Default Method
@@ -244,6 +248,11 @@ public class _interface
 		method.getSignature().getModifiers().set( "abstract" );
 		this.methods.addMethod( method );
 		return this;		
+    }
+    
+	public _interface method( String signature )
+	{
+		return method( null, signature );
 	}
 	
 	public _interface staticMethod( String signature, String...linesOfCode )
