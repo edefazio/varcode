@@ -19,7 +19,8 @@ import varcode.java.JavaCase;
 import varcode.java.JavaCase.JavaCaseAuthor;
 
 /**
- * A collection of AdHocJavaFiles (java source code) to be compiled.
+ * batch / collection of AdHocJavaFiles (java source code) to be compiled 
+ * (via Javac) and loaded into an Ad Hoc Class Loader.
  * 
  * @author M. Eric DeFazio eric@varcode.io
  */
@@ -33,28 +34,56 @@ public class Workspace
     public static final JavaCompiler JAVAC = 
         ToolProvider.getSystemJavaCompiler(); 
     
+    /** 
+     * Creates a Workspace given the JavaCases <PRE>
+     * Workspace ws = 
+     *    Workspace.of( 
+     *        _interface.of("interface Count").toJavaCase(), 
+     *        _enum.of("enum MyEnum").value("ONE").toJavaCase() );
+     * </PRE>
+     */
     public static Workspace of( JavaCase...javaCases )
 	{
-		return of( null, javaCases );
-	}
-	
-	public static Workspace of( String name, JavaCase... javaCases )
-	{
-		Workspace sw = new Workspace(  );
-		sw.addCode( javaCases );
-		return sw;
+        Workspace workspace = new Workspace( );
+		workspace.addCode( javaCases );
+		return workspace;
 	}
     
-    public static AdHocClassLoader compileNow( JavaCaseAuthor...javaCases )
+    /**
+     * Authors {@code JavaCase}s and then compiles each of the JavaCases
+     * and returns a ClassLoader loaded with the compiled Classes.
+     * 
+     * Workspace ws = 
+     *    Workspace.of( 
+     *        "MyWorkspace" 
+     *        _interface.of("interface Count"), 
+     *        _enum.of("enum MyEnum").value("ONE") );
+     * 
+     * @param caseAuthors authors of JavaCases
+     * @return  an AdHocClassLoader loaded with compiled Classes
+     */
+    public static AdHocClassLoader compileNow( JavaCaseAuthor...caseAuthors )
     {
-        JavaCase[] jc = new JavaCase[ javaCases.length ];
-        for(int i=0; i<javaCases.length; i++)
+        JavaCase[] cases = new JavaCase[ caseAuthors.length ];
+        for(int i=0; i<caseAuthors.length; i++)
         {
-            jc[ i ] = javaCases[i].toJavaCase( );
+            cases[ i ] = caseAuthors[ i ].toJavaCase( );
         }
-        return compileNow( jc );
+        return compileNow( cases );
     }
-    
+    /**
+     * 
+     * <PRE>
+     * Workspace ws = 
+     *    Workspace.of( 
+     *        "MyWorkspace" 
+     *        _interface.of("interface Count").toJavaCase(), 
+     *        _enum.of("enum MyEnum").value("ONE").toJavaCase() );
+     * </PRE>
+     * 
+     * @param javaCases authored java code to be compiled and loaded
+     * @return ClassLoader containing the compiled Java classes
+     */
     public static AdHocClassLoader compileNow( JavaCase...javaCases )
     {
         AdHocJavaFile[] files = new AdHocJavaFile[ javaCases.length ];
@@ -110,15 +139,15 @@ public class Workspace
         return ws.compileC( compilerOptions );
     }        
     
-    /** ClassLoader for loading Java Code that exists in memory 
-     * (as a byte array) vs from a file */
+    /** ClassLoader for loading ad hoc Java Code that exists in memory 
+     * at runtime */
     private final AdHocClassLoader adHocClassLoader;
     
     /** (optional) Name of the workspace*/
 	public String name;
 		
 	/** Java source files of the Workspace */
-	private final Map<String, AdHocJavaFile> classNameToAdHocCodeMap = 
+	private final Map<String, AdHocJavaFile> classNameToAdHocJavaFileMap = 
 		new HashMap<String, AdHocJavaFile>();
     
     public Workspace()
@@ -179,7 +208,7 @@ public class Workspace
         for( int i = 0; i < javaCase.length; i++ )
 		{
 			AdHocJavaFile javaCode = javaCase[ i ].javaCode();
-			classNameToAdHocCodeMap.put( javaCode.getClassName(), javaCode );
+			classNameToAdHocJavaFileMap.put( javaCode.getClassName(), javaCode );
 		}
 		return this;
 	}
@@ -198,7 +227,7 @@ public class Workspace
                   + "in this workspace" );
             }
             LOG.debug( "Adding code \"" + javaCode[ i ].getClassName() + "\" to workspace" );
-			classNameToAdHocCodeMap.put( 
+			classNameToAdHocJavaFileMap.put( 
                 javaCode[ i ].getClassName(), javaCode[ i ] );           
 		}
 		return this;
@@ -244,13 +273,12 @@ public class Workspace
 			new DiagnosticCollector<JavaFileObject>();
 			
 		JavaCompiler.CompilationTask task = 
-            JAVAC.getTask(
-                null, //use System.err if the tool fails 
+            JAVAC.getTask(null, //use System.err if the tool fails 
                 this, 
                 diagnostics, 
                 options, 
 			null, // NO annotation processors classes (at this time) 
-		 	this.classNameToAdHocCodeMap.values() );
+            this.classNameToAdHocJavaFileMap.values() );
 			
 		boolean compiledNoErrors = task.call();
 			
@@ -258,7 +286,7 @@ public class Workspace
 	    {
             throw new JavacException( 
                 this.name, 
-	        	this.classNameToAdHocCodeMap.values(),  
+	        	this.classNameToAdHocJavaFileMap.values(),  
 	        	diagnostics );
 	    }	        	
         try

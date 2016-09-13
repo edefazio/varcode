@@ -207,7 +207,7 @@ public class _classTest
 		
 		JavaCase oneCase = one.toJavaCase( );
 		JavaCase twoCase = two.toJavaCase( );
-		Workspace sw = Workspace.of( "Cyclic Dependency", oneCase, twoCase );
+		Workspace sw = Workspace.of( oneCase, twoCase );
 		
         System.out.println( oneCase );
         System.out.println( twoCase );

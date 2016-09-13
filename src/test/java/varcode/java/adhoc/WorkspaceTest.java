@@ -21,10 +21,10 @@ public class WorkspaceTest
     // so there is no conflict
     public void testDualWorkspaces()
     {
-        Workspace a1 = Workspace.of( "a1" )
+        Workspace a1 = Workspace.of( )
             .addCode( "A", "public class A{ public static final int ID = 1; }" );
         
-        Workspace a2 = Workspace.of( "a2" )
+        Workspace a2 = Workspace.of(  )
             .addCode( "A", "public class A{ public static final int ID = 2; }" );
         
         AdHocClassLoader a1cl = a1.compileC( );
@@ -172,7 +172,7 @@ public class WorkspaceTest
 	{
 		try
 		{
-			Workspace.of( "EXPECT COMPILER EXCEPTION" )
+			Workspace.of( )
 		    	.addCode( "A", "asdfklhjasdjklf" )
 		    	.compileC( );
 			fail( "Expected Compiler Exception" );
@@ -189,7 +189,7 @@ public class WorkspaceTest
 	public void testTwoClasses()
 	{
 		AdHocClassLoader cw = 
-			Workspace.of( "A AND B")
+			Workspace.of( )
 			    .addCode( 
 			        "A", 
 			        "public class A" + N 
@@ -220,7 +220,7 @@ public class WorkspaceTest
 	public void testTwoClassesCycle()
 	{
 		AdHocClassLoader cw = 
-			Workspace.of( "A AND B")
+			Workspace.of( )
 			    .addCode( 
 			        "A", 
 			        "public class A" + N 
@@ -248,7 +248,7 @@ public class WorkspaceTest
 	public void testCompilerException()
 	{
 		Workspace sw = 
-			Workspace.of( "EXCEPTION ON LINE 3" )
+			Workspace.of(  )
                 .addCode( "ExceptionLine3",
 				"public class ExceptionLine3 {" + N 
 			   +"    public int a = 0;" + N
@@ -270,7 +270,7 @@ public class WorkspaceTest
 	
 	public void testTwoClassesFailCompilerOption()
 	{
-		Workspace sw = Workspace.of( "COMPILER EXCEPTION EXPECTED")
+		Workspace sw = Workspace.of( )
 	    .addCode( 
 	        "A", 
 	        "public class A" + N 
