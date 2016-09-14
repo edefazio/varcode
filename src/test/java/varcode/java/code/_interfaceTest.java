@@ -191,7 +191,7 @@ public class _interfaceTest
 		assertEquals( "", interf.getJavadoc() );
 		
 		assertEquals( 1, interf.getFields().count() );
-		assertNotNull( interf.getFields().byName("name") );
+		assertNotNull( interf.getFields().getByName("name") );
 		assertEquals( 2, interf.getMethods().count() );
 		assertEquals( 1, interf.getNests().count() );
 		

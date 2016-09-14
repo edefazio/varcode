@@ -45,8 +45,7 @@ public class _fields
 		{			
 			fs.addFields( _field.of( prototype.fields.get( fieldNames[ i ] ) ) );
 		}
-		return fs;
-		
+		return fs;		
 	}
 	
     private final Map<String,_field>fields;
@@ -66,7 +65,13 @@ public class _fields
     	return fields;
     }
     
-    public _field byName( String name )
+    //returns the names of all the fields
+    public String[] getFieldNames()
+    {
+        return this.fields.keySet().toArray( new String[ 0 ] );
+    }
+    
+    public _field getByName( String name )
     {
     	return fields.get( name );
     }

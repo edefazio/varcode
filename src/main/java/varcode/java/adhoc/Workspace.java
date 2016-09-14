@@ -35,6 +35,22 @@ public class Workspace
         ToolProvider.getSystemJavaCompiler(); 
     
     /** 
+     * 
+     * @param caseAuthors
+     * @return a Workspace containing the JavaFiles that are
+     */
+    public static Workspace ofAuthors( JavaCaseAuthor...caseAuthors )
+    {
+        JavaCase[] cases = new JavaCase[caseAuthors.length ];
+        
+        for( int i = 0; i < caseAuthors.length; i++ )
+        {
+            cases[ i ] = caseAuthors[ i ].toJavaCase( );
+        }
+        return of( cases );
+    }
+    
+    /** 
      * Creates a Workspace given the JavaCases <PRE>
      * Workspace ws = 
      *    Workspace.of( 
@@ -45,7 +61,7 @@ public class Workspace
     public static Workspace of( JavaCase...javaCases )
 	{
         Workspace workspace = new Workspace( );
-		workspace.addCode( javaCases );
+		workspace.addCases( javaCases );
 		return workspace;
 	}
     
@@ -150,28 +166,50 @@ public class Workspace
 	private final Map<String, AdHocJavaFile> classNameToAdHocJavaFileMap = 
 		new HashMap<String, AdHocJavaFile>();
     
+    /**
+     * Construct a new Workspace with a new AdHocClassLoader
+     */
     public Workspace()
     {
         this( new AdHocClassLoader() );
     }
     
+    /**
+     * Construct a new Workspace with a the AdHocClassLoader
+     * @param adHocClassLoader 
+     */
     public Workspace( AdHocClassLoader adHocClassLoader )
     {
         this( adHocClassLoader, new AdHocJavaFile[ 0 ] );
     }
     
-    public Workspace( AdHocClassLoader adHocClassLoader, AdHocJavaFile...adHocCode )
+    /**
+     * Construct a Workspace with the ClassLoader and AdHocJavaFiles
+     * 
+     * @param adHocClassLoader the loader that will contain the compile classes
+     * @param adHocJavaFiles Java source files that are to be compiled to classes
+     */
+    public Workspace( 
+        AdHocClassLoader adHocClassLoader, AdHocJavaFile...adHocJavaFiles )
     {
-        this( 
-            JAVAC.getStandardFileManager( 
+        this( JAVAC.getStandardFileManager( 
                 null, //use default DiagnosticListener
                 null, //use default Locale
                 null ),
             adHocClassLoader,
             "AdHoc",
-            adHocCode );//use default CharSet     	
+            adHocJavaFiles );//use default CharSet     	
     }        
     
+    /**
+     * Creates a Workspace that delegates to the fileManager for class resolution
+     * and compiles & loads classes with the adHocClassLoader
+     * 
+     * @param fileManager file Manager for resolving classes
+     * @param adHocClassLoader classLoader to contain the compiled .classes
+     * @param workspaceName the optional name of the workspace
+     * @param adHocJavaFiles source .java files to be compiled and loaded
+     */
 	public Workspace(
         StandardJavaFileManager fileManager,    
         AdHocClassLoader adHocClassLoader, 
@@ -197,13 +235,21 @@ public class Workspace
 	 */
 	public final Workspace addCode( String className, String code )
 	{
-		AdHocJavaFile adHocCode = 
+		AdHocJavaFile adHocJavaFile = 
 			new AdHocJavaFile( className, code );
-		addCode( adHocCode );
+        
+		addCode(adHocJavaFile );
 		return this;
 	}
-		
-	public final Workspace addCode( JavaCase...javaCase )
+	
+    /**
+     * Adds one of more JavaCases containing (.java) source code
+     * to be compiled within the workspace
+     * 
+     * @param javaCase a JavaCase
+     * @return the Workspace
+     */
+	public final Workspace addCases( JavaCase...javaCase )
 	{
         for( int i = 0; i < javaCase.length; i++ )
 		{

@@ -12,6 +12,7 @@ import varcode.doc.Author;
 import varcode.doc.Directive;
 import varcode.dom.Dom;
 import varcode.java.JavaCase;
+import varcode.java.code._fields._field;
 import varcode.java.code._methods._method;
 import varcode.java.code._nest._nestGroup;
 import varcode.java.code._nest.component;
@@ -342,6 +343,12 @@ public class _class
 		return this;
 	}
 	
+    public _class field( _field field )
+    {
+        fields.addFields( field );		
+        return this;
+    }
+    
 	public _class field( String field )
 	{
 		fields.addFields( _fields._field.of( field ) );		
