@@ -54,6 +54,7 @@ import varcode.java.code._packageTest;
 import varcode.java.code._parametersTest;
 import varcode.java.code._staticBlockTest;
 import varcode.java.code._throwsTest;
+import varcode.java.code.auto._auto_enumTest;
 import varcode.markup.MarkupParserTest;
 import varcode.markup.VarNameAuditTest;
 import varcode.markup.bindml.BindMLCompilerTest;
@@ -208,13 +209,13 @@ public class AllTestSuite
         suite.addTestSuite( CountTest.class );
         suite.addTestSuite( CountIndexTest.class );
         suite.addTestSuite( RowifyTest.class );	
-    
+
+        
         suite.addTestSuite( _argumentsTest.class );
         suite.addTestSuite( _classTest.class );
         suite.addTestSuite( _codeTest.class );
         suite.addTestSuite( _constructorsTest.class );
-        suite.addTestSuite(_auto_dtoTest.class );
-        suite.addTestSuite( _enumTest.class );
+        suite.addTestSuite( _enumTest.class );        
         suite.addTestSuite( _extendsTest.class );        
         suite.addTestSuite( _fieldsTest.class );
         
@@ -231,6 +232,10 @@ public class AllTestSuite
         suite.addTestSuite( _parametersTest.class );
         suite.addTestSuite( _staticBlockTest.class );
         suite.addTestSuite( _throwsTest.class );
+        
+        
+        suite.addTestSuite( _auto_dtoTest.class );
+        suite.addTestSuite( _auto_enumTest.class );
                 
         //Functional / Integration Tests
         suite.addTestSuite( ModelFeatureTest.class );

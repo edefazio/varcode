@@ -82,15 +82,18 @@ public class _auto_dtoTest
     {
         _auto_dto d = _auto_dto.of("ex.varcode.dto.MyDto")
             .imports( Map.class)    
-            .property("public String name;")
-            .property("private final int count = 100;")
-            .property("public final int id;")
-            .property("public Map<String,Integer> nameToCount;");
+            .property( "public String name;" )
+            .property( "private final int count = 100;" )
+            .property( "public final int id;" )
+            .property( "public Map<String,Integer> nameToCount;" );
         
         JavaCase jc = d.toJavaCase( );
         
-        System.out.println( jc );
+        //System.out.println( jc );
         Object myVoInstance = jc.instance( 12345 );
+        assertEquals( null, Java.invoke( myVoInstance, "getName" ) );
+        assertEquals( 100, Java.invoke( myVoInstance, "getCount" ) );
+        assertEquals( 12345, Java.invoke( myVoInstance, "getId" ) );
     }
     
 }
