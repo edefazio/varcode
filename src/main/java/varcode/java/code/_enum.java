@@ -87,6 +87,20 @@ public class _enum
 		this.nests = _nestGroup.from( prototype.nests );
 	}
 	
+    public String getName()
+    {
+        return this.enumSignature.getName();
+    }
+    
+    public String getPackageName()
+    {
+        if( this.enumPackage.isEmpty() ) 
+        {
+            return "";
+        }    
+        return this.enumPackage.getName();
+    }
+    
 	public VarContext getContext()
 	{
 		String[] n = null;
@@ -219,11 +233,11 @@ public class _enum
 		
 		if( this.enumPackage != null && ! this.enumPackage.isEmpty() )
 		{
-			return this.enumPackage.getName() + "." + this.enumSignature.getEnumName();
+			return this.enumPackage.getName() + "." + this.enumSignature.getName();
 		}
 		else
 		{
-			return this.enumSignature.getEnumName();
+			return this.enumSignature.getName();
 		}
 	}
 	
@@ -613,9 +627,9 @@ public class _enum
 			return this.implementsFrom;
 		}
 		
-		public String getEnumName()
+		public String getName()
 		{
-			return this.enumName.toString();
+			return this.enumName;
 		}
 		public static _signature of( String enumSignature )
 		{
@@ -720,7 +734,7 @@ public class _enum
 	public void replace( String target, String replacement  ) 
 	{
 		this.enumSignature.enumName = 
-            this.enumSignature.getEnumName().replace( target, replacement );
+            this.enumSignature.getName().replace( target, replacement );
 		this.constructors.replace( target, replacement );		
 	}
 }

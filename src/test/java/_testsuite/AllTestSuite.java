@@ -40,7 +40,7 @@ import varcode.java.code._argumentsTest;
 import varcode.java.code._classTest;
 import varcode.java.code._codeTest;
 import varcode.java.code._constructorsTest;
-import varcode.java.code._dtoTest;
+import varcode.java.code.auto._auto_dtoTest;
 import varcode.java.code._enumTest;
 import varcode.java.code._extendsTest;
 import varcode.java.code._fieldsTest;
@@ -213,7 +213,7 @@ public class AllTestSuite
         suite.addTestSuite( _classTest.class );
         suite.addTestSuite( _codeTest.class );
         suite.addTestSuite( _constructorsTest.class );
-        suite.addTestSuite( _dtoTest.class );
+        suite.addTestSuite(_auto_dtoTest.class );
         suite.addTestSuite( _enumTest.class );
         suite.addTestSuite( _extendsTest.class );        
         suite.addTestSuite( _fieldsTest.class );
@@ -231,34 +231,7 @@ public class AllTestSuite
         suite.addTestSuite( _parametersTest.class );
         suite.addTestSuite( _staticBlockTest.class );
         suite.addTestSuite( _throwsTest.class );
-        
-        //java.model component functional tests
-        /*
-        suite.addTestSuite( FluentTest.class );
-        suite.addTestSuite( InLinerTest.class );
-        suite.addTestSuite( _argumentsTest.class );
-        suite.addTestSuite( _classTest.class );
-        suite.addTestSuite( _cloneTest.class );
-        suite.addTestSuite( _codeTest.class );
-        suite.addTestSuite( _constructorsTest.class );
-        suite.addTestSuite( _enumTest.class );
-        suite.addTestSuite( _extendsTest.class );
-        suite.addTestSuite( _fieldsTest.class );
-        suite.addTestSuite( _importsTest.class );
-        suite.addTestSuite( _interfaceTest.class );
-        suite.addTestSuite( _javadocTest.class );
-        suite.addTestSuite( _literalTest.class );
-        suite.addTestSuite( _methodsTest.class );
-        suite.addTestSuite( _modifiersTest.class );
-        suite.addTestSuite( _nestTest.class );
-        suite.addTestSuite( _packageTest.class );
-        suite.addTestSuite( _parametersTest.class );
-        suite.addTestSuite( _staticBlockTest.class );
-        suite.addTestSuite( _throwsTest.class );
-        suite.addTestSuite( _typeTest.class );
-        suite.addTestSuite( _varTest.class );
-        */
-        
+                
         //Functional / Integration Tests
         suite.addTestSuite( ModelFeatureTest.class );
         suite.addTestSuite( CodeMLModelTest.class );

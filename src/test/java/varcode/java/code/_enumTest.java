@@ -48,7 +48,7 @@ public class _enumTest
         assertTrue( e.getNests().count() == 0 );
         assertTrue( e.getNests().isEmpty() );
         assertTrue( e.getPackage().isEmpty() );
-        assertEquals( "Empty", e.getSignature().getEnumName() );
+        assertEquals( "Empty", e.getSignature().getName() );
         assertEquals( 0, e.getSignature().getImplements().count() );
         assertTrue( e.getSignature().getImplements().isEmpty() );
         assertEquals( 0, e.getSignature().getModifiers().count() );
@@ -82,7 +82,7 @@ public class _enumTest
         assertTrue( e.getNests().count() == 0 );
         assertTrue( e.getNests().isEmpty() );
         assertTrue( e.getPackage().isEmpty() );
-        assertEquals( "One", e.getSignature().getEnumName() );
+        assertEquals( "One", e.getSignature().getName() );
         assertEquals( 0, e.getSignature().getImplements().count() );
         assertTrue( e.getSignature().getImplements().isEmpty() );
         assertEquals( 0, e.getSignature().getModifiers().count() );
@@ -130,9 +130,6 @@ public class _enumTest
         _parameter p = params.get( 0 );
         assertEquals( "name", p.getName() );
         assertEquals( "String", p.getType() );
-        
-        
-        
         
         //now author, compile and load the enum
         Class enumClass = e.toJavaCase( ).loadClass();
@@ -251,7 +248,7 @@ public class _enumTest
 				"public enum MyEnum implements Serializable,Externalizable");
 			
 		assertTrue( Modifier.isPublic( sig.getModifiers().getBits() ) );
-		assertTrue( sig.getEnumName().equals( "MyEnum" ) );
+		assertTrue( sig.getName().equals( "MyEnum" ) );
 		assertEquals( 2, sig.getImplements().count() );
 		assertEquals( "Serializable", sig.getImplements( 0 ).toString() );
 		assertEquals( "Externalizable", sig.getImplements( 1 ).toString() );

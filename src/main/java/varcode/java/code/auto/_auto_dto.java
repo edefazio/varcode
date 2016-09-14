@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package varcode.java.code;
+package varcode.java.code.auto;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -23,7 +23,11 @@ import varcode.doc.Directive;
 import varcode.java.JavaCase;
 import varcode.java.JavaCase.JavaCaseAuthor;
 import varcode.java.JavaNaming;
+import varcode.java.code._class;
+import varcode.java.code._code;
+import varcode.java.code._fields;
 import varcode.java.code._fields._field;
+import varcode.java.code._modifiers;
 
 /**
  * Creates an ad-hoc dto (Data Transfer Object)
@@ -39,30 +43,32 @@ import varcode.java.code._fields._field;
  *   <LI>"private final int b = 100;" <-- this is a fienal field with an init
  *</UL>  
  * Final fields have only a getter (cant be set)
+ * 
+ * NOTE: 
  */
-public class _dto
+public class _auto_dto
     implements JavaCaseAuthor
 {
     private _class theClass;
     
     /**
      * Create a dto at the full pathName:<PRE>
-     *  _dto.of("ex.varcode.dto.MyDto");</PRE>
+     *  _auto_dto.of("ex.varcode.dto.MyDto");</PRE>
      * 
      * @param fullClassName
      * @return 
      */
-    public static _dto of( String fullClassName )
+    public static _auto_dto of( String fullClassName )
     {
          String[] packageAndClassName = 
             JavaNaming.ClassName.extractPackageAndClassName( fullClassName );
         
-        return new _dto( packageAndClassName[ 0 ], packageAndClassName[ 1 ] );
+        return new _auto_dto( packageAndClassName[ 0 ], packageAndClassName[ 1 ] );
     }
     
     /**
-     * _dto myDto = 
-     *     _dto.of( "ex.varcode.dto.MyDto" )
+     * _auto_dto myDto = 
+     *     _auto_dto.of( "ex.varcode.dto.MyDto" )
      *         .field( "public String name" )
      *         .field( "public Map<String,Integer> nameToCount")
      * 
@@ -70,19 +76,22 @@ public class _dto
      * @param packageName
      * @param className 
      */
-    public _dto( String packageName, String className )
+    public _auto_dto( String packageName, String className )
     {
        this.theClass = _class.of( packageName, "public class "+className );        
     }
-    
     
     private static final String firstUpper( String s )
     {
         return Character.toUpperCase( s.charAt(0) ) + s.substring( 1 );
     }
     
-    
-    public _dto imports( Class clazz )
+    /**
+     * Add class imports to the DTO
+     * @param clazz classes to import
+     * @return this
+     */
+    public _auto_dto imports( Class... clazz )
     {
         this.theClass.imports( clazz );
         return this;
@@ -93,7 +102,7 @@ public class _dto
      * (also imports the class if need be)
      * i.e.
      * <PRE>
-     * dto myDto = _dto.of( "MyDto" );
+     * _auto_dto myDto = _auto_dto.of( "MyDto" );
      * myDto.field( BigDecimal.class, "value" );
      *  // creates: 
      * 
@@ -118,7 +127,7 @@ public class _dto
      * }
      * </PRE>
      */
-    public _dto field( Class clazz, String name )
+    public _auto_dto property( Class clazz, String name )
     {
         this.theClass.imports( clazz ); //import the clazz if necessary
         _field f = new _field( 
@@ -140,15 +149,14 @@ public class _dto
     }
     
     /**
-     * Creates a field along with getter and setter
+     * Creates a field along with getter and setter<PRE>
      * 
-     * 
-     * field( "private String name" );
+     * property( "private final String name;" );
      * 
      * @param fieldDef
      * @return this
      */
-    public _dto field( String fieldDef )
+    public _auto_dto property( String fieldDef )
     {
         //first add the field
         _field f = _field.of( fieldDef );
@@ -169,72 +177,79 @@ public class _dto
         return this;        
     }
     
+    /**
+     * Constructs and returns a new "clone" dto class
+     * based on the current state of the _dto
+     * (NOTE: the clone is Mutable, but changes to the
+     * _class will not be reflected in the _dto)
+     * 
+     * the (constructor) for the dto is lazily constructed
+     * based on the state of the properties of this _class
+     * 
+     * @return a constructed clone of the internal _class
+     */
+    public _class getDtoClass()
+    {
+        //we need a constructor with all the uninitialized final fields
+        //verify that all fields are either
+        // nonfinal and they are final With an initializer
+        List<_field>uninitializedFinalFields = new ArrayList<_field>();
+        
+        _fields fs = this.theClass.getFields();
+        String[] fieldNames = this.theClass.getFields().getFieldNames();
+        
+        for( int i = 0; i < fieldNames.length; i++ )
+        {
+            _field f = fs.getByName( fieldNames[ i ] );
+            if( f.getModifiers().contains( Modifier.FINAL ) && 
+                    !f.hasInit() )
+            {
+                uninitializedFinalFields.add( f );
+            }
+        }
+        
+        String paramList = "";
+        _code finalInitCode = new _code();
+        
+        for( int i = 0; i < uninitializedFinalFields.size(); i++ )
+        {
+            _field f = uninitializedFinalFields.get( i );
+            if( i > 0 )
+            {
+                paramList += ", ";
+            }
+            paramList +=  f.getType() + " " + f.getName();
+            
+            finalInitCode.addTailCode( 
+                "this." + f.getName() + " = " + f.getName()+";" );
+        }
+        _class dtoClass = _class.from( this.theClass );
+            
+        String constructorSig = 
+            "public " + this.theClass.getSignature().getName() 
+                + "( " + paramList + " )";
+        
+        dtoClass.constructor( constructorSig, finalInitCode );
+        return dtoClass;
+    }
     
-
-
     @Override
-    public JavaCase toJavaCase(Directive... directives)
+    public JavaCase toJavaCase( Directive... directives )
     {
         return toJavaCase( null, directives );
     }
 
     @Override
-    public JavaCase toJavaCase(VarContext context, Directive... directives)
+    public JavaCase toJavaCase( VarContext context, Directive... directives )
     {
-        //verify that all fields are either
-        // nonfinal and they are final With an initializer
-        List<_field>uninitializedFinalFields = new ArrayList<_field>();
-        
-        _fields fields = this.theClass.getFields();
-        String[] fieldNames = fields.getFieldNames();
-        for( int i = 0; i < fieldNames.length; i++ )
-        {
-            _field f = fields.getByName( fieldNames[ i ] );
-            if( f.getModifiers().contains(Modifier.FINAL ) &&
-                !f.hasInit() )
-            {
-                uninitializedFinalFields.add( f ); 
-            }    
-        }
-        if( uninitializedFinalFields.size() > 0 )
-        {
-            //we need a constructor with all the uninitialized final fields
-            String paramList = "";
-            _code finalInitCode = new _code();
-            for(int i=0; i<uninitializedFinalFields.size(); i++ )
-            {
-                _field f = uninitializedFinalFields.get( i );
-                if( i > 0 )
-                {
-                    paramList += ", ";
-                }
-                paramList +=  f.getType()+" "+ f.getName();
-                finalInitCode.addTailCode( 
-                    "this." + f.getName() + " = " + f.getName()+";" );
-            }
-            _class adHoc = _class.from( theClass );
-            
-            String constructorSig = 
-                "public "+this.theClass.getSignature().getName()+"( "+paramList+" )";
-            adHoc.constructor( constructorSig, finalInitCode );
-        
-            if( context == null )
-            {
-                return adHoc.toJavaCase( directives );
-            }
-            else
-            {
-                return adHoc.toJavaCase( context, directives );
-            }
-        }        
+        _class dtoClass = getDtoClass();
         if( context == null )
         {
-            return theClass.toJavaCase( directives );
+            return dtoClass.toJavaCase( directives );
         }
         else
         {
-            return theClass.toJavaCase( context, directives );
+            return dtoClass.toJavaCase( context, directives );
         }
-    }
-    
+    }    
 }

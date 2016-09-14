@@ -188,6 +188,16 @@ public enum Java
         return loadClass( adHocClassLoader, javaFile, compilerOptions );        
     }
     
+    /**
+     * Compiles the javaFile and loads the Class into the 
+     * {@code adHocClassLoader}
+     * 
+     * @param adHocClassLoader the classLoader to load the compiled classes
+     * @param javaFile file containing at least one top level Java class
+     * (and potentially many nested classes)
+     * @param compilerOptions options passed to the Runtime Javac compiler
+     * @return the Class (loaded in the ClassLoader)
+     */
     public static Class<?> loadClass( 
     	AdHocClassLoader adHocClassLoader, 
     	AdHocJavaFile javaFile,
@@ -199,25 +209,32 @@ public enum Java
         return adHocClassLoader.findClass( javaFile.getClassName() );
 	}
     
-    private static Object construct( Constructor<?> constructor, Object[] arguments )
+    /**
+     * Construct a "new" java instance by calling the constructor
+     * @param constructor the constructor
+     * @param arguments arguments passed in the constructor
+     * @return  the new instance
+     */
+    private static Object construct( 
+        Constructor<?> constructor, Object[] arguments )
     {
-      	 try
-         {
-      		 if( arguments.length > 0 )
-       		 {
-       			 LOG.debug( "Calling constructor >" 
-       			     + constructor + " with [" + arguments.length + "] arguments" );
-       		 }
-       		 else
-       		 {
-       			 LOG.debug( "Calling constructor > " + constructor );
-       		 }
-             return constructor.newInstance( arguments );
-         }
-         catch( Exception e )
-         {
-             throw new VarException( e );
-         }         
+        try
+        {
+      		if( arguments.length > 0 )
+       		{
+       			LOG.debug( "Calling constructor >" 
+       			    + constructor + " with [" + arguments.length + "] arguments" );
+       		}
+       		else
+       		{
+       			LOG.debug( "Calling constructor > " + constructor );
+       		}
+            return constructor.newInstance( arguments );
+        }
+        catch( Exception e )
+        {
+            throw new VarException( e );
+        }         
     }        
     
     
