@@ -204,7 +204,7 @@ public class _methods
             return this.methodSignature.getName();
         }
         
-		public static _method from(_method prototype ) 
+		public static _method from( _method prototype ) 
 		{
 			_method m = 
 				new _method( signature.from( prototype.methodSignature ) );
@@ -350,8 +350,10 @@ public class _methods
 			private _throws throwsExceptions;
 	
 			public signature(
-				_modifiers modifiers, String returnType, 
-                String methodName, _parameters params,
+				_modifiers modifiers, 
+                String returnType, 
+                String methodName, 
+                _parameters params,
 				_throws throwsExceptions )
 			{
 				this.modifiers = modifiers;
@@ -375,7 +377,6 @@ public class _methods
             {
                 this.returnType = this.returnType.replace( target, replacement );
                 this.params.replace( target, replacement ); 
-                //this.methodName = _identifier.of( this.methodName.toString().replace( target, replacement ) );
                 this.methodName = this.methodName.replace( target, replacement );
                 throwsExceptions.replace(target, replacement);
             }

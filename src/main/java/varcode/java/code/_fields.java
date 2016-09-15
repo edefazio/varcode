@@ -3,8 +3,6 @@ package varcode.java.code;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 import varcode.CodeAuthor;
 import varcode.Template;
 
@@ -39,83 +37,115 @@ public class _fields
 	{
 		_fields fs = new _fields();
 		
-		String[] fieldNames = prototype.fields.keySet().toArray(new String[0] );
-		
-		for( int i = 0; i < fieldNames.length; i++)
+        for( int i = 0; i < prototype.fields.size(); i++)
 		{			
-			fs.addFields( _field.of( prototype.fields.get( fieldNames[ i ] ) ) );
+			fs.addFields( _field.of( prototype.fields.get( i  ) ) );
 		}
 		return fs;		
 	}
 	
-    private final Map<String,_field>fields;
+    /** the fields in order of addition */
+    private final List<_field> fields;
     
     public _fields()
     {
-    	fields = new TreeMap<String, _field>();
+        fields = new ArrayList<_field>();
     }
     
     public int count()
     {
     	return fields.size();
     }
-    
-    public Map<String,_field>fieldMap()
+
+    /** returns the field at this index */
+    public  _field getAt( int index )
     {
-    	return fields;
+        if( index < count() && index >= 0 )
+        {
+            return fields.get( index );
+        }
+        throw new VarException( "invalid field index ["+ index + "]" );
     }
-    
+            
     //returns the names of all the fields
     public String[] getFieldNames()
     {
-        return this.fields.keySet().toArray( new String[ 0 ] );
+        String[] fieldNames = new String[ this.fields.size() ];
+        for( int i = 0; i < fieldNames.length; i++ )
+        {
+            fieldNames[ i ] = fields.get( i ).name;
+        }
+        return fieldNames;
+    }
+    
+    /** Verify there is no other field with this name */
+    public boolean canAddFieldName( String fieldName )
+    {
+        for( int i = 0; i < fields.size(); i++ )
+        {
+            if( this.fields.get( i ).name.equals( fieldName ) )
+            {
+                return false;
+            }
+        }
+        return true;
     }
     
     public _field getByName( String name )
     {
-    	return fields.get( name );
+    	for( int i = 0; i < this.fields.size(); i++ )
+        {
+            if( this.fields.get( i ).name.equals( name ) )
+            {
+                return this.fields.get( i ); 
+            }
+        }
+        return null;        
     }
+    
+    /**
+     * replaces the target string with the replacement String
+     * @param target
+     * @param replacement 
+     */
     public void replace( String target, String replacement )
     {
-        //TODO do I need to check fields, methods??
-		String[] fieldNames = this.fieldMap().keySet().toArray( new String[ 0 ] );
-		for( int i = 0; i < fieldNames.length; i++ )
+		for( int i = 0; i < fields.size(); i++ )
 		{			
-			_fields._field f = this.fields.get( fieldNames[ i ] );
+			_fields._field f = this.fields.get( i );
             f.javadoc.replace( target, replacement );
             f.init.replace( target, replacement );
-            f.varName = f.varName.replace( target, replacement );
+            f.name = f.name.replace( target, replacement );
             f.type = f.type.replace( target, replacement );
-			/*
-            if( f.getJavadoc() != null )
-			{
-				f.getJavadoc().replace( target, replacement );
-			}
-			if( f.hasInit() )
-			{   //
-				f.init( f.getInit().replace( target, replacement ) );
-			}
-			if( f.getType().getName().contains( target ) )
-			{
-				f.setType( f.getType().getName().replace(target, replacement ) );
-			}
-            */
 		}
     }
     
+    /** Adds one or more _field to the _fields */
     public _fields addFields( _field... fields )
     {
-    	for(int i = 0; i < fields.length; i++ )
+    	for( int i = 0; i < fields.length; i++ )
     	{
-    		_field m = this.fields.put( fields[ i ].varName.toString(), fields[ i ] );
-    		if( m != null )
+            //check 
+            if( canAddFieldName( fields[ i ].name ) )
+            {
+                this.fields.add( fields[ i ] );
+            }
+            else
     		{
-    			//Log replaced
+    			throw new VarException(
+                    "cannot add field with name \""
+                   + fields[ i ].name 
+                  + "\" a field with the same name already exists" );
     		}
     	}
     	return this;
     }
     
+    /**
+     * Create a new _fields of the member fields
+     * @param fields each _field to be included in the _fields
+     * @return a new _fields including fields
+     */
 	public static _fields of( String...fields )
 	{
 		_fields memberFields = new _fields();
@@ -127,7 +157,7 @@ public class _fields
 	}
 	
 	public static class _field
-		implements CodeAuthor
+		extends Template.Base
 	{
 		public static final Dom FIELD = BindML.compile(
 			"{+javadocComment+}{+modifiers+}{+type+} {+varName+}{+init+};" ); 
@@ -136,8 +166,8 @@ public class _fields
 		{
 			_field f = new _field( 
 				_modifiers.of( prototype.mods.getBits() ),
-				prototype.type+ "",
-				prototype.varName + "" );
+				prototype.type + "",
+				prototype.name + "" );
 			if( prototype.init != null && !prototype.init.isEmpty() )
 			{
 				f.setInit( prototype.init.initCode );
@@ -169,7 +199,7 @@ public class _fields
 		
 		public String getName()
 		{
-			return this.varName;
+			return this.name;
 		}
 		
 		public _javadoc getJavadoc()
@@ -248,11 +278,10 @@ public class _fields
 		public String author( Directive... directives ) 
 		{
 			return Author.code( FIELD, 
-				VarContext.of( 
-					"javadocComment", javadoc,
+				VarContext.of("javadocComment", javadoc,
 					"modifiers", mods,
 					"type", type,
-					"varName", varName,
+					"varName", name,
 					"init", init ),
 				directives );
 		}
@@ -265,21 +294,21 @@ public class _fields
 		private _javadoc javadoc;
 		private _modifiers mods;
 		private String type; 
-		private String varName;
+		private String name;
 		private _init init;
 		
-		public _field( _modifiers modifiers, String type, String varName )
+		public _field( _modifiers modifiers, String type, String name )
 		{
 			this.mods = modifiers;
 			this.type = type;
-			this.varName = varName;
+			this.name = name;
 		}
 		
 		public _field( _modifiers modifiers, String type, String varName, _init init )
 		{
 			this.mods = modifiers;
 			this.type = type;
-			this.varName = varName;
+			this.name = varName;
 			this.init = init;			
 		}
 		
@@ -313,10 +342,10 @@ public class _fields
     {
         List<_field> staticFields = new ArrayList<_field>();
 		List<_field> instanceFields = new ArrayList<_field>();
-		String[] allKeys = fields.keySet().toArray( new String[ 0 ] );
-		for( int i = 0; i < allKeys.length; i++ )
+		//String[] allKeys = fields.keySet().toArray( new String[ 0 ] );
+		for( int i = 0; i < fields.size(); i++ )
 		{
-			_field mem = fields.get( allKeys[ i ] );
+			_field mem = fields.get( i );
 			if( mem.mods.containsAny( Modifier.STATIC ) )
 			{
 				staticFields.add( mem );
@@ -326,7 +355,8 @@ public class _fields
 				instanceFields.add( mem );
 			}
 		}
-        return VarContext.of("staticFields", staticFields,
+        
+        return VarContext.of( "staticFields", staticFields,
 			"instanceFields", instanceFields ); 
     }
     
@@ -336,16 +366,6 @@ public class _fields
 			FIELDS, 
             getContext(),			
 			directives );	
-    /*
-	public String author( Directive... directives ) 
-	{		
-
-		return Author.code(
-			BindML.compile( staticFields.toString() + nonStaticFields.toString() + N ), 
-			VarContext.of(), 
-			directives ) ;
-	}
-    */
     }
     
 	public String toString()
@@ -413,7 +433,5 @@ public class _fields
 		{
 			return new _init ( this.initCode.replace( target, replacement ) );			
 		}
-	}
-
-	
+	}	
 }

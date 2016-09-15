@@ -212,7 +212,7 @@ public class _classTest
         System.out.println( oneCase );
         System.out.println( twoCase );
         
-		ClassLoader cl = sw.compileC( );
+		ClassLoader cl = sw.compile( );
 		Class<?> oneClass = cl.loadClass( one.getFullyQualifiedClassName() );
 		Class<?> twoClass = cl.loadClass( two.getFullyQualifiedClassName() );
 		assertTrue( oneClass != null );

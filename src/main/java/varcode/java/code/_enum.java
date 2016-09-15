@@ -401,6 +401,14 @@ public class _enum
 		return this;
 	}
     
+    public _enum values( _valueConstructs values )
+    {
+        for( int i = 0; i < values.count(); i++ )
+        {
+            this.value( values.getAt( i ) );
+        }
+        return this;
+    }
     /** 
      * adds a field to the enum<PRE> 
      * myEnum.field( "public final int value;" );
@@ -438,6 +446,7 @@ public class _enum
 		return this;
 	}
 	
+    
 	/**
 	 * When we construct enums each enum value
 	 * 
@@ -465,6 +474,7 @@ public class _enum
 	public static class _valueConstructs
 		extends Template.Base
 	{
+        /** TODO, cant I just iterate through each time w/o having to keep this around??*/
 		private Set<String> valueNames = new HashSet<String>();
 		
 		private List<_valueConstruct> valueConstructs = 
@@ -502,6 +512,16 @@ public class _enum
 			return clone;
 		}
 
+        public _valueConstruct getAt( int index )
+        {
+            if( index < count() )
+            {
+                return this.valueConstructs.get( index );
+            }
+            throw new VarException(
+                "Invalid value construct index [" + index + "]");
+        }
+        
 		public static class _valueConstruct
 			extends Template.Base
 		{
@@ -519,9 +539,9 @@ public class _enum
 			 * name
 			 * </PRE>
 			 * 
-			 * @param name
-			 * @param arguments
-			 * @return
+			 * @param name the name iof the enumValue
+			 * @param arguments the arguments passed into the enum constructor
+			 * @return the valueConstruct with name and arguments
 			 */
 			public static _valueConstruct of( String name, Object... arguments )
 			{

@@ -25,7 +25,7 @@ import varcode.java.JavaCase.JavaCaseAuthor;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class Workspace
-    extends ForwardingJavaFileManager<JavaFileManager>         
+    //extends ForwardingJavaFileManager<JavaFileManager>         
 {
     private static final Logger LOG = 
         LoggerFactory.getLogger( Workspace.class );
@@ -35,7 +35,6 @@ public class Workspace
         ToolProvider.getSystemJavaCompiler(); 
     
     /** 
-     * 
      * @param caseAuthors
      * @return a Workspace containing the JavaFiles that are
      */
@@ -57,6 +56,7 @@ public class Workspace
      *        _interface.of("interface Count").toJavaCase(), 
      *        _enum.of("enum MyEnum").value("ONE").toJavaCase() );
      * </PRE>
+     * @param javaCases java Cases to be compiled into the workspace
      */
     public static Workspace of( JavaCase...javaCases )
 	{
@@ -135,7 +135,7 @@ public class Workspace
         AdHocJavaFile... javaFiles)
     {
         Workspace ws = new Workspace( adHocClassLoader, javaFiles );
-        return ws.compileC( );
+        return ws.compile( );
     }        
     
     public static AdHocClassLoader compileNow(
@@ -152,7 +152,7 @@ public class Workspace
     {
         Workspace ws = new Workspace( adHocClassLoader );
         ws.addCode( javaFiles.toArray( new AdHocJavaFile[ 0 ] ) );
-        return ws.compileC( compilerOptions );
+        return ws.compile( compilerOptions );
     }        
     
     /** ClassLoader for loading ad hoc Java Code that exists in memory 
@@ -165,6 +165,8 @@ public class Workspace
 	/** Java source files of the Workspace */
 	private final Map<String, AdHocJavaFile> classNameToAdHocJavaFileMap = 
 		new HashMap<String, AdHocJavaFile>();
+    
+    private final WorkspaceFileManager workspaceFileManager;
     
     /**
      * Construct a new Workspace with a new AdHocClassLoader
@@ -192,6 +194,7 @@ public class Workspace
     public Workspace( 
         AdHocClassLoader adHocClassLoader, AdHocJavaFile...adHocJavaFiles )
     {
+        
         this( JAVAC.getStandardFileManager( 
                 null, //use default DiagnosticListener
                 null, //use default Locale
@@ -216,7 +219,9 @@ public class Workspace
         String workspaceName, 
         AdHocJavaFile...adHocJavaFiles )
 	{
-        super( fileManager );
+        this.workspaceFileManager = 
+            new WorkspaceFileManager( fileManager, adHocClassLoader );
+        //super( fileManager );
         
         this.adHocClassLoader = adHocClassLoader;
 		this.name = workspaceName;			     
@@ -238,7 +243,7 @@ public class Workspace
 		AdHocJavaFile adHocJavaFile = 
 			new AdHocJavaFile( className, code );
         
-		addCode(adHocJavaFile );
+		addCode( adHocJavaFile );
 		return this;
 	}
 	
@@ -254,21 +259,23 @@ public class Workspace
         for( int i = 0; i < javaCase.length; i++ )
 		{
 			AdHocJavaFile javaCode = javaCase[ i ].javaCode();
-			classNameToAdHocJavaFileMap.put( javaCode.getClassName(), javaCode );
+			//classNameToAdHocJavaFileMap.put( javaCode.getClassName(), javaCode );
+            addCode( javaCode );
 		}
 		return this;
 	}
 	
     /** adds a java code to the Workspace and returns the Workspace */
 	public final Workspace addCode( AdHocJavaFile... javaCode )
-	{
+	{        
         for( int i = 0; i < javaCode.length; i++ )
 		{
+            System.out.println( "checking"+ javaCode[ i ].getClassName() );
             if( this.adHocClassLoader.getAdHocClassMap().containsKey(
                 javaCode[ i ].getClassName() ) )
             {
                 throw new VarException( 
-                    "Failed Adding Class \""+javaCode[ i ].getClassName()
+                    "Failed Adding Class \"" + javaCode[ i ].getClassName()
                    +"\" to workspace; a Class by this name already exists "
                   + "in this workspace" );
             }
@@ -279,38 +286,53 @@ public class Workspace
 		return this;
 	}
     
-    //TODO Move this to a static inner class that 
-    // implements ForwardingFileManager
-    //  as to avoid putting it on the public Workspace API
-    @Override
-    public JavaFileObject getJavaFileForOutput(
-        JavaFileManager.Location location, 
-        String className, 
-        JavaFileObject.Kind kind, 
-        FileObject sibling ) 
-        throws IOException 
-    {    	
-    	AdHocClassFile adHocClass =
-    		this.adHocClassLoader.getAdHocClassMap().get( className );	
+    /**
+     * File Manager for the AdHoc Workspace
+     * (note this is private b/c I dont want the internals leaking onto
+     * the Workspace API)
+     */
+    private static class WorkspaceFileManager
+        extends ForwardingJavaFileManager<JavaFileManager>      
+    {
+        private final AdHocClassLoader adHocClassLoader;
         
-    	if( adHocClass != null )
-    	{
-    		return adHocClass;
-    	}
-    	try
-    	{
-    		adHocClass = new AdHocClassFile( className );
-    		this.adHocClassLoader.introduce(adHocClass );
-    		return adHocClass;
-    	}
-    	catch( Exception e )
-    	{
-    		throw new VarException( 
-                "Unable to create output class for class \"" + className + "\"" );
-    	}
+        public WorkspaceFileManager(  
+            StandardJavaFileManager fileManager,    
+            AdHocClassLoader adHocClassLoader )
+        {
+            super( fileManager );
+            this.adHocClassLoader = adHocClassLoader;
+        }
+                
+        @Override
+        public JavaFileObject getJavaFileForOutput(
+            JavaFileManager.Location location, 
+            String className, 
+            JavaFileObject.Kind kind, 
+            FileObject sibling ) 
+        {    	
+            AdHocClassFile adHocClass =
+                this.adHocClassLoader.getAdHocClassMap().get( className );	
+        
+            if( adHocClass != null )
+            {
+                return adHocClass;
+            }
+            try
+            {
+                adHocClass = new AdHocClassFile( className );
+                this.adHocClassLoader.introduce( adHocClass );
+                return adHocClass;
+            }
+            catch( Exception e )
+            {
+                throw new VarException( 
+                    "Unable to create output class for class \"" + className + "\"" );
+            }
+        }
     }
     
-    public AdHocClassLoader compileC( 
+    public AdHocClassLoader compile( 
         JavacOptions.CompilerOption...compilerOptions )
     {
         Iterable<String> options = JavacOptions.optionsFrom( compilerOptions );
@@ -319,8 +341,10 @@ public class Workspace
 			new DiagnosticCollector<JavaFileObject>();
 			
 		JavaCompiler.CompilationTask task = 
-            JAVAC.getTask(null, //use System.err if the tool fails 
-                this, 
+            JAVAC.getTask(
+                null, //use System.err if the tool fails 
+                //this, 
+                this.workspaceFileManager,
                 diagnostics, 
                 options, 
 			null, // NO annotation processors classes (at this time) 
@@ -337,7 +361,7 @@ public class Workspace
 	    }	        	
         try
         {
-        	this.close();
+        	this.workspaceFileManager.close();
         }
         catch( IOException ioe )
         {
@@ -345,25 +369,4 @@ public class Workspace
         }
         return this.adHocClassLoader;
     }
-    
-    public Map<String, Class<?>> compile(
-		JavacOptions.CompilerOption...compilerOptions )
-    {
-        compileC( compilerOptions );
-        
-        //return this.adHocClassLoader.loadClass(name)
-	    Map<String, Class<?>> loadedClasses = new HashMap<String, Class<?>>();
-	    String[] adHocClassNames = 
-            this.adHocClassLoader.getAdHocClassMap().keySet().toArray( 
-                new String[ 0 ] );
-	    
-        for( int i = 0; i < adHocClassNames.length; i++ )
-	    {
-            Class<?> adHocClass = 
-	        	this.adHocClassLoader.findClass( adHocClassNames[ i ] );
-	        	
-	        loadedClasses.put( adHocClassNames[ i ], adHocClass );  
-		}
-        return loadedClasses;
-    }     
 }

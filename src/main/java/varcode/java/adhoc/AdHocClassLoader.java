@@ -45,7 +45,7 @@ public class AdHocClassLoader
     }
 
     /** 
-     * className to InMemoryClass Mapping for classes loaded in Memory
+     * className to AdHocClassFile Mapping for classes loaded in Memory
      */
     public Map<String, AdHocClassFile>getAdHocClassMap()
     {

@@ -21,25 +21,68 @@ import varcode.java.JavaCase;
 import varcode.java.JavaNaming;
 import varcode.java.code._code;
 import varcode.java.code._enum;
+import varcode.java.code._enum._valueConstructs;
+import varcode.java.code._enum._valueConstructs._valueConstruct;
 import varcode.java.code._fields;
 import varcode.java.code._fields._field;
+import varcode.java.code._imports;
 import varcode.java.code._modifiers;
 
 /**
- * simplified _enum model where each enum value has _properties
+ * Simplified _enum model where the enum is populated with _properties
+ * 
+ * This is a Lazy API Model "on-top" of an existing API model (_enum)
+ * <PRE>
+ * _auto_enum auto = 
+ *     _autoEnum.of( "ex.varcode.e.MyEnum" )
+ *     .property( int.class, "age")
+ *     .value( "Eric", 42 );
+ * 
+ * //creates the following enum source:
+ * 
+ * package varcode.ex.e;
+ * 
+ * public enum MyEnum
+ * {
+ *    Eric( 42 );
+ * 
+ *    private final int age;
+ * 
+ *    private MyEnum( int age )
+ *    {
+ *        this.age = age;
+ *    }
+ * 
+ *    public int getAge()
+ *    {
+ *        return this.age;
+ *    }
+ * }
  * 
  * each _property is 
  * created as a private final _field
  * a getter is created
  * a parameter is added to the constructor
  * 
- * @author eric
+ * @author M. Eric DeFazio
  */
 public class _auto_enum
     implements JavaCase.JavaCaseAuthor    
 {
-    //this is the enum which stores the fields added
-    private final _enum iEnum;
+    private final String packageName;
+    private final String className;
+    
+    private final _imports imports = new _imports();
+    private final _fields fields = new _fields();
+    
+    /**
+     * Constructors for enum values, i.e. <PRE>
+     * public enum OCTAL { <B>_0, _1, _2, _3, _4, _5, _6, _7;</B> };
+     * public enum OCTAL { <B>_0(0), _1(1), _2(2), _3(3), _4(4), _5(5), _6(6), _7(7);</B> };
+     * </PRE>
+     * NOTE: could be empty (if using the singleton enum idiom)
+     */
+    private final _valueConstructs valueConstructs = new _valueConstructs();
     
     /**
      * creates and returns an enum at the package and of the nmame provided
@@ -61,18 +104,19 @@ public class _auto_enum
     
     public _auto_enum( String packageName, String className )
     {
-        this.iEnum = _enum.of( packageName, "public enum " + className );          
+        this.packageName = packageName;
+        this.className = className;       
     }
     
     
     public String getName()
     {
-        return iEnum.getName();
+        return this.className; //iEnum.getName();
     }
     
     public String getPackageName()
     {
-        return iEnum.getPackageName();
+        return this.packageName; //iEnum.getPackageName();
     }
     
     /** 
@@ -82,7 +126,8 @@ public class _auto_enum
      */
     public _auto_enum imports( Class... clazz )
     {
-        this.iEnum.imports( (Object[]) clazz );
+        //this.iEnum.imports( (Object[]) clazz );
+        this.imports.addImports( (Object[])clazz );
         return this;
     }
     
@@ -130,15 +175,12 @@ public class _auto_enum
      */
     public _auto_enum property( Class clazz, String name )
     {
-        this.iEnum.imports( clazz ); //import the clazz if necessary
+        this.imports.addImport( clazz ); //import the clazz if necessary
         _field f = new _field( 
             _modifiers.of( "private" ), clazz.getCanonicalName(), name ); 
-        this.iEnum.getFields().addFields( f );  
+        this.fields.addFields( f );  
         
-         //add the getter
-        this.iEnum.method(
-            "public " + f.getType() + " get" + firstUpper( f.getName() ) + "()",
-            "return this." + f.getName() +";");            
+        
         return this;        
     }
     
@@ -179,12 +221,12 @@ public class _auto_enum
     public _auto_enum property( String fieldDefinition )
     {
         _field f = _field.of( fieldDefinition );
-        this.iEnum.fields( f );
+        this.fields.addFields( f );
         
          //add the getter
-        this.iEnum.method(
-            "public " + f.getType() + " get" + firstUpper( f.getName() ) + "()",
-            "return this." + f.getName() +";");             
+        //this.iEnum.method(
+        //    "public " + f.getType() + " get" + firstUpper( f.getName() ) + "()",
+        //   "return this." + f.getName() +";");             
         return this;
     }
     
@@ -197,14 +239,29 @@ public class _auto_enum
      */
     public _enum getEnum()
     {
-        _fields fields = this.iEnum.getFields();
-        String[] fieldNames = fields.getFieldNames();
+        //_fields fields = this.iEnum.getFields();
+        //String[] fieldNames = fields.getFieldNames();
         String paramList = "";
         _code finalInitCode = new _code();
+        
+        //dynamically create me an _enum 
+        _enum derived = 
+            _enum.of( this.packageName, "public enum " + this.className ); 
+        
+       
+        for( int i = 0; i < fields.count(); i++ )
+        {                        
+            _field f = fields.getAt( i );
             
-        for( int i = 0; i < fieldNames.length; i++ )
-        {
-            _field f = fields.getByName( fieldNames[ i ] );
+            //add the field
+            derived.fields( f ) ;
+            
+            //add a getter method for the field
+            derived.method(
+               "public final " + f.getType() + " get" + firstUpper( f.getName() ) + "()",
+               "return this." + f.getName() +";");            
+            
+            //update the constructor code and constructor parameters
             if( i > 0 )
             {
                 paramList += ", ";
@@ -213,10 +270,12 @@ public class _auto_enum
             finalInitCode.addTailCode( 
                 "this." + f.getName() + " = " + f.getName() + ";" );                                 
         }
-        _enum derived = _enum.from( this.iEnum );
+        
         String constructorSig = 
-            "private " + this.iEnum.getSignature().getName() + "( "+paramList+" )";
+            "private " + this.className + "( " + paramList + " )";
         derived.constructor( constructorSig, finalInitCode );
+        derived.values( this.valueConstructs );
+        
         return derived;
     }
     
@@ -242,7 +301,7 @@ public class _auto_enum
 
     public _auto_enum value( String name, Object...values )
     {
-        this.iEnum.value( name, values );
+        this.valueConstructs.addEnumValue( _valueConstruct.of( name, values ) );
         return this;
     }
 }

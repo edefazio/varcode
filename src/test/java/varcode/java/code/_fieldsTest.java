@@ -22,7 +22,7 @@ public class _fieldsTest
         _fields f = _fields.of( );
         assertEquals( 0, f.count() );
         assertEquals( null, f.getByName("Name") );
-        assertEquals( 0, f.fieldMap().size() );        
+        
         assertEquals( "", f.toString() );        
     }
     
@@ -31,7 +31,7 @@ public class _fieldsTest
         _fields f = _fields.of( "public int a;");
         assertEquals(1, f.count());
         assertEquals("public int a;", f.getByName("a").toString() );
-        assertTrue( f.fieldMap().containsKey( "a" ) );
+        assertFalse( f.canAddFieldName("a") );
         assertEquals( "public int a;", f.bind( VarContext.of() ) );        
     }
     

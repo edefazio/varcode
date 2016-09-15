@@ -1,20 +1,72 @@
 package varcode.java.adhoc;
 
-import varcode.java.adhoc.JavacException;
-import varcode.java.adhoc.Workspace;
-import varcode.java.adhoc.AdHocJavaFile;
-import varcode.java.adhoc.AdHocClassLoader;
-import varcode.java.adhoc.JavacOptions;
 import java.util.ArrayList;
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.fail;
 import junit.framework.TestCase;
 import varcode.VarException;
 import varcode.java.Java;
+import varcode.java.code._class;
+import varcode.java.code.auto._auto_enum;
 
 public class WorkspaceTest
 	extends TestCase
 {
 
+    /** Verify that I cant Redefine an existing class */
+    public void testWorkspaceRedefineExistingClass()
+    {
+        //create a new class with the same name as this class 
+        //(varcode.java.adhoc.WorkspaceTest)
+        _class c = _class.of(
+            this.getClass().getPackage().getName(), 
+            "public class "+this.getClass().getSimpleName() )
+            .field("public static final int ID = 200;");
+        
+        Workspace ws = Workspace.ofAuthors( c );
+        
+        AdHocClassLoader ah = ws.compile( );
+        
+        //
+        Class cl = ah.findClass( WorkspaceTest.class.getCanonicalName() );
+        
+        assertEquals(200, Java.getFieldValue( cl, "ID" ) );
+        
+    }
+    
+    /**
+     * Test Workspace 
+     */
+    public void testIncrementallyAddWorkspace()
+    {
+        _auto_enum auto = _auto_enum.of( "ex.varcode.e.MyEnum" )
+            .property( int.class, "age")
+            .value( "Eric", 42 );
+        
+        AdHocClassLoader cl = Workspace.compileNow( auto.toJavaCase( ) );
+        
+        assertEquals( 42,  
+            Java.invoke( 
+                cl.findClass("ex.varcode.e.MyEnum").getEnumConstants()[ 0 ], "getAge" ) );
+        
+        auto.value( "Blah", 22 );
+        
+        //create a new workspace with the SAME classloader
+        Workspace ws = new Workspace( cl ); 
+        try
+        {
+            //try to add a Class with the same name
+            ws.addCases( auto.toJavaCase( ) );
+            
+            fail(
+                "expected Exception trying to add Class to the workspace that already exists ");
+        }
+        catch( VarException ve )
+        {
+            //expected 
+        }
+    }
+    
     // creates two workspaces that contain
     // a Java Class with the same name
     // each workspace has a separate classLoader to load the class
@@ -27,9 +79,9 @@ public class WorkspaceTest
         Workspace a2 = Workspace.of(  )
             .addCode( "A", "public class A{ public static final int ID = 2; }" );
         
-        AdHocClassLoader a1cl = a1.compileC( );
+        AdHocClassLoader a1cl = a1.compile( );
         
-        AdHocClassLoader a2cl = a2.compileC( );
+        AdHocClassLoader a2cl = a2.compile( );
         
         int a1id = (Integer)Java.getFieldValue( 
             a1cl.findClass( "A" ), "ID" );
@@ -46,7 +98,7 @@ public class WorkspaceTest
         Workspace w = new Workspace();
         w.addCode( "A", 
           "public class A{ public static final int ID = 1; }" );
-        ClassLoader c = w.compileC( );
+        ClassLoader c = w.compile( );
         
         try
         {    
@@ -88,7 +140,7 @@ public class WorkspaceTest
 		Workspace sw = new Workspace(  );		
 		try
 		{
-			sw.compileC( );
+			sw.compile( );
 			fail( "Expected Exception for no source files");
 		}
 		catch( VarException ve )
@@ -102,7 +154,7 @@ public class WorkspaceTest
 		Workspace sw = new Workspace( );
 		
 		sw.addCode( "A", "public class A {}");
-		AdHocClassLoader ah = sw.compileC( );
+		AdHocClassLoader ah = sw.compile( );
 		assertEquals( "A", ah.findClass( "A" ).getSimpleName() );
 	}
 	
@@ -146,7 +198,7 @@ public class WorkspaceTest
 			"        this.a = a;" + N +
 			"    }" + N + 			
 			"}");
-		AdHocClassLoader ah = sw.compileC( );
+		AdHocClassLoader ah = sw.compile( );
 		assertNotNull( ah.findClass("A_ReliesOn_B") );
 		assertNotNull( ah.findClass("B_ReliesOn_A") );
 		
@@ -163,7 +215,7 @@ public class WorkspaceTest
 		Workspace sws = Workspace.of( );
 		sws.addCode( "A", "public class A {}" );
         
-		AdHocClassLoader ah = sws.compileC( );
+		AdHocClassLoader ah = sws.compile( );
 		Class<?> AClass = ah.findClass( "A" );
 		assertTrue( AClass != null );
 	}
@@ -174,7 +226,7 @@ public class WorkspaceTest
 		{
 			Workspace.of( )
 		    	.addCode( "A", "asdfklhjasdjklf" )
-		    	.compileC( );
+		    	.compile( );
 			fail( "Expected Compiler Exception" );
 		}
 		catch( JavacException ce )
@@ -208,7 +260,7 @@ public class WorkspaceTest
 			       +"    {" + N 
 			       +"    }" + N 
 			       +"}" )
-			   .compileC( );
+			   .compile( );
 		assertNotNull( cw.findClass( "A" ) );
 		assertNotNull( cw.findClass( "B" ) );
 	}
@@ -240,7 +292,7 @@ public class WorkspaceTest
 			       +"    {" + N 
 			       +"    }" + N 
 			       +"}" )
-			   .compileC( );
+			   .compile( );
 		assertNotNull( cw.findClass( "A" ) );
 		assertNotNull( cw.findClass( "B" ) );
 	}
@@ -257,7 +309,7 @@ public class WorkspaceTest
 		
 		try
 		{
-			sw.compileC( ); 
+			sw.compile( ); 
 		}
 		catch( JavacException e )
 		{
@@ -293,11 +345,11 @@ public class WorkspaceTest
 	       +"}" );
 		
 		//this wil compile just fine if Source compatibility >= 1.5
-		assertNotNull( sw.compileC(JavacOptions.JavaSourceVersion.MajorVersion._1_5 ) );
+		assertNotNull( sw.compile(JavacOptions.JavaSourceVersion.MajorVersion._1_5 ) );
 				
 		try
 		{   //this will fail (since I have a Generic and source version 1.4 compiler option
-			sw.compileC( JavacOptions.JavaSourceVersion.MajorVersion._1_4 );			
+			sw.compile( JavacOptions.JavaSourceVersion.MajorVersion._1_4 );			
 			fail( "expected Compiler Exception using Generics for  Source Version 1.4" );
 		}
 		catch( JavacException e )

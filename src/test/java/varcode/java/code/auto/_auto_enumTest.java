@@ -17,6 +17,8 @@ package varcode.java.code.auto;
 
 import junit.framework.TestCase;
 import varcode.java.Java;
+import varcode.java.adhoc.AdHocClassLoader;
+import varcode.java.adhoc.Workspace;
 import varcode.java.code._enum;
 import varcode.java.code._literal;
 
@@ -27,6 +29,32 @@ import varcode.java.code._literal;
 public class _auto_enumTest
     extends TestCase
 {
+    
+    /**
+     * This will create
+     */
+    public void testIncrementallyAdd()
+    {
+        _auto_enum auto = _auto_enum.of( "ex.varcode.e.MyEnum" )
+            .property( int.class, "age")
+            .value( "Eric", 42 );
+        
+        Class enumClass = auto.toJavaCase( ).loadClass();
+        assertEquals(
+            42,  Java.invoke( enumClass.getEnumConstants()[ 0 ], "getAge" ) );
+        
+        auto.value( "Blah", 22 );
+        
+        //create the class again with the new value
+        enumClass = auto.toJavaCase( ).loadClass();
+        
+        assertEquals(
+            22,  Java.invoke( enumClass.getEnumConstants()[ 1 ], "getAge" ) );
+        
+    }
+    
+
+    
     public void testEnumClone()
     {
         _auto_enum ae = _auto_enum.of( "MyEnum" );
