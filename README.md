@@ -3,7 +3,7 @@
 varcode can "author", compile and use Java source code at runtime:
 ```java
 //author source for a new class, compile & load it, create a new instance
-static Object ez = _class.of( "public class EZClass" ).toJavaCase( ).instance( );
+static Object ez = _class.of( "EZClass" ).toJavaCase( ).instance( );
 ```
 varcode is easy to learn, use and understand. It saves you time, and produces beautiful readable code.  
 
