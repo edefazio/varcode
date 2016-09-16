@@ -15,15 +15,26 @@
  */
 package ex.varcode.java.code;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.Date;
 import java.util.Random;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import junit.framework.TestCase;
 import varcode.java.Java;
+import varcode.java.adhoc.AdHocClassLoader;
+import varcode.java.adhoc.AdHocObjectInputStream;
 import varcode.java.code._class;
 
 /**
  *
- * @author eric
+ * @author M. Eric DeFazio eric@varcode.io
  */
 public class Example1
     extends TestCase
@@ -37,17 +48,62 @@ public class Example1
         System.out.println( hello ); 
     }
     
+    public static _class MyBean = 
+       _class.of("public class MyBean implements Serializable")
+            .imports( Serializable.class, Date.class )
+            .field("private final Date date;")
+            .constructor("public MyBean( Date date )",
+                "this.date = date;")
+            .method("public Date getDate()",
+                "return this.date;");
+    
+    public void testMyBeanSerializable()
+    {
+        ObjectOutputStream oos = null;
+        try 
+        {
+            Date d = new Date();
+            
+            Class myBeanClass = MyBean.loadClass();            
+            Object instance = Java.instance(myBeanClass, d );
+            
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            oos = new ObjectOutputStream( baos );
+            oos.writeObject( instance );
+                
+            //These bytes represent the object
+            byte[] bytes = baos.toByteArray();
+                
+            ByteArrayInputStream bais = new ByteArrayInputStream( bytes );                
+            ObjectInputStream ois = 
+                new AdHocObjectInputStream( 
+                    (AdHocClassLoader)myBeanClass.getClassLoader(),
+                    bais );
+            Object deserialized = ois.readObject();
+                
+            //now verify the date (on the deserialized object is the same)
+            assertEquals( d, Java.invoke( deserialized, "getDate" ) );              
+        }
+        catch( Exception ex ) 
+        {
+            fail( "could not Serialiaze/ Deserialize" );
+        }
+    }
+     
+    public static class MyBeanTest
+       extends TestCase
+    {
+       
+    }        
     public void testCallGetId()
     {
         //"author", compile, load, and instantiate a new instance
         Object authored = 
-            _class.of( "CallInstance" )
+            _class.of( "AuthoredClass" )
                 .imports( UUID.class )
-                .method( "public static String getId",
+                .method( "public String getId",
                     "return UUID.randomUUID().toString();" )
-                .instance();        
-        
-        System.out.println( authored );
+                .instance();                
         //invoke a method on the 
         System.out.println( Java.invoke( authored, "getId" ) );
     }

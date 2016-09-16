@@ -340,11 +340,6 @@ public class _class
 	
 	public _class method( _method m )
 	{
-        System.out.println( "METHOD IS ABSTRACT " + m.isAbstract() );
-        System.out.println( "METHOD MODIFIERS" + m.getSignature().getModifiers() );
-        System.out.println( "SIGNATURE" + m.getSignature() );
-        
-        System.out.println( "CLASS IS ABSTRACT " + this.isAbstract() );
 		if( m.isAbstract() && !this.isAbstract() )
 		{
 			throw new VarException(
