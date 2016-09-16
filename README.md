@@ -1,50 +1,87 @@
 ![alt text](https://github.com/edefazio/varcode/blob/master/varcode_greenOnWhite.png?raw=true "Ad Hoc Source Code Generation & metaprogramming")
 
-varcode can "author", compile and use Java source code at runtime:
+varcode "authors" java source code at runtime:
 ```java
-//author source for a new class, compile & load it, create a new instance
-static Object ez = _class.of( "EZClass" ).toJavaCase( ).instance( );
+_class hello = _class.of("HelloWorld")
+    .method( "public static final void main(String[] args)",
+        "System.out.println(\"Hello World !\");");
+System.out.println( hello );        
 ```
-varcode is easy to learn, use and understand. It saves you time, and produces beautiful readable code.  
-
-varcode's fluent model API is familiar and the code is easy to understand, test, and maintain.
-```java
-// 1) build a model of the new .java class
-_class c = _class.of( "public class HelloWorld" )
-    .constructor( "public HelloWorld( String name )",
-        "System.out.println( \"Hello \" + name + \"!\" );" );
-        
-// 2) "author" the .java source from the model 
-JavaCase helloCase = c.toJavaCase( );
-        
-// 3) print the .java source to the console
-System.out.println( helloCase );
-        
-// 4) compile (javac) the .java source to a .class, 
-// load the .class
-// call the `HelloInstance` constructor with "Eric" to create a new instance
-Object helloInstance = helloCase.instance( "Eric" );
-```
-...will print the generated source:
+...will print out:
 ```java
 public class HelloWorld
 {
-    public HelloWorld( String name )
+    public static final void main( String[] args )
     {
-        System.out.println( "Hello " + name + "!" );
+        System.out.println("Hello World !");
     }
 }
 ```
-...will print `Hello Eric!` since it ***compiled, loaded, and constructed*** 
-a new instance of `HelloWorld` class at runtime.
+varcode makes it easy to ***compile, load and use "authored" code at runtime***:
+```java
+//"author", compile, load, and instantiate a new instance
+Object authored = 
+    _class.of( "AuthoredClass" )
+        .imports( UUID.class )
+        .method( "public String getId",
+            "return UUID.randomUUID().toString();" )
+        .instance();                
+        
+//invoke a method on the authored instance
+System.out.println( Java.invoke( authored, "getId" ) );
+```  
+varcode will save you tons of time, you can 
+***author, compile, load and unit test authored code in one step.*** 
 
+```java
+public static _class MyBean = 
+    _class.of("public class MyBean implements Serializable")
+        .imports( Serializable.class, Date.class )
+        .field("private final Date date;")
+        .constructor("public MyBean( Date date )",
+            "this.date = date;")
+        .method("public Date getDate()",
+            "return this.date;");
+
+public void testMyBeanSerializable()
+{
+    ObjectOutputStream oos = null;
+    try 
+    {
+        Date d = new Date();
+        //compile and load the authored class
+        Class myBeanClass = MyBean.loadClass();            
+        //create a new instance
+        Object instance = Java.instance( myBeanClass, d );
+            
+        //serialize the instance to bytes    
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        oos = new ObjectOutputStream( baos );
+        oos.writeObject( instance );
+                
+        //deserialize from bytes        
+        ByteArrayInputStream bais = new ByteArrayInputStream( baos.toByteArray() );                
+        ObjectInputStream ois = 
+            new AdHocObjectInputStream( 
+                (AdHocClassLoader)myBeanClass.getClassLoader(), bais );
+        Object deserialized = ois.readObject();
+        
+        //verify that the date field is the same        
+        assertEquals( d, Java.invoke( deserialized, "getDate" ) );              
+    }
+    catch( Exception ex ) 
+    {
+        fail( "could not Serialize/ Deserialize Authored class" );
+    }
+}
+```
 varcode will get you up and running in no-time, it has minimal dependencies (SLF4J), 
-and will work on modern JDKs (1.6 or later), and is easily used from within build scripts
-like maven or gradle.  
+and will work on modern JDKs (1.6 or later), and is a natural fit within your editor 
+of choice (eclipse, IntelliJ, Netbeans, notepad), or within frameworks and tools 
+(like Spring) or build scripts like maven or gradle.  
 
 varcode a great alternative to an in-house "roll your own" code generator for everything from
-simple javabeans, to complex workspaces 
-(multiple generated Java classes, enums, and interfaces
+simple javabeans, to complex multi-class workspaces with interdependencies
 ```java        
 // author new source code (a new .java file)
 _class c = 
