@@ -62,7 +62,7 @@ public class _modifiers
 	
 	public _modifiers set( String...keywords )
 	{
-		for(int i = 0; i < keywords.length; i++ )
+		for( int i = 0; i < keywords.length; i++ )
 		{
 			set( keywords[ i ] );
 		}
@@ -227,7 +227,7 @@ public class _modifiers
 	public enum _mod
 	{
 		PUBLIC( "public", Modifier.PUBLIC ), 
-		DEFAULT( "", 0 ), 
+		//DEFAULT( "", 0 ), 
 		PROTECTED( "protected", Modifier.PROTECTED ), 
 		PRIVATE( "private", Modifier.PRIVATE ),		
 		STATIC( "static", Modifier.STATIC ),
@@ -267,24 +267,34 @@ public class _modifiers
 	{
 		KEYWORD_TO_BIT_MAP.put( "public", Modifier.PUBLIC ); 	
 		BIT_TO_KEYWORD_MAP.put( Modifier.PUBLIC, "public" );
+        
 		KEYWORD_TO_BIT_MAP.put( "protected", Modifier.PROTECTED );
 		BIT_TO_KEYWORD_MAP.put( Modifier.PROTECTED, "protected");
+        
 		KEYWORD_TO_BIT_MAP.put( "private", Modifier.PRIVATE );	
 		BIT_TO_KEYWORD_MAP.put( Modifier.PRIVATE, "private");
+        
 		KEYWORD_TO_BIT_MAP.put( "static", Modifier.STATIC );
 		BIT_TO_KEYWORD_MAP.put( Modifier.STATIC, "static" );
+        
 		KEYWORD_TO_BIT_MAP.put( "synchronized", Modifier.SYNCHRONIZED );
 		BIT_TO_KEYWORD_MAP.put( Modifier.SYNCHRONIZED, "synchronized" );
+        
 		KEYWORD_TO_BIT_MAP.put( "abstract", Modifier.ABSTRACT );
 		BIT_TO_KEYWORD_MAP.put( Modifier.ABSTRACT, "abstract" );
+        
 		KEYWORD_TO_BIT_MAP.put( "final", Modifier.FINAL );
 		BIT_TO_KEYWORD_MAP.put( Modifier.FINAL, "final" );
+        
 		KEYWORD_TO_BIT_MAP.put( "native", Modifier.NATIVE );
 		BIT_TO_KEYWORD_MAP.put( Modifier.NATIVE, "native" );
+        
 		KEYWORD_TO_BIT_MAP.put( "transient", Modifier.TRANSIENT );
 		BIT_TO_KEYWORD_MAP.put( Modifier.TRANSIENT, "transient" );
+        
 		KEYWORD_TO_BIT_MAP.put( "volatile", Modifier.VOLATILE );
 		BIT_TO_KEYWORD_MAP.put( Modifier.VOLATILE, "volatile" );
+        
 		KEYWORD_TO_BIT_MAP.put( "strictfp", Modifier.STRICT );
 		BIT_TO_KEYWORD_MAP.put( Modifier.STRICT, "strictfp" );
 		
@@ -352,7 +362,7 @@ public class _modifiers
 		if( ( modifiersBits & Modifier.ABSTRACT ) > 0  &&
 			( modifiersBits & Modifier.NATIVE ) > 0  )
 		{
-			throw new VarException( "cannot be both abstract and synchronized" );
+			throw new VarException( "cannot be both abstract and native" );
 		}	
 		if( Integer.bitCount( 
             modifiersBits & ( Modifier.PUBLIC | Modifier.PRIVATE | Modifier.PROTECTED ) ) > 1 )

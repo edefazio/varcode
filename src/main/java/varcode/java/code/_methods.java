@@ -402,22 +402,31 @@ public class _methods
 		
 				// Get the parameters
 				int openParenIndex = methodSpec.indexOf( "(" );
-				if( openParenIndex < 0 )
-				{
-					throw new VarException( "method signature must contain \"(\" ");
-				}
+			//	if( openParenIndex < 0 )
+			//	{
+			//		throw new VarException( "method signature must contain \"(\" ");
+				//}
 				int closeParenIndex = methodSpec.lastIndexOf( ")" );
-				if( closeParenIndex < 0 )
-				{
-					throw new VarException( "method signature contain \")\" " );
-				}
-		
-				String paramInside = methodSpec.substring( openParenIndex + 1 , closeParenIndex );
-				_parameters params = new _parameters( );
-				if( paramInside.trim().length() > 0 )
-				{
-					params = _parameters.of( paramInside  ); 
-				}
+				//if( closeParenIndex < 0 )
+				//{
+				//	throw new VarException( "method signature contain \")\" " );
+				//}
+                _parameters params = new _parameters( );
+                if( openParenIndex < 0 && closeParenIndex < 0 )
+                {
+                    //no parameters
+                    openParenIndex = methodSpec.length();
+                    closeParenIndex = methodSpec.length();
+                }                
+                else
+                {
+                    String paramInside = methodSpec.substring( openParenIndex + 1 , closeParenIndex );
+                    
+                    if( paramInside.trim().length() > 0 )
+                    {
+                        params = _parameters.of( paramInside  ); 
+                    }
+                }
 		
 				String sig = methodSpec.substring( 0, openParenIndex );
 			
@@ -431,24 +440,26 @@ public class _methods
 				// get the throws		
 				_throws throwsExceptions = _throws.NONE;
 				
-				String throwsTokens = methodSpec.substring( closeParenIndex + 1 ).trim();
-				if( throwsTokens.length() > 1 )
-				{
-					if( ! throwsTokens.startsWith( "throws" ) )
-					{
-						throw new VarException( 
-							"Tokens found after (parameters); expected throws ..., got \"" + throwsTokens + "\"");
-					}
-					throwsTokens = throwsTokens.substring( "throws".length() );
+                if( openParenIndex != closeParenIndex)
+                {
+                    String throwsTokens = methodSpec.substring( closeParenIndex + 1 ).trim();
+                    if( throwsTokens.length() > 1 )
+                    {
+                        if( ! throwsTokens.startsWith( "throws" ) )
+                        {
+                            throw new VarException( 
+                                "Tokens found after (parameters); expected throws ..., got \"" + throwsTokens + "\"");
+                        }
+                        throwsTokens = throwsTokens.substring( "throws".length() );
 					
-					String[] throwsTokensStrings = _var.normalizeTokens( throwsTokens );
+                        String[] throwsTokensStrings = _var.normalizeTokens( throwsTokens );
 			
-					if( throwsTokensStrings.length > 0 )
-					{
-						throwsExceptions = _throws.of( (Object[])throwsTokensStrings );
-					}			
-				}
-		
+                        if( throwsTokensStrings.length > 0 )
+                        {
+                            throwsExceptions = _throws.of( (Object[])throwsTokensStrings );
+                        }			
+                    }   
+                }
 				//_identifier methodName = _identifier.of( tokens[ tokens.length - 1 ] );
                 String methodName = tokens[ tokens.length - 1 ];
                 

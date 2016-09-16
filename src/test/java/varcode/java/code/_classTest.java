@@ -136,8 +136,9 @@ public class _classTest
 	{
 		try
 		{
-			new _class( "public Concrete" )
-				.method( "public abstract absMethod()", new String[ 0 ]);
+            //_method m = 
+			new _class( "public class Concrete" )
+				.method( "public abstract void absMethod()" );
 			fail("Expected Exception for concrete class with abstract method");
 		}
 		catch( VarException ve )

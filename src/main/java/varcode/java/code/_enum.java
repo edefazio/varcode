@@ -272,7 +272,7 @@ public class _enum
         _signature sig = _signature.of( enumSignature );
 		_enum e = new _enum( sig );
 		e.packageName( packageName );
-        e.javaDoc( javadoc );
+        e.javadoc( javadoc );
 		return e;
     }
 	
@@ -384,7 +384,7 @@ public class _enum
 		return this.imports;
 	}
 	
-	public _enum javaDoc( String comment )
+	public _enum javadoc( String... comment )
 	{
 		this.javadoc = new _javadoc( comment );
 		return this;
@@ -651,6 +651,25 @@ public class _enum
 		{
 			return this.enumName;
 		}
+        
+                /**
+         * finds the index of the target token 
+         * @param tokens
+         * @param target
+         * @return 
+         */
+        private static int indexOf( String[] tokens, String target )
+        {
+            for( int i = 0; i < tokens.length; i++ )
+            {
+                if( tokens[ i ].equals( target ) )
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+        
 		public static _signature of( String enumSignature )
 		{
 			_signature sig = new _signature();
@@ -662,6 +681,15 @@ public class _enum
 			int enumTokenIndex = -1;
 			int implementsTokenIndex = -1;
 		
+            if( indexOf( tokens, "enum" ) < 0 )
+            {
+                //infer they want a public class
+                String[] preamble = new String[ tokens.length + 2 ];  
+                preamble[0] = "public";
+                preamble[1] = "enum";
+                System.arraycopy( tokens, 0, preamble, 2, tokens.length );
+                tokens = preamble;
+            }
 			if( tokens.length < 2 )
 			{
 				throw new VarException( 

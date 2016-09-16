@@ -75,6 +75,17 @@ public class _implements
         this.impls = replaced;
     }
     
+    public static _implements of( Class...classes )
+	{
+		//className[] classNames = new className[tokens.length];
+		_implements impl = new _implements();
+		for( int i = 0; i < classes.length; i++ )
+		{
+			impl.addImplements( classes[ i ] );
+		}
+		return impl;
+	}
+    
 	public static _implements of( String... tokens )
 	{
 		//className[] classNames = new className[tokens.length];

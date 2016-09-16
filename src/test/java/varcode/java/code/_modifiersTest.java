@@ -16,6 +16,91 @@ import varcode.context.VarContext;
 public class _modifiersTest
     extends TestCase
 {
+    public void testAllModifiers()
+    {
+        _modifiers m = _modifiers.of(
+           "public",
+		   "static",
+		   "synchronized",
+		   "native",
+		   "transient",
+		   "volatile",
+		   "strictfp",
+		   "default");     
+        
+        assertTrue( m.containsAll(
+            Modifier.PUBLIC, 
+            Modifier.STATIC, 
+            Modifier.SYNCHRONIZED, 
+            Modifier.NATIVE, 
+            Modifier.TRANSIENT, 
+            Modifier.VOLATILE, 
+            Modifier.STRICT ) ); 
+            
+        assertTrue( m.containsAll(
+            Modifier.PUBLIC, 
+            Modifier.STATIC, 
+            Modifier.SYNCHRONIZED, 
+            Modifier.NATIVE, 
+            Modifier.TRANSIENT, 
+            Modifier.VOLATILE, 
+            Modifier.STRICT, 
+            _modifiers._mod.INTERFACE_DEFAULT.getBitValue() ) );
+        
+        
+        m = _modifiers.of(
+           "public",
+		   "abstract",
+		   "transient",
+		   "volatile",
+		   "strictfp",
+		   "default");  
+        
+        assertTrue( m.containsAll(
+            Modifier.PUBLIC, 
+            Modifier.ABSTRACT, 
+            Modifier.TRANSIENT, 
+            Modifier.VOLATILE, 
+            Modifier.STRICT, 
+            _modifiers._mod.INTERFACE_DEFAULT.getBitValue() ) );
+                
+        m = _modifiers.of(
+           "protected",
+		   "static",
+           "final",
+		   "synchronized",
+		   "native",
+		   "transient",
+		   "volatile",
+		   "strictfp",
+		   "default");     
+        
+        m = _modifiers.of(
+           "protected",
+		   "native",
+		   "transient",
+		   "volatile",
+		   "strictfp",
+		   "default");  
+           
+        m = _modifiers.of(
+		   "private",
+		   "static",
+		   "synchronized",
+		   "native",
+		   "transient",
+		   "volatile",
+		   "strictfp",
+		   "default");
+        
+        m = _modifiers.of(
+		   "private",
+		   "abstract", 
+		   "transient",
+		   "volatile",
+		   "strictfp",
+		   "default"); 
+    }
     public void testEmpty()
     {
         _modifiers m = new _modifiers();

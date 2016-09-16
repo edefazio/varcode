@@ -254,6 +254,17 @@ public class _class
 		}
 	}
 	
+    
+    public Class loadClass( )
+    {
+        return toJavaCase().loadClass();
+    }
+    
+    public Object instance( Object...constructorArgs )
+    {
+        return toJavaCase().instance( constructorArgs );
+    }
+    
     public JavaCase toJavaCase( Directive... directives) 
 	{	
 		return JavaCase.of(
@@ -321,23 +332,28 @@ public class _class
 		return this.classSignature.modifiers.contains( Modifier.ABSTRACT );
 	}
 	
-	public _class staticBlock( String code )
+	public _class staticBlock( Object... code )
 	{
-		this.staticBlock.addTailCode( code );
+		this.staticBlock.addTailCode( (Object[])code );
 		return this;
 	}
 	
 	public _class method( _method m )
 	{
+        System.out.println( "METHOD IS ABSTRACT " + m.isAbstract() );
+        System.out.println( "METHOD MODIFIERS" + m.getSignature().getModifiers() );
+        System.out.println( "SIGNATURE" + m.getSignature() );
+        
+        System.out.println( "CLASS IS ABSTRACT " + this.isAbstract() );
 		if( m.isAbstract() && !this.isAbstract() )
 		{
 			throw new VarException(
 				"Cannot add an abstract method " + N + m + N + " to a non-abstract class " );
 		}
-		if( m.isAbstract() && m.getBody() != null )
+		if( m.isAbstract() && !m.getBody().isEmpty() )
 		{
 			throw new VarException( 
-				"abstract method :" + N + m + N + "cannot have a method body" + N + m.getBody() );
+				"abstract method :" + N + m + N + "cannot have a method body:" + N + m.getBody() );
 		}
 		this.methods.addMethod( m );
 		return this;
@@ -518,6 +534,24 @@ public class _class
             this.implementsFrom.replace( target, replacement );
         }
         
+        /**
+         * finds the index of the target token 
+         * @param tokens
+         * @param target
+         * @return 
+         */
+        private static int indexOf( String[] tokens, String target )
+        {
+            for( int i = 0; i < tokens.length; i++ )
+            {
+                if( tokens[ i ].equals( target ) )
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+        
 		public static _signature of( String classSignature )
 		{
 			_signature sig = new _signature();
@@ -530,10 +564,21 @@ public class _class
 			int extendsTokenIndex = -1;
 			int implementsTokenIndex = -1;
 		
-			if( tokens.length < 2 )
-			{
-				throw new VarException( "class must have at least (2) tokens \"class <name>\" " );	
-			}
+            //check if the array contains  the "class" token
+            // if NOT
+            if( indexOf( tokens, "class" ) < 0 )
+            {
+                //infer they want a public class
+                String[] preamble = new String[ tokens.length + 2 ];  
+                preamble[0] = "public";
+                preamble[1] = "class";
+                System.arraycopy( tokens, 0, preamble, 2, tokens.length );
+                tokens = preamble;
+            }
+			//if( tokens.length < 2 )
+			//{                
+			//	throw new VarException( "class must have at least (2) tokens \"class <name>\" " );	
+			//}
 			 
 			for( int i = 0; i < tokens.length; i++ )
 			{

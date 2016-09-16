@@ -15,6 +15,7 @@
  */
 package varcode.java.code.auto;
 
+import varcode.buffer.TranslateBuffer;
 import varcode.context.VarContext;
 import varcode.doc.Directive;
 import varcode.java.JavaCase;
@@ -69,6 +70,9 @@ import varcode.java.code._modifiers;
 public class _auto_enum
     implements JavaCase.JavaCaseAuthor    
 {
+    
+    private static final TranslateBuffer tb = new TranslateBuffer();
+    
     private final String packageName;
     private final String className;
     
@@ -177,7 +181,7 @@ public class _auto_enum
     {
         this.imports.addImport( clazz ); //import the clazz if necessary
         _field f = new _field( 
-            _modifiers.of( "private" ), clazz.getCanonicalName(), name ); 
+            _modifiers.of( "private" ), tb.translate( clazz ), name ); 
         this.fields.addFields( f );  
         
         
@@ -230,6 +234,7 @@ public class _auto_enum
         return this;
     }
     
+    
     /**
      * Gets a clone of the internal Enum that is being built
      * (REMINDER: if you change things in the clone they will 
@@ -248,7 +253,9 @@ public class _auto_enum
         _enum derived = 
             _enum.of( this.packageName, "public enum " + this.className ); 
         
-       
+        derived.imports( this.imports.getImports().toArray() );
+        
+        
         for( int i = 0; i < fields.count(); i++ )
         {                        
             _field f = fields.getAt( i );
@@ -258,7 +265,7 @@ public class _auto_enum
             
             //add a getter method for the field
             derived.method(
-               "public final " + f.getType() + " get" + firstUpper( f.getName() ) + "()",
+               "public final " + tb.translate( f.getType() ) + " get" + firstUpper( f.getName() ) + "()",
                "return this." + f.getName() +";");            
             
             //update the constructor code and constructor parameters
@@ -266,7 +273,7 @@ public class _auto_enum
             {
                 paramList += ", ";
             }
-            paramList +=  f.getType() + " " + f.getName();
+            paramList +=  tb.translate( f.getType() ) + " " + f.getName();
             finalInitCode.addTailCode( 
                 "this." + f.getName() + " = " + f.getName() + ";" );                                 
         }

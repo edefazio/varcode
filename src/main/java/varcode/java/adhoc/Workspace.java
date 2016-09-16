@@ -270,7 +270,6 @@ public class Workspace
 	{        
         for( int i = 0; i < javaCode.length; i++ )
 		{
-            System.out.println( "checking"+ javaCode[ i ].getClassName() );
             if( this.adHocClassLoader.getAdHocClassMap().containsKey(
                 javaCode[ i ].getClassName() ) )
             {
