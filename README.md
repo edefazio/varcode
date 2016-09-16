@@ -1,40 +1,50 @@
 ![alt text](https://github.com/edefazio/varcode/blob/master/varcode_greenOnWhite.png?raw=true "Ad Hoc Source Code Generation & metaprogramming")
-ad-hoc source code generation and metaprogramming (Java)
+
+varcode can "author", compile and use Java source code at runtime:
 ```java
-// build a model of the new .java class
-_class c = _class.of( "public class HelloInstance" )
-    .constructor( "public HelloInstance( String name )",
+//author source for a new class, compile & load it, create a new instance
+static Object ez = _class.of( "public class EZClass" ).toJavaCase( ).instance( );
+```
+varcode is easy to learn, use and understand. It saves you time, and produces beautiful readable code.  
+
+varcode's fluent model API is familiar and the code is easy to understand, test, and maintain.
+```java
+// 1) build a model of the new .java class
+_class c = _class.of( "public class HelloWorld" )
+    .constructor( "public HelloWorld( String name )",
         "System.out.println( \"Hello \" + name + \"!\" );" );
         
-// "author" the .java source  
+// 2) "author" the .java source from the model 
 JavaCase helloCase = c.toJavaCase( );
         
-//print the .java source to the console
+// 3) print the .java source to the console
 System.out.println( helloCase );
         
-// compile (javac) the .java to a .class, 
+// 4) compile (javac) the .java source to a .class, 
 // load the .class
 // call the `HelloInstance` constructor with "Eric" to create a new instance
 Object helloInstance = helloCase.instance( "Eric" );
 ```
 ...will print the generated source:
 ```java
-public class HelloInstance
+public class HelloWorld
 {
-    public HelloInstance( String name )
+    public HelloWorld( String name )
     {
         System.out.println( "Hello " + name + "!" );
     }
 }
 ```
-...will print "Hello Eric!" since it ***compiled, loaded, and constructed*** 
-a new instance of `HelloInstance` class at runtime.
+...will print `Hello Eric!` since it ***compiled, loaded, and constructed*** 
+a new instance of `HelloWorld` class at runtime.
 
-varcode is the easiest code generator for Java.  
-It is natural and intuitive, and it also lets you compile,
-load, use and test adhoc classes interactively.
+varcode will get you up and running in no-time, it has minimal dependencies (SLF4J), 
+and will work on modern JDKs (1.6 or later), and is easily used from within build scripts
+like maven or gradle.  
 
-here is larger example:
+varcode a great alternative to an in-house "roll your own" code generator for everything from
+simple javabeans, to complex workspaces 
+(multiple generated Java classes, enums, and interfaces
 ```java        
 // author new source code (a new .java file)
 _class c = 
@@ -122,15 +132,3 @@ public class Bar
     }
 }
 ```
-
-varcode allows you to interatively build new enums, classes, and interfaces.
-you can use varcode directly to build/compile/load classes, or use your own custom 
-abstraction layer on top to "author" source code.
-
-varcode provides some advanced features for handling more complicated jobs: 
-Workspaces (authoring compiling and loading multiple Java files at once)
-Nesting
-Prototypes
-Clones
-Refactoring (use replace)
-Generate Source code in other languages
