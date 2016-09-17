@@ -19,13 +19,20 @@ import varcode.java.JavaCase;
 import varcode.java.JavaCase.JavaCaseAuthor;
 
 /**
- * batch / collection of AdHocJavaFiles (java source code) to be compiled 
- * (via Javac) and loaded into an Ad Hoc Class Loader.
+ * Collection of {@code AdHocJavaFiles} (java source code) to be compiled 
+ * (via Javac) and loaded into an {@code AdHocClassLoader}.
+ * 
+ * {@code Workspace} represents and simplifies the client view of pushing one or 
+ * more in memory Java source files to the Javac compiler at runtime 
+ * and organizing the compilers result (the derived .class files) as 
+ * {@code AdHocClassFile}s, and interacting with the {@code AdHocClassLoader}.
+ * 
+ * This greatly simplifies the client view of the process of 
+ * preparing, compiling, and loading Java source files at runtime.
  * 
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class Workspace
-    //extends ForwardingJavaFileManager<JavaFileManager>         
 {
     private static final Logger LOG = 
         LoggerFactory.getLogger( Workspace.class );
@@ -35,12 +42,15 @@ public class Workspace
         ToolProvider.getSystemJavaCompiler(); 
     
     /** 
-     * @param caseAuthors
+     * Build a Workspace containing the Java source output from the 
+     * {@code JavaCaseAuthor}s
+     * 
+     * @param caseAuthors authores of Java Cases that contain Java code
      * @return a Workspace containing the JavaFiles that are
      */
     public static Workspace ofAuthors( JavaCaseAuthor...caseAuthors )
     {
-        JavaCase[] cases = new JavaCase[caseAuthors.length ];
+        JavaCase[] cases = new JavaCase[ caseAuthors.length ];
         
         for( int i = 0; i < caseAuthors.length; i++ )
         {
@@ -206,7 +216,6 @@ public class Workspace
      * 
      * @param fileManager file Manager for resolving classes
      * @param adHocClassLoader classLoader to contain the compiled .classes
-     * @param workspaceName the optional name of the workspace
      * @param adHocJavaFiles source .java files to be compiled and loaded
      */
 	public Workspace(
@@ -272,7 +281,7 @@ public class Workspace
                    +"\" to workspace; a Class by this name already exists "
                   + "in this workspace" );
             }
-            LOG.debug( "Adding code \"" + javaCode[ i ].getClassName() + "\" to workspace" );
+            if( LOG.isTraceEnabled() ){ LOG.trace( "Adding code \"" + javaCode[ i ].getClassName() + "\" to workspace" ); }
 			classNameToAdHocJavaFileMap.put( 
                 javaCode[ i ].getClassName(), javaCode[ i ] );           
 		}
@@ -304,17 +313,29 @@ public class Workspace
             JavaFileObject.Kind kind, 
             FileObject sibling ) 
         {    	
+            // check if we already loaded this class
             AdHocClassFile adHocClass =
                 this.adHocClassLoader.getAdHocClassMap().get( className );	
         
             if( adHocClass != null )
-            {
+            {   // return the already-loaded class
                 return adHocClass;
             }
             try
-            {
-                adHocClass = new AdHocClassFile( className );
-                this.adHocClassLoader.introduce( adHocClass );
+            {   // create a "home" for the compiled bytes
+                adHocClass = new AdHocClassFile( this.adHocClassLoader, className );
+                
+                //TODO is this smart? this could present 
+                // some (multi Threading) issues, since 
+                // technically the class isnt ready to be accessed UNTIL
+                // we've populated it with bytes
+                
+                
+                //this.adHocClassLoader.introduce( adHocClass );
+               
+                
+                
+                
                 return adHocClass;
             }
             catch( Exception e )

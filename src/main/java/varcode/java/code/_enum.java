@@ -14,6 +14,7 @@ import varcode.doc.Author;
 import varcode.doc.Directive;
 import varcode.dom.Dom;
 import varcode.java.JavaCase;
+import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.code._constructors._constructor;
 import varcode.java.code._enum._valueConstructs._valueConstruct;
 import varcode.java.code._methods._method;
@@ -152,6 +153,16 @@ public class _enum
 			"methods", meth );
 	}
 	
+    public Class loadClass( )
+    {
+        return toJavaCase().loadClass();
+    }
+    
+    public Class loadClass( AdHocClassLoader adHocClassLoader )
+    {
+        return toJavaCase().loadClass( adHocClassLoader );
+    }
+    
 	public JavaCase toJavaCase( Directive... directives) 
 	{	
 		return JavaCase.of(

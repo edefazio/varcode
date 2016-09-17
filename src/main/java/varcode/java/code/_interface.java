@@ -12,6 +12,7 @@ import varcode.doc.Author;
 import varcode.doc.Directive;
 import varcode.dom.Dom;
 import varcode.java.JavaCase;
+import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.code._methods._method;
 import varcode.java.code._nest._nestGroup;
 import varcode.java.code._nest.component;
@@ -476,6 +477,29 @@ public class _interface
 		return JavaCase.of( getFullyQualifiedClassName(), INTERFACE, getContext(), directives );
 	}
 
+    /** 
+     * authors, compiles and loads this interface in an AdHocClassLoader 
+     * and returns the Class.
+     * 
+     * @return Class the class representing this interface
+     */
+    public Class loadClass( )
+    {
+        return toJavaCase().loadClass();
+    }
+    
+    /** 
+     * authors, compiles and loads this interface in an AdHocClassLoader 
+     * and returns the Class.
+     * 
+     * @param adHocClassLoader the class loader to load the class
+     * @return Class the class representing this interface
+     */
+    public Class loadClass( AdHocClassLoader adHocClassLoader )
+    {
+        return toJavaCase().loadClass( adHocClassLoader );
+    }
+    
 	public String getFullyQualifiedClassName()
 	{
 		

@@ -152,7 +152,7 @@ public class JavacDefineTest
             }
             try
             {
-                adHocClass = new AdHocClassFile( className );
+                adHocClass = new AdHocClassFile( new AdHocClassLoader(), className );
                 this.adHocClassFilesMap.put( className, adHocClass );
                 //this.adHocClassLoader.introduce( adHocClass );
                 return adHocClass;

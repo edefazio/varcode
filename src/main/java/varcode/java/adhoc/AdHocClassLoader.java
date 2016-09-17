@@ -2,7 +2,6 @@ package varcode.java.adhoc;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,17 +35,21 @@ public class AdHocClassLoader
         classNameToAdHocClass = new HashMap<String, AdHocClassFile>();
     }
 
-    /** Adds/Loads the inMemoryClass to the Loaded Classes Map */
+    /** 
+     * Adds the adHocMemoryClass to the Loaded Classes Map
+     * @param adHocClass 
+     */
     public void introduce( AdHocClassFile adHocClass ) 
     {
-    	if( LOG.isDebugEnabled() ) 
-    	{ LOG.debug( "Introducing Class \"" + adHocClass.getName() + "\" to classLoader" ); }
+    	if( LOG.isTraceEnabled() ) 
+    	{ LOG.trace( "Introducing Class \"" + adHocClass.getName() + "\" to classLoader" ); }
     	
         classNameToAdHocClass.put( adHocClass.getName(), adHocClass );
     }
 
     /** 
      * className to AdHocClassFile Mapping for classes loaded in Memory
+     * @return the Map of classname to AdHocClassFile
      */
     public Map<String, AdHocClassFile>getAdHocClassMap()
     {
@@ -123,6 +126,5 @@ public class AdHocClassLoader
         //What I COULD do, is keep the names in the Map
         // so that I could RELOAD the classes (PERHAPS)
         this.classNameToAdHocClass.clear();
-    }
-    
+    }    
 }
