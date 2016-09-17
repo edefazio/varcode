@@ -38,12 +38,16 @@ import static varcode.java.adhoc.Workspace.JAVAC;
 public class JavacDefineTest
     extends TestCase
 {
+    public void testNone()
+    {
+        
+    }
     
     /**
      * Compile This Source code to a .class, then 
      * define it in the existing classLoader
      */
-    public void testDefineClass( )
+    public void aTestDefineClass( )
     {
         //this( JAVAC.getStandardFileManager( 
         //        null, //use default DiagnosticListener
@@ -88,7 +92,6 @@ public class JavacDefineTest
 	    if( !compiledNoErrors )
 	    {
             throw new JavacException( 
-                "AdHoc", 
 	        	codeList,  
 	        	diagnostics );
 	    }	        	

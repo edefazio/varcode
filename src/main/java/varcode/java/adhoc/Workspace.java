@@ -158,10 +158,7 @@ public class Workspace
     /** ClassLoader for loading ad hoc Java Code that exists in memory 
      * at runtime */
     private final AdHocClassLoader adHocClassLoader;
-    
-    /** (optional) Name of the workspace*/
-	public String name;
-		
+    	
 	/** Java source files of the Workspace */
 	private final Map<String, AdHocJavaFile> classNameToAdHocJavaFileMap = 
 		new HashMap<String, AdHocJavaFile>();
@@ -200,7 +197,6 @@ public class Workspace
                 null, //use default Locale
                 null ), //use default CharSet    
             adHocClassLoader,
-            "AdHoc",
             adHocJavaFiles ); 	
     }        
     
@@ -216,15 +212,13 @@ public class Workspace
 	public Workspace(
         StandardJavaFileManager fileManager,    
         AdHocClassLoader adHocClassLoader, 
-        String workspaceName, 
         AdHocJavaFile...adHocJavaFiles )
 	{
         this.workspaceFileManager = 
             new WorkspaceFileManager( fileManager, adHocClassLoader );
         //super( fileManager );
         
-        this.adHocClassLoader = adHocClassLoader;
-		this.name = workspaceName;			     
+        this.adHocClassLoader = adHocClassLoader;     
 	    for( int i = 0; i < adHocJavaFiles.length; i++ )
 		{
 	    	addCode( adHocJavaFiles[ i ] );								
@@ -353,7 +347,6 @@ public class Workspace
 	    if( !compiledNoErrors )
 	    {
             throw new JavacException( 
-                this.name, 
 	        	this.classNameToAdHocJavaFileMap.values(),  
 	        	diagnostics );
 	    }	        	

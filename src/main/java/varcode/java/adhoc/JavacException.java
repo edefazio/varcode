@@ -39,11 +39,11 @@ public final class JavacException
 		{	
 			Diagnostic<? extends JavaFileObject>  d = diagnostics.get( i );
 			
-			//System.out.println( d.getKind() );
 			if( d.getKind() == Kind.NOTE || d.getKind() == Kind.WARNING ) 
 			{
 				continue;
 			}
+            
 			sb.append( d.getMessage( null ) );
 		
 			String className = ((AdHocJavaFile)d.getSource()).getClassName(); 
@@ -79,14 +79,15 @@ public final class JavacException
 			return sb.toString();			
 		}
 	
-	public JavacException(
-	    String workspaceName,
-		Collection<AdHocJavaFile> javaCode,
+	public JavacException( 
+        Collection<AdHocJavaFile> javaCode,
 		DiagnosticCollector<JavaFileObject> diagnostics )
 	{
+        
 		super(
-			"Failed Compilation of workspace \"" + workspaceName + "\"" + N
+			"Failed Compilation of workspace" + N
 		   + composeStackTrace( javaCode, diagnostics ) );
+       
 		this.diagnostics = diagnostics.getDiagnostics();		
 	}
 	
