@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 eric.
+ * Copyright 2016 M. Eric DeFazio eric@varcode.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,13 +21,16 @@ import java.io.ObjectInputStream;
 import java.io.ObjectStreamClass;
 
 /**
- *
- * @author eric
+ * Uses an AdHocClassLoader to load and deserialize a serialized 
+ * AdHocClass
+ * 
+ * @author M. Eric DeFazio eric@varcode.io
  */
 public class AdHocObjectInputStream
     extends ObjectInputStream
 {
-    private AdHocClassLoader classLoader;
+    /** The Class Loader used for Resolving the Class */
+    private final AdHocClassLoader classLoader;
     
     public AdHocObjectInputStream( 
         AdHocClassLoader classLoader, InputStream is ) 
@@ -89,35 +92,6 @@ public class AdHocObjectInputStream
         catch( ClassNotFoundException ex ) 
         {
             return super.resolveClass( desc );
-            /*
-            Class<?> cl = primClasses.get(name);
-            if( cl != null ) 
-            {
-                return cl;
-            } 
-            else 
-            {
-                throw ex;
-            }
-            */
-        }
-        /*
-        try 
-        {
-            return Class.forName(name, false, latestUserDefinedLoader());
-        } 
-        catch( ClassNotFoundException ex ) 
-        {
-            Class<?> cl = primClasses.get(name);
-            if( cl != null ) 
-            {
-                return cl;
-            } 
-            else 
-            {
-                throw ex;
-            }
-        }
-        */
+        }        
     }
 }
