@@ -2,6 +2,7 @@ package varcode.java.adhoc;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,46 +55,74 @@ public class AdHocClassLoader
     
     /**
      * Loads the class if need be and returns
-     * (Unlike loadClass, throws a RuntimeException and not a 
-     * CheckedException)
+     * (Unlike loadClass, throws an UNCHECKED VarException and not a 
+     * CheckedException if the class is not found)
      * 
      * @param className the fully qualified class name to resolve 
      * (i.e. "ex.varcode.MyAuthored")
      * @return the class (Or null if the class is not found in this classLoader 
      * or the parent ClassLoader
-     * @throws VarException 
+     * @throws java.lang.ClassNotFoundException
      */
+    @Override
     public Class<?> findClass( String className ) 
-        throws VarException 
+        throws ClassNotFoundException 
     {
-    	try
-    	{            
-    		if( LOG.isTraceEnabled() )
-    		{    LOG.trace( "finding \"" + className + "\"" ); }
+        if( LOG.isTraceEnabled() )
+    	{    LOG.trace( "finding \"" + className + "\"" ); }
             
-            Class loadedClass = this.findLoadedClass( className );
-            if( loadedClass != null )
-            {
-                if( LOG.isTraceEnabled() )
-        		{    LOG.trace( "found loaded \"" + className + "\"" ); }    
-                return loadedClass;
-            }
-    		AdHocClassFile adHocClass = classNameToAdHocClass.get( className );
-    		if( adHocClass == null ) 
-    		{
-    			if( LOG.isTraceEnabled() )
-        		{    LOG.trace( className + " Not an AdHoc class, checking parent ClassLoader"); }
-    			return super.findClass(className );
-    		}
-    		if( LOG.isTraceEnabled() )
-    		{    LOG.trace( "Defining unloaded AdHocClass \"" + className + "\" " ); }
-    		byte[] byteCode = adHocClass.toByteArray();
-    		return defineClass( className, byteCode, 0, byteCode.length );
-    	}
-    	catch( ClassNotFoundException e )
+        //Why am I checking this first??? --
+        Class loadedClass = this.findLoadedClass( className );
+        if( loadedClass != null )
+        {
+            if( LOG.isTraceEnabled() )
+        	{    LOG.trace( "found loaded \"" + className + "\"" ); }    
+            return loadedClass;
+        }
+    	AdHocClassFile adHocClass = classNameToAdHocClass.get( className );
+    	if( adHocClass == null ) 
     	{
-    		throw new VarException( 
-    			"Couldn't find class \"" + className + "\"", e );
+    		if( LOG.isTraceEnabled() )
+        	{    LOG.trace( className + " Not an AdHoc class, checking parent ClassLoader"); }
+    		return super.findClass(className );
     	}
+    	if( LOG.isTraceEnabled() )
+    	{    LOG.trace( "Defining unloaded AdHocClass \"" + className + "\" " ); }
+    	byte[] byteCode = adHocClass.toByteArray();
+    	return defineClass( className, byteCode, 0, byteCode.length );    	
     }
+
+    /**
+     * A convenient method use in leu of {@code findClass()} or {@code loadClass()}
+     * which throws a VarException (RuntimeException) if the classLoader
+     * cannot resolve a class (verses a ClassNotFound CheckedException).  
+     * 
+     * @param className the name of the class to resolve
+     * @return the Class
+     * @throws VarException (wrapping a Checked RuntimeException) if the class cannot
+     * be found
+     */
+    public Class<?> find( String className )
+    {
+        try 
+        {
+            return findClass( className );
+        }
+        catch( ClassNotFoundException ex ) 
+        {
+            throw new VarException(
+                "Could not resolve class \"" + className + "\"", ex);
+        }
+    }
+        
+    /**
+     * Remove ALL adHoc Classes from this Class Loader
+     */
+    public void unloadAll()
+    {
+        //What I COULD do, is keep the names in the Map
+        // so that I could RELOAD the classes (PERHAPS)
+        this.classNameToAdHocClass.clear();
+    }
+    
 }

@@ -198,10 +198,10 @@ public class Workspace
         this( JAVAC.getStandardFileManager( 
                 null, //use default DiagnosticListener
                 null, //use default Locale
-                null ),
+                null ), //use default CharSet    
             adHocClassLoader,
             "AdHoc",
-            adHocJavaFiles );//use default CharSet     	
+            adHocJavaFiles ); 	
     }        
     
     /**
@@ -342,7 +342,6 @@ public class Workspace
 		JavaCompiler.CompilationTask task = 
             JAVAC.getTask(
                 null, //use System.err if the tool fails 
-                //this, 
                 this.workspaceFileManager,
                 diagnostics, 
                 options, 

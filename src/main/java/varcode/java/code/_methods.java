@@ -179,7 +179,7 @@ public class _methods
     
 	
 	public static class _method		
-		implements CodeAuthor
+		extends Template.Base
 	{
 		public static final Dom METHOD = 
 			BindML.compile(

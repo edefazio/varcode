@@ -12,7 +12,8 @@ import varcode.markup.bindml.BindML;
 
 /**
  * TODO I'm considering whether I should be able to "register Dependency"
- * within a codeBlock, which will allow me to  more easily "port" code...
+ * within a codeBlock, which will allow me to  more easily "port" a block of 
+ * code... PERHAPS I extend _code to provide this functionality
  * 
  * So when I add a catchExceptionClass for instance, I would register it as
  * a dependency (so any code that might need to use this code could query

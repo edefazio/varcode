@@ -12,6 +12,7 @@ import varcode.doc.Author;
 import varcode.doc.Directive;
 import varcode.dom.Dom;
 import varcode.java.JavaCase;
+import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.code._fields._field;
 import varcode.java.code._methods._method;
 import varcode.java.code._nest._nestGroup;
@@ -254,15 +255,24 @@ public class _class
 		}
 	}
 	
-    
     public Class loadClass( )
     {
         return toJavaCase().loadClass();
     }
     
+    public Class loadClass( AdHocClassLoader adHocClassLoader )
+    {
+        return toJavaCase().loadClass( adHocClassLoader );
+    }
+    
     public Object instance( Object...constructorArgs )
     {
         return toJavaCase().instance( constructorArgs );
+    }
+    
+    public Object instance( AdHocClassLoader classLoader, Object...constructorArgs )
+    {
+        return toJavaCase().instance( classLoader, constructorArgs );
     }
     
     public JavaCase toJavaCase( Directive... directives) 

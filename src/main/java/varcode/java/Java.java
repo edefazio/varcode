@@ -206,7 +206,7 @@ public enum Java
         Workspace ws = new Workspace( adHocClassLoader );
         ws.addCode( javaFile );
         adHocClassLoader = ws.compile( compilerOptions );
-        return adHocClassLoader.findClass( javaFile.getClassName() );
+        return adHocClassLoader.find( javaFile.getClassName() );
 	}
     
     /**

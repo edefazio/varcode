@@ -17,20 +17,19 @@ package ex.varcode.java.code;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Random;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import junit.framework.TestCase;
 import varcode.java.Java;
 import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.adhoc.AdHocObjectInputStream;
 import varcode.java.code._class;
+import varcode.java.code._fields;
+import varcode.java.code._fields._field;
 
 /**
  *
@@ -46,6 +45,20 @@ public class Example1
             "System.out.println(\"Hello World !\");");
         
         System.out.println( hello ); 
+    }
+    
+    public static _field f = _field.of( "public final {+type+} {+name+}" );
+    
+    public static _class Tuple = 
+       _class.of("public class {+tupleName+} implements Serializable");
+            
+    
+    public void testLazyBind()
+    {
+        _class myTuple = _class.from( Tuple );
+        myTuple.replace( "tupleName", "MyTuple" );
+        
+        
     }
     
     public static _class MyBean = 

@@ -12,7 +12,7 @@ import varcode.java.code.auto._auto_enum;
 public class WorkspaceTest
 	extends TestCase
 {
-
+    
     /** Verify that I cant Redefine an existing class */
     public void testWorkspaceRedefineExistingClass()
     {
@@ -28,7 +28,7 @@ public class WorkspaceTest
         AdHocClassLoader ah = ws.compile( );
         
         //
-        Class cl = ah.findClass( WorkspaceTest.class.getCanonicalName() );
+        Class cl = ah.find( WorkspaceTest.class.getCanonicalName() );
         
         assertEquals(200, Java.getFieldValue( cl, "ID" ) );
         
@@ -47,7 +47,7 @@ public class WorkspaceTest
         
         assertEquals( 42,  
             Java.invoke( 
-                cl.findClass("ex.varcode.e.MyEnum").getEnumConstants()[ 0 ], "getAge" ) );
+                cl.find("ex.varcode.e.MyEnum").getEnumConstants()[ 0 ], "getAge" ) );
         
         auto.value( "Blah", 22 );
         
@@ -84,10 +84,10 @@ public class WorkspaceTest
         AdHocClassLoader a2cl = a2.compile( );
         
         int a1id = (Integer)Java.getFieldValue( 
-            a1cl.findClass( "A" ), "ID" );
+            a1cl.find( "A" ), "ID" );
         
         int a2id = (Integer)Java.getFieldValue( 
-            a2cl.findClass( "A" ), "ID" );
+            a2cl.find( "A" ), "ID" );
         
         assertEquals( 1, a1id );
         assertEquals( 2, a2id );
@@ -155,7 +155,7 @@ public class WorkspaceTest
 		
 		sw.addCode( "A", "public class A {}");
 		AdHocClassLoader ah = sw.compile( );
-		assertEquals( "A", ah.findClass( "A" ).getSimpleName() );
+		assertEquals( "A", ah.find( "A" ).getSimpleName() );
 	}
 	
 	
@@ -199,11 +199,11 @@ public class WorkspaceTest
 			"    }" + N + 			
 			"}");
 		AdHocClassLoader ah = sw.compile( );
-		assertNotNull( ah.findClass("A_ReliesOn_B") );
-		assertNotNull( ah.findClass("B_ReliesOn_A") );
+		assertNotNull( ah.find("A_ReliesOn_B") );
+		assertNotNull( ah.find("B_ReliesOn_A") );
 		
-		Object a = Java.instance( ah.findClass("A_ReliesOn_B"), new Object[]{null});
-		Object b = Java.instance( ah.findClass("B_ReliesOn_A"), new Object[]{null});
+		Object a = Java.instance( ah.find("A_ReliesOn_B"), new Object[]{null});
+		Object b = Java.instance( ah.find("B_ReliesOn_A"), new Object[]{null});
 		
 		Java.invoke( a, "setB", b );
 		Java.invoke( b, "setA", a );
@@ -216,7 +216,7 @@ public class WorkspaceTest
 		sws.addCode( "A", "public class A {}" );
         
 		AdHocClassLoader ah = sws.compile( );
-		Class<?> AClass = ah.findClass( "A" );
+		Class<?> AClass = ah.find( "A" );
 		assertTrue( AClass != null );
 	}
 	
@@ -261,8 +261,8 @@ public class WorkspaceTest
 			       +"    }" + N 
 			       +"}" )
 			   .compile( );
-		assertNotNull( cw.findClass( "A" ) );
-		assertNotNull( cw.findClass( "B" ) );
+		assertNotNull( cw.find( "A" ) );
+		assertNotNull( cw.find( "B" ) );
 	}
 
 	// verify that if: 
@@ -293,8 +293,8 @@ public class WorkspaceTest
 			       +"    }" + N 
 			       +"}" )
 			   .compile( );
-		assertNotNull( cw.findClass( "A" ) );
-		assertNotNull( cw.findClass( "B" ) );
+		assertNotNull( cw.find( "A" ) );
+		assertNotNull( cw.find( "B" ) );
 	}
 	
 	public void testCompilerException()

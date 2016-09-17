@@ -238,6 +238,13 @@ public class JavaCase
         return Java.instance( theClass, constructorArgs );
     }                 
     
+    
+    public Object instance( AdHocClassLoader classLoader, Object... constructorArgs )
+    {
+        Class<?> theClass = loadClass( classLoader );
+        return Java.instance( theClass, constructorArgs );
+    }
+    
     /**
      * Entity that can author and return a 
      * {@code JavaCase} container of Java source code. 

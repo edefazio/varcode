@@ -57,7 +57,7 @@ public class ModelFeatureTest
         AdHocClassLoader adHocClassLoader = 
             Workspace.compileNow( THE_INTERFACE, THE_IMPLEMENTER );
         
-        Class implc = adHocClassLoader.findClass( THE_IMPLEMENTER.getClassName() );
+        Class implc = adHocClassLoader.find( THE_IMPLEMENTER.getClassName() );
         Object implObject = Java.instance( implc );
         //calls the default method on the implementation (defined on the interface)
         assertNotNull( Java.invoke( implObject, "getID" ) );        
@@ -90,7 +90,7 @@ public class ModelFeatureTest
         AdHocClassLoader adHocClassLoader = 
             Workspace.compileNow( THE_INTERFACE, THE_IMPLEMENTER_OVERRIDE );
         
-        Class implc = adHocClassLoader.findClass( THE_IMPLEMENTER_OVERRIDE.getClassName() );
+        Class implc = adHocClassLoader.find( THE_IMPLEMENTER_OVERRIDE.getClassName() );
         Object implObject = Java.instance( implc );
         //calls the overridden method on the implementation (defined on the interface)
         assertEquals( "OVERRIDE", Java.invoke( implObject, "getID" ) );        
