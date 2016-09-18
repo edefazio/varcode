@@ -11,6 +11,10 @@ import varcode.doc.Directive;
 import varcode.dom.Dom;
 import varcode.markup.bindml.BindML;
 
+/**
+ * 
+ * @author M. Eric DeFazio eric@varcode.io
+ */
 public class _throws
 	extends Template.Base
 {
@@ -73,15 +77,16 @@ public class _throws
 		return this;
 	}
     
-    public void replace( String target, String replacement )
+    public _throws replace( String target, String replacement )
     {
         List<String> replacedNames = new ArrayList<String>();
-        for(int i=0; i<this.throwsException.size(); i++)
+        for( int i = 0; i < this.throwsException.size(); i++ )
         {
             replacedNames.add(
                 this.throwsException.get( i ).replace( target, replacement ) );
         }
         this.throwsException = replacedNames;
+        return this;
     }
 	
 	public _throws addThrows( String throwsClass )

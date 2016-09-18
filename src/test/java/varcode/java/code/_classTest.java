@@ -27,6 +27,20 @@ import varcode.java.adhoc.Workspace;
 public class _classTest
     extends TestCase
 {
+    
+    public void testClassAnnotation()
+    {
+        _class c = _class.of("public class Something")
+            .classAnnotate( "@Path(\"book\")" );
+        
+        assertEquals( 
+            "@Path(\"book\")" + N + 
+            "public class Something" + N +
+            "{" + N + 
+            "}", c.toString() );        
+    }
+    
+    
     public void testClassSimple()
     {
         _class c = 

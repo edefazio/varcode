@@ -195,27 +195,30 @@ public class _parameters
 	{
 		return Author.code( PARAMS_LIST, VarContext.of( "params", params ), directives );
 	}	
+    
+    @Override
 	public String toString()
 	{
 		return author();
 	}
 
-    public void replace( String target, String replacement )
+    @Override
+    public _parameters replace( String target, String replacement )
     {
         List<_parameter> modifiedParams = new ArrayList<_parameter>();
         for( int i = 0; i < this.params.size(); i++ )
         {
             modifiedParams.add(
-                _parameter.of( 
-                    params.get( i ).type.toString().replace( target, replacement ),
-                    params.get( i ).name.toString().replace( target, replacement ) ) 
-            );
+                params.get( i ).replace( target, replacement ) );            
         }        
         this.params = modifiedParams;
+        return this;
     }
 	
-	public static class _parameter		
+	public static class _parameter
+        extends Template.Base
 	{			
+        
 		public static _parameter from( _parameter prototype ) 
 		{
 			return new _parameter( 
@@ -229,12 +232,14 @@ public class _parameters
 		}
 		
         /** The type4 of the parameter ( int, String, {+typeName+}, ... )*/
-		private final String type; 
+		private String type; 
         
         /** the name of the parameter ("count", "name"...) */
-		private final String name; 
+		private String name; 
 	
-		public static final Dom PARAMS = BindML.compile( "{{+:{+type*+} {+varName*+}+}}" );
+        
+		public static final Dom PARAMS = 
+            BindML.compile( "{{+:{+type*+} {+name*+}+}}" );
 		
 		public _parameter( _parameter iv )
 		{
@@ -248,9 +253,10 @@ public class _parameters
 			this.name = name.toString();
 		}
 	
+        @Override
 		public String toString()
 		{
-			return type.toString() + " " + name.toString();
+			return author();
 		}
         
         public String getType()
@@ -261,6 +267,26 @@ public class _parameters
         public String getName()
         {
             return this.name;
+        }
+
+        @Override
+        public _parameter replace( String target, String replacement )
+        {
+            this.name = this.name.replace( target, replacement );
+            this.type = this.type.replace( target, replacement );
+            return this;
+        }
+
+        @Override
+        public String author( Directive... directives )
+        {
+            return Author.code( 
+                PARAMS, getContext(), directives );
+        }
+        
+        public VarContext getContext()
+        {
+            return  VarContext.of( "type", type, "name", name );
         }
 	}
 
@@ -280,5 +306,4 @@ public class _parameters
 		String[] tokens = normalizeTokens( parameterString );
 		return _parameters.of( tokens );
 	}
-
 }

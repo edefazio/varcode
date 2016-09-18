@@ -48,6 +48,7 @@ public class _methods
 		"{{+?nonStaticMethods:" + N + "{+nonStaticMethods+}+}}" +
 		"{{+?abstractMethods:" + N + "{+abstractMethods+};+}}" );
 	
+    @Override
 	public String author( Directive... directives ) 
 	{
 		List<_method>nonStaticMethods = new ArrayList<_method>();
@@ -84,6 +85,7 @@ public class _methods
 			directives );		
 	}
 	
+    @Override
 	public String toString()
 	{
 		return author();
@@ -107,13 +109,13 @@ public class _methods
 	
 	public _methods addMethod( String signature )
 	{
-		return addMethod( signature, (String[])null );
+		return addMethod( signature, (Object[])null );
 	}
 	
-	public _methods addMethod( String signature, String... body )
+	public _methods addMethod( String signature, Object... body )
 	{
 		//return addMethod( null, signature, body );
-		_method m = _method.of( null, signature, body );
+		_method m = _method.of( null, signature, (Object[]) body );
 		verifyAndAddMethod( m );
 		return this;
 	}
@@ -138,9 +140,11 @@ public class _methods
 		{//verify there is no conflict
 			for( int i = 0; i < methodsWithTheSameName.size(); i++ )
 			{
-				if( m.methodSignature.matchesParamType( methodsWithTheSameName.get( i ).methodSignature ) )
+				if( m.methodSignature.matchesParamType( 
+                    methodsWithTheSameName.get( i ).methodSignature ) )
 				{
-					throw new VarException( "Could not add method; Found another method "+ N +
+					throw new VarException( 
+                        "Could not add method; another method "+ N +
 						methodsWithTheSameName.get( i ) + N +	
 						"with same parameter signature as "+ N + 
 						m );
@@ -150,16 +154,18 @@ public class _methods
 		}
 	}
 
-    public void replace( String target, String replacement )
+    @Override
+    public _methods replace( String target, String replacement )
     {
-        Map<String, List<_method>> replacedMethods = new HashMap<String, List<_method>>();
+        Map<String, List<_method>> replacedMethods = 
+            new HashMap<String, List<_method>>();
         
         String[] names = this.methodsByName.keySet().toArray( new String[ 0 ] );        
         for( int i = 0; i < names.length; i++ )
         {
-            List<_method> methods = this.methodsByName.get(names[ i ] );
+            List<_method> methods = this.methodsByName.get( names[ i ] );
             
-            for( int j=0; j<methods.size(); j++  )
+            for( int j = 0; j < methods.size(); j++  )
             {
                 _method thisOne = methods.get( j );
                 thisOne.replace( target, replacement );
@@ -175,6 +181,7 @@ public class _methods
             }
         }
         this.methodsByName = replacedMethods;
+        return this;
     }
     
 	
@@ -184,6 +191,7 @@ public class _methods
 		public static final Dom METHOD = 
 			BindML.compile(
 				"{+javadocComment+}" +	
+                "{+methodAnnotations+}" +        
 				"{+methodSignature*+}" + N +
 				"{" + N +
 				"{+$indent4Spaces(methodBody)+}" + N +
@@ -191,6 +199,7 @@ public class _methods
 
 		public static final Dom ABSTRACT_METHOD = 
 			BindML.compile(
+                "{+javadocComment+}" +    
 				"{+methodSignature*+};" + N );
 	
 		public static _method of( String methodSignature )
@@ -210,6 +219,7 @@ public class _methods
 				new _method( signature.from( prototype.methodSignature ) );
 			m.javadocComment = _javadoc.from(prototype.javadocComment );
 			m.methodBody = prototype.getBody();			
+            m.methodAnnotations = new _annotations( prototype.methodAnnotations.getAnnotations() );
 			return m;
 		}
 
@@ -218,35 +228,12 @@ public class _methods
 			return methodSignature;
 		}
 		
-		public static _method of( String comment, String signature, String... body )
+		public static _method of( String comment, String signature, Object... body )
 		{
 			_method m = new _method( signature );
 			if( body != null && body.length > 0 )
 			{
-				if( body.length == 1 )
-				{
-					if( body[ 0 ].endsWith( ";" ) )
-					{
-						m.body( body[ 0 ] );
-					}
-					else
-					{
-						m.body( body[ 0 ] + ";" );
-					}
-				}
-				else
-				{
-					StringBuilder sb = new StringBuilder();
-					for( int i = 0; i < body.length; i++ )
-					{
-						if( i > 0 )
-						{
-							sb.append( "\r\n" );
-						}
-						sb.append( body[ i ] );
-					}
-					m.body( sb.toString() );
-				}				
+                m.body( body );
 			}			
 			if( comment != null && comment.trim().length() > 0 )
 			{
@@ -254,8 +241,9 @@ public class _methods
 			}			
 			return m;
 		}
-	
+
 		private _javadoc javadocComment;
+        private _annotations methodAnnotations;
 		private signature methodSignature;
 		private _code methodBody;
 	
@@ -272,18 +260,20 @@ public class _methods
 			_parameters params,
 			_throws throwsExceptions )
 		{
-			this.methodSignature =
-				new signature( modifiers, returnType, methodName, params, throwsExceptions );		
+			this( new signature( modifiers, returnType, methodName, params, throwsExceptions ) );		            
 		}
 	
 		public _method( signature sig )
 		{
 			this.methodSignature = sig;
+            this.methodAnnotations = new _annotations();
+            this.methodBody = new _code();
+            this.javadocComment = new _javadoc();
 		}
 		
 		public _method( String methodSignature )
 		{
-			this.methodSignature = signature.of( methodSignature );
+            this( signature.of( methodSignature ) );
 		}
 	
 		public _code getBody()
@@ -308,25 +298,38 @@ public class _methods
 			return this;
 		}
 	
+        @Override
 		public String toString()
 		{
 			return author();
 		}
-	
+
+        public VarContext getContext()
+        {
+            //if( this.isAbstract() )
+			//{
+		    //		return VarContext.of(
+            //        "javadocComment", javadocComment,    
+			//		"methodSignature", methodSignature );
+			// }
+			return VarContext.of(
+				"javadocComment", javadocComment,
+                "methodAnnotations", methodAnnotations,    
+                "methodSignature", methodSignature,                        
+				"methodBody", methodBody );
+        }
+        
+        @Override
 		public String author( Directive... directives ) 
-		{
+		{            
 			if( this.isAbstract() )
 			{
 				return Author.code( ABSTRACT_METHOD, 
-					VarContext.of(
-						"methodSignature", methodSignature ),
+					getContext(),
 					directives );
 			}
 			return Author.code( METHOD, 
-				VarContext.of(
-					"methodSignature", methodSignature,
-					"methodBody", methodBody, 
-					"javadocComment", javadocComment ),
+				getContext(),
 				directives );
 		}
 		
@@ -377,13 +380,14 @@ public class _methods
             {
                 this.returnType = this.returnType.replace( target, replacement );
                 this.params.replace( target, replacement ); 
+                this.modifiers.replace( target, replacement );
                 this.methodName = this.methodName.replace( target, replacement );
                 throwsExceptions.replace(target, replacement);
             }
 			
 			public String getName()
 			{
-				return methodName.toString();
+				return methodName;
 			}
 			
 			public _parameters getParameters()
@@ -513,7 +517,7 @@ public class _methods
 	
 			public boolean matchesParamType( signature sig )
 			{
-				if( sig.methodName.toString().equals( this.methodName.toString() ) )
+				if( sig.methodName.equals( this.methodName ) )
 				{
 					if( sig.params.count() == this.params.count() )
 					{
@@ -554,17 +558,15 @@ public class _methods
 		}
 
 		/** searches through the contents to find target and replaces with replacement */
-		public void replace( String target, String replacement ) 
+		public _method replace( String target, String replacement ) 
 		{
-			if( this.javadocComment != null )
-            {
-                this.javadocComment.replace( target, replacement );
-            }
-            if( this.methodBody != null )
-            {
-                this.methodBody.replace( target, replacement );
-            }
+			this.javadocComment.replace( target, replacement );
+            
+            this.methodAnnotations.replace( target, replacement );
+            this.methodBody.replace( target, replacement );            
             this.methodSignature.replace( target, replacement );
+            
+            return this;
 		}	
 	}
 }

@@ -63,9 +63,10 @@ public class _package
         return author( );        
 	}
 
-    public void replace( String target, String replacement )
+    public _package replace( String target, String replacement )
     {
         this.name = this.name.replace( target, replacement );
+        return this;
     }
     
 	public String author( Directive... directives ) 

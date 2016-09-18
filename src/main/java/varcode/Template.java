@@ -73,6 +73,8 @@ public interface Template
             return Author.code( dom, context, directives );
         }
         
+        public abstract Base replace( String target, String replacement );
+        
         private static final String[] INDENT = new String[]
     {
         "",
@@ -89,7 +91,10 @@ public interface Template
         "                                            ",
         "                                                ",
         "                                                    ",
-        "                                                        "        
+        "                                                        ",
+        "                                                            ",
+        "                                                                ",
+        "                                                                    ",
     };
         public String indent( int count )
         {

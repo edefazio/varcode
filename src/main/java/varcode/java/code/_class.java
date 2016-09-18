@@ -31,13 +31,15 @@ import varcode.markup.bindml.BindML;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _class
-	implements JavaCaseAuthor, _nest.component
+    extends Template.Base    
+	implements  JavaCaseAuthor, _nest.component
 {	
 	private _package classPackage;
 	private _imports imports;
 	private _javadoc javadoc;
 	private _signature classSignature;
-	
+	private _annotations classAnnotation;
+    
 	private _constructors constructors;
 	private _fields fields;
 	private _methods methods;
@@ -115,6 +117,7 @@ public class _class
 	
 	public _class( String packageName, String classSignature )
 	{
+        this.classAnnotation = new _annotations();
 		this.classPackage = _package.of( packageName );
 		this.javadoc = new _javadoc();
 		this.classSignature = _signature.of( classSignature );
@@ -132,6 +135,7 @@ public class _class
 	 */
 	public _class( _class prototype )
 	{
+        this.classAnnotation = new _annotations( prototype.classAnnotation.getAnnotations() );
 		this.classPackage = _package.from( prototype.classPackage );
 		this.imports = _imports.from( prototype.imports );
 		this.classSignature = _signature.from( prototype.classSignature  );
@@ -158,6 +162,7 @@ public class _class
 			"{+pckage+}" +
 			"{{+?imports:{+imports+}" + N +"+}}" +
 			"{+classJavaDoc+}" +
+            "{+classAnnotation+}" +        
 			"{+classSignature*+}" + N +
 			"{" + N +			
 			"{{+?members:{+$>(members)+}" + N +
@@ -229,6 +234,7 @@ public class _class
 				"pckage", classPackage,
 				"imports", imp,
 				"classJavaDoc", javadoc,
+                "classAnnotation", this.classAnnotation,
 				"classSignature", classSignature,
 				"members", mem,
 				"methods", meth,
@@ -327,12 +333,18 @@ public class _class
 		return this;
 	}
 
+    public _class classAnnotate( Object... annotations )
+    {
+        this.classAnnotation.add( annotations );
+        return this;
+    }
+    
 	public _class method( String methodSignature )
 	{
 		return method(  _method.of( null, methodSignature, new String[ 0 ] ) );
 	}
-	
-	public _class method( String methodSignature, String... bodyLines )
+	  
+	public _class method( String methodSignature, Object... bodyLines )
 	{
 		return method( _method.of( null, methodSignature, bodyLines ) );
 	}
@@ -532,11 +544,12 @@ public class _class
 			return clone;
 		}
 		
-        public void replace( String target, String replacement )
+        public _signature replace( String target, String replacement )
         {
             this.className = className.replace( target, replacement );
             this.extendsFrom.replace( target, replacement );
             this.implementsFrom.replace( target, replacement );
+            return this;
         }
         
         /**
@@ -684,9 +697,10 @@ public class _class
 	}
 
 	//move this to enum and interface
-	public void replace( String target, String replacement  ) 
+	public _class replace( String target, String replacement  ) 
 	{		
         this.classSignature.replace( target, replacement );
+        this.classAnnotation.replace( target, replacement );
         this.classPackage.replace( target, replacement );
         this.constructors.replace( target, replacement );
         this.javadoc.replace( target, replacement );
@@ -697,6 +711,7 @@ public class _class
         this.staticBlock.replace( target, replacement );
         this.nests.replace( target, replacement );
         
-		this.fields.replace( target, replacement );        
+		this.fields.replace( target, replacement );
+        return this;        
 	}
 }

@@ -1,7 +1,10 @@
 package varcode.java.code;
 
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import varcode.Template;
 
@@ -38,7 +41,19 @@ public class _modifiers
 	{
 		
 	}
-	
+    
+    public _modifiers replace( String target, String replacement )
+    {
+        List<String> keywords = this.bitsToKeywords( );
+        for(int i=0; i< keywords.size(); i++ )
+        {
+            keywords.set( i, keywords.get( i ).replace(target, replacement) );
+        }
+        _modifiers rep = _modifiers.of( keywords.toArray( new String[ 0 ]) );
+        this.mods = rep.mods;
+        return this;
+    }
+    
     public int count()
     {
         return Integer.bitCount( this.mods );
@@ -320,7 +335,8 @@ public class _modifiers
 				  Modifier.NATIVE |
 				  Modifier.TRANSIENT |
 				  Modifier.VOLATILE |
-				  Modifier.STRICT ) ) == 0 
+				  Modifier.STRICT |
+                  _mod.INTERFACE_DEFAULT.bitValue ) ) == 0 
 			&&
 			Integer.bitCount( modifiers & ( Modifier.PUBLIC | Modifier.PRIVATE | Modifier.PROTECTED ) ) < 2;
 		}
@@ -374,15 +390,15 @@ public class _modifiers
 	public String author( Directive... directives )  
 	{
 		validate( this.mods );		
-		return Author.code( BindML.compile( bitsToKeywords() ), VarContext.of( ), directives );
+		return Author.code( BindML.compile( bitsToKeywordsString() ), VarContext.of( ), directives );
 	}
 	
 	public String toString()
 	{
-		return bitsToKeywords();
+		return bitsToKeywordsString();
 	}
 	
-	private String bitsToKeywords()
+	private String bitsToKeywordsString()
 	{
 		StringBuilder sb = new StringBuilder();
 		boolean first = true;
@@ -408,5 +424,28 @@ public class _modifiers
 		}
 		return sb.toString();		
 	}
+    
+    private List<String> bitsToKeywords()
+    {
+        //if no modifiers
+        if( Integer.bitCount( this.mods ) == 0 )
+        {
+            return Collections.EMPTY_LIST; //new ArrayList<String>();
+        }
+        
+        List<String> keywords = new ArrayList<String>();
+		//boolean first = true;
+		int theMods = this.mods;
+		while( theMods != 0 )
+		{			
+			//bithacks: isolate the rightmost bit
+			int nextBit = theMods & -theMods;		
+			keywords.add( BIT_TO_KEYWORD_MAP.get( nextBit ) ); 
+			
+			//bithacks: turn off the rightmost bit 
+			theMods = theMods & ( theMods - 1 );
+		}
+		return keywords;		
+    }
 	
 }

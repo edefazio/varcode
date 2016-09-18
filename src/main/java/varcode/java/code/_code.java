@@ -239,9 +239,9 @@ public class _code
 			{
 				replace.add( ((String)obj).replace( target, replacement) ); 
 			}
-			else if( obj instanceof _code )
+			else if( obj instanceof Template.Base )
 			{
-				replace.add(  ((_code)obj ).replace( target, replacement ) );
+				replace.add(  ((Template.Base)obj ).replace( target, replacement ) );
 			}
 			else
 			{
@@ -251,6 +251,7 @@ public class _code
 		return replace;
 	}
 	
+    @Override
 	public _code replace( String target, String replacement )
 	{
 		this.codeSequence = doReplace( this.codeSequence, target, replacement );
@@ -265,6 +266,7 @@ public class _code
 		return this;
 	}
 	
+    @Override
 	public String toString()
 	{
 		return author();

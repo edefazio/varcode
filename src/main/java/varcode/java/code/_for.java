@@ -28,10 +28,10 @@ import varcode.markup.bindml.BindML;
 public class _for 
     extends Template.Base
 {
-    private final String init;
-    private final String condition;
-    private final String update;
-    private final _code code;
+    private String init;
+    private String condition;
+    private String update;
+    private _code code;
     
     public _for( String init, String condition, String update )
     {
@@ -114,6 +114,7 @@ public class _for
           + "{{+?code:{+$>(code)+}" + N +"+}}"  
           + "}" + N );        
     
+    @Override
     public String toString( )
     {
         return author( );
@@ -132,6 +133,16 @@ public class _for
             "condition", this.condition,
             "update", this.update,
             "code", this.code );
+    }
+
+    @Override
+    public _for replace(String target, String replacement)
+    {
+        this.init = this.init.replace( target, replacement );
+        this.code.replace( target, replacement );
+        this.condition = this.condition.replace(target, replacement);
+        this.update = this.update.replace( target, replacement );
+        return this;
     }
    
 }

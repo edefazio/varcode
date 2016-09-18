@@ -3,6 +3,7 @@ package varcode.java.code;
 import java.util.ArrayList;
 import java.util.List;
 import varcode.CodeAuthor;
+import varcode.Template;
 
 import varcode.VarException;
 import varcode.context.VarContext;
@@ -44,7 +45,7 @@ public interface _nest
 		 */
 		public _imports getImports();
         
-        public void replace( String target, String replacement );
+        public Template.Base replace( String target, String replacement );
 	}
 	
 	public static class _nestGroup

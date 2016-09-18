@@ -20,6 +20,7 @@ import varcode.markup.bindml.BindML;
 
 //allow default methods
 public class _interface 
+    extends Template.Base
 	implements JavaCaseAuthor, _nest.component
 {
 	public static final Dom INTERFACE = 
@@ -130,7 +131,7 @@ public class _interface
 	private _imports imports;
 	private _nestGroup nests;
 	
-    public void replace( String target, String replacement )
+    public _interface replace( String target, String replacement )
     {
         this.interfacePackage.replace( target, replacement );
         this.javadoc.replace( target , replacement );
@@ -139,6 +140,8 @@ public class _interface
         this.methods.replace( target, replacement );
         this.imports.replace( target, replacement );
         this.nests.replace( target, replacement );
+        
+        return this;
     }
     
 	/**
@@ -361,10 +364,12 @@ public class _interface
 			return clone;
 		}
 		
-        public void replace( String target, String replacement )
+        public _signature replace( String target, String replacement )
         {
             this.interfaceName = this.interfaceName.replace( target, replacement );
             this.extendsFrom.replace( target, replacement );            
+            this.modifiers.replace( target, replacement );
+            return this;
         }
 
 		public String getName()

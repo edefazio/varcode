@@ -218,12 +218,13 @@ public class _arguments
 		return author();
     }
 
-    public void replace( String target, String replacement )
+    public _arguments replace( String target, String replacement )
     {
         for( int i = 0; i < this.arguments.size(); i++ )
         {
             this.arguments.set( 
-                i, this.arguments.get(i).replace( target, replacement ) ); 
+                i, this.arguments.get( i ).replace( target, replacement ) ); 
         }
+        return this;
     }    
 }

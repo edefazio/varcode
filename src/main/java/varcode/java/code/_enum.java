@@ -27,6 +27,7 @@ import varcode.markup.bindml.BindML;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _enum
+    extends Template.Base   
 	implements JavaCaseAuthor, _nest.component
 {
 	private _package enumPackage = new _package( "" ); 
@@ -486,19 +487,26 @@ public class _enum
 		extends Template.Base
 	{
         /** TODO, cant I just iterate through each time w/o having to keep this around??*/
-		private Set<String> valueNames = new HashSet<String>();
+		//private Set<String> valueNames = new HashSet<String>();
 		
 		private List<_valueConstruct> valueConstructs = 
 			new ArrayList<_valueConstruct>();
 			
 		public _valueConstructs addEnumValue( _valueConstruct value )
 		{
-			if( this.valueNames.contains( value.name.toString() ) )
-			{
-				throw new VarException( 
-					"Enum already contains a value for \"" + value.name.toString() +"\"" );
-			}
-			this.valueNames.add( value.name.toString() );
+            for(int i=0; i< this.valueConstructs.size(); i++ )
+            {
+                if( this.valueConstructs.get( i ).name.equals( value.name ) )
+                {
+                    throw new VarException( 
+                        "Enum already contains a value for \"" + value.name.toString() +"\"" );
+                }
+            }
+			//if( this.valueNames.contains( value.name.toString() ) )
+			//{
+				
+			//}
+			//this.valueNames.add( value.name.toString() );
 			this.valueConstructs.add( value );
 			return this;
 		}
@@ -533,10 +541,22 @@ public class _enum
                 "Invalid value construct index [" + index + "]");
         }
         
+        public _valueConstructs replace( String target, String replacement )
+        {
+            for( int i = 0; i < this.valueConstructs.size(); i++ )
+            {
+                this.valueConstructs.get( i ).replace( target, replacement );
+            }
+            return this;
+            //Set<String> repValueNames = new HashSet<String>();
+            //String[] valueNameArray = this.valueNames.toArray( new String[ 0 ] );
+            //for(int )
+        }
+        
 		public static class _valueConstruct
 			extends Template.Base
 		{
-			private _identifier name;
+			private String name;
 			private _arguments args;
 			
 			/** So:
@@ -556,17 +576,17 @@ public class _enum
 			 */
 			public static _valueConstruct of( String name, Object... arguments )
 			{
-				return new _valueConstruct( _identifier.of( name ), _arguments.of( arguments ) );								
+				return new _valueConstruct( name, _arguments.of( arguments ) );								
 			}
 			
 			public static _valueConstruct from( _valueConstruct construct )
 			{
 				return new _valueConstruct( 
-					_identifier.from( construct.name ),
+					construct.name,
 					_arguments.from( construct.args ) );
 					
 			}
-			public _valueConstruct( _identifier name, _arguments args )
+			public _valueConstruct( String name, _arguments args )
 			{
 				this.name = name;
 				this.args = args;
@@ -589,6 +609,13 @@ public class _enum
 			{
 				return author(); 
 			}
+            
+            public _valueConstruct replace( String target, String replacement )
+            {
+                this.args = this.args.replace( target, replacement );
+                this.name = this.name.replace( target, replacement );
+                return this;
+            }
 		}
 
 		public Dom VALUE_CONSTRUCTORS = BindML.compile(
@@ -606,7 +633,7 @@ public class _enum
 		
 		public int count()
 		{
-			return valueNames.size();
+			return this.valueConstructs.size();
 		}
 		
 		public String toString()
@@ -649,6 +676,14 @@ public class _enum
 			return author();
 		}
 
+        public _signature replace( String target, String replacement )
+        {
+            this.enumName = this.enumName.replace(target, replacement);
+            this.implementsFrom = this.implementsFrom.replace( target, replacement );
+            this.modifiers = this.modifiers.replace( target, replacement );
+            return this;
+        }
+        
 		public _modifiers getModifiers()
 		{
 			return this.modifiers;
@@ -741,7 +776,8 @@ public class _enum
 					Modifier.PRIVATE,
 					Modifier.SYNCHRONIZED, 
 					Modifier.TRANSIENT, 
-					Modifier.VOLATILE ))
+					Modifier.VOLATILE,
+                    _modifiers._mod.INTERFACE_DEFAULT.getBitValue() ) )
 				{
 					throw new VarException(
 						"Invalid Modifier(s) for enum of \"" + enumSignature + "\" only public allowed" );
@@ -790,10 +826,18 @@ public class _enum
 		return ENUM;
 	}
 
-	public void replace( String target, String replacement  ) 
+	public _enum replace( String target, String replacement  ) 
 	{
+        this.constructors = this.constructors.replace( target, replacement );
+        this.enumPackage = this.enumPackage.replace( target, replacement);
+        this.enumSignature = this.enumSignature.replace( target, replacement );
+        /*
 		this.enumSignature.enumName = 
             this.enumSignature.getName().replace( target, replacement );
+
 		this.constructors.replace( target, replacement );		
+        */
+        
+        return this;
 	}
 }

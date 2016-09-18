@@ -165,6 +165,16 @@ public class _constructors
             return constructorSig;
         }
         
+        public _constructor replace( String target, String replacement )
+        {
+            this.body.replace( target, replacement );
+			
+            this.constructorSig.replace( target, replacement );
+			
+            
+            return this;
+        }
+        
 		public _constructor body( Object... bodyLines )
 		{
 			if( bodyLines == null || bodyLines.length == 0 )
@@ -256,6 +266,16 @@ public class _constructors
             public String getClassName()
             {
                 return this.className;
+            }
+            
+            public _signature replace( String target, String replacement )
+            {
+                this.className = 
+                    this.className.replace(target, replacement ); 
+                this.modifiers.replace( target, replacement );
+                this.params.replace( target, replacement );
+                this.throwsExceptions.replace( target, replacement );
+                return this;                
             }
             
             public _parameters getParameters()
@@ -417,16 +437,13 @@ public class _constructors
 	}
 
 	//called when the class/ enum is renamed (renames all of the constructors
-	public void replace( String target, String replacement ) 
+	public _constructors replace( String target, String replacement ) 
 	{
 		for( int i = 0; i < constructors.size(); i++ )
 		{
 			_constructor cons = constructors.get( i );
-			cons.body.replace( target, replacement );
-			
-			cons.constructorSig.className = 
-				cons.constructorSig.className.replace(target, replacement ); 
-			//_identifier.of( enumName );
+			cons = cons.replace( target, replacement );
 		}
+        return this;
 	}
 }

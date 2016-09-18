@@ -31,8 +31,7 @@ public class _extends
 		return e;
 	}
 	
-    
-    public void replace( String source, String replacement ) 
+    public _extends replace( String source, String replacement ) 
     {
         List<String>replaced = new ArrayList<String>();
         for(int i=0; i<extendsFrom.size(); i++)
@@ -40,6 +39,7 @@ public class _extends
             replaced.add( extendsFrom.get( i ).replace( source, replacement ) );
         }
         this.extendsFrom = replaced;
+        return this;
     }
     
 	public static Dom EXTENDS = BindML.compile(
@@ -67,7 +67,7 @@ public class _extends
 		if( index > count() -1 )
 		{
 			throw new VarException(
-				"extends["+index+"] is out of range[0..." + ( count() -1 )+"]" );
+				"extends[" + index + "] is out of range[0..." + ( count() -1 )+"]" );
 		}
 		return extendsFrom.get( index ).toString();
 	}

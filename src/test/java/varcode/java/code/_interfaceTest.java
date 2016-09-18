@@ -163,7 +163,7 @@ public class _interfaceTest
 			"ex.varcode", "public interface Full extends Serializable Externalizable")
 				.imports( Serializable.class, Externalizable.class )
 				.defaultMethod( "public default void sayHello()", 
-					"System.out.println(\"Hello\")" )
+					"System.out.println(\"Hello\");" )
 				.field( "public static final String name = \"TheNameUWanted\";" )
 				.method( "public int getID()" )
 				.nest( 

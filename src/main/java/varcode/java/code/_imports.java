@@ -20,7 +20,7 @@ import varcode.markup.bindml.BindML;
  * array SomeClass[]?
  * generic input
  * 
- * @author M. Eric DeFazio
+ * @author M. Eric DeFazio eric@varcode.io
  */
 public class _imports
     extends Base    
@@ -33,7 +33,7 @@ public class _imports
 		return created;
 	}
     
-    public void replace( String target, String replacement )
+    public _imports replace( String target, String replacement )
     {
         Set<String> replaced = new TreeSet<String>();
         String[] classes = this.importClasses.toArray( new String[0] );
@@ -50,6 +50,7 @@ public class _imports
             replacedStatic.add( classes[ i ].replace( target, replacement ) ); 
         }
         this.staticImports = replacedStatic;
+        return this;
     }
     
 	public static _imports of( Object...imports )

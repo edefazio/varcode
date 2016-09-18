@@ -78,6 +78,23 @@ import varcode.markup.mark.Mark.HasVars;
 public class Dom 
     implements MarkupTemplate
 {		
+    
+    /**
+     * Builds and returns a Dom implementation that is "only" text... 
+     * (no Marks)
+     * 
+     * @param documentText the text contents of the document
+     * @return a Dom document containing only text
+     */
+    public static Dom textOnly( String documentText )
+    {
+        return new Dom( 
+            FillInTheBlanks.of( documentText ),
+            new Mark[ 0 ],
+            new BitSet(),
+            VarContext.of( ) );	    
+    }
+    
 	/** ALL {@code Mark}s on the document */
 	private final Mark[] marks;  
 	
@@ -145,8 +162,6 @@ public class Dom
 	{
 		this.blankFillMarksTemplate = fillTemplate;
 		this.marks = marks;
-		//this.staticBindings = staticBindings;
-		//this.metadataBindings = metadataBindings;
 		this.domContext = domContext;
 		this.marksTemplate = 
 		    FillTemplate.of( 
@@ -179,16 +194,19 @@ public class Dom
 		this.domContext = domContext;
 	}
 	
+    @Override
 	public Mark[] getMarks()
 	{
 	    return marks;
 	}
 	
+    @Override
 	public BlankFiller[] getBlankFillers()
 	{
 	    return blankFillMarks;
 	}
 	
+    @Override
 	public int getBlanksCount()
 	{	    
 	    return blankFillMarksTemplate.getBlanksCount();
@@ -236,6 +254,7 @@ public class Dom
 	/* (non-Javadoc)
      * @see io.varcode.VarCodeMark#getAllMarkIndexes()
      */
+    @Override
 	public BitSet getMarkIndicies()
 	{
 	    return this.marksTemplate.getBlanks();
@@ -256,9 +275,10 @@ public class Dom
 		return varNames;
 	}
 	    
-	/* (non-Javadoc)
+	/**
      * @see io.varcode.VarCodeMark#getFillBlanks()
      */
+    @Override
 	public FillTemplate getFillTemplate()
 	{
 	    return blankFillMarksTemplate;
@@ -285,6 +305,7 @@ public class Dom
          return this.marksTemplate.fill( (Object[])markFills );         
     }
     
+    @Override
 	public String toString()
 	{
 	    return getMarkupText() + "\r\n"

@@ -61,12 +61,14 @@ public class _staticBlock
 		return this;
 	}
 	
-    
-    public void replace( String target, String replacement )
+    @Override
+    public _staticBlock replace( String target, String replacement )
     {
         this.body = this.body.replace( target, replacement );
+        return this;
     }
     
+    @Override
 	public String author( Directive... directives ) 
 	{
 		if( !body.isEmpty() )
@@ -76,6 +78,7 @@ public class _staticBlock
 		return "";
 	}
 
+    @Override
 	public String toString()
 	{
 		return author(); 

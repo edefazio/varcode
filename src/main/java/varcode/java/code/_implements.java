@@ -63,7 +63,7 @@ public class _implements
         return count() == 0;
     }
 	
-    public void replace( String target, String replacement )
+    public _implements replace( String target, String replacement )
     {
         List<String> replaced = new ArrayList<String>();
         
@@ -73,6 +73,7 @@ public class _implements
                 this.impls.get( i ).replace( target, replacement ) ); 
         }
         this.impls = replaced;
+        return this;
     }
     
     public static _implements of( Class...classes )

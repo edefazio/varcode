@@ -108,16 +108,17 @@ public class _fields
      * @param target
      * @param replacement 
      */
-    public void replace( String target, String replacement )
+    public _fields replace( String target, String replacement )
     {
 		for( int i = 0; i < fields.size(); i++ )
-		{			
+		{		
+            
 			_fields._field f = this.fields.get( i );
-            f.javadoc.replace( target, replacement );
-            f.init.replace( target, replacement );
-            f.name = f.name.replace( target, replacement );
-            f.type = f.type.replace( target, replacement );
+            f.replace( target, replacement );
+            
+            
 		}
+        return this;
     }
     
     /** Adds one or more _field to the _fields */
@@ -197,6 +198,16 @@ public class _fields
 			return this.mods;
 		}
 		
+        @Override
+        public _field replace( String target, String replacement )
+        {
+            javadoc.replace( target, replacement );
+            init.replace( target, replacement );
+            name = name.replace( target, replacement );
+            type = type.replace( target, replacement );
+            return this;
+        }
+        
 		public String getName()
 		{
 			return this.name;
@@ -382,7 +393,7 @@ public class _fields
 	 * </PRE>        
 	 */
 	public static class _init 
-		implements CodeAuthor
+		extends Template.Base
 	{
 		private final String initCode;
 	

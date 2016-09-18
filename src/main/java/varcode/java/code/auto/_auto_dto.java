@@ -165,7 +165,7 @@ public class _auto_dto
         //add the getter
         this.theClass.method(
             "public "+f.getType() + " get" + firstUpper( f.getName() )+"()",
-            "return this."+f.getName() );    
+            "return this." + f.getName() + ";" );    
         
         //if the field is Final, if NOT add a setter        
         if( !f.getModifiers().contains( Modifier.FINAL ) )
