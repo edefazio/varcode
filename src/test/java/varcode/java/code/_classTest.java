@@ -31,7 +31,7 @@ public class _classTest
     public void testClassAnnotation()
     {
         _class c = _class.of("public class Something")
-            .classAnnotate( "@Path(\"book\")" );
+            .annotate( "@Path(\"book\")" );
         
         assertEquals( 
             "@Path(\"book\")" + N + 

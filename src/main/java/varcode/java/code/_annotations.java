@@ -58,6 +58,7 @@ public class _annotations
         return this;
     }
     
+    @Override
     public _annotations replace( String target, String replacement )
     {
         List<Object> repList = new ArrayList<Object>();
@@ -110,5 +111,58 @@ public class _annotations
     public int count()
     {
         return this.annList.size();
+    }
+    
+    public static class _annotation
+        extends Template.Base
+    {
+        private String annotation;
+        
+        public static final Dom ANNOTATION = 
+            BindML.compile("{{+?annotation:{+annotation+} +}}");
+        
+        public _annotation( )
+        {
+            this.annotation = null;
+        }
+        
+        public _annotation( String annotation )
+        {
+            this.annotation = annotation;
+        }
+
+        public boolean isEmpty()
+        {
+            return annotation == null;
+        }
+        
+        public String getAnnotation()
+        {
+            return this.annotation;
+        }
+        
+        @Override
+        public _annotation replace(String target, String replacement)
+        {
+            this.annotation = annotation.replace( target, replacement );
+            return this;            
+        }
+
+        @Override
+        public String author( Directive... directives )
+        {
+            return Author.code( ANNOTATION, 
+                VarContext.of( "annotation", annotation ), directives );
+        }        
+        
+        @Override
+        public String toString()
+        {
+            if( this.isEmpty() )
+            {
+                return "";
+            }
+            return author( );
+        }
     }
 }        

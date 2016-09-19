@@ -114,13 +114,15 @@ public class _methods
 	
 	public _methods addMethod( String signature, Object... body )
 	{
-		//return addMethod( null, signature, body );
 		_method m = _method.of( null, signature, (Object[]) body );
 		verifyAndAddMethod( m );
 		return this;
 	}
 	
-    /** returns all of the methods by the name */
+    /** returns all of the methods by the name
+     * @param name the name of the method
+     * @return all methods with this name 
+     */
     public List<_method> getMethodsByName( String name )
     {
         return this.methodsByName.get( name );
@@ -129,12 +131,12 @@ public class _methods
 	private void verifyAndAddMethod( _method m )
 	{
 		List<_method> methodsWithTheSameName = 
-				methodsByName.get( m.methodSignature.methodName.toString() );
+				methodsByName.get( m.methodSignature.methodName );
 		if( methodsWithTheSameName == null )
 		{
 			List<_method> methods = new ArrayList<_method>();
 			methods.add( m );
-			methodsByName.put( m.methodSignature.methodName.toString(), methods );
+			methodsByName.put( m.methodSignature.methodName, methods );
 		}
 		else
 		{//verify there is no conflict
@@ -213,6 +215,11 @@ public class _methods
             return this.methodSignature.getName();
         }
         
+        public _annotations getAnnotations()
+        {
+            return this.methodAnnotations;
+        }
+        
 		public static _method from( _method prototype ) 
 		{
 			_method m = 
@@ -271,9 +278,10 @@ public class _methods
             this.javadocComment = new _javadoc();
 		}
 		
-		public _method( String methodSignature )
+		public _method( String methodSignature, Object...bodyLines )
 		{
             this( signature.of( methodSignature ) );
+            this.methodBody = _code.of( bodyLines );
 		}
 	
 		public _code getBody()
@@ -281,6 +289,12 @@ public class _methods
 			return this.methodBody;
 		}
 		
+        public _method annotate( Object...annotations )
+        {
+            this.methodAnnotations.add( annotations );
+            return this;
+        }
+        
 		public _method body( Object... linesOfCode )
 		{
 			if( this.isAbstract() && methodBody != null && linesOfCode != null && linesOfCode.length > 0)

@@ -9,6 +9,7 @@ import junit.framework.TestCase;
 import varcode.CodeAuthor;
 import varcode.VarException;
 import varcode.context.VarContext;
+import varcode.java.code._fields._field;
 
 /**
  *
@@ -17,21 +18,30 @@ import varcode.context.VarContext;
 public class _fieldsTest
     extends TestCase
 {
+    public void testAnnotate()
+    {
+        _field f = _field.of( "public int f;" ).annotate( "@Persistent" );
+        System.out.println( f );
+        assertEquals( 
+            "@Persistent" + N +
+            "public int f;", f.toString() );
+    }
+    
     public void testEmpty()
     {
         _fields f = _fields.of( );
         assertEquals( 0, f.count() );
-        assertEquals( null, f.getByName("Name") );
+        assertEquals( null, f.getByName( "Name" ) );
         
         assertEquals( "", f.toString() );        
     }
     
     public void testOne()
     {
-        _fields f = _fields.of( "public int a;");
+        _fields f = _fields.of( "public int a;" );
         assertEquals(1, f.count());
-        assertEquals("public int a;", f.getByName("a").toString() );
-        assertFalse( f.canAddFieldName("a") );
+        assertEquals( "public int a;", f.getByName( "a" ).toString() );
+        assertFalse( f.canAddFieldName( "a" ) );
         assertEquals( "public int a;", f.bind( VarContext.of() ) );        
     }
     
@@ -39,7 +49,7 @@ public class _fieldsTest
     {
         _fields f = _fields.of( "public int {+nme|vn+};");
         
-        assertEquals("public int {+nme|vn+};", f.author( ).trim() );
+        assertEquals( "public int {+nme|vn+};", f.author( ).trim() );
         
         assertEquals( "public int vn;", f.bind( VarContext.of() ) );        
         
@@ -51,8 +61,8 @@ public class _fieldsTest
 	{
 		try
 		{
-			_fields.of("public strictfp float myfloat;");
-			fail("expected exception for bad modifier");
+			_fields.of( "public strictfp float myfloat;" );
+			fail( "expected exception for bad modifier" );
 		}
 		catch( VarException ve )
 		{

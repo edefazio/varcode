@@ -9,6 +9,7 @@ import varcode.context.VarContext;
 import varcode.doc.Author;
 import varcode.doc.Directive;
 import varcode.dom.Dom;
+import varcode.java.code._annotations._annotation;
 import varcode.markup.bindml.BindML;
 
 /**
@@ -58,19 +59,43 @@ public class _parameters
 	{
 		List<_parameter> params = new ArrayList<_parameter>();
 		
+        /*
         if( tokens.length % 2 != 0 )
 		{
             System.out.println( params );
 			throw new VarException( 
 				"There must be an even number of <type>, <name> token parameters" 
-              + System.lineSeparator() + params);
-            
+              + System.lineSeparator() + params);            
 		}
-        
-		for( int i = 0; i < tokens.length / 2 ; i++ )
+        for( int i = 0; i < tokens.length / 2 ; i++ )
 		{
 			params.add( new _parameter( tokens[ i * 2 ], tokens[ ( i * 2 ) + 1 ]) );
 		}
+        */ 
+        List<String> currentTokens = new ArrayList<String>();
+        int prefix = 0;
+        for( int i = 0; i < tokens.length; i++ )
+        {
+            if( tokens[ i ].startsWith( "@" ) || tokens[ i ].equals( "final" ) )
+            {
+                prefix++;
+                currentTokens.add( tokens[ i ] );
+            }
+            else
+            {
+                currentTokens.add( tokens[ i ] );
+                if( currentTokens.size() - prefix == 2 )
+                {
+                    params.add( 
+                        new _parameter( 
+                            currentTokens.toArray( new String[ 0 ] ) ) 
+                        ); 
+                    currentTokens.clear();
+                    prefix = 0;
+                }                
+            }
+        }
+		
 		return new _parameters( params );
 	}
 	
@@ -140,8 +165,7 @@ public class _parameters
                 else if( t.length() > 0 )
 				{
                     if( t.contains( "<" ) )
-                    {
-                        System.out.println ("contains <");
+                    {                        
                         if( symmeticGeneric( t ) )
                         {
                             toksList.add( t );
@@ -193,7 +217,10 @@ public class _parameters
 	
 	public String author( Directive... directives ) 
 	{
-		return Author.code( PARAMS_LIST, VarContext.of( "params", params ), directives );
+		return Author.code( 
+            PARAMS_LIST, 
+            VarContext.of( 
+                "params", params ), directives );
 	}	
     
     @Override
@@ -218,14 +245,34 @@ public class _parameters
 	public static class _parameter
         extends Template.Base
 	{			
-        
 		public static _parameter from( _parameter prototype ) 
 		{
-			return new _parameter( 
+			_parameter p = new _parameter( 
 				prototype.type + "", 
 				prototype.name + "" );
+            if( prototype.isFinal )
+            {
+                p.setFinal();
+            }
+            if( ! prototype.parameterAnnotation.isEmpty() )
+            {
+                p.annotate( prototype.parameterAnnotation );
+            }
+            return p;
 		}
 	
+        public _parameter annotate( _annotation annotation )
+        {
+            this.parameterAnnotation = new _annotation( annotation.getAnnotation() );
+            return this;
+        }
+        
+        public _parameter annotate( String annotation )
+        {
+            this.parameterAnnotation = new _annotation( annotation );
+            return this;
+        }
+        
 		public static _parameter of( Object type, Object name )
 		{
 			return new _parameter( type, name );
@@ -237,16 +284,60 @@ public class _parameters
         /** the name of the parameter ("count", "name"...) */
 		private String name; 
 	
+        private Boolean isFinal = null;
+        
+        private _annotation parameterAnnotation;
         
 		public static final Dom PARAMS = 
-            BindML.compile( "{{+:{+type*+} {+name*+}+}}" );
+            //BindML.compile( "{{+:{+parameterAnnotation+}{+type*+} {+name*+}+}}" );
+            BindML.compile( 
+                "{+parameterAnnotation+}" +
+                "{{+?isFinal:final +}}"+        
+                "{+type*+} {+name*+}" );
 		
 		public _parameter( _parameter iv )
 		{
+            this.parameterAnnotation = iv.parameterAnnotation= 
+                new _annotation( iv.parameterAnnotation.getAnnotation() );
+            this.isFinal = iv.isFinal;
 			this.type = iv.type+ "";
 			this.name = iv.name + "";
 		}
 	
+        public _parameter setFinal()
+        {
+            this.isFinal = true;
+            return this;
+        }
+        public _parameter( String...tokens )
+        {
+            this.parameterAnnotation = new _annotation();
+            for( int i = 0; i < tokens.length; i++ )
+            {
+                if( tokens[ i ].equals( "final" ) )
+                {
+                    this.isFinal = true;
+                }
+                else if( tokens[ i ].startsWith("@" ) )
+                {
+                    this.parameterAnnotation = new _annotation( tokens[ i ] );
+                }
+                else if( type == null )
+                {
+                    this.type = tokens[ i ];
+                }
+                else if( name == null )
+                {
+                    this.name = tokens[ i ];
+                }
+                else
+                {
+                    throw new VarException(
+                        "unable to parse tokens, at "+ tokens[ i ] );
+                }
+            }
+        }
+        
 		public _parameter( Object type, Object name )
 		{
 			this.type =  type.toString();
@@ -286,7 +377,11 @@ public class _parameters
         
         public VarContext getContext()
         {
-            return  VarContext.of( "type", type, "name", name );
+            return  VarContext.of( 
+                "type", type, 
+                "name", name, 
+                "parameterAnnotation", this.parameterAnnotation,
+                "isFinal", this.isFinal );
         }
 	}
 

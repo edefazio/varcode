@@ -18,6 +18,24 @@ import varcode.java.code._parameters._parameter;
 public class _parametersTest
     extends TestCase
 {
+    
+    public void testFinalAndAnnotatedParam()
+    {
+        _parameters p = _parameters.of( "final String x" );
+        assertEquals( "( final String x )", p.toString() );
+        assertEquals( 1, p.count() );
+        assertFalse( p.isEmpty() );
+        
+        p = _parameters.of( "@PathParam(\"id\") String x" );
+        assertEquals( "( @PathParam(\"id\") String x )", p.toString() );
+        assertEquals( 1, p.count() );
+        assertFalse( p.isEmpty() );
+        
+        p = _parameters.of( "@PathParam(\"id\") final String x" );
+        assertEquals( "( @PathParam(\"id\") final String x )", p.toString() );
+        assertEquals( 1, p.count() );
+        assertFalse( p.isEmpty() );
+    }
     public void testNoParams()
     {
         _parameters p = _parameters.of();
@@ -113,6 +131,7 @@ public class _parametersTest
 		assertEquals("( int x )", ps.toString() );
 		
 		ps = _parameters.of( new String[]{"int", "x", "String", "y"} );
+        System.out.println( ps );
 		assertEquals("( int x, String y )", ps.toString() );
 		
 		ps = _parameters.of( "int x, String y" );

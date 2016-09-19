@@ -18,11 +18,37 @@ import varcode.java.code._methods._method.signature;
  * is it "logically correct"? (we'll use the compiler for this)
  * does it do what I want (well, test it)
  * 
- * @author eric
+ * @author M. Eric DeFazio eric@varcode.io
  */
 public class _methodsTest
     extends TestCase
 {
+    public void testAnnotated()
+    {
+        _method m = new _method( 
+            "public String findById(  )", 
+            "return \"it\";" )                
+            .annotate( "@Path(\"/{id}\")", "@GET" );
+        
+        //System.out.println( m.toString() );
+        
+        assertEquals(
+            "@Path(\"/{id}\")" + N + 
+            "@GET" + N +
+            "public String findById(  )" + N +
+            "{" + N +
+            "    return \"it\";" + N +
+            "}", m.toString() );                
+        
+        m = new _method( "public void mustOverride()" ).annotate("@Override");
+        
+        assertEquals(
+        "@Override" + N +
+        "public void mustOverride(  )" + N +
+        "{" + N + N +
+        "}", m.toString() );
+    }
+    
     public void testNoMethods()
     {
         _methods m = new _methods();

@@ -3,7 +3,6 @@ package varcode.java.code;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
-import varcode.CodeAuthor;
 import varcode.Template;
 
 import varcode.VarException;
@@ -107,16 +106,14 @@ public class _fields
      * replaces the target string with the replacement String
      * @param target
      * @param replacement 
+     * @return this field after modification 
      */
     public _fields replace( String target, String replacement )
     {
 		for( int i = 0; i < fields.size(); i++ )
-		{		
-            
+		{		            
 			_fields._field f = this.fields.get( i );
             f.replace( target, replacement );
-            
-            
 		}
         return this;
     }
@@ -157,11 +154,14 @@ public class _fields
 		return memberFields;
 	}
 	
+    /**
+     * field 
+     */
 	public static class _field
 		extends Template.Base
 	{
 		public static final Dom FIELD = BindML.compile(
-			"{+javadocComment+}{+modifiers+}{+type+} {+varName+}{+init+};" ); 
+			"{+javadocComment+}{+fieldAnnotations+}{+modifiers+}{+type+} {+varName+}{+init+};" ); 
 		
 		public static _field of( _field prototype )
 		{
@@ -187,7 +187,18 @@ public class _fields
 			this.init = initialization;
 			return this;
 		}
-		
+        
+		public _field annotate( Object...annotations )
+        {
+            this.fieldAnnotations.add( annotations );
+            return this;
+        }
+        
+        public _annotations getAnnotations()
+        {
+            return this.fieldAnnotations;
+        }
+        
 		public String getType()
 		{
 			return this.type;
@@ -203,6 +214,7 @@ public class _fields
         {
             javadoc.replace( target, replacement );
             init.replace( target, replacement );
+            fieldAnnotations.replace( target, replacement );
             name = name.replace( target, replacement );
             type = type.replace( target, replacement );
             return this;
@@ -255,6 +267,12 @@ public class _fields
 			return f;
 		}
 		
+        /**
+         * DOES NOT Handle parsing Field Annotations (only field signatures)
+         * 
+         * @param fieldDef the definition of the field (sans annotations)
+         * @return a _field based on the field
+         */
 		private static _field parseField( String fieldDef )
 		{
 			String[] tokens = _var.normalizeTokens( fieldDef );
@@ -286,22 +304,30 @@ public class _fields
 			return new _field( new _modifiers(), t, name );
 		}
 		
-		public String author( Directive... directives ) 
-		{
-			return Author.code( FIELD, 
-				VarContext.of("javadocComment", javadoc,
+        public VarContext getContext()
+        {
+            return VarContext.of("javadocComment", javadoc,
+                    "fieldAnnotations", this.fieldAnnotations,    
 					"modifiers", mods,
 					"type", type,
 					"varName", name,
-					"init", init ),
+					"init", init );
+        }
+        @Override
+		public String author( Directive... directives ) 
+		{
+			return Author.code( FIELD, 
+				getContext(),
 				directives );
 		}
 		
+        @Override
 		public String toString()
 		{
 			return author();
 		}
 		
+        private _annotations fieldAnnotations;
 		private _javadoc javadoc;
 		private _modifiers mods;
 		private String type; 
@@ -313,6 +339,9 @@ public class _fields
 			this.mods = modifiers;
 			this.type = type;
 			this.name = name;
+            this.javadoc = new _javadoc();
+            this.init = new _init();
+            this.fieldAnnotations = new _annotations();
 		}
 		
 		public _field( _modifiers modifiers, String type, String varName, _init init )
@@ -321,6 +350,8 @@ public class _fields
 			this.type = type;
 			this.name = varName;
 			this.init = init;			
+            this.javadoc = new _javadoc();
+            this.fieldAnnotations = new _annotations();
 		}
 		
 		public _field setInit( String init )
@@ -335,12 +366,13 @@ public class _fields
 			return this;
 		}
 
-		/** does this field have an initial value */
+		/** does this field have an initial value
+         * @return  true if the field has initialization, false otherwise
+         */
 		public boolean hasInit() 
 		{
 			return init != null && !init.isEmpty();
 		}
-
 
 		public _field setType( String newType )  
 		{
@@ -353,7 +385,6 @@ public class _fields
     {
         List<_field> staticFields = new ArrayList<_field>();
 		List<_field> instanceFields = new ArrayList<_field>();
-		//String[] allKeys = fields.keySet().toArray( new String[ 0 ] );
 		for( int i = 0; i < fields.size(); i++ )
 		{
 			_field mem = fields.get( i );
@@ -367,7 +398,8 @@ public class _fields
 			}
 		}
         
-        return VarContext.of( "staticFields", staticFields,
+        return VarContext.of( 
+            "staticFields", staticFields,
 			"instanceFields", instanceFields ); 
     }
     

@@ -38,7 +38,7 @@ public class _class
 	private _imports imports;
 	private _javadoc javadoc;
 	private _signature classSignature;
-	private _annotations classAnnotation;
+	private _annotations classAnnotations;
     
 	private _constructors constructors;
 	private _fields fields;
@@ -57,6 +57,8 @@ public class _class
      * i.e. _class.of( "public class MyClass" );</PRE>
      * 
      * creates and returns a public _class "MyClass" in package "ex.varcode"
+     * @param classSignature the signature of the class to add
+     * @return _class a class with the signature
      */
 	public static _class of( String classSignature )
 	{
@@ -117,7 +119,7 @@ public class _class
 	
 	public _class( String packageName, String classSignature )
 	{
-        this.classAnnotation = new _annotations();
+        this.classAnnotations = new _annotations();
 		this.classPackage = _package.of( packageName );
 		this.javadoc = new _javadoc();
 		this.classSignature = _signature.of( classSignature );
@@ -135,7 +137,7 @@ public class _class
 	 */
 	public _class( _class prototype )
 	{
-        this.classAnnotation = new _annotations( prototype.classAnnotation.getAnnotations() );
+        this.classAnnotations = new _annotations( prototype.classAnnotations.getAnnotations() );
 		this.classPackage = _package.from( prototype.classPackage );
 		this.imports = _imports.from( prototype.imports );
 		this.classSignature = _signature.from( prototype.classSignature  );
@@ -182,6 +184,11 @@ public class _class
         return Author.code( CLASS,getContext(), directives );			
 	}
 	
+    public _annotations getAnnotations()
+    {
+        return this.classAnnotations;
+    }
+    
 	public VarContext getContext()
 	{
 		String[] n = null;
@@ -230,11 +237,10 @@ public class _class
 			cs = this.constructors;
 		}
 		return 
-			VarContext.of( 
-				"pckage", classPackage,
+			VarContext.of("pckage", classPackage,
 				"imports", imp,
 				"classJavaDoc", javadoc,
-                "classAnnotation", this.classAnnotation,
+                "classAnnotation", this.classAnnotations,
 				"classSignature", classSignature,
 				"members", mem,
 				"methods", meth,
@@ -333,15 +339,15 @@ public class _class
 		return this;
 	}
 
-    public _class classAnnotate( Object... annotations )
+    public _class annotate( Object... annotations )
     {
-        this.classAnnotation.add( annotations );
+        this.classAnnotations.add( annotations );
         return this;
     }
     
 	public _class method( String methodSignature )
 	{
-		return method(  _method.of( null, methodSignature, new String[ 0 ] ) );
+		return method( _method.of( null, methodSignature, new Object[ 0 ] ) );
 	}
 	  
 	public _class method( String methodSignature, Object... bodyLines )
@@ -415,6 +421,7 @@ public class _class
 		return this;
 	}
 	
+    @Override
 	public _imports getImports()
 	{
 		for( int i = 0; i < nests.count(); i++ )
@@ -464,6 +471,7 @@ public class _class
         return this.staticBlock;
     }
     
+    @Override
 	public String toString( )
 	{
 		return author();
@@ -489,6 +497,7 @@ public class _class
                 "{+extendsFrom+}" +
                 "{+implementsFrom+}" );
 
+        @Override
 		public String author( Directive... directives ) 
 		{
 			return Author.code( CLASS_SIGNATURE, 
@@ -508,6 +517,7 @@ public class _class
             this.implementsFrom = new _implements();            
 		}
 		
+        @Override
 		public String toString()
 		{
 			return author();
@@ -544,6 +554,7 @@ public class _class
 			return clone;
 		}
 		
+        @Override
         public _signature replace( String target, String replacement )
         {
             this.className = className.replace( target, replacement );
@@ -697,10 +708,11 @@ public class _class
 	}
 
 	//move this to enum and interface
+    @Override
 	public _class replace( String target, String replacement  ) 
 	{		
         this.classSignature.replace( target, replacement );
-        this.classAnnotation.replace( target, replacement );
+        this.classAnnotations.replace( target, replacement );
         this.classPackage.replace( target, replacement );
         this.constructors.replace( target, replacement );
         this.javadoc.replace( target, replacement );
