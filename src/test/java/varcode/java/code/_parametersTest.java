@@ -36,6 +36,7 @@ public class _parametersTest
         assertEquals( 1, p.count() );
         assertFalse( p.isEmpty() );
     }
+    
     public void testNoParams()
     {
         _parameters p = _parameters.of();

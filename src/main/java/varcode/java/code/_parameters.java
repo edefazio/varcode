@@ -25,7 +25,8 @@ import varcode.markup.bindml.BindML;
 public class _parameters
 	extends Template.Base
 {
-	public static final Dom PARAMS_LIST = BindML.compile( "( {{+:{+params+}, +}} )" );
+	public static final Dom PARAMS_LIST = 
+        BindML.compile( "( {{+:{+params+}, +}} )" );
 	
 	public static _parameters from( _parameters prototype )
 	{
@@ -217,10 +218,14 @@ public class _parameters
 	
 	public String author( Directive... directives ) 
 	{
-		return Author.code( 
-            PARAMS_LIST, 
-            VarContext.of( 
-                "params", params ), directives );
+        if( params != null && params.size() > 0 )            
+        {
+            return Author.code( 
+                PARAMS_LIST, 
+                VarContext.of( 
+                    "params", params ), directives );
+        }
+        return "(  )";
 	}	
     
     @Override
@@ -250,6 +255,7 @@ public class _parameters
 			_parameter p = new _parameter( 
 				prototype.type + "", 
 				prototype.name + "" );
+            
             if( prototype.isFinal )
             {
                 p.setFinal();
@@ -284,7 +290,7 @@ public class _parameters
         /** the name of the parameter ("count", "name"...) */
 		private String name; 
 	
-        private Boolean isFinal = null;
+        private Boolean isFinal = Boolean.FALSE;
         
         private _annotation parameterAnnotation;
         
@@ -311,7 +317,7 @@ public class _parameters
         }
         public _parameter( String...tokens )
         {
-            this.parameterAnnotation = new _annotation();
+            //this.parameterAnnotation = new _annotation();
             for( int i = 0; i < tokens.length; i++ )
             {
                 if( tokens[ i ].equals( "final" ) )
@@ -335,6 +341,10 @@ public class _parameters
                     throw new VarException(
                         "unable to parse tokens, at "+ tokens[ i ] );
                 }
+            }
+            if( this.parameterAnnotation == null )
+            {
+                this.parameterAnnotation = _annotation.of();
             }
         }
         
@@ -365,6 +375,8 @@ public class _parameters
         {
             this.name = this.name.replace( target, replacement );
             this.type = this.type.replace( target, replacement );
+            this.parameterAnnotation = 
+                this.parameterAnnotation.replace( target, replacement );
             return this;
         }
 
@@ -377,11 +389,15 @@ public class _parameters
         
         public VarContext getContext()
         {
-            return  VarContext.of( 
-                "type", type, 
-                "name", name, 
-                "parameterAnnotation", this.parameterAnnotation,
-                "isFinal", this.isFinal );
+            VarContext vc = VarContext.of( 
+                    "type", type, 
+                    "name", name, 
+                    "parameterAnnotation", this.parameterAnnotation);        
+            if( isFinal )
+            {
+                vc.set( "isFinal", true );
+            }
+            return vc;    
         }
 	}
 
@@ -389,7 +405,7 @@ public class _parameters
 	{
 		if( index < count() )
 		{
-			return params.get(  index );
+			return params.get( index );
 		}
 		throw new VarException(
 			"unable to get parameter ["+ 

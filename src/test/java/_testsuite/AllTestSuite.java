@@ -36,6 +36,7 @@ import varcode.java.JavaNamingTest;
 import varcode.java._JavaCaseClassNameTest;
 import varcode.java._JavaCase_AllDirectivesTest;
 import varcode.java.adhoc.WorkspaceTest;
+import varcode.java.code._annotationTest;
 import varcode.java.code._argumentsTest;
 import varcode.java.code._classTest;
 import varcode.java.code._codeTest;
@@ -44,6 +45,7 @@ import varcode.java.code.auto._auto_dtoTest;
 import varcode.java.code._enumTest;
 import varcode.java.code._extendsTest;
 import varcode.java.code._fieldsTest;
+import varcode.java.code._forTest;
 import varcode.java.code._implementsTest;
 import varcode.java.code._importsTest;
 import varcode.java.code._interfaceTest;
@@ -210,7 +212,7 @@ public class AllTestSuite
         suite.addTestSuite( CountIndexTest.class );
         suite.addTestSuite( RowifyTest.class );	
 
-        
+        suite.addTestSuite( _annotationTest.class );
         suite.addTestSuite( _argumentsTest.class );
         suite.addTestSuite( _classTest.class );
         suite.addTestSuite( _codeTest.class );
@@ -218,10 +220,12 @@ public class AllTestSuite
         suite.addTestSuite( _enumTest.class );        
         suite.addTestSuite( _extendsTest.class );        
         suite.addTestSuite( _fieldsTest.class );
+        suite.addTestSuite( _forTest.class );
         
-        suite.addTestSuite( _interfaceTest.class );
         suite.addTestSuite( _implementsTest.class );
         suite.addTestSuite( _importsTest.class );
+        suite.addTestSuite( _interfaceTest.class );        
+        
         //javacode
         suite.addTestSuite( _javadocTest.class );
         
@@ -232,7 +236,6 @@ public class AllTestSuite
         suite.addTestSuite( _parametersTest.class );
         suite.addTestSuite( _staticBlockTest.class );
         suite.addTestSuite( _throwsTest.class );
-        
         
         suite.addTestSuite( _auto_dtoTest.class );
         suite.addTestSuite( _auto_enumTest.class );

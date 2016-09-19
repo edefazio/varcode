@@ -66,6 +66,8 @@ public class /*{+className*/CodeMLModelTest/*+}*/ /*{-*/extends TestCase/*-}*/
             "ex.varcode.java.code.AddNestedClass", 
             "addNestedClassHere", nestedClass );
         
+        //System.out.println( thisCase );
+        
         Class theClass = thisCase.loadClass();
         Class[] declaredClasses = theClass.getDeclaredClasses();
         
