@@ -53,7 +53,7 @@ public class _methods
 	{
 		List<_method>nonStaticMethods = new ArrayList<_method>();
 		List<_method>staticMethods = new ArrayList<_method>();
-		List<_method.signature>abstractMethods = new ArrayList<_method.signature>();
+		List<_method._signature>abstractMethods = new ArrayList<_method._signature>();
 		
 		String[] methodNames = methodsByName.keySet().toArray( new String[ 0 ] );
 		
@@ -62,11 +62,11 @@ public class _methods
 			List<_method> oMethods = methodsByName.get( methodNames[ i ] );
 			for( int j = 0; j < oMethods.size(); j++ )
 			{
-				if( oMethods.get( j ).methodSignature.modifiers.contains( Modifier.ABSTRACT ) )
+				if( oMethods.get( j ).signature.modifiers.contains( Modifier.ABSTRACT ) )
 				{
-					abstractMethods.add( oMethods.get( j ).methodSignature );
+					abstractMethods.add(oMethods.get( j ).signature );
 				}					
-				else if( oMethods.get( j ).methodSignature.modifiers.contains( Modifier.STATIC ) )
+				else if( oMethods.get( j ).signature.modifiers.contains( Modifier.STATIC ) )
 				{
 					staticMethods.add( oMethods.get( j ) ); 
 				}
@@ -131,19 +131,18 @@ public class _methods
 	private void verifyAndAddMethod( _method m )
 	{
 		List<_method> methodsWithTheSameName = 
-				methodsByName.get( m.methodSignature.methodName );
+				methodsByName.get( m.signature.methodName );
 		if( methodsWithTheSameName == null )
 		{
 			List<_method> methods = new ArrayList<_method>();
 			methods.add( m );
-			methodsByName.put( m.methodSignature.methodName, methods );
+			methodsByName.put( m.signature.methodName, methods );
 		}
 		else
 		{//verify there is no conflict
 			for( int i = 0; i < methodsWithTheSameName.size(); i++ )
 			{
-				if( m.methodSignature.matchesParamType( 
-                    methodsWithTheSameName.get( i ).methodSignature ) )
+				if( m.signature.matchesParamType(methodsWithTheSameName.get( i ).signature ) )
 				{
 					throw new VarException( 
                         "Could not add method; another method "+ N +
@@ -212,27 +211,27 @@ public class _methods
 		
         public String getName()
         {
-            return this.methodSignature.getName();
+            return this.signature.getName();
         }
         
-        public _annotations getAnnotations()
+        public _annotate getAnnotations()
         {
-            return this.methodAnnotations;
+            return this.annotations;
         }
         
 		public static _method from( _method prototype ) 
 		{
 			_method m = 
-				new _method( signature.from( prototype.methodSignature ) );
-			m.javadocComment = _javadoc.from(prototype.javadocComment );
+				new _method( _signature.from(prototype.signature ) );
+			m.javadoc = _javadoc.from(prototype.javadoc );
 			m.methodBody = prototype.getBody();			
-            m.methodAnnotations = new _annotations( prototype.methodAnnotations.getAnnotations() );
+            m.annotations = new _annotate( prototype.annotations.getAnnotations() );
 			return m;
 		}
 
-		public signature getSignature()
+		public _signature getSignature()
 		{
-			return methodSignature;
+			return signature;
 		}
 		
 		public static _method of( String comment, String signature, Object... body )
@@ -249,15 +248,15 @@ public class _methods
 			return m;
 		}
 
-		private _javadoc javadocComment;
-        private _annotations methodAnnotations;
-		private signature methodSignature;
+		private _javadoc javadoc;
+        private _annotate annotations;
+		private _signature signature;
 		private _code methodBody;
 	
 	
 		public boolean isAbstract()
 		{
-			return this.methodSignature.modifiers.containsAny( Modifier.ABSTRACT );
+			return this.signature.modifiers.containsAny( Modifier.ABSTRACT );
 		}
 		
 		public _method( 
@@ -267,20 +266,20 @@ public class _methods
 			_parameters params,
 			_throws throwsExceptions )
 		{
-			this( new signature( modifiers, returnType, methodName, params, throwsExceptions ) );		            
+			this( new _signature( modifiers, returnType, methodName, params, throwsExceptions ) );		            
 		}
 	
-		public _method( signature sig )
+		public _method( _signature sig )
 		{
-			this.methodSignature = sig;
-            this.methodAnnotations = new _annotations();
+			this.signature = sig;
+            this.annotations = new _annotate();
             this.methodBody = new _code();
-            this.javadocComment = new _javadoc();
+            this.javadoc = new _javadoc();
 		}
 		
 		public _method( String methodSignature, Object...bodyLines )
 		{
-            this( signature.of( methodSignature ) );
+            this( _signature.of( methodSignature ) );
             this.methodBody = _code.of( bodyLines );
 		}
 	
@@ -291,7 +290,7 @@ public class _methods
 		
         public _method annotate( Object...annotations )
         {
-            this.methodAnnotations.add( annotations );
+            this.annotations.add( annotations );
             return this;
         }
         
@@ -300,7 +299,7 @@ public class _methods
 			if( this.isAbstract() && methodBody != null && linesOfCode != null && linesOfCode.length > 0)
 			{
 				throw new VarException(
-					"Abstract methods : "+ N + methodSignature + N + "cannot have a method body" );
+					"Abstract methods : "+ N + signature + N + "cannot have a method body" );
 			}
 			this.methodBody = _code.of( linesOfCode );
 			return this;
@@ -308,7 +307,7 @@ public class _methods
 	
 		public _method javadoc( String javadocComment )
 		{            
-			this.javadocComment = new _javadoc( javadocComment );
+			this.javadoc = new _javadoc( javadocComment );
 			return this;
 		}
 	
@@ -326,10 +325,9 @@ public class _methods
             //        "javadocComment", javadocComment,    
 			//		"methodSignature", methodSignature );
 			// }
-			return VarContext.of(
-				"javadocComment", javadocComment,
-                "methodAnnotations", methodAnnotations,    
-                "methodSignature", methodSignature,                        
+			return VarContext.of("javadocComment", javadoc,
+                "methodAnnotations", annotations,    
+                "methodSignature", signature,                        
 				"methodBody", methodBody );
         }
         
@@ -347,17 +345,17 @@ public class _methods
 				directives );
 		}
 		
-		public static class signature
+		public static class _signature
 			implements CodeAuthor
 		{
-			public static signature from( signature prototype )
+			public static _signature from( _signature prototype )
 			{
-				return new signature(
-						_modifiers.from( prototype.modifiers),
-						prototype.returnType + "",
-						prototype.methodName + "",
-						_parameters.from( prototype.params ),
-						_throws.from( prototype.throwsExceptions )
+				return new _signature(
+				    _modifiers.from( prototype.modifiers),
+					prototype.returnType + "",
+					prototype.methodName + "",
+					_parameters.from( prototype.params ),
+					_throws.from( prototype.throwsExceptions )
 					);
 			}
 			private _modifiers modifiers;
@@ -366,7 +364,7 @@ public class _methods
 			private _parameters params;
 			private _throws throwsExceptions;
 	
-			public signature(
+			public _signature(
 				_modifiers modifiers, 
                 String returnType, 
                 String methodName, 
@@ -414,7 +412,7 @@ public class _methods
 				return this.throwsExceptions;
 			}
 			
-			public static signature of( String methodSpec )
+			public static _signature of( String methodSpec )
 			{
 				methodSpec = methodSpec.trim();
 		
@@ -525,11 +523,11 @@ public class _methods
 					throw new VarException( 
 						"Invalid Modifiers for method; (cannot be BOTH abstract and synchronized )" );				
 				}
-				return new signature( 
+				return new _signature( 
                     mods, returnType, methodName, params, throwsExceptions );			
 			}
 	
-			public boolean matchesParamType( signature sig )
+			public boolean matchesParamType( _signature sig )
 			{
 				if( sig.methodName.equals( this.methodName ) )
 				{
@@ -574,11 +572,11 @@ public class _methods
 		/** searches through the contents to find target and replaces with replacement */
 		public _method replace( String target, String replacement ) 
 		{
-			this.javadocComment.replace( target, replacement );
+			this.javadoc.replace( target, replacement );
             
-            this.methodAnnotations.replace( target, replacement );
+            this.annotations.replace( target, replacement );
             this.methodBody.replace( target, replacement );            
-            this.methodSignature.replace( target, replacement );
+            this.signature.replace( target, replacement );
             
             return this;
 		}	

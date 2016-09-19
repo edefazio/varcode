@@ -13,7 +13,9 @@ import varcode.markup.bindml.BindML;
 /**
  * TODO I'm considering whether I should be able to "register Dependency"
  * within a codeBlock, which will allow me to  more easily "port" a block of 
- * code... PERHAPS I extend _code to provide this functionality
+ * code... (add it to the end of a method, static block, etc.)
+ * 
+ * PERHAPS I extend _code to provide this functionality?
  * 
  * So when I add a catchExceptionClass for instance, I would register it as
  * a dependency (so any code that might need to use this code could query
@@ -163,6 +165,7 @@ public class _code
 		return TRY_CATCH_FINALLY_BLOCK;
 	}
 	
+    @Override
 	public String author( Directive... directives ) 
 	{			
 		return Author.code(
@@ -220,7 +223,8 @@ public class _code
 		return this;
 	}
 	
-	public List<_code>doReplaceCode( List<_code>list, String target, String replacement )
+	public List<_code>doReplaceCode( 
+        List<_code>list, String target, String replacement )
 	{
 		for(int i=0; i<list.size(); i++)
 		{
@@ -229,7 +233,8 @@ public class _code
 		return list;
 	}
 	
-	public List<Object>doReplace( List<Object>list, String target, String replacement )
+	public List<Object>doReplace( 
+        List<Object>list, String target, String replacement )
 	{
 		List<Object> replace = new ArrayList<Object>();
 		for( int i = 0; i < list.size(); i++ )

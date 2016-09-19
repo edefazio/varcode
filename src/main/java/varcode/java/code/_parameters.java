@@ -9,7 +9,7 @@ import varcode.context.VarContext;
 import varcode.doc.Author;
 import varcode.doc.Directive;
 import varcode.dom.Dom;
-import varcode.java.code._annotations._annotation;
+import varcode.java.code._annotate._annotation;
 import varcode.markup.bindml.BindML;
 
 /**

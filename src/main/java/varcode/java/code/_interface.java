@@ -230,7 +230,7 @@ public class _interface
         {
             method.javadoc( javadoc );
         }
-		_methods._method.signature sig = method.getSignature();
+		_methods._method._signature sig = method.getSignature();
 		
 		//Default Method
 		if( sig.getModifiers().contains( Modifier.PRIVATE ) )
@@ -263,7 +263,7 @@ public class _interface
 	{
 		_method method = _method.of( null, signature, linesOfCode);
 		
-		_methods._method.signature sig = method.getSignature();
+		_methods._method._signature sig = method.getSignature();
 		if( !sig.getModifiers().contains( Modifier.STATIC ) )
 		{			
 			sig.getModifiers().set( "static" );
@@ -288,11 +288,11 @@ public class _interface
 		this.methods.addMethod( method );
 		return this;
 	}
-	public _interface defaultMethod( String signature, String...linesOfCode )
+	public _interface defaultMethod( String signature, Object...linesOfCode )
 	{
 		_method method = _method.of( null, signature, linesOfCode);
 		
-		_methods._method.signature sig = method.getSignature();
+		_methods._method._signature sig = method.getSignature();
 		if( !sig.getModifiers().contains( _modifiers._mod.INTERFACE_DEFAULT.getBitValue() ) )
 		{			
 			sig.getModifiers().set( "default" );

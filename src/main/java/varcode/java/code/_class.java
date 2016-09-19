@@ -37,8 +37,8 @@ public class _class
 	private _package classPackage;
 	private _imports imports;
 	private _javadoc javadoc;
-	private _signature classSignature;
-	private _annotations classAnnotations;
+	private _signature signature;
+	private _annotate annotations;
     
 	private _constructors constructors;
 	private _fields fields;
@@ -119,10 +119,10 @@ public class _class
 	
 	public _class( String packageName, String classSignature )
 	{
-        this.classAnnotations = new _annotations();
+        this.annotations = new _annotate();
 		this.classPackage = _package.of( packageName );
 		this.javadoc = new _javadoc();
-		this.classSignature = _signature.of( classSignature );
+		this.signature = _signature.of( classSignature );
 		this.imports = new _imports();	
 		this.fields = new _fields();
 		this.methods = new _methods();
@@ -137,10 +137,10 @@ public class _class
 	 */
 	public _class( _class prototype )
 	{
-        this.classAnnotations = new _annotations( prototype.classAnnotations.getAnnotations() );
+        this.annotations = new _annotate( prototype.annotations.getAnnotations() );
 		this.classPackage = _package.from( prototype.classPackage );
 		this.imports = _imports.from( prototype.imports );
-		this.classSignature = _signature.from( prototype.classSignature  );
+		this.signature = _signature.from(prototype.signature  );
 		
 		this.javadoc = _javadoc.from( prototype.javadoc );
 		this.methods = _methods.from( prototype.methods );
@@ -179,16 +179,18 @@ public class _class
 			"+}}" +
 			"}" );
 			
+    @Override
 	public String author( Directive... directives ) 
 	{
         return Author.code( CLASS,getContext(), directives );			
 	}
 	
-    public _annotations getAnnotations()
+    public _annotate getAnnotations()
     {
-        return this.classAnnotations;
+        return this.annotations;
     }
     
+    @Override
 	public VarContext getContext()
 	{
 		String[] n = null;
@@ -240,8 +242,8 @@ public class _class
 			VarContext.of("pckage", classPackage,
 				"imports", imp,
 				"classJavaDoc", javadoc,
-                "classAnnotation", this.classAnnotations,
-				"classSignature", classSignature,
+                "classAnnotation", this.annotations,
+				"classSignature", signature,
 				"members", mem,
 				"methods", meth,
 				"staticBlock", sb, 
@@ -249,6 +251,7 @@ public class _class
 				"nests", n );
 	}
 	
+    @Override
 	public Dom getDom()
 	{
 		return CLASS;
@@ -259,11 +262,11 @@ public class _class
 		
 		if( this.classPackage != null && ! this.classPackage.isEmpty() )
 		{
-			return this.classPackage.getName() + "." + this.classSignature.getName();
+			return this.classPackage.getName() + "." + this.signature.getName();
 		}
 		else
 		{
-			return this.classSignature.className;
+			return this.signature.className;
 		}
 	}
 	
@@ -287,6 +290,7 @@ public class _class
         return toJavaCase().instance( classLoader, constructorArgs );
     }
     
+    @Override
     public JavaCase toJavaCase( Directive... directives) 
 	{	
 		return JavaCase.of(
@@ -296,6 +300,7 @@ public class _class
 			directives );
 	}
     
+    @Override
 	public JavaCase toJavaCase( VarContext context, Directive...directives ) 
 	{
         String FullClassName = this.getFullyQualifiedClassName();
@@ -341,7 +346,7 @@ public class _class
 
     public _class annotate( Object... annotations )
     {
-        this.classAnnotations.add( annotations );
+        this.annotations.add( annotations );
         return this;
     }
     
@@ -357,7 +362,7 @@ public class _class
 
 	public boolean isAbstract()
 	{
-		return this.classSignature.modifiers.contains( Modifier.ABSTRACT );
+		return this.signature.modifiers.contains( Modifier.ABSTRACT );
 	}
 	
 	public _class staticBlock( Object... code )
@@ -448,7 +453,7 @@ public class _class
 
     public _signature getSignature()
     {
-        return this.classSignature;
+        return this.signature;
     }
     
     public _constructors getConstructors()
@@ -604,10 +609,6 @@ public class _class
                 System.arraycopy( tokens, 0, preamble, 2, tokens.length );
                 tokens = preamble;
             }
-			//if( tokens.length < 2 )
-			//{                
-			//	throw new VarException( "class must have at least (2) tokens \"class <name>\" " );	
-			//}
 			 
 			for( int i = 0; i < tokens.length; i++ )
 			{
@@ -711,8 +712,8 @@ public class _class
     @Override
 	public _class replace( String target, String replacement  ) 
 	{		
-        this.classSignature.replace( target, replacement );
-        this.classAnnotations.replace( target, replacement );
+        this.signature.replace( target, replacement );
+        this.annotations.replace( target, replacement );
         this.classPackage.replace( target, replacement );
         this.constructors.replace( target, replacement );
         this.javadoc.replace( target, replacement );

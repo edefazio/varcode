@@ -25,47 +25,82 @@ import varcode.doc.Directive;
 import varcode.dom.Dom;
 import varcode.markup.bindml.BindML;
 
-/** List of One-Per-Line Annotations*/
-public class _annotations
+/**
+ * This represents the act of annotating within a Java Class File
+ * with something like ({@code @Override}, {@code @SuppressWarnings}) 
+ * 
+ * This is NOT the "definition" of a new Annotation 
+ * (which is _annotationDefinition)
+ * 
+ * NOTE: when there are more than one annotation 
+ * they are displayed one per line:
+ * <PRE>
+ * @Path("/{id}")
+ * @GET
+ * Response findById( int id );
+ * </PRE>
+ * 
+ * @author M. Eric DeFazio eric@varcode.io
+ */
+public class _annotate
     extends Template.Base
 {
-    private List<Object> annList;
+    /** 
+     * a List of Annotations, to be represented 
+     * 
+     * Note: this is an Object array, to support
+     * accept a String representation of an annotation  
+     * "@Path(\"/{id}\")"
+     * -or-
+     * an _annotation
+     * _annotation.of("@Path", "
+     * 
+     */
+    private List<Object> listOfAnnotations;
     
     public static final Dom ANNOTATION_LIST = 
-        //BindML.compile( "{{+?code:{+code+}" + N + "+}}" );
         BindML.compile( "{{+:{+annotation+}" + N + "+}}" );
     
-    public _annotations( )
+    public _annotate( )
     {
         this( new ArrayList<Object>() );
     }
     
-    public _annotations( List<Object> annotations )
+    public _annotate( List<Object> annotations )
     {
-        this.annList = new ArrayList<Object>();
+        this.listOfAnnotations = new ArrayList<Object>();
     }
     
     public VarContext getContext()
     {
-        return VarContext.of( "annotation", annList );
+        return VarContext.of("annotation", listOfAnnotations );
     }
         
-    public _annotations add( Object...annotations )
+    public _annotate add( Object...annotations )
     {
         for( int i = 0; i < annotations.length; i++ )
         {
-            this.annList.add( annotations[ i ] );
+            this.listOfAnnotations.add( annotations[ i ] );
         }
         return this;
     }
     
+    public Object getAt(int index )
+    {
+        if( index < count() && index >= 0 )
+        {
+            return this.listOfAnnotations.get( index ); 
+        }
+        throw new VarException("Could not get annotation at [" + index + "]" );                
+    }
+    
     @Override
-    public _annotations replace( String target, String replacement )
+    public _annotate replace( String target, String replacement )
     {
         List<Object> repList = new ArrayList<Object>();
-        for( int i = 0; i < annList.size(); i++ )
+        for( int i = 0; i < listOfAnnotations.size(); i++ )
         {
-            Object o = annList.get( i );
+            Object o = listOfAnnotations.get( i );
             if( o instanceof String )
             {
                 repList.add( ((String)o).replace( target, replacement ) );
@@ -79,7 +114,7 @@ public class _annotations
                 repList.add( o.toString().replace( target, replacement ) );
             }
         }
-        this.annList = repList;
+        this.listOfAnnotations = repList;
         return this;
     }
     
@@ -101,17 +136,17 @@ public class _annotations
     
     public boolean isEmpty()
     {
-        return this.annList.isEmpty();
+        return this.listOfAnnotations.isEmpty();
     }
         
     public List<Object> getAnnotations()
     {
-        return this.annList;
+        return this.listOfAnnotations;
     }
     
     public int count()
     {
-        return this.annList.size();
+        return this.listOfAnnotations.size();
     }
     
     /**
@@ -130,7 +165,7 @@ public class _annotations
         extends Template.Base
     {
         
-        public static _attributes of( String... nameValues )
+        public static _attributes of( Object... nameValues )
         {
             if( nameValues.length == 1 )
             {
@@ -139,13 +174,13 @@ public class _annotations
             return new _attributes( nameValues );
         }
         
-        private List<String>names;
-        private List<String>values;
+        private List<Object>names;
+        private List<Object>values;
 
         public _attributes()
         {            
-            this.names = new ArrayList<String>();
-            this.values = new ArrayList<String>();            
+            this.names = new ArrayList<Object>();
+            this.values = new ArrayList<Object>();            
         }
         
         public int count()
@@ -158,27 +193,52 @@ public class _annotations
             return count() == 0;
         }
         
-        public _attributes( String... nameValues )
+        public _attributes( Object... nameValues )
         {
-            this.names = new ArrayList<String>();
-            this.values = new ArrayList<String>();
+            this.names = new ArrayList<Object>();
+            this.values = new ArrayList<Object>();
             
             add( nameValues );            
         }
         
-        public final _attributes add( String... nameValues )
+        public final _attributes add( Object ... nameValues )
         {
             if( nameValues.length % 2 != 0 )
             {
                 throw new VarException(
-                    "nameValues must be passed in as pairs");
+                    "nameValues must be passed in as pairs" );
             }
             for( int i = 0; i < (nameValues.length / 2); i++ )
             {
                 this.names.add( nameValues[ i * 2 ] );
-                this.values.add( nameValues[ (i * 2) + 1 ] );
+                if( ! (nameValues[ (i * 2) + 1 ] instanceof String ) )
+                {
+                    this.values.add( _literal.of( nameValues[ (i * 2) + 1 ] ) );
+                }
+                else
+                {
+                    this.values.add( nameValues[ (i * 2) + 1 ]  );
+                }
             }
             return this;
+        }
+        
+        private static Object rep( 
+            Object source, String target, String replacement )
+        {
+            if( source == null )
+            {
+                return null;
+            }
+            if( source instanceof _annotation )
+            {
+                return ((_annotation)source).replace( target, replacement );
+            }
+            if( source instanceof String )
+            {
+                return ((String)source).replace(target, replacement);
+            }
+            return source.toString().replace( target, replacement );
         }
         
         @Override
@@ -186,8 +246,10 @@ public class _annotations
         {
             for( int i = 0; i < names.size(); i++ )
             {
-                names.set( i, names.get( i ).replace( target, replacement ) );
-                values.set( i, values.get( i ).replace( target, replacement ) );
+                //names.set( i, names.get( i ).replace( target, replacement ) );
+                //values.set( i, values.get( i ).replace( target, replacement ) );
+                names.set( i, rep( names.get( i ), target, replacement ) );
+                values.set( i, rep( values.get( i ), target, replacement ) );
             }
             return this;
         }
@@ -199,7 +261,7 @@ public class _annotations
             BindML.compile( "\"{+value*+}\"" );
             
         public static final Dom ATTRIBUTES = 
-            BindML.compile( "{{+:{+name*+} = \"{+value*+}\", +}}" );
+            BindML.compile( "{{+:{+name*+} = {+value*+}, +}}" );
         
         @Override
         public String author( Directive... directives )
@@ -221,6 +283,7 @@ public class _annotations
             return "";
         }
         
+        @Override
         public String toString()
         {
             return author();
@@ -230,7 +293,7 @@ public class _annotations
     public static class _annotation
         extends Template.Base
     {
-        public static _annotation of( String...tokens )
+        public static _annotation of( Object...tokens )
         {
             if( tokens.length == 0 )
             {
@@ -239,8 +302,8 @@ public class _annotations
             _annotation ann = new _annotation( tokens[ 0 ] );
             if( tokens.length > 1 )
             {
-                String[] attributes = new String[ tokens.length -1];
-                System.arraycopy(tokens, 1, attributes, 0, tokens.length - 1);
+                Object[] attributes = new Object[ tokens.length -1 ];
+                System.arraycopy( tokens, 1, attributes, 0, tokens.length - 1 );
                 ann.attributes( attributes );
             }
             return ann;
@@ -257,17 +320,17 @@ public class _annotations
         public static final Dom ANNOTATION_ATTRIBUTES = 
             BindML.compile( "{+annotation+}{{+?attributes:({+attributes+}) +}}" );
         
-        public _annotation( String annotation )
+        public _annotation( Object annotation )
         {
             if( annotation != null )
             {
-                if( annotation.startsWith( "@" ) )
+                if( annotation.toString().startsWith( "@" ) )
                 {
-                    this.annotation = annotation;
+                    this.annotation = annotation.toString();
                 }
                 else
                 {
-                    this.annotation = "@" + annotation;
+                    this.annotation = "@" + annotation.toString();
                 }
             }
             
@@ -297,7 +360,7 @@ public class _annotations
             return this;            
         }
 
-        public _annotation attributes( String...attributes )
+        public _annotation attributes( Object...attributes )
         {
             this.attributes = _attributes.of( attributes );
             return this;
@@ -316,7 +379,9 @@ public class _annotations
                     VarContext.of( "annotation", annotation ), directives );
             }
             return Author.code( ANNOTATION_ATTRIBUTES, 
-                    VarContext.of( "annotation", annotation, "attributes", attributes ), directives ); 
+                VarContext.of( 
+                    "annotation", annotation, "attributes", attributes ), 
+                directives ); 
                     
         }        
         

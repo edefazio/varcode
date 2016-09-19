@@ -10,7 +10,7 @@ import varcode.CodeAuthor;
 import varcode.VarException;
 import varcode.context.VarContext;
 import varcode.java.code._methods._method;
-import varcode.java.code._methods._method.signature;
+import varcode.java.code._methods._method._signature;
 
 /**
  *
@@ -23,22 +23,40 @@ import varcode.java.code._methods._method.signature;
 public class _methodsTest
     extends TestCase
 {
+    /**
+     * Test that create
+     */
     public void testAnnotated()
     {
         _method m = new _method( 
-            "public String findById(  )", 
-            "return \"it\";" )                
+            "public Response findById( @PathParam(\"id\") final long id )", 
+            "return Response.ok().build();" )                
             .annotate( "@Path(\"/{id}\")", "@GET" );
         
-        //System.out.println( m.toString() );
+        assertEquals( 2, m.getAnnotations().count() );
+        Object ann = m.getAnnotations().getAt( 0 );
+        assertEquals( "@Path(\"/{id}\")", ann.toString() );
+        assertEquals( "@GET", m.getAnnotations().getAt( 1 ).toString() );
         
         assertEquals(
             "@Path(\"/{id}\")" + N + 
             "@GET" + N +
-            "public String findById(  )" + N +
+            "public Response findById( @PathParam(\"id\") final long id )" + N +
             "{" + N +
-            "    return \"it\";" + N +
+            "    return Response.ok().build();" + N +
             "}", m.toString() );                
+        
+        //check about replace within annotations
+        m.replace("GET", "POST");
+        
+        assertEquals(
+            "@Path(\"/{id}\")" + N + 
+            "@POST" + N +
+            "public Response findById( @PathParam(\"id\") final long id )" + N +
+            "{" + N +
+            "    return Response.ok().build();" + N +
+            "}", m.toString() );                
+        
         
         m = new _method( "public void mustOverride()" ).annotate("@Override");
         
@@ -191,12 +209,12 @@ public class _methodsTest
 	public void testSignature()
 	{
 		assertEquals("void method(  )", 
-			signature.of("void method()").toString() );
+			_signature.of("void method()").toString() );
 	
 		assertEquals(
 			"public static final void main( String[] args )" + System.lineSeparator() +
 			"    throws IOException", 
-		signature.of(
+		_signature.of(
 			"public static final void main( String[] args ) throws IOException" ).toString() );
 		//System.out.println( 
 		//	) );
@@ -204,7 +222,7 @@ public class _methodsTest
 		assertEquals(
 			"public static final void main( String[] args )" + System.lineSeparator()+
 			"    throws IOException, ReflectiveOperationException",
-		signature.of(
+		_signature.of(
 			"public static final void main( String[] args ) "
 			+ "throws IOException, ReflectiveOperationException" ).toString() );
 	}

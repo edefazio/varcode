@@ -16,8 +16,8 @@
 package varcode.java.code;
 
 import junit.framework.TestCase;
-import varcode.java.code._annotations._annotation;
-import varcode.java.code._annotations._attributes;
+import varcode.java.code._annotate._annotation;
+import varcode.java.code._annotate._attributes;
 
 /**
  *
@@ -48,15 +48,15 @@ public class _annotationTest
         _attributes at = _attributes.of( "name", "value" );
         assertEquals( 1, at.count() );
         assertFalse( at.isEmpty() );        
-        assertEquals( "name = \"value\"", at.toString() );
+        assertEquals( "name = value", at.toString() );
     }
     
     public void testAttributesMany()
     {
-        _attributes at = _attributes.of( "name", "value", "a", "1");
+        _attributes at = _attributes.of( "name", "\"value\"", "a", "1");
         assertEquals( 2, at.count() );
         assertFalse( at.isEmpty() );        
-        assertEquals( "name = \"value\", a = \"1\"", at.toString() );
+        assertEquals( "name = \"value\", a = 1", at.toString() );
     }
     
     public void testAnnotationAtts()
@@ -66,21 +66,21 @@ public class _annotationTest
         assertEquals( "@Hey(\"gabba\") ", ann.toString() );
         
         //test name = value attribute
-        ann = _annotation.of( "Hey", "gabba", "gabba" );
+        ann = _annotation.of( "Hey", "gabba", "\"gabba\"" );
         assertEquals( "@Hey(gabba = \"gabba\") ", ann.toString() );
         
         //test multi-attribute
-        ann = _annotation.of( "Hey", "gabba", "gabba", "oderous", "urungus" );
+        ann = _annotation.of( "Hey", "gabba", "\"gabba\"", "oderous", "\"urungus\"" );
         assertEquals( "@Hey(gabba = \"gabba\", oderous = \"urungus\") ", ann.toString() );
         
-        ann = _annotation.of( "@Hey", "gabba", "gabba", "oderous", "urungus" );
+        ann = _annotation.of( "@Hey", "gabba", "\"gabba\"", "oderous", "\"urungus\"" );
         assertEquals( "@Hey(gabba = \"gabba\", oderous = \"urungus\") ", ann.toString() );        
     }
     
     
     public void testEmpty()
     {
-        _annotations al = new _annotations();
+        _annotate al = new _annotate();
         assertEquals( "", al.author( ) );                
         assertEquals( 0, al.count() );
         assertTrue( al.isEmpty() );
@@ -89,7 +89,7 @@ public class _annotationTest
     
     public void testOne()
     {
-        _annotations al = new _annotations();
+        _annotate al = new _annotate();
         al.add( "@Path(\"book\")" );
         assertEquals("@Path(\"book\")" + "\r\n", al.author( ) );        
         
@@ -100,7 +100,7 @@ public class _annotationTest
     
     public void testMany()
     {
-        _annotations al = new _annotations();
+        _annotate al = new _annotate();
         al.add( "@Path(\"/{id}\")", "@GET");
         assertEquals(
             "@Path(\"/{id}\")" + "\r\n" +

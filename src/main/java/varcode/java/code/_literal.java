@@ -1,5 +1,7 @@
 package varcode.java.code;
 
+import java.util.ArrayList;
+import java.util.List;
 import varcode.VarException;
 import varcode.doc.lib.text.EscapeString;
 
@@ -111,5 +113,66 @@ public class _literal
 	{
 		return rep;
 	}
+    
+    /**
+     * Handles an array of values to be printed literally
+     * 
+     * i.e. Object[] o = new Object[]{ "3", 3, true, Math.PI, 'c' };
+     * _array a = _array.of( o );
+     * will be represented as :
+     * "3", 3, true, 3.14159D, 'c' 
+     * 
+     * NOTE: if you want custom aggregations outside of this like { }:
+     * "{ "3", 3, true, 3.14159D, 'c' }
+     * you need to add this manually
+     */
+    public static class _array
+    {
+        public List<_literal> elementRep;
+        
+        public static _array of( Object... elements )
+        {
+            if( elements == null || elements.length == 0 )
+            {
+                return new _array( new ArrayList<_literal>() );
+            }
+            List<_literal> reps = new ArrayList<_literal>();
+            for( int i = 0; i < elements.length; i++ )
+            {
+                reps.add( _literal.of( elements[ i ] ) );                
+            }
+            return new _array( reps );
+        }    
+        
+        private _array( List<_literal>elementReps )
+        {
+            this.elementRep = elementReps;
+        }     
+        
+        public String toString()
+        {
+            if( elementRep == null || elementRep.size() == 0 )
+            {
+                return "";
+            }
+            StringBuilder sb = new StringBuilder();
+            for( int i = 0; i < elementRep.size(); i++ )
+            {
+                if( i > 0 )
+                {
+                    sb.append( ", " );
+                }
+                sb.append( elementRep.get( i ) );  
+            }
+            return sb.toString();
+        }
+    }
 	
+    public static void main( String[] args )
+    {
+        _array a = 
+            _array.of( "3", 3, true, Math.PI, 'c' );
+        
+        System.out.println( a );
+    }
 }
