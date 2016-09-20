@@ -51,11 +51,11 @@ String id = Java.invoke( adHocInstance, "createId" );
 ...will use reflection to call the `createId()` method on the `adHocInstance` passing in no arguments:
 
 varcode has (2) major components:
-1) a model / templating API for "authoring" source code (for Java or any other text based language)
-2) an API for compiling, loading and executing "Ad Hoc" Java code at runtime.
+* a model / templating API for "authoring" source code (for Java or any other text based language)
+* an API for compiling, loading and executing "Ad Hoc" Java code at runtime.
 
 varcode will save you tons of time, when generating code.
-you can even ***unit test authored code in one step.*** 
+you can even ***author, compile, load and unit test code in one step.*** 
 
 ```java
 public static _class MyBean = 
