@@ -230,8 +230,7 @@ public enum Java
        		{
        			LOG.debug( "Calling no-arg constructor > " + constructor );
                 return constructor.newInstance(  );
-       		}
-            
+       		}            
             //
         }
         catch( Exception e )
