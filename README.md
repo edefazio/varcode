@@ -1,6 +1,5 @@
-![alt text](https://github.com/edefazio/varcode/blob/master/varcode_greenOnWhite.png?raw=true "Ad Hoc Source Code Generation & metaprogramming")
-
-varcode "authors" java source code at runtime:
+<img src="https://github.com/edefazio/varcode/blob/master/varcode_greenOnWhite.png?raw=true" width="60"/>
+"authors" java source code at runtime:
 ```java
 _class hello = _class.of("HelloWorld")
     .method( "public static final void main(String[] args)",
