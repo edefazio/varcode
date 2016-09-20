@@ -1,36 +1,61 @@
 <img src="https://github.com/edefazio/varcode/blob/master/varcode_greenOnWhite.png?raw=true" width="60"/>
-"authors" java source code at runtime:
+helps you ***model, "author", compile and run custom java source code at runtime***:
 ```java
-_class hello = _class.of("HelloWorld")
-    .method( "public static final void main(String[] args)",
-        "System.out.println(\"Hello World !\");");
-System.out.println( hello );        
+String id = (String) Java.invoke(
+    _class.of( "AdHoc" )
+        .imports( UUID.class )
+        .method( "public String createId",
+            "return UUID.randomUUID().toString();" )
+        .instance(), 
+    "createId" );       
+    
+// will set id to a UUID like "2184d924-780d-4203-9fff-fa26c0886fc4"    
 ```
-...will print out:
+to explain:
+
+1a) First we create a `adHocModel` for a Java class: 
 ```java
-public class HelloWorld
+_class adHocModel = _class.of( "AdHoc" )
+    .imports( UUID.class )
+    .method( "public String createId",
+        "return UUID.randomUUID().toString();" );
+```
+1b) We can print out the .java source of `adHocModel`
+```java
+System.out.println( adHocModel );
+
+//prints to the console:
+import java.util.UUID;
+
+public class AdHoc
 {
-    public static final void main( String[] args )
+    public String createId(  )
     {
-        System.out.println("Hello World !");
+        return UUID.randomUUID().toString();
     }
 }
 ```
-varcode makes it easy to ***compile, load and use "authored" code at runtime***:
+2) calling the `adHocModel.instance( Object...args )` method :
 ```java
-//"author", compile, load, and instantiate a new instance
-Object authored = 
-    _class.of( "AuthoredClass" )
-        .imports( UUID.class )
-        .method( "public String getId",
-            "return UUID.randomUUID().toString();" )
-        .instance();                
-        
-//invoke a method on the authored instance
-System.out.println( Java.invoke( authored, "getId" ) );
-```  
-varcode will save you tons of time, you can 
-***author, compile, load and unit test authored code in one step.*** 
+Object adHocInstance = adHocModel.instance( );
+```
+will: 
+* pass the "AdHoc.java" source to the runtime javac compiler to create a `AdHoc.class` file
+* load the `AdHoc.class` file in a new ClassLoader
+* create a new `adHocInstance` of `AdHoc.class` passing no arguments to the constructor
+
+3) finally, calling `Java.invoke( Object instance, String methodName, Object...args )` method on `adHocInstance`: 
+```java
+String id = Java.invoke( adHocInstance, "createId" );
+```
+...will use reflection to call the `createId()` method on the `adHocInstance` passing in no arguments:
+
+varcode has (2) major components:
+* a model / templating API for "authoring" source code (for Java or any other text based language)
+* an API for compiling, loading and executing "Ad Hoc" Java code at runtime.
+
+varcode will save you tons of time, when generating code.
+you can even ***author, compile, load and unit test code in one step.*** 
 
 ```java
 public static _class MyBean = 
