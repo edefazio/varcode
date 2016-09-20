@@ -123,7 +123,7 @@ public class _methods
      * @param name the name of the method
      * @return all methods with this name 
      */
-    public List<_method> getMethodsByName( String name )
+    public List<_method> getByName( String name )
     {
         return this.methodsByName.get( name );
     }
@@ -448,11 +448,15 @@ public class _methods
 			
 				String[] tokens = sig.split( " " );
 		
-				if( tokens.length < 2 )
-				{
+				//if( tokens.length < 2 )
+				//{
+                    //assume it's void '
+                    
+                    /*
 					throw new VarException( 
 						"method signature must have at least (2) tokens <returnType> <methodName>" );
-				}
+                    */
+				//}
 				// get the throws		
 				_throws throwsExceptions = _throws.NONE;
 				
@@ -476,10 +480,18 @@ public class _methods
                         }			
                     }   
                 }
-				//_identifier methodName = _identifier.of( tokens[ tokens.length - 1 ] );
                 String methodName = tokens[ tokens.length - 1 ];
+                String returnType = "void";
+                        
+                if( tokens.length >= 2 )
+                {
+                    returnType = tokens[ tokens.length - 2 ];
+                }
                 
-				String returnType = tokens[ tokens.length - 2 ];
+				//_identifier methodName = _identifier.of( tokens[ tokens.length - 1 ] );
+                //String methodName = tokens[ tokens.length - 1 ];
+                
+				//String 
 				_modifiers mods = new _modifiers();
 				if( tokens.length > 2 )
 				{

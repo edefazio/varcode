@@ -32,7 +32,7 @@ import varcode.markup.bindml.BindML;
  */
 public class _class
     extends Template.Base    
-	implements  JavaCaseAuthor, _nest.component
+	implements JavaCaseAuthor, _nest.component
 {	
 	private _package classPackage;
 	private _imports imports;
@@ -137,7 +137,7 @@ public class _class
 	 */
 	public _class( _class prototype )
 	{
-        this.annotations = new _annotate( prototype.annotations.getAnnotations() );
+        this.annotations = _annotate.from( prototype.annotations );
 		this.classPackage = _package.from( prototype.classPackage );
 		this.imports = _imports.from( prototype.imports );
 		this.signature = _signature.from(prototype.signature  );
@@ -299,6 +299,46 @@ public class _class
 			getContext(),
 			directives );
 	}
+    
+    /**
+     * 
+     * @param context contains bound variables and scripts to bind data into
+     * the template
+     * @param directives pre-and post document directives 
+     * @return the populated Template bound with Data from the context
+     */
+    public final JavaCase bindCase( VarContext context, Directive...directives )
+    {
+        String FullClassName = this.getFullyQualifiedClassName();
+        Dom classNameDom = BindML.compile( FullClassName );
+        String theClassName = Author.code( classNameDom, context ); 
+        
+        Dom dom = BindML.compile( author() ); 
+        
+        //String boundCode = Author.code( dom, context, directives );
+        return JavaCase.of(
+            theClassName, dom, context, directives);
+    }
+        
+    /**
+     * Bind the Context variables into the _class model as needed 
+     * then compile and load the class in a new ClassLoader and return the class
+     * @param context the context for filling in Marks within the Class
+     * @param directives directives for 
+     * @return 
+     */
+    public final Class bindClass( VarContext context, Directive...directives )
+    {
+        JavaCase jc = bindCase( context, directives );
+        return jc.loadClass();
+    }
+    
+    public final Object bindInstance( VarContext context, Object...parameters )
+    {
+        JavaCase jc = bindCase( context );
+        return jc.instance( parameters );
+    }
+    
     
     @Override
 	public JavaCase toJavaCase( VarContext context, Directive...directives ) 
@@ -464,6 +504,11 @@ public class _class
     public _methods getMethods()
     {
         return this.methods;
+    }
+    
+    public List<_method> getMethodsByName( String name )
+    {
+        return this.methods.getByName( name );
     }
     
     public _nestGroup getNests()

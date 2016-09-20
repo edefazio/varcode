@@ -224,12 +224,15 @@ public enum Java
        		{
        			LOG.debug( "Calling constructor >" 
        			    + constructor + " with [" + arguments.length + "] arguments" );
+                return constructor.newInstance( arguments );
        		}
        		else
        		{
-       			LOG.debug( "Calling constructor > " + constructor );
+       			LOG.debug( "Calling no-arg constructor > " + constructor );
+                return constructor.newInstance(  );
        		}
-            return constructor.newInstance( arguments );
+            
+            //
         }
         catch( Exception e )
         {

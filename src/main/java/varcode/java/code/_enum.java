@@ -3,9 +3,7 @@ package varcode.java.code;
 import varcode.java.JavaCase.JavaCaseAuthor;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import varcode.Template;
 
 import varcode.VarException;
@@ -33,6 +31,7 @@ public class _enum
 	private _package enumPackage = new _package( "" ); 
 	private _imports imports = new _imports();
 	private _javadoc javadoc = new _javadoc();
+    private _annotate annotations;
 	private _signature enumSignature;
 	private _constructors constructors = new _constructors();
 	private _staticBlock staticBlock = new _staticBlock( (Object[])null );
@@ -47,6 +46,7 @@ public class _enum
 			"{+pckage+}" +
 			"{{+?imports:{+imports+}" + N +"+}}" +
 			"{+javadocComment+}" +
+            "{+enumAnnotations+}" +        
 			"{+enumSignature*+}" + N +
 			"{" + N +
 			"{+values+}" + N +
@@ -72,6 +72,7 @@ public class _enum
 		this.enumPackage = _package.from( prototype.enumPackage );
 		this.imports = _imports.from( prototype.imports );
 		this.javadoc = _javadoc.from( prototype.javadoc );
+        this.annotations = _annotate.from( prototype.annotations );
 		this.enumSignature = _signature.from( prototype.enumSignature  );
 		this.constructors = _constructors.from( prototype.constructors );
 		if( prototype.staticBlock!= null && !prototype.staticBlock.isEmpty() )
@@ -101,6 +102,11 @@ public class _enum
             return "";
         }    
         return this.enumPackage.getName();
+    }
+    
+    public _annotate getAnnotations()
+    {
+        return this.annotations;
     }
     
 	public VarContext getContext()
@@ -396,6 +402,12 @@ public class _enum
 		return this.imports;
 	}
 	
+    public _enum annotate( Object... annotations )
+    {
+        this.annotations.add( annotations );
+        return this;
+    }
+    
 	public _enum javadoc( String... comment )
 	{
 		this.javadoc = new _javadoc( comment );
@@ -494,12 +506,12 @@ public class _enum
 			
 		public _valueConstructs addEnumValue( _valueConstruct value )
 		{
-            for(int i=0; i< this.valueConstructs.size(); i++ )
+            for( int i = 0; i < this.valueConstructs.size(); i++ )
             {
                 if( this.valueConstructs.get( i ).name.equals( value.name ) )
                 {
                     throw new VarException( 
-                        "Enum already contains a value for \"" + value.name.toString() +"\"" );
+                        "Enum already contains a value for \"" + value.name +"\"" );
                 }
             }
 			//if( this.valueNames.contains( value.name.toString() ) )
@@ -623,6 +635,7 @@ public class _enum
 		 + "+}};" + N + N );
 		
 		
+        @Override
 		public String author( Directive... directives ) 
 		{
 			return Author.code( 
@@ -636,6 +649,7 @@ public class _enum
 			return this.valueConstructs.size();
 		}
 		
+        @Override
 		public String toString()
 		{
 			return author();

@@ -55,7 +55,9 @@ import varcode.java.code._modifiersTest;
 import varcode.java.code._packageTest;
 import varcode.java.code._parametersTest;
 import varcode.java.code._staticBlockTest;
+import varcode.java.code._threadTest;
 import varcode.java.code._throwsTest;
+import varcode.java.code._whileTest;
 import varcode.java.code.auto._auto_enumTest;
 import varcode.markup.MarkupParserTest;
 import varcode.markup.VarNameAuditTest;
@@ -235,7 +237,10 @@ public class AllTestSuite
         suite.addTestSuite( _packageTest.class );
         suite.addTestSuite( _parametersTest.class );
         suite.addTestSuite( _staticBlockTest.class );
-        suite.addTestSuite( _throwsTest.class );
+        suite.addTestSuite( _threadTest.class );
+        suite.addTestSuite( _throwsTest.class );        
+        suite.addTestSuite( _whileTest.class );
+        
         
         suite.addTestSuite( _auto_dtoTest.class );
         suite.addTestSuite( _auto_enumTest.class );

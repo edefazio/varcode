@@ -45,6 +45,29 @@ import varcode.markup.bindml.BindML;
 public class _annotate
     extends Template.Base
 {
+    
+    public static _annotate from( _annotate annotations )
+    {
+        List<Object> clone = new ArrayList<Object>();
+        for(int i=0; i< annotations.count(); i++ )
+        {
+            Object o = annotations.getAt( i );
+            if( o instanceof _annotation )
+            {
+                clone.add(_annotation.from( (_annotation)o ) );
+            }
+            else if( o instanceof String )
+            {
+                clone.add( ((String)o) + "" );
+            }
+            else
+            {
+                clone.add( o.toString() );
+            }
+        }        
+        return new _annotate( clone );
+    }
+    
     /** 
      * a List of Annotations, to be represented 
      * 
@@ -293,6 +316,13 @@ public class _annotate
     public static class _annotation
         extends Template.Base
     {
+        public static _annotation from( _annotation base )
+        {
+            _annotation ann = new _annotation( base.annotation + "" );
+            ann.attributes( base.attributes );            
+            return ann;
+        }
+        
         public static _annotation of( Object...tokens )
         {
             if( tokens.length == 0 )

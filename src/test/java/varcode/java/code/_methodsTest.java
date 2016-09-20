@@ -23,8 +23,23 @@ import varcode.java.code._methods._method._signature;
 public class _methodsTest
     extends TestCase
 {
+    
+    public void testInfer()
+    {
+        _method m = _method.of("someName"); //default method "someName" with no parameters
+        
+        assertEquals( m.getName(), "someName");
+        assertEquals( 0, m.getSignature().getModifiers().count() );
+        assertEquals( 0, m.getSignature().getParameters().count() );
+        assertEquals(
+            "void someName(  )" + N +
+            "{" + N + N +
+            "}", m.toString() );
+        
+    }
+    
     /**
-     * Test that create
+     * Test that creating a method with parameters
      */
     public void testAnnotated()
     {
@@ -71,7 +86,7 @@ public class _methodsTest
     {
         _methods m = new _methods();
         assertEquals( 0, m.count() );
-        assertEquals( null, m.getMethodsByName("anything") );
+        assertEquals( null, m.getByName("anything") );
         assertTrue( m.isEmpty() );
         m.replace("A", "Z");
     }
@@ -82,15 +97,14 @@ public class _methodsTest
         m.addMethod("public abstract int methodName()");
         
         assertEquals( 1, m.count() );
-        assertEquals( 1, m.getMethodsByName( "methodName" ).size() );
+        assertEquals( 1, m.getByName( "methodName" ).size() );
         assertFalse( m.isEmpty() );
         m.replace( "methodName", "blahName" );
         
         //verify that if I change the name of a method it works
         assertEquals( 1, m.count() );
-        assertEquals( 1, m.getMethodsByName( "blahName" ).size() );
-        assertFalse( m.isEmpty() );
-        
+        assertEquals( 1, m.getByName( "blahName" ).size() );
+        assertFalse( m.isEmpty() );        
     }
     
     public static final String N = "\r\n";
