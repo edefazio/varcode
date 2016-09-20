@@ -60,6 +60,7 @@ public class _auto_dtoTest
         Java.invoke(o, "setName", "A");
         assertEquals( "A", Java.invoke( o, "getName" ) );
         
+        
         d.property( int.class, "count" );
         o = d.toJavaCase( ).instance();
         

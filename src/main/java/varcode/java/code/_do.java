@@ -62,7 +62,7 @@ public class _do
         "{" + N +
         "{+$>(body)*+}" + N +
         "}" + N +
-        "while( {+condition*+} ) " );
+        "while( {+condition*+} );" );
     
     @Override
     public String author( Directive... directives )
