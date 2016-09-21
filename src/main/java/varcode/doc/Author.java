@@ -54,6 +54,7 @@ public enum Author
     		directives );
     	
     	bind( docState );
+        
     	return docState.getTranslateBuffer().toString();
     }
     

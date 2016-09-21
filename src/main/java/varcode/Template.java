@@ -8,6 +8,7 @@ package varcode;
 import varcode.context.VarContext;
 import varcode.doc.Author;
 import varcode.doc.Directive;
+import varcode.doc.lib.text.Prefix;
 import varcode.dom.Dom;
 import varcode.markup.bindml.BindML;
 
@@ -66,7 +67,8 @@ public interface Template
          * @param directives pre-and post document directives 
          * @return the populated Template bound with Data from the context
          */
-        public final String bind( VarContext context, Directive...directives )
+        @Override
+        public String bind( VarContext context, Directive...directives )
         {
             //System.out.println( author( ) );
             Dom dom = BindML.compile( author() ); 
@@ -74,6 +76,8 @@ public interface Template
         }
         
         public abstract Base replace( String target, String replacement );
+        
+        public static final Directive INDENT4 = Prefix.INDENT_4_SPACES;
         
         private static final String[] INDENT = new String[]
     {

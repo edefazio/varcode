@@ -6,7 +6,6 @@
 package varcode.java.code;
 
 import java.io.IOException;
-import static junit.framework.Assert.assertEquals;
 import junit.framework.TestCase;
 import varcode.context.VarContext;
 
@@ -17,6 +16,25 @@ import varcode.context.VarContext;
 public class _codeTest
     extends TestCase
 {
+    public void testStringOrCodeBind()
+    {
+        //adding Strings or code just appends code to the codeblock
+        _code outer = _code.of(
+            "int i=0;",
+            "int j = 0;",
+             _code.of(
+            "System.out.println(\"inner 1\");",
+            "System.out.println(\"inner 2\");" ) );
+        
+        System.out.println( outer );
+        assertEquals(
+            "int i=0;" + N +
+            "int j = 0;" + N +
+            "System.out.println(\"inner 1\");" + N +
+            "System.out.println(\"inner 2\");", outer.toString().trim() );        
+    }
+    
+    
     public void testCodeEmptyToAddHeadTail()
     {
         _code c = _code.of( );
@@ -64,7 +82,7 @@ public class _codeTest
             "catch( java.io.IOException e )" + N +        
             "{" + N +
             "    System.out.println(\"failure\");" +N +
-            "}", b );
+            "}", b.trim() );
     }
     
     public static final String N = "\r\n";

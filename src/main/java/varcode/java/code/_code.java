@@ -28,6 +28,7 @@ import varcode.markup.bindml.BindML;
 public class _code
     extends Template.Base    
 {
+    
 	/**
 	 * Creates a code from the objects (Strings, _code) for instance:<PRE>
 	 * _code commentLog = _code.of(
@@ -56,12 +57,15 @@ public class _code
 		{
 			for( int i = 0; i < codeSequence.length; i++ )
 			{
-				code.codeSequence.add( codeSequence[ i ] );
+                code.codeSequence.add( codeSequence[ i ] );                
 			}
 		}
 		return code;
 	}
 	
+    
+ 
+        
 	public boolean isEmpty()
 	{
 		return codeSequence.size() == 0;
@@ -100,7 +104,7 @@ public class _code
 	/**
 	 * If the codeblock does not have any try(resources) catch/finally
 	 */
-	public static final Dom BARE_CODEBLOCK = BindML.compile(
+	public static final Dom BARE_CODEBLOCK = BindML.compile(      
 		"{+codeBlock+}" );
 	
 	/**
@@ -109,15 +113,15 @@ public class _code
 	public static final Dom TRY_CATCH_FINALLY_BLOCK = BindML.compile(
 		"try{{+:( {+withResources+} )+}}" + N +
 		"{" + N +
-		"{+$indent4Spaces(codeBlock)+}"+ N +
+		"{+$>(codeBlock)+}"+ N + //ORIGINAL       
 		"}" + N +
 		"{{+:catch( {+catchException+} e )"+ N +
 		"{" + N +
-		"{+$indent4Spaces(handleException)+}" + N +
+		"{+$>(handleException)+}" + N +
 		"}"+ N +
 		"+}}{{+:finally" + N +
 		"{" + N +
-		"{+$indent4Spaces(finallyBlock)+}" + N +
+		"{+$>(finallyBlock)+}" + N +
 		"}"+ N + 
 		"+}}");
 	
@@ -130,7 +134,83 @@ public class _code
 			"handleException", handleException,
 			"finallyBlock", stringify( this.finallyBlock ) );
 	}
-		
+    
+	@Override
+    public String bind( VarContext context, Directive...directives )
+    {
+        String codeB = null;
+        String withR = null;
+        String catchE = null;
+        String handleE = null;
+        String finallyB = null;
+        if( this.codeSequence != null && !this.codeSequence.isEmpty() )
+        {
+            codeB = bindify( this.codeSequence, context, directives );
+        }
+        if( this.tryWithResources != null && !this.tryWithResources.isEmpty() )
+        {
+            withR = bindify( this.tryWithResources, context, directives );
+        }
+        if( this.catchException != null && !this.catchException.isEmpty() )
+        {
+            catchE = bindify( this.catchException, context, directives );
+        }
+        if( this.handleException != null && !this.handleException.isEmpty() )
+        {
+            handleE = bindify( this.handleException, context, directives );
+        }
+        if( this.finallyBlock != null && !this.finallyBlock.isEmpty() )
+        {
+            finallyB = bindify( this.finallyBlock, context, directives );
+        }
+        
+        VarContext vc = VarContext.of( 
+           "codeBlock", codeB, //bindify(this.codeSequence, context, directives),
+           "withResources", withR, //stringify( this.tryWithResources ),
+			"catchException", catchE, //catchException,
+			"handleException", handleE, //handleException,
+			"finallyBlock", finallyB );// stringify( this.finallyBlock ) );
+        
+           //"withResources", bindify( this.tryWithResources, context, directives ),
+           //"catchException", bindify( this.catchException, context, directives ),
+           //"handleException", bindify( this.handleException, context, directives),
+           //"finallyBlock", bindify( this.finallyBlock, context, directives )                     
+        //);
+        
+        //System.out.println( author( ) );
+        //Dom dom = BindML.compile( author() ); 
+        //We need to "manually" 
+        return Author.code( getDom(), vc, directives );
+    }
+    
+    private static String bindify( List list, VarContext context, Directive... directives  )
+    {
+        StringBuilder sb = new StringBuilder();
+        for( int i = 0; i < list.size(); i++ )
+        {
+            if( i > 0 )
+            {
+                sb.append( "\r\n" );
+            }
+            Object o = list.get( i );
+            if( o instanceof Template.Base )
+            {
+                sb.append( ((Base) o).bind( context, directives ) );                
+            }
+            else
+            {
+                System.out.println( ">>>>>>>>>>>>>>>>>" );
+                //TODO use a TranslateBuffer??
+                sb.append( 
+                    Author.code( 
+                        BindML.compile( o.toString() ), context, directives ) );                
+            }
+        }
+        return sb.toString();
+    }
+    
+
+    
 	private String stringify( List<Object>codeComponents )
 	{
 		if( codeComponents == null || codeComponents.isEmpty() )

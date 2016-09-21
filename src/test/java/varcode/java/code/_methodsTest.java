@@ -23,6 +23,34 @@ import varcode.java.code._methods._method._signature;
 public class _methodsTest
     extends TestCase
 {
+    public void testIndentBind()
+    {
+        
+        _method m = _method.of( 
+            "public {+returnType*+} call() throws Exception",
+            _code.of(
+                "{+init+}",                 
+                "for( int i = startIndex; i < startIndex + count; i++)",
+                "{",
+                "{+$>(match)*+}",
+                "}",
+                "{+reduce*+}" ) );
+         
+        System.out.println( m );
+        System.out.println 
+            ( m.bind(VarContext.of("returnType", int.class, "match", "1 == 1", "reduce", "return 1;") ) );
+         
+        _class c = _class.of("Something")
+           .method( m );
+        
+        System.out.println( c );
+        
+        String s = c.bind( VarContext.of( "returnType", int.class, "match", "1 == 1", "reduce", "return 1;" ) );
+        System.out.println( s );
+        
+        s = c.bind( VarContext.of( "returnType", int.class, "match", _code.of("if( i< 100 )", "x++;"), "reduce", "return 1;" ) );
+        System.out.println( s );
+    }
     
     public void testInfer()
     {

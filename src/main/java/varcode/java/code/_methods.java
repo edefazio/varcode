@@ -208,6 +208,12 @@ public class _methods
 			_method m = new _method( methodSignature );
 			return m;
 		}
+        
+        public static _method of( String methodSingature, _code body )
+        {
+            _method m = new _method( methodSingature );
+            return m.body( body );            
+        }
 		
         public String getName()
         {
@@ -294,6 +300,12 @@ public class _methods
             return this;
         }
         
+        private _method body( _code body )
+        {
+            this.methodBody = body;
+            return this;
+        }
+        
 		public _method body( Object... linesOfCode )
 		{
 			if( this.isAbstract() && methodBody != null && linesOfCode != null && linesOfCode.length > 0)
@@ -332,6 +344,26 @@ public class _methods
         }
         
         @Override
+        public String bind( VarContext context, Directive...directives )
+        {
+            VarContext vc = VarContext.of(
+                "javadocComment", javadoc.bind( context, directives ),
+                "methodAnnotations", annotations.bind( context, directives ),    
+                "methodSignature", signature.bind( context, directives ),                        
+				"methodBody", methodBody.bind( context, directives )   );
+        
+            if( this.isAbstract() )
+            {
+                return Author.code( ABSTRACT_METHOD, vc, directives );    
+            }
+            else
+            {
+                return Author.code( METHOD, vc, directives );    
+            }
+            
+        }
+        
+        @Override
 		public String author( Directive... directives ) 
 		{            
 			if( this.isAbstract() )
@@ -346,7 +378,7 @@ public class _methods
 		}
 		
 		public static class _signature
-			implements CodeAuthor
+			extends Template.Base
 		{
 			public static _signature from( _signature prototype )
 			{
@@ -388,13 +420,15 @@ public class _methods
 				return returnType;
 			}
             
-            public void replace( String target, String replacement )
+            @Override
+            public _signature replace( String target, String replacement )
             {
                 this.returnType = this.returnType.replace( target, replacement );
                 this.params.replace( target, replacement ); 
                 this.modifiers.replace( target, replacement );
                 this.methodName = this.methodName.replace( target, replacement );
                 throwsExceptions.replace(target, replacement);
+                return this;
             }
 			
 			public String getName()
@@ -581,6 +615,8 @@ public class _methods
 			}		
 		}
 
+
+        
 		/** searches through the contents to find target and replaces with replacement */
 		public _method replace( String target, String replacement ) 
 		{
