@@ -79,6 +79,12 @@ public class TranslateBuffer
      */
     public String translate( Object input )
     {
+        return JavaElementTranslate.INSTANCE.translate( input );
+    }
+    
+    /** TODO REMOVE THIS */
+    public String oldTranslate( Object input )
+    {
     	if( input == null )
         {
     		return "";
