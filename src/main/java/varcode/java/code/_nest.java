@@ -49,7 +49,7 @@ public interface _nest
 	}
 	
 	public static class _nestGroup
-		implements CodeAuthor
+		extends Template.Base
 	{
 		public List<component>components = new ArrayList<component>();
 
@@ -63,12 +63,13 @@ public interface _nest
 			return this;
 		}
 		
-        public void replace( String target, String replacement )
+        public _nestGroup replace( String target, String replacement )
         {
             for( int i = 0; i < components.size(); i++ )
             {
                 this.components.get( i ).replace( target, replacement );
             }
+            return this;
         }
         
 		public int count()

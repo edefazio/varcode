@@ -27,8 +27,7 @@ import varcode.markup.bindml.BindML;
  */
 public class _code
     extends Template.Base    
-{
-    
+{    
 	/**
 	 * Creates a code from the objects (Strings, _code) for instance:<PRE>
 	 * _code commentLog = _code.of(
@@ -62,10 +61,7 @@ public class _code
 		}
 		return code;
 	}
-	
-    
- 
-        
+	    
 	public boolean isEmpty()
 	{
 		return codeSequence.size() == 0;
@@ -77,109 +73,35 @@ public class _code
 	 * <UL>
 	 *   <LI>Strings
 	 *   <LI>_code
+     *   <LI>Template.Base entities (like: _try, _for, _while, _if, _do)
 	 * </UL>  
 	 */
 	private List<Object>codeSequence = new ArrayList<Object>();
 	
-	/**
-	 * provides a try(...resourceInit...) { } structure for code
-	 */
-	private List<Object> tryWithResources = new ArrayList<Object>();
-	
-	/**
-	 * names of exceptions that are caught 
-	 * (MATCHES the caughtException with an entry in handleException)
-	 */
-	private List<String> catchException = 
-		new ArrayList<String>();
-				
-	/**
-	 * 
-	 */
-	private List<_code> handleException = 
-		new ArrayList<_code>();
-	
-	private List<Object> finallyBlock = new ArrayList<Object>();
-	
-	/**
-	 * If the codeblock does not have any try(resources) catch/finally
-	 */
-	public static final Dom BARE_CODEBLOCK = BindML.compile(      
+	public static final Dom CODEBLOCK = BindML.compile(      
 		"{+codeBlock+}" );
 	
-	/**
-	 * Any try(withResources)...catch()...finally() block of code
-	 */
-	public static final Dom TRY_CATCH_FINALLY_BLOCK = BindML.compile(
-		"try{{+:( {+withResources+} )+}}" + N +
-		"{" + N +
-		"{+$>(codeBlock)+}"+ N + //ORIGINAL       
-		"}" + N +
-		"{{+:catch( {+catchException+} e )"+ N +
-		"{" + N +
-		"{+$>(handleException)+}" + N +
-		"}"+ N +
-		"+}}{{+:finally" + N +
-		"{" + N +
-		"{+$>(finallyBlock)+}" + N +
-		"}"+ N + 
-		"+}}");
 	
 	public VarContext getContext()
 	{
 		return VarContext.of(
-			"codeBlock", stringify( this.codeSequence ),
-			"withResources", stringify( this.tryWithResources ),
-			"catchException", catchException,
-			"handleException", handleException,
-			"finallyBlock", stringify( this.finallyBlock ) );
+			"codeBlock", stringify( this.codeSequence ) 
+        );
 	}
     
 	@Override
     public String bind( VarContext context, Directive...directives )
     {
         String codeB = null;
-        String withR = null;
-        String catchE = null;
-        String handleE = null;
-        String finallyB = null;
+        
         if( this.codeSequence != null && !this.codeSequence.isEmpty() )
         {
             codeB = bindify( this.codeSequence, context, directives );
         }
-        if( this.tryWithResources != null && !this.tryWithResources.isEmpty() )
-        {
-            withR = bindify( this.tryWithResources, context, directives );
-        }
-        if( this.catchException != null && !this.catchException.isEmpty() )
-        {
-            catchE = bindify( this.catchException, context, directives );
-        }
-        if( this.handleException != null && !this.handleException.isEmpty() )
-        {
-            handleE = bindify( this.handleException, context, directives );
-        }
-        if( this.finallyBlock != null && !this.finallyBlock.isEmpty() )
-        {
-            finallyB = bindify( this.finallyBlock, context, directives );
-        }
         
         VarContext vc = VarContext.of( 
-           "codeBlock", codeB, //bindify(this.codeSequence, context, directives),
-           "withResources", withR, //stringify( this.tryWithResources ),
-			"catchException", catchE, //catchException,
-			"handleException", handleE, //handleException,
-			"finallyBlock", finallyB );// stringify( this.finallyBlock ) );
-        
-           //"withResources", bindify( this.tryWithResources, context, directives ),
-           //"catchException", bindify( this.catchException, context, directives ),
-           //"handleException", bindify( this.handleException, context, directives),
-           //"finallyBlock", bindify( this.finallyBlock, context, directives )                     
-        //);
-        
-        //System.out.println( author( ) );
-        //Dom dom = BindML.compile( author() ); 
-        //We need to "manually" 
+           "codeBlock", codeB ); 
+  
         return Author.code( getDom(), vc, directives );
     }
     
@@ -199,8 +121,6 @@ public class _code
             }
             else
             {
-                System.out.println( ">>>>>>>>>>>>>>>>>" );
-                //TODO use a TranslateBuffer??
                 sb.append( 
                     Author.code( 
                         BindML.compile( o.toString() ), context, directives ) );                
@@ -208,9 +128,7 @@ public class _code
         }
         return sb.toString();
     }
-    
-
-    
+        
 	private String stringify( List<Object>codeComponents )
 	{
 		if( codeComponents == null || codeComponents.isEmpty() )
@@ -236,13 +154,7 @@ public class _code
 	
 	public Dom getDom()
 	{
-		if( isEmpty( tryWithResources ) &&
-			isEmpty( catchException ) &&
-			isEmpty( finallyBlock ) )
-		{
-			return BARE_CODEBLOCK;
-		}
-		return TRY_CATCH_FINALLY_BLOCK;
+        return CODEBLOCK;
 	}
 	
     @Override
@@ -340,64 +252,12 @@ public class _code
 	public _code replace( String target, String replacement )
 	{
 		this.codeSequence = doReplace( this.codeSequence, target, replacement );
-		this.tryWithResources = doReplace( this.tryWithResources, target, replacement );
-		this.handleException = doReplaceCode( this.handleException, target, replacement );
-		this.finallyBlock = doReplace( this.finallyBlock, target, replacement );
-		for( int i = 0; i < this.catchException.size(); i++ )
-		{
-			this.catchException.set( i, 
-				this.catchException.get( i ).replace( target, replacement ) );
-		}
-		return this;
+        return this;
 	}
 	
     @Override
 	public String toString()
 	{
 		return author();
-	}
-	
-	public _code catchHandleException( Class<?> catchException, Object... handleCode )
-	{
-		this.catchException.add( catchException.getCanonicalName() );
-		for( int i = 0; i < handleCode.length; i++ )
-		{
-			this.handleException.add( _code.of( handleCode[ i ] ) );
-		}
-		return this;
-	}
-	
-	/**
-	 * Catches and exception by name (it may be an exception that is being authored)
-	 * @param simpleExceptionName the name of the exception (i.e. "IOException", "FileNotFoundException")
-	 * @param handleCode the 
-	 * @return
-	 */
-	public _code catchHandleException( String simpleExceptionName, String... handleCode ) 
-	{
-		this.catchException.add( simpleExceptionName );
-		for( int i = 0; i < handleCode.length; i++ )
-		{
-			this.handleException.add( _code.of( handleCode[ i ] ) );
-		}
-		return this;		
-	}
-	
-	public _code tryWith( String... resourceInit )
-	{
-		for( int i = 0; i < resourceInit.length; i++ )
-		{
-			this.tryWithResources.add( resourceInit[ i ] );
-		}
-		return this;
-	}
-	
-	public _code finallyBlock( String...finallyCode )
-	{
-		for( int i = 0; i < finallyCode.length; i++ )
-		{
-			this.finallyBlock.add( finallyCode[ i ] );
-		}
-		return this;
 	}
 }

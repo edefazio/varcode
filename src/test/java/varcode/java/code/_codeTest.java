@@ -67,11 +67,11 @@ public class _codeTest
         String b = c.bind( VarContext.of("vari", "TheVariable") );
         assertEquals( "int TheVariable = 100;", b );
         
-        c.catchHandleException(
+        _try t = _try.catchAndHandle(c, 
             IOException.class, 
             "System.out.println(\"{+message|failure+}\");" );
         
-        b = c.bind(
+        b = t.bind(
             VarContext.of("vari", "TheVariable") );
         
         assertEquals( 
@@ -156,77 +156,4 @@ public class _codeTest
 			"//It is a CodeBlock being added to the tail",  c.toString() );					
 	}
 	
-	public void testTryCatch()
-	{
-		_code c = new _code( );
-		c.catchHandleException(
-			IOException.class, 
-			"System.out.println(\"Handling dat IO Exception\");" );
-		
-		assertEquals( 
-			"try" + N + 
-		    "{" + N +
-		    N+
-		    "}" + N +
-            "catch( java.io.IOException e )" + N +
-            "{" + N +
-            "    System.out.println(\"Handling dat IO Exception\");" + N +
-            "}" + N 
-            , c.toString() );
-		
-		c.catchHandleException(
-            "SimpleException", 
-            "LOG.error(\"Got Simple Exception\");");		
-        
-        assertEquals( 
-			"try" + N + 
-		    "{" + N +
-		    N+
-		    "}" + N +
-            "catch( java.io.IOException e )" + N +
-            "{" + N +
-            "    System.out.println(\"Handling dat IO Exception\");" + N +
-            "}" + N +
-            "catch( SimpleException e )" + N +
-            "{" + N +
-            "    LOG.error(\"Got Simple Exception\");" + N +
-            "}" + N     
-            , c.toString() );
-	}
-	
-	
-	public void testTryWithResources()
-	{
-		_code c = new _code();
-		c.tryWith(
-            "BufferedReader br = new BufferedReader( new FileReader( path ) ) )");
-		
-		System.out.println( c );
-		assertEquals( 
-			"try( BufferedReader br = new BufferedReader( new FileReader( path ) ) ) )" + N +
-		    "{" + N +
-            N + 
-		    "}" + N , c.toString() );				
-	}
-	
-	public void testFinally()
-	{
-		_code c = new _code();
-		c.addTailCode("file.read();");
-		c.finallyBlock( 
-			"//do this at the end regardless" , 
-			"System.out.println(\"DONE\");");
-		System.out.println( c );
-		assertEquals(
-			"try" + N +
-			"{" + N + 
-            "    file.read();" + N +
-            "}" + N + 
-            "finally" + N +
-            "{" + N +
-            "    //do this at the end regardless" + N +
-            "    System.out.println(\"DONE\");" + N +
-            "}" + N,
-            c.toString() );		
-	}
 }

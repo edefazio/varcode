@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import varcode.CodeAuthor;
 import varcode.Template;
 
 import varcode.VarException;
@@ -48,6 +47,44 @@ public class _methods
 		"{{+?nonStaticMethods:" + N + "{+nonStaticMethods+}+}}" +
 		"{{+?abstractMethods:" + N + "{+abstractMethods+};+}}" );
 	
+    @Override
+    public String bind( VarContext context, Directive...directives )
+    {
+        List<String>nonStaticMethods = new ArrayList<String>();
+		List<String>staticMethods = new ArrayList<String>();
+		List<String>abstractMethods = new ArrayList<String>();
+		
+		String[] methodNames = methodsByName.keySet().toArray( new String[ 0 ] );
+		
+		for( int i = 0; i < methodNames.length; i++ )
+		{
+			List<_method> oMethods = methodsByName.get( methodNames[ i ] );
+			for( int j = 0; j < oMethods.size(); j++ )
+			{
+				if( oMethods.get( j ).signature.modifiers.contains( Modifier.ABSTRACT ) )
+				{
+					abstractMethods.add( oMethods.get( j ).signature.bind(context, directives) );
+				}					
+				else if( oMethods.get( j ).signature.modifiers.contains( Modifier.STATIC ) )
+				{
+					staticMethods.add( oMethods.get( j ).bind(context, directives) ); 
+				}
+				else
+				{
+					nonStaticMethods.add( oMethods.get( j ).bind(context, directives) );
+				}
+			}			
+		}
+        
+        VarContext vc = VarContext.of(
+            "staticMethods", staticMethods,
+            "nonStaticMethods", nonStaticMethods,    
+            "abstractMethods", abstractMethods);
+        
+        return Author.code( METHODS, vc, directives );
+    }
+     
+    
     @Override
 	public String author( Directive... directives ) 
 	{
@@ -178,7 +215,6 @@ public class _methods
                     replacedMethods.put( thisOne.getName(), ex );
                 }
                 ex.add( thisOne );
-                //replacedMethods.add( thisOne.methodSignature.methodName )
             }
         }
         this.methodsByName = replacedMethods;
@@ -331,13 +367,7 @@ public class _methods
 
         public VarContext getContext()
         {
-            //if( this.isAbstract() )
-			//{
-		    //		return VarContext.of(
-            //        "javadocComment", javadocComment,    
-			//		"methodSignature", methodSignature );
-			// }
-			return VarContext.of("javadocComment", javadoc,
+			return VarContext.of( "javadocComment", javadoc,
                 "methodAnnotations", annotations,    
                 "methodSignature", signature,                        
 				"methodBody", methodBody );
@@ -452,15 +482,9 @@ public class _methods
 		
 				// Get the parameters
 				int openParenIndex = methodSpec.indexOf( "(" );
-			//	if( openParenIndex < 0 )
-			//	{
-			//		throw new VarException( "method signature must contain \"(\" ");
-				//}
+
 				int closeParenIndex = methodSpec.lastIndexOf( ")" );
-				//if( closeParenIndex < 0 )
-				//{
-				//	throw new VarException( "method signature contain \")\" " );
-				//}
+
                 _parameters params = new _parameters( );
                 if( openParenIndex < 0 && closeParenIndex < 0 )
                 {
@@ -481,17 +505,7 @@ public class _methods
 				String sig = methodSpec.substring( 0, openParenIndex );
 			
 				String[] tokens = sig.split( " " );
-		
-				//if( tokens.length < 2 )
-				//{
-                    //assume it's void '
-                    
-                    /*
-					throw new VarException( 
-						"method signature must have at least (2) tokens <returnType> <methodName>" );
-                    */
-				//}
-				// get the throws		
+	
 				_throws throwsExceptions = _throws.NONE;
 				
                 if( openParenIndex != closeParenIndex)
@@ -522,8 +536,6 @@ public class _methods
                     returnType = tokens[ tokens.length - 2 ];
                 }
                 
-				//_identifier methodName = _identifier.of( tokens[ tokens.length - 1 ] );
-                //String methodName = tokens[ tokens.length - 1 ];
                 
 				//String 
 				_modifiers mods = new _modifiers();
@@ -595,7 +607,8 @@ public class _methods
 			}
 		
 			public static final Dom METHOD_SIGNATURE = 
-				BindML.compile("{+modifiers+}{+returnType+} {+methodName+}{+params+}{+throwsExceptions+}");
+				BindML.compile(
+                    "{+modifiers+}{+returnType+} {+methodName+}{+params+}{+throwsExceptions+}");
 	
 			public String author( Directive... directives ) 
 			{
@@ -614,8 +627,6 @@ public class _methods
 				return author();
 			}		
 		}
-
-
         
 		/** searches through the contents to find target and replaces with replacement */
 		public _method replace( String target, String replacement ) 

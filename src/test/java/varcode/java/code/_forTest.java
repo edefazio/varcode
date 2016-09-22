@@ -69,7 +69,7 @@ public class _forTest
     {
         return _method.of( "public int " + name +"()")
             .body( "int result = 0;",
-                _for.count( "i", from, to )
+                _for.count( "i", from, to + 1 )
                     .body( "result = result " + op + " i;"),
                 "return result;" );
     }
@@ -94,7 +94,7 @@ public class _forTest
         //create a range method to sum from 1 to 100
         _method m = computeRange( "sum", 1, 100, "+" );
         
-        
+        System.out.println( m );
         
         _class testClass = _class.of("A").method( m );
         //System.out.println( testClass );
@@ -118,7 +118,7 @@ public class _forTest
         //lets create and reuse the same classLoader
         // clearing it out after each iteration
         AdHocClassLoader reuseClassLoader = new AdHocClassLoader();
-        for( int i = 0; i < 10; i ++ )
+        for( int i = 0; i < 2; i ++ )
         {
             //unload the class from the classLoader, 
             //so I can reuse the classloader
@@ -130,7 +130,8 @@ public class _forTest
             //create the range method
             _method m = computeRange( "sum", 1, max, "+" );       
             
-            //System.out.println( m );
+            System.out.println( m );
+            
             
             //now author, compile, and load the class
             Object o = _class.of( "A" + i ).method( m ).instance( reuseClassLoader );
@@ -156,6 +157,7 @@ public class _forTest
      */
     public void testCountBody()
     {
+        
         assertEquals(
             "for( int i = 0; i < 5; i++ )" + N +
             "{" + N +
@@ -167,12 +169,19 @@ public class _forTest
     
     public static void main( String[] args )
     {
+        _forCount fc = _for.count( 5 ).body("LOG.debug(i);");
+        System.out.println ("BODY" + N +  fc.getBody() + "END");
+        
+        System.out.println( fc.author( ) );
+        
         System.out.println( 
             _for.count( 5 ) );
         
+        
         System.out.println( _for.count( 5 )
-            .body( "System.out.println(\"Hey\");" ) 
-            .head( "LOG.debug(i);" ) );
+            .body("System.out.println(\"Hey\");" ) );
+            //.head( "LOG.debug(i);" ) );
+            
         
         System.out.println( _for.countDown( 5 ) );
         
@@ -182,8 +191,7 @@ public class _forTest
                     _for.count( "y", 100 ) ) );
         
         System.out.println(_for.count( 5 )
-            .body( "System.out.println(\"Hey\");" ) 
-            .head( "LOG.debug(i);" ) );
+            .body( "System.out.println(\"Hey\");" ) );            
     }
     
 }

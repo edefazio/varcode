@@ -44,26 +44,27 @@ public class _for
     //"for( int i = startIndex; i < startIndex + partitionCount; i++ )",
     //"for( int i = {+init*+}; i {+terminal*+}; i++ )"
     //
-    public static _for count( int count )
+    public static _forCount count( int count )
     {
-        return count( "i", count );
+        return _forCount.up( count );
     }
     
-    public static _for count( int min, int max )
+    public static _forCount count( int min, int max )
     {
-        return count( "i", min, max );
+        return _forCount.up( min, max );
     }
     
-    public static _for count( String varName, int min, int max )
+    public static _forCount count( String varName, int min, int max )
     {
-        return new _for( 
-            "int " + varName + " = " + min, varName + " <= " + max, varName + "++" );
+        return _forCount.up( varName, min, max );
+            //"int " + varName + " = " + min, varName + " <= " + max, varName + "++" );
     }
     
-    public static _for count( String varName, int count )
+    public static _forCount count( String varName, int count )
     {
-        return new _for( 
-            "int " + varName + " = 0", varName + " < " + count, varName + "++" );
+        return _forCount.up( varName, count );
+        //return new _for( 
+         //   "int " + varName + " = 0", varName + " < " + count, varName + "++" );
     }
     
     /**

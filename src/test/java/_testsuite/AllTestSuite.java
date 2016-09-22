@@ -60,6 +60,7 @@ import varcode.java.code._parametersTest;
 import varcode.java.code._staticBlockTest;
 import varcode.java.code._threadTest;
 import varcode.java.code._throwsTest;
+import varcode.java.code._tryTest;
 import varcode.java.code._whileTest;
 import varcode.java.code.auto._auto_enumTest;
 import varcode.java.code.minTest;
@@ -245,6 +246,7 @@ public class AllTestSuite
         suite.addTestSuite( _staticBlockTest.class );
         suite.addTestSuite( _threadTest.class );
         suite.addTestSuite( _throwsTest.class );        
+        suite.addTestSuite( _tryTest.class ); 
         suite.addTestSuite( _whileTest.class );
         
         suite.addTestSuite( minTest.class );

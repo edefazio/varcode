@@ -324,18 +324,6 @@ public class Workspace
             try
             {   // create a "home" for the compiled bytes
                 adHocClass = new AdHocClassFile( this.adHocClassLoader, className );
-                
-                //TODO is this smart? this could present 
-                // some (multi Threading) issues, since 
-                // technically the class isnt ready to be accessed UNTIL
-                // we've populated it with bytes
-                
-                
-                //this.adHocClassLoader.introduce( adHocClass );
-               
-                
-                
-                
                 return adHocClass;
             }
             catch( Exception e )

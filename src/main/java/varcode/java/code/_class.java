@@ -251,6 +251,24 @@ public class _class
 				"nests", n );
 	}
 	
+    public final String bind( VarContext context, Directive...directives )
+    {
+         VarContext vc = VarContext.of(
+            "pckge", this.classPackage.bind(context, directives),
+            "imports", this.imports.bind( context, directives ), 
+            "classJavaDoc", this.javadoc.bind( context, directives ),
+            "classAnnotation", this.annotations.bind( context, directives ),
+            "classSignature", this.signature.bind( context, directives ),
+            "members", this.fields.bind(context, directives),
+            "methods", this.methods.bind(context, directives),
+            "staticBlock", this.staticBlock.bind(context, directives),
+            "constructors", this.constructors.bind(context, directives),
+            "nests", this.nests.bind(context, directives ) );
+            //"body", this.body.bind( context, directives ) );
+        
+        return Author.code( CLASS, vc, directives );
+    }
+        
     @Override
 	public Dom getDom()
 	{
@@ -300,6 +318,7 @@ public class _class
 			directives );
 	}
     
+
     /**
      * 
      * @param context contains bound variables and scripts to bind data into
