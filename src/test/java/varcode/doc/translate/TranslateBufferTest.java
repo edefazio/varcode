@@ -1,14 +1,13 @@
-package varcode.buffer;
+package varcode.doc.translate;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import junit.framework.TestCase;
-import varcode.buffer.TranslateBuffer;
-import varcode.buffer.TranslateBuffer.Translator;
+import varcode.doc.translate.TranslateBuffer;
+import varcode.doc.translate.Translator;
 import varcode.context.VarBindings;
 import varcode.eval.Eval_JavaScript;
 
@@ -73,6 +72,7 @@ public class TranslateBufferTest
 		}		
 	}
 	
+    /*
 	public void testTranslateAddTranslator()
 	{
 		TranslateBuffer tb = new TranslateBuffer();
@@ -87,7 +87,7 @@ public class TranslateBufferTest
 		
 		assertEquals( "MAP", mapTranslate );		
 	}
-	
+	*/
 	public void testArrayClasses()
 	{
 		TranslateBuffer sb = new TranslateBuffer();

@@ -17,7 +17,7 @@ package varcode.markup.mark;
 
 import java.util.Set;
 
-import varcode.buffer.TranslateBuffer;
+import varcode.doc.translate.TranslateBuffer;
 import varcode.context.VarContext;
 import varcode.markup.mark.Mark.BlankFiller;
 import varcode.markup.mark.Mark.HasVars;

@@ -3,7 +3,7 @@ package varcode.markup.mark;
 import java.util.UUID;
 
 import varcode.VarException;
-import varcode.buffer.TranslateBuffer;
+import varcode.doc.translate.TranslateBuffer;
 import varcode.context.VarContext;
 import varcode.markup.mark.AddExpressionResult;
 import junit.framework.TestCase;

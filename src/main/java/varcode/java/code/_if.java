@@ -15,6 +15,8 @@
  */
 package varcode.java.code;
 
+import java.util.ArrayList;
+import java.util.List;
 import varcode.Template;
 import varcode.context.VarContext;
 import varcode.doc.Author;
@@ -36,11 +38,15 @@ public class _if
     
     public _code condition;
     public _code body;
+    public List<_elseIf>elseIfs;
+    public _code elseBody;
     
     public _if( Object condition, Object...bodyLines )
     {
         this.condition = _code.of( condition );
         this.body = _code.of( bodyLines );        
+        this.elseIfs = new ArrayList<_elseIf>();
+        this.elseBody = new _code();        
     }
 
     @Override
@@ -48,6 +54,11 @@ public class _if
     {
         this.condition = this.condition.replace( target, replacement );
         this.body = this.body.replace( target, replacement );
+        this.elseBody = this.elseBody.replace ( target, replacement );
+        for(int i=0; i< this.elseIfs.size(); i++)
+        {
+            this.elseIfs.get( i ).replace( target, replacement );
+        }
         return this;
     }
 
@@ -55,14 +66,23 @@ public class _if
     {
         return VarContext.of(
             "condition", this.condition, 
-            "body", this.body );
+            "body", this.body,
+            "elseIf", this.elseIfs,
+            "elseBody", this.elseBody );
     }
     
     public static final Dom IF_BLOCK = BindML.compile(
         "if( {+condition*+} )" + N +
         "{" + N +
         "{+$>(body)*+}" + N +
-        "}" + N );
+        "}" + N + 
+        "{{+?elseIf:{+elseIf+}"+ N +        
+        "+}}" +        
+        "{{+?elseBody:else"+ N +
+        "{" + N +
+        "{+$>(elseBody)+}" + N +
+        "}" + N +
+        "+}}");
     
     @Override
     public String author( Directive... directives )
@@ -74,10 +94,18 @@ public class _if
     @Override
     public String bind( VarContext context, Directive...directives )
     {
+        String elseIfs = "";
+        for( int i = 0; i < elseIfs.length(); i++ )
+        {
+            elseIfs += this.elseIfs.get( i ).bind( context, directives );
+        }
         VarContext vc = VarContext.of(
             "condition", this.condition.bind( context, directives ), 
-            "body", this.body.bind( context, directives ) );
-        
+            "body", this.body.bind( context, directives ), 
+            "elseIfs", elseIfs,
+            "elseBody", this.elseBody.bind( context, directives )        
+                
+        );        
         return Author.code( IF_BLOCK, vc, directives );
     }
 
@@ -87,4 +115,74 @@ public class _if
     {
         return author();
     }
+
+    public _if _else( Object... elseBodyLines )
+    {
+        return _else( _code.of( elseBodyLines ) ); 
+    }
+    
+    public _if _else( _code elseBody )
+    {
+        this.elseBody = elseBody;
+        return this;
+    }
+      
+    public _if elseIf( String condition, Object... codeBody )
+    {
+        _elseIf elf = new _elseIf( _code.of( condition ), _code.of( codeBody ) );
+        this.elseIfs.add( elf );
+        return this;
+    }
+    
+    public _if elseIf( String elseCondition, _code elseIfBody )
+    {
+        _elseIf elf = new _elseIf(_code.of( elseCondition ), elseIfBody );
+        this.elseIfs.add( elf );
+        return this;
+    }
+        
+    public static class _elseIf
+        extends Template.Base
+    {
+        public static final Dom ELSEIF = BindML.compile( 
+            "else if( {+condition*+} )" + N +  
+            "{" + N + 
+            "{+$>(elseIfBody)*+}" + N +
+            "}" );
+        
+        private _code condition;
+        private _code elseIfBody;
+        
+        public _elseIf( _code condition, _code elseIfBody )
+        {
+            this.condition = condition;
+            this.elseIfBody = elseIfBody;
+        }
+        
+        //TODO
+        @Override
+        public Base replace(String target, String replacement)
+        {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        public VarContext getContext()
+        {
+            return VarContext.of(
+                "condition", this.condition,
+                "elseIfBody", this.elseIfBody );
+        }
+        @Override
+        public String author(Directive... directives)
+        {
+            return Author.code( ELSEIF, getContext(), directives );
+        }      
+        
+        public String toString()
+        {
+            return author();
+        }
+    }
+    
+
 }

@@ -18,7 +18,7 @@ package varcode.doc;
 import java.util.BitSet;
 
 import varcode.VarException;
-import varcode.buffer.TranslateBuffer;
+import varcode.doc.translate.TranslateBuffer;
 
 /**
  * Builds a "FillInTheBlanks"-type containing static text and "blanks" which can

@@ -15,8 +15,11 @@
  */
 package varcode.java.code;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import junit.framework.TestCase;
+import varcode.doc.translate.TranslateBuffer;
 import varcode.java.Java;
 import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.code._methods._method;
@@ -166,9 +169,11 @@ public class _forTest
         
     }
     
+   
     
     public static void main( String[] args )
     {
+
         _forCount fc = _for.count( 5 ).body("LOG.debug(i);");
         System.out.println ("BODY" + N +  fc.getBody() + "END");
         

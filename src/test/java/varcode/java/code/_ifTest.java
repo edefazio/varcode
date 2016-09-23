@@ -27,6 +27,43 @@ public class _ifTest
 {
     public static String N = "\r\n";
     
+    
+    public void testIfElseIf()
+    {
+        _if i = 
+            _if.is("a == 0","System.out.println(\"0\");" )
+           .elseIf( "a == 1", "System.out.println(\"1\");" );
+        System.out.println( i );
+        
+        assertEquals( 
+        "if( a == 0 )" + N +
+        "{" + N +
+        "    System.out.println(\"0\");" + N +
+        "}" + N + 
+        "else if( a == 1 )" + N +
+        "{" + N +
+        "    System.out.println(\"1\");" + N +
+        "}", i.toString().trim( ) );
+    }
+    
+    public void testIfElse()
+    {
+        _if i = 
+            _if.is( "a == 0", 
+            "System.out.println(\"A is zero\");" )
+            ._else( "System.out.println(\"A is NOT zero\");" );
+        assertEquals(
+        "if( a == 0 )" + N +
+        "{" + N + 
+        "    System.out.println(\"A is zero\");" + N +
+        "}" + N +
+        "else" + N +
+        "{" + N +
+        "    System.out.println(\"A is NOT zero\");" + N +
+        "}", i.toString().trim() );
+    }
+    
+    
     public void testIf()
     {
         _if i = _if.is("i > 0", "{+doThis+}","{+doThat+}", 

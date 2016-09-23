@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package varcode.buffer;
+package varcode.doc.translate;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
-import varcode.buffer.TranslateBuffer.Translator;
+import varcode.doc.translate.Translator;
 
 /**
  *
@@ -44,23 +44,11 @@ import varcode.buffer.TranslateBuffer.Translator;
  * @author M. Eric DeFazio eric@varcode.io
  * 
  */
-public class JavaElementTranslate
+public class JavaTranslate
     implements Translator
 {
-    public static final JavaElementTranslate INSTANCE = new JavaElementTranslate();
-    /*
-    private final List<Translator> translators = new ArrayList<Translator>();
-    
-    private static final List<Translator> DEFAULT_TRANSLATE = new ArrayList<Translator>();
-    
-    static
-    {
-    	DEFAULT_TRANSLATE.add( ClassToStringTranslate.INSTANCE );
-    	DEFAULT_TRANSLATE.add( CollectionToArrayTranslate.INSTANCE );
-    	DEFAULT_TRANSLATE.add( JSArrayToArrayTranslate.INSTANCE );    	
-    }
-    */
-    
+    public static final JavaTranslate INSTANCE = new JavaTranslate();
+
     private final Translator[] translators = new Translator[] 
     {
         ClassToStringTranslate.INSTANCE,
@@ -68,12 +56,13 @@ public class JavaElementTranslate
         JSArrayToArrayTranslate.INSTANCE
     };
     
-     /**
+    /**
      * Sometimes you JUST want to translate WITHOUT adding
      * 
      * @param input the input
      * @return the translated String
      */
+    @Override
     public String translate( Object input )
     {
     	if( input == null )
@@ -121,6 +110,5 @@ public class JavaElementTranslate
     	//if there was no translation, just append
     	sb.append( translated );
         return sb.toString();
-    }
-    
+    }   
 }

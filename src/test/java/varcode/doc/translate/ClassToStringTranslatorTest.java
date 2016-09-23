@@ -1,7 +1,7 @@
-package varcode.buffer;
+package varcode.doc.translate;
 
 import junit.framework.TestCase;
-import varcode.buffer.ClassToStringTranslate;
+import varcode.doc.translate.ClassToStringTranslate;
 
 public class ClassToStringTranslatorTest
 	extends TestCase 

@@ -1,8 +1,6 @@
-package varcode.buffer;
+package varcode.doc.translate;
 
 import java.util.Collection;
-
-import varcode.buffer.TranslateBuffer.Translator;
 
 /**
  * Instead of printing a collection, translate it to an array

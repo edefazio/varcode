@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import varcode.VarException;
-import varcode.buffer.TranslateBuffer;
+import varcode.doc.translate.TranslateBuffer;
 import varcode.context.VarBindings;
 import varcode.context.VarContext;
 import varcode.context.VarBindException.NullVar;

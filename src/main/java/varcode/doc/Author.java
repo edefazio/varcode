@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import varcode.VarException;
-import varcode.buffer.TranslateBuffer;
+import varcode.doc.translate.TranslateBuffer;
 import varcode.context.LazyBindQueueContext;
 import varcode.context.VarContext;
 import varcode.doc.Directive.PostProcessor;

@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import junit.framework.TestCase;
-import varcode.buffer.TranslateBuffer;
+import varcode.doc.translate.TranslateBuffer;
 import varcode.doc.FillInTheBlanks;
 import varcode.doc.FillInTheBlanks.Builder;
 import varcode.doc.FillInTheBlanks.FillTemplate;

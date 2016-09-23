@@ -15,7 +15,6 @@
  */
 package varcode.java.code;
 
-import static varcode.CodeAuthor.N;
 import varcode.Template;
 import varcode.context.VarContext;
 import varcode.doc.Author;

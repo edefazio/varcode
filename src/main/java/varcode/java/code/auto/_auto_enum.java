@@ -15,9 +15,10 @@
  */
 package varcode.java.code.auto;
 
-import varcode.buffer.TranslateBuffer;
+import varcode.doc.translate.TranslateBuffer;
 import varcode.context.VarContext;
 import varcode.doc.Directive;
+import varcode.doc.translate.JavaTranslate;
 import varcode.java.JavaCase;
 import varcode.java.JavaNaming;
 import varcode.java.code._code;
@@ -71,8 +72,7 @@ public class _auto_enum
     implements JavaCase.JavaCaseAuthor    
 {
     
-    private static final TranslateBuffer tb = new TranslateBuffer();
-    
+    //private static final TranslateBuffer tb = new TranslateBuffer();    
     private final String packageName;
     private final String className;
     
@@ -181,7 +181,7 @@ public class _auto_enum
     {
         this.imports.addImport( clazz ); //import the clazz if necessary
         _field f = new _field( 
-            _modifiers.of( "private" ), tb.translate( clazz ), name ); 
+            _modifiers.of( "private" ), JavaTranslate.INSTANCE.translate( clazz ), name ); 
         this.fields.addFields( f );  
         
         
@@ -265,7 +265,8 @@ public class _auto_enum
             
             //add a getter method for the field
             derived.method(
-               "public final " + tb.translate( f.getType() ) + " get" + firstUpper( f.getName() ) + "()",
+               "public final " + JavaTranslate.INSTANCE.translate( f.getType() ) 
+                  + " get" + firstUpper( f.getName() ) + "()",
                "return this." + f.getName() +";");            
             
             //update the constructor code and constructor parameters
@@ -273,7 +274,7 @@ public class _auto_enum
             {
                 paramList += ", ";
             }
-            paramList +=  tb.translate( f.getType() ) + " " + f.getName();
+            paramList +=  JavaTranslate.INSTANCE.translate( f.getType() ) + " " + f.getName();
             finalInitCode.addTailCode( 
                 "this." + f.getName() + " = " + f.getName() + ";" );                                 
         }

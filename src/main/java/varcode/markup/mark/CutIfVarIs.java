@@ -1,6 +1,6 @@
 package varcode.markup.mark;
 
-import varcode.buffer.TranslateBuffer;
+import varcode.doc.translate.TranslateBuffer;
 import varcode.context.VarContext;
 import varcode.markup.mark.Mark.BlankFiller;
 import varcode.markup.mark.Mark.IsNamed;

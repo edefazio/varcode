@@ -1,4 +1,4 @@
-package varcode.buffer;
+package varcode.doc.translate;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -6,7 +6,6 @@ import java.util.Collection;
 
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import varcode.VarException;
-import varcode.buffer.TranslateBuffer.Translator;
 
 /**
  * Translates a Javascript array to a Java-array

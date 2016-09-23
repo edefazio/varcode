@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import varcode.VarException;
-import varcode.buffer.TranslateBuffer;
+import varcode.doc.translate.TranslateBuffer;
 import varcode.context.VarContext;
 import varcode.doc.Directive.PostProcessor;
 import varcode.doc.Directive.PreProcessor;

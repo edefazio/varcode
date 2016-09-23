@@ -1,6 +1,4 @@
-package varcode.buffer;
-
-import varcode.buffer.TranslateBuffer.Translator;
+package varcode.doc.translate;
 
 /**
  * Translates a Java Class to be Serialized to be just a Simple name

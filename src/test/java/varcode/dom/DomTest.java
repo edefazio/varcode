@@ -2,7 +2,7 @@ package varcode.dom;
 
 import junit.framework.TestCase;
 import varcode.VarException;
-import varcode.buffer.TranslateBuffer;
+import varcode.doc.translate.TranslateBuffer;
 import varcode.context.VarContext;
 import varcode.context.VarScope;
 import varcode.markup.bindml.BindML;

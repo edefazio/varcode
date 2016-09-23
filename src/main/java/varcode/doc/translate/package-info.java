@@ -7,4 +7,4 @@
  * Character c = 'g';  -> "'g'"
  * </PRE>
  */
-package varcode.buffer;
+package varcode.doc.translate;
