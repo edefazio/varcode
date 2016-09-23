@@ -46,6 +46,59 @@ public class _ifTest
         "}", i.toString().trim( ) );
     }
     
+    public void testIfElseIfElseIf()
+    {
+        _if i = 
+            _if.is( "a == 0","System.out.println(\"0\");" )
+           .elseIf( "a == 1", "System.out.println(\"1\");" )
+           .elseIf( "a == 2", "System.out.println(\"2\");"); 
+        System.out.println( i );
+        
+        assertEquals( 
+        "if( a == 0 )" + N +
+        "{" + N +
+        "    System.out.println(\"0\");" + N +
+        "}" + N + 
+        "else if( a == 1 )" + N +
+        "{" + N +
+        "    System.out.println(\"1\");" + N +
+        "}" + N +  
+        "else if( a == 2 )" + N +
+        "{" + N +
+        "    System.out.println(\"2\");" + N +
+        "}",        
+        i.toString().trim( ) );
+    }
+        
+    public void testIf_ElseIf_ElseIf_Else()
+    {
+        _if i = 
+            _if.is( "a == 0","System.out.println(\"0\");" )
+           .elseIf( "a == 1", "System.out.println(\"1\");" )
+           .elseIf( "a == 2", "System.out.println(\"2\");")
+           ._else( "System.out.println(\"not 0, 1, 2\");" );
+                
+        System.out.println( i );
+        
+        assertEquals( 
+        "if( a == 0 )" + N +
+        "{" + N +
+        "    System.out.println(\"0\");" + N +
+        "}" + N + 
+        "else if( a == 1 )" + N +
+        "{" + N +
+        "    System.out.println(\"1\");" + N +
+        "}" + N +  
+        "else if( a == 2 )" + N +
+        "{" + N +
+        "    System.out.println(\"2\");" + N +
+        "}" + N +
+        "else" + N +
+        "{" + N +
+        "    System.out.println(\"not 0, 1, 2\");" + N +
+        "}",        
+        i.toString().trim( ) );
+    }
     public void testIfElse()
     {
         _if i = 
