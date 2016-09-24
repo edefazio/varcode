@@ -19,6 +19,44 @@ public class _parametersTest
     extends TestCase
 {
     
+    /** verify that we can handle multiple permutations of varargs */
+    public void testVarArgs()
+    {
+        _parameters p = _parameters.of("String... names");
+        
+        assertEquals( "( String... names )", p.toString() );
+        
+        p = _parameters.of("String...names");
+        assertEquals( "( String... names )", p.toString() );
+        
+        p = _parameters.of("String ... names");
+        assertEquals( "( String... names )", p.toString() );
+        
+    }
+    public void testBindIn()
+    {
+        _parameters p = _parameters.of( "String n" );
+        assertEquals( "( String n )", p.toString() );
+        p.bindIn( VarContext.of() );
+        assertEquals( "( String n )", p.toString() );
+        
+        p = _parameters.of( "{+type+} {+name+}" );
+        assertEquals( "( {+type+} {+name+} )", p.toString() );
+        p.bindIn( VarContext.of() );
+        assertEquals( "(   )", p.toString() );
+        
+        p = _parameters.of( "{+type+} {+name+}" );
+        p.bindIn( VarContext.of( "type", int.class ) );
+        assertEquals( "( int  )", p.toString() );
+        p = _parameters.of( "{+type+} {+name+}" );
+        p.bindIn( VarContext.of( "name", "A" ) );
+        assertEquals( "(  A )", p.toString() );
+        
+        p = _parameters.of( "{+type+} {+name+}" );
+        p.bindIn( VarContext.of( "type", int.class, "name", "A" ) );
+        assertEquals( "( int A )", p.toString() );
+        
+    }
     public void testFinalAndAnnotatedParam()
     {
         _parameters p = _parameters.of( "final String x" );
