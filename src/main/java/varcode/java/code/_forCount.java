@@ -19,6 +19,7 @@ import varcode.Template;
 import varcode.context.VarContext;
 import varcode.doc.Author;
 import varcode.doc.Directive;
+import varcode.doc.translate.JavaTranslate;
 import varcode.dom.Dom;
 import varcode.markup.bindml.BindML;
 
@@ -36,31 +37,40 @@ public class _forCount
     {
         return new _forCount( int.class, "i", 0, "<", count, "i++", new _code() );
     }
+
+    public static _forCount up( String name, String min, String maxExclusive )
+    {
+        return new _forCount( int.class, name, min, "<", maxExclusive, name+ "++", new _code() );
+    }
+    
+    public static _forCount up( String name, String maxExclusive )
+    {
+        return new _forCount( int.class, name, 0, "<", maxExclusive, name+ "++", new _code() );
+    }
     
     public static _forCount up( String name, int count )
     {
         return new _forCount( int.class, name, 0, "<", count, name + "++", new _code() );
     }
 
-    public static _forCount up( int min, int max )
+    public static _forCount up( int min, int maxExclusive )
     {
-        return new _forCount( int.class, "i", min, "<", max, "i++", new _code() );
+        return new _forCount( int.class, "i", min, "<", maxExclusive, "i++", new _code() );
     }
 
-    public static _forCount up( String name, int min, int max )
+    public static _forCount up( String name, int min, int maxExclusive )
     {
-        return new _forCount( int.class, name, min, "<", max, name+"++", new _code() );
+        return new _forCount( int.class, name, min, "<", maxExclusive, name+"++", new _code() );
     }
-
     
     public static _forCount up( int count, _code body )
     {
         return new _forCount( int.class, "i", 0, "<", count, "i++", body );
     }
     
-    public static _forCount up( String name, int min, int max, _code body )
+    public static _forCount up( String name, int min, int maxExclusive, _code body )
     {
-        return new _forCount( int.class, name, min, "<", max, name + "++", body );
+        return new _forCount( int.class, name, min, "<", maxExclusive, name + "++", body );
     }
     
     public static _forCount up( String name, int count, _code body )
@@ -83,9 +93,9 @@ public class _forCount
         return new _forCount( int.class, name, count, ">=", 0, name+"--", body );
     }
 
-    public static _forCount down( String name, int max, int min,  _code body )
+    public static _forCount down( String name, int maxInclusive, int minInclusive,  _code body )
     {
-        return new _forCount( int.class, name, max, ">=", min, name + "--", body );
+        return new _forCount( int.class, name, maxInclusive, ">=", minInclusive, name + "--", body );
     }
     
     
@@ -96,8 +106,6 @@ public class _forCount
     private Object operator;     //                  <
     private Object endValue;     //                    100
     private Object delta;        //                         i++
-    
-    
     
     private _code body;
     
@@ -121,6 +129,31 @@ public class _forCount
             "delta", this.delta,
             "body", this.body );
     }
+    
+    /**
+     * 
+     * @param context contains bound variables and scripts to bind data into
+     * the template
+     * @param directives pre-and post document directives 
+     * @return the populated Template bound with Data from the context
+     */
+    @Override
+    public String bind( VarContext context, Directive...directives )
+    {
+        VarContext vc = VarContext.of(
+            "varType", this.varType,
+            "varName", Author.code( BindML.compile( this.varName ), context, directives ),
+            "init",  Author.code( BindML.compile( JavaTranslate.INSTANCE.translate( this.initialValue ) ), context, directives ),
+            "operator", Author.code( BindML.compile( JavaTranslate.INSTANCE.translate( this.operator ) ), context, directives ),
+            "endValue", Author.code( BindML.compile( JavaTranslate.INSTANCE.translate( this.endValue ) ), context, directives ),
+            "delta", Author.code( BindML.compile( JavaTranslate.INSTANCE.translate( this.initialValue ) ), context, directives ),
+            "body", this.body.bind(context, directives)
+        );
+                
+        //Dom dom = BindML.compile( author() ); 
+        return Author.code( FOR_COUNT, vc, directives );
+    }
+        
     @Override
     public String author( Directive... directives )
     {

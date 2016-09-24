@@ -44,12 +44,11 @@ import varcode.markup.bindml.BindML;
  */
 public class _annotate
     extends Template.Base
-{
-    
+{    
     public static _annotate from( _annotate annotations )
     {
         List<Object> clone = new ArrayList<Object>();
-        for(int i=0; i< annotations.count(); i++ )
+        for( int i = 0; i < annotations.count(); i++ )
         {
             Object o = annotations.getAt( i );
             if( o instanceof _annotation )
@@ -96,9 +95,29 @@ public class _annotate
     
     public VarContext getContext()
     {
-        return VarContext.of("annotation", listOfAnnotations );
+        return VarContext.of( "annotation", listOfAnnotations );
     }
         
+    
+    public _annotate bindIn( VarContext context )
+    {
+        for( int i = 0; i < this.listOfAnnotations.size(); i++ )
+        {
+            Object thisAnn = this.listOfAnnotations.get( i );
+            if( thisAnn instanceof _annotation )
+            {
+                ((_annotation)thisAnn).bindIn( context );
+            }
+            else if( thisAnn instanceof String )
+            {
+                thisAnn = Author.code( BindML.compile( (String)thisAnn), context );
+                this.listOfAnnotations.set( i, thisAnn );
+            }
+            //otherwise... dont bother            
+        }
+        return this;
+    }
+    
     public _annotate add( Object...annotations )
     {
         for( int i = 0; i < annotations.length; i++ )
@@ -197,6 +216,7 @@ public class _annotate
             return new _attributes( nameValues );
         }
         
+        
         private List<Object>names;
         private List<Object>values;
 
@@ -206,6 +226,23 @@ public class _annotate
             this.values = new ArrayList<Object>();            
         }
         
+        public void bindTo( VarContext context )
+        {
+            for( int i = 0; i < names.size(); i++ )
+            {            
+                Object thisName = names.get( i );
+                if( thisName instanceof Template.Base )
+                {
+                    names.set( i , ((Template.Base) thisName).bind( context ) );
+                }
+                else if (thisName instanceof String )
+                {
+                    names.set( i, 
+                        Author.code( BindML.compile((String)thisName), context ) );
+                }   
+            }
+        }
+         
         public int count()
         {
             return names.size();
@@ -321,6 +358,19 @@ public class _annotate
             _annotation ann = new _annotation( base.annotation + "" );
             ann.attributes( base.attributes );            
             return ann;
+        }
+        
+        public _annotation bindIn( VarContext context )
+        {
+            if( this.annotation != null )
+            {
+                this.annotation = Author.code( BindML.compile( this.annotation ), context );            
+            }
+            if (this.attributes != null && !attributes.isEmpty() )
+            {
+                this.attributes.bindTo( context ); 
+            }
+            return this;
         }
         
         public static _annotation of( Object...tokens )

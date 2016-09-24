@@ -16,6 +16,7 @@
 package varcode.java.code;
 
 import junit.framework.TestCase;
+import varcode.context.VarContext;
 import varcode.java.code._annotate._annotation;
 import varcode.java.code._annotate._attributes;
 
@@ -26,6 +27,18 @@ import varcode.java.code._annotate._attributes;
 public class _annotationTest
     extends TestCase
 {
+    public void testAnnotationBindTo()
+    {
+        _annotation ann = _annotation.of("@Deprecated");
+        ann.bindIn( VarContext.of("a", 100 ) );
+        System.out.println( ":" +  ann.toString()+ ":" );
+        assertEquals( "@Deprecated ", ann.toString() );
+        
+        ann = _annotation.of("@{+ann+}");
+        ann.bindIn( VarContext.of("ann", "Ayy" ) );
+        assertEquals( "@Ayy ", ann.toString() );        
+    }
+    
     public void testAttributesEmpty()
     {
         _attributes at = _attributes.of();
@@ -68,6 +81,19 @@ public class _annotationTest
         //test name = value attribute
         ann = _annotation.of( "Hey", "gabba", "\"gabba\"" );
         assertEquals( "@Hey(gabba = \"gabba\") ", ann.toString() );
+       
+        ann = _annotation.of( "Hey", "gabba", 1 );
+        assertEquals( "@Hey(gabba = 1) ", ann.toString() );
+        
+        ann = _annotation.of( 
+            "Hey", 
+            "int", 1, 
+            "long", 1L,
+            "char", 'c', 
+            "bool", true, 
+            "float", 1.0f, 
+            "double", 1.0d );
+        assertEquals( "@Hey(int = 1, long = 1L, char = 'c', bool = true, float = 1.0F, double = 1.0d) ", ann.toString() );
         
         //test multi-attribute
         ann = _annotation.of( "Hey", "gabba", "\"gabba\"", "oderous", "\"urungus\"" );

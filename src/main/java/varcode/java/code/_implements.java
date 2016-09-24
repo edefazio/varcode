@@ -41,6 +41,18 @@ public class _implements
 		impls = new ArrayList<String>();
 	}
 	
+    public _implements bindIn( VarContext context )
+    {
+        List<String>replaced = new ArrayList<String>();
+        for( int i = 0; i < impls.size(); i++ )
+        {
+            replaced.add( 
+                Author.code(BindML.compile( impls.get( i ) ) , context ) );
+        }
+        this.impls = replaced;
+        return this;
+    }
+        
     public _implements addImplements( Class implementerClass )
 	{
 		impls.add( implementerClass.getCanonicalName() );

@@ -221,6 +221,34 @@ public class _methods
         return this;
     }
     
+    public _methods bindIn( VarContext context )
+    {
+        Map<String, List<_method>> replacedMethods = 
+            new HashMap<String, List<_method>>();
+        
+        String[] names = this.methodsByName.keySet().toArray( new String[ 0 ] );        
+        for( int i = 0; i < names.length; i++ )
+        {
+            List<_method> methods = this.methodsByName.get( names[ i ] );
+            
+            for( int j = 0; j < methods.size(); j++  )
+            {
+                _method thisOne = methods.get( j );
+                thisOne.bindIn( context );
+                List<_method> ex = 
+                    replacedMethods.get( thisOne.getName() );
+                if( ex == null )
+                {
+                    ex = new ArrayList<_method>();        
+                    replacedMethods.put( thisOne.getName(), ex );
+                }
+                ex.add( thisOne );
+            }
+        }
+        this.methodsByName = replacedMethods;
+        return this;
+    }
+    
 	
 	public static class _method		
 		extends Template.Base
@@ -457,10 +485,26 @@ public class _methods
                 this.params.replace( target, replacement ); 
                 this.modifiers.replace( target, replacement );
                 this.methodName = this.methodName.replace( target, replacement );
-                throwsExceptions.replace(target, replacement);
+                this.throwsExceptions.replace(target, replacement);
                 return this;
             }
-			
+            
+			public _signature bindIn( VarContext context )
+            {
+                this.methodName = Author.code( 
+                    BindML.compile( this.methodName ), 
+                    context );
+                                
+                this.returnType = Author.code( 
+                    BindML.compile( this.returnType ), 
+                    context );
+                this.params.bindIn( context ); 
+                this.modifiers.bindIn( context );
+                
+                this.throwsExceptions.bindIn( context );
+                return this;                
+            }
+            
 			public String getName()
 			{
 				return methodName;
@@ -639,5 +683,14 @@ public class _methods
             
             return this;
 		}	
+        
+        public _method bindIn( VarContext context )
+        {
+            this.javadoc.bindIn( context );
+            this.annotations.bindIn( context );
+            this.methodBody.bindIn( context );
+            this.signature.bindIn( context );
+            return this;
+        }
 	}
 }

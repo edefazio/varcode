@@ -30,6 +30,15 @@ public class _javadoc
 		return new _javadoc( commentLines );
 	}
 	
+    public _javadoc bindIn( VarContext context )
+    {
+        if( this.comment != null )
+        {
+            this.comment = Author.code( BindML.compile( this.comment ), context );
+        }
+        return this;
+    }
+    
 	public boolean isEmpty()
 	{
 		return comment == null || comment.trim().length() == 0;

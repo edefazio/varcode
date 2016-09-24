@@ -63,6 +63,20 @@ public interface _nest
 			return this;
 		}
 		
+        public _nestGroup bindIn( VarContext context )
+        {
+            for( int i = 0; i < components.size(); i++ )
+            {
+                //TODO fix this
+                
+                //this.components.get( i ).bindIn( context );
+                
+                
+                
+            }
+            return this;
+        }
+        
         public _nestGroup replace( String target, String replacement )
         {
             for( int i = 0; i < components.size(); i++ )
@@ -102,6 +116,7 @@ public interface _nest
 			return author();
 		}
 
+        
 		public static _nestGroup from( _nestGroup nests ) 
 		{
 			if( nests == null || nests.count() == 0 )

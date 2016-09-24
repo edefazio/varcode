@@ -1,5 +1,6 @@
 package varcode.java.code;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -32,6 +33,29 @@ public class _imports
 		created.merge( imports );
 		return created;
 	}
+    
+    
+    public _imports bindIn( VarContext context )
+    {
+        String[] ics = importClasses.toArray( new String[ 0 ] );
+        Set<String> importClassesBound = new TreeSet<String>();
+        for( int i = 0; i < ics.length; i++ )
+        {
+            importClassesBound.add( 
+                Author.code( BindML.compile( ics[ i ] ), context ) );
+        }
+        this.importClasses = importClassesBound;
+        
+        String[] sis = this.staticImports.toArray( new String[ 0 ] );
+        Set<String> sisBound = new TreeSet<String>();
+        for( int i = 0; i < sis.length; i++ )
+        {
+            sisBound.add( 
+                Author.code( BindML.compile( sis[ i ] ), context ) );
+        }
+        this.staticImports = sisBound;        
+        return this;
+    }
     
     public _imports replace( String target, String replacement )
     {

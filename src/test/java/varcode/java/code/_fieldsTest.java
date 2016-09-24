@@ -18,6 +18,41 @@ import varcode.java.code._fields._field;
 public class _fieldsTest
     extends TestCase
 {
+    public void testBindInField()
+    {
+        _field f = _field.of( "public {+type+} {+name+}" );
+        f.bindIn(VarContext.of( 
+            "type", String.class, "name", "firstName") );
+        assertEquals( "public String firstName;", f.toString() );
+        
+        f = _field.of( "public {+type+} {+name+}" );
+        f.annotate("@{+ann+}");
+        f.bindIn(VarContext.of( 
+            "ann", "Deprecated", "type", String.class, "name", "firstName") );
+        assertEquals( 
+            "@Deprecated" + N +
+            "public String firstName;", f.toString() );        
+    }
+    
+    public void testBindInFields()
+    {
+        _fields fs = new _fields();
+        fs.addFields( 
+            _field.of("public int A"), 
+            _field.of("public String {+name+}") );
+        
+        assertEquals( 
+            "public int A;" + N +
+            "public String {+name+};" + N, fs.toString() );       
+        
+        fs.bindIn( VarContext.of( "name", "idNumber" ) );
+        
+        assertEquals( 
+            "public int A;" + N +
+            "public String idNumber;" + N, fs.toString() );       
+        
+    }
+    
     public void testAnnotate()
     {
         _field f = _field.of( "public int f;" ).annotate( "@Persistent" );

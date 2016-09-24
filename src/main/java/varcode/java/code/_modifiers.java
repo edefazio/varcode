@@ -42,6 +42,11 @@ public class _modifiers
 		
 	}
     
+    public _modifiers bindIn ( VarContext context )
+    {
+        return this;
+    }
+    
     public _modifiers replace( String target, String replacement )
     {
         List<String> keywords = this.bitsToKeywords( );

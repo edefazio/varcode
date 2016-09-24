@@ -251,6 +251,32 @@ public class _class
 				"nests", n );
 	}
 	
+    public _class bindIn( VarContext context )
+    {
+        this.classPackage = this.classPackage.bindIn( context );
+        this.imports = this.imports.bindIn( context );
+        this.javadoc = this.javadoc.bindIn( context );
+        this.annotations = this.annotations.bindIn( context );
+        this.signature = this.signature.bindIn( context );
+        this.fields = this.fields.bindIn( context );
+        this.staticBlock = this.staticBlock.bindIn( context );
+        this.methods = this.methods.bindIn( context );
+        this.constructors = this.constructors.bindIn( context );
+        this.nests = this.nests.bindIn( context );
+        
+        
+        
+        /*
+        for( int i = 0; i < arguments.size(); i++ )
+        {
+            this.arguments.set( i, 
+                Author.code( BindML.compile( this.arguments.get( i ) ), context ) );
+            //this.name = Author.code( BindML.compile( this.name ), context );
+        }
+        */
+        return this;
+    }
+     
     public final String bind( VarContext context, Directive...directives )
     {
          VarContext vc = VarContext.of(
@@ -578,6 +604,17 @@ public class _class
 				directives );
 		} 
 		
+        public _signature bindIn( VarContext context )
+        {
+            this.className = Author.code( 
+                BindML.compile( this.className ), 
+                context );
+            this.modifiers.bindIn( context );
+            this.extendsFrom.bindIn( context ); 
+            this.implementsFrom.bindIn( context );
+            return this;
+        }
+        
 		private _signature()
 		{			
             modifiers = new _modifiers();

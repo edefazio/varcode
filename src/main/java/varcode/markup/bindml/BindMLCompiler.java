@@ -53,11 +53,15 @@ public class BindMLCompiler
     /** Base Method for compiling a {@code Dom} from markup */
     public static Dom fromString( String markup )
     {
+        if( markup == null )
+        {
+            throw new VarException( "markup cannot be null" );
+        }
     	try
 		{
 			ByteArrayInputStream bais =
-					new ByteArrayInputStream(
-							markup.getBytes("UTF-8"));
+			    new ByteArrayInputStream(
+					markup.getBytes( "UTF-8" ));
 
 			return fromInputStream( bais );
 		}

@@ -6,26 +6,145 @@
 package varcode.java.code;
 
 
+import java.io.IOException;
 import junit.framework.TestCase;
 import varcode.VarException;
 import varcode.context.VarContext;
 import varcode.java.code._constructors._constructor;
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.fail;
+
 
 public class _constructorsTest
 	extends TestCase
 {
 	public static final String N = System.lineSeparator();
 	
+    /** 
+     * Test different mechanisms for Bindin 
+     * name,
+     * parameters,
+     * throws Exceptions
+     * 
+     */
+    public void testBindIn()
+    {
+        _constructors c = new _constructors();
+        c.bindIn(VarContext.of() );
+        
+        c = new _constructors();
+        c.addConstructor( "public A()" );
+        c.bindIn(VarContext.of() );
+        assertEquals( 
+            "public A(  )" + N + 
+            "{" + N + N +
+            "}", c.toString().trim() );
+        
+        c = new _constructors();
+        c.addConstructor( "public {+className+}()" );
+        c.bindIn( VarContext.of("className", "AClass") );
+        
+        System.out.println( c );
+        assertEquals( 
+            "public AClass(  )" + N + 
+            "{" + N + N +
+            "}", c.toString().trim() );        
+        
+        c = new _constructors();
+        c.addConstructor( "public {+className+}({+paramType+} a)" );
+        c.bindIn( VarContext.of("className", "AClass", "paramType", int.class ) );
+        
+        System.out.println( c );
+        assertEquals( 
+            "public AClass( int a )" + N + 
+            "{" + N + N +
+            "}", c.toString().trim() );        
+        
+        c = new _constructors();
+        c.addConstructor( "public {+className+}({+paramType+} a) throws {+e+}" );
+        c.bindIn( VarContext.of(
+            "className", "AClass", "paramType", int.class,
+            "e", IOException.class ) );
+        
+        System.out.println( c );
+        assertEquals( 
+            "public AClass( int a )" + N + 
+            "    throws java.io.IOException" + N +        
+            "{" + N + N +
+            "}", c.toString().trim() );        
+        
+        c = new _constructors();
+        c.addConstructor( 
+            "public {+className+}({+paramType+} a) throws {+e+}",
+             "{+body+}" );
+        
+        c.bindIn( VarContext.of(
+            "className", "AClass", "paramType", int.class,
+            "e", IOException.class,
+            "body", _code.of( "System.out.println(\"In constructor\");" ) ) );
+        
+        System.out.println( c );
+        assertEquals( 
+            "public AClass( int a )" + N + 
+            "    throws java.io.IOException" + N +        
+            "{" + N + 
+            "    System.out.println(\"In constructor\");" + N + 
+            "}", c.toString().trim() );      
+        
+        c = new _constructors();
+        c.addConstructor( 
+            "public {+className+}({+paramType+} a) throws {+e+}",
+             "{+body+}" );
+        
+        c.getAt( 0 ).javadoc( "{+comment+}" );
+        
+        c.bindIn( VarContext.of(
+            "comment", "THE COMMENT",    
+            "className", "AClass", "paramType", int.class,
+            "e", IOException.class,
+            "body", _code.of( "System.out.println(\"In constructor\");" ) ) );
+        
+        assertEquals( 
+            "/**" + N + 
+            " * THE COMMENT" + N + 
+            " */" + N +         
+            "public AClass( int a )" + N + 
+            "    throws java.io.IOException" + N +        
+            "{" + N + 
+            "    System.out.println(\"In constructor\");" + N + 
+            "}", c.toString().trim() );      
+        
+         c = new _constructors();
+        c.addConstructor( 
+            "public {+className+}({+paramType+} a) throws {+e+}",
+             "{+body+}" );
+        
+        c.getAt( 0 ).javadoc( "{+comment+}" ).annotate("@{+someAnno+}");
+        
+        c.bindIn( VarContext.of(
+            "someAnno", "Deprecated",    
+            "comment", "THE COMMENT",    
+            "className", "AClass", "paramType", int.class,
+            "e", IOException.class,
+            "body", _code.of( "System.out.println(\"In constructor\");" ) ) );
+        
+        assertEquals( 
+            "/**" + N + 
+            " * THE COMMENT" + N + 
+            " */" + N +     
+            "@Deprecated" + N +        
+            "public AClass( int a )" + N + 
+            "    throws java.io.IOException" + N +        
+            "{" + N + 
+            "    System.out.println(\"In constructor\");" + N + 
+            "}", c.toString().trim() );      
+    }
     
     public void testReplace()
     {
         _constructors c = new _constructors();
         assertEquals( 0, c.count() );
-        assertEquals("", c.toString() );
-        c.replace("A", "B");
-        assertEquals("", c.toString() );        
+        assertEquals( "", c.toString() );
+        c.replace( "A", "B" );
+        assertEquals( "", c.toString() );        
     }
     
     public void testBind()

@@ -12,6 +12,7 @@ import varcode.dom.Dom;
 import varcode.markup.bindml.BindML;
 
 /**
+ * Declaration on a method the throwing of exception
  * 
  * @author M. Eric DeFazio eric@varcode.io
  */
@@ -37,6 +38,18 @@ public class _throws
 		"{{+?throwsList:" + N +
 	    "    throws {+throwsList+}+}}" );
 	
+    
+    public _throws bindIn( VarContext context )
+    {
+        for( int i = 0; i < throwsException.size(); i++ )
+        {
+            throwsException.set( i , 
+                Author.code( 
+                    BindML.compile( throwsException.get( i ) ), context ) );            
+        }
+        return this;
+    }
+    
 	public String author( Directive... directives ) 
 	{
 		VarContext vc = VarContext.of( "throwsException", throwsException );

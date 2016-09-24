@@ -83,6 +83,17 @@ public class _arguments
         return this;
     }
     
+    public _arguments bindIn( VarContext context )
+    {
+        for( int i = 0; i < arguments.size(); i++ )
+        {
+            this.arguments.set( i, 
+                Author.code( BindML.compile( this.arguments.get( i ) ), context ) );
+            //this.name = Author.code( BindML.compile( this.name ), context );
+        }
+        return this;
+    }
+    
 	public String author( Directive... directives ) 
 	{
 		return Author.code( 

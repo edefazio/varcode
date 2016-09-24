@@ -68,6 +68,15 @@ public class _staticBlock
         return this;
     }
     
+    public _staticBlock bindIn( VarContext context )
+    {
+        if( this.body != null )
+        {
+            this.body.bindIn( context );
+        }
+        return this;
+    }
+    
     @Override
 	public String author( Directive... directives ) 
 	{

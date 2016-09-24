@@ -15,11 +15,8 @@
  */
 package varcode.java.code;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 import junit.framework.TestCase;
-import varcode.doc.translate.TranslateBuffer;
 import varcode.java.Java;
 import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.code._methods._method;
@@ -70,9 +67,9 @@ public class _forTest
      */     
     public static _method computeRange( String name, int from, int to, String op )
     {
-        return _method.of( "public int " + name +"()")
+        return _method.of( "public int " + name + "()")
             .body( "int result = 0;",
-                _for.count( "i", from, to + 1 )
+                _for.count( "i", from, (to + 1) )
                     .body( "result = result " + op + " i;"),
                 "return result;" );
     }

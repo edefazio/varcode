@@ -31,10 +31,22 @@ public class _extends
 		return e;
 	}
 	
+    public _extends bindIn( VarContext context )
+    {
+        List<String>replaced = new ArrayList<String>();
+        for( int i = 0; i < extendsFrom.size(); i++ )
+        {
+            replaced.add( 
+                Author.code(BindML.compile( extendsFrom.get( i ) ) , context ) );
+        }
+        this.extendsFrom = replaced;
+        return this;
+    }
+    
     public _extends replace( String source, String replacement ) 
     {
         List<String>replaced = new ArrayList<String>();
-        for(int i=0; i<extendsFrom.size(); i++)
+        for( int i = 0; i < extendsFrom.size(); i++ )
         {
             replaced.add( extendsFrom.get( i ).replace( source, replacement ) );
         }

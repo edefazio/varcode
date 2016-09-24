@@ -51,6 +51,15 @@ public class _fields
         fields = new ArrayList<_field>();
     }
     
+    public _fields bindIn( VarContext context )
+    {
+        for( int i = 0; i < fields.size(); i++ )
+        {
+            this.fields.get( i ).bindIn( context );
+        }
+        return this;
+    }
+    
     public int count()
     {
     	return fields.size();
@@ -179,6 +188,11 @@ public class _fields
 			{
 				f.javadoc( prototype.javadoc.getComment() );
 			}
+            if( prototype.fieldAnnotations != null 
+                && !prototype.fieldAnnotations.isEmpty() )
+            {
+                f.annotate( prototype.fieldAnnotations );
+            }
 			return f;
 		}
 		
@@ -217,6 +231,17 @@ public class _fields
             fieldAnnotations.replace( target, replacement );
             name = name.replace( target, replacement );
             type = type.replace( target, replacement );
+            return this;
+        }
+        
+        public _field bindIn( VarContext context )
+        {
+            this.javadoc.bindIn( context );
+            this.init.bindIn( context );
+            this.fieldAnnotations.bindIn(context);
+            this.mods.bindIn( context );
+            this.name = Author.code( BindML.compile(this.name), context );
+            this.type = Author.code( BindML.compile(this.type), context );
             return this;
         }
         
@@ -427,7 +452,7 @@ public class _fields
 	public static class _init 
 		extends Template.Base
 	{
-		private final String initCode;
+		private String initCode;
 	
 		public _init()
 		{
@@ -453,6 +478,15 @@ public class _fields
 
 		public static final Dom INIT = BindML.compile( " ={+initCode*+}" );
 	
+        public _init bindIn( VarContext context )
+        {
+            if( this.initCode != null )
+            {
+                this.initCode = Author.code( BindML.compile( this.initCode ), context );
+            }
+            return this;
+        }
+        
 		public String author( Directive... directives ) 
 		{
 			if( initCode != null )
@@ -474,7 +508,11 @@ public class _fields
 
 		public _init replace( String target, String replacement ) 
 		{
-			return new _init ( this.initCode.replace( target, replacement ) );			
+            if( this.initCode != null )
+            {
+                return new _init ( this.initCode.replace( target, replacement ) );			
+            }
+            return this;
 		}
 	}	
 }

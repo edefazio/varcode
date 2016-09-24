@@ -18,6 +18,23 @@ import varcode.context.VarContext;
 public class _throwsTest
     extends TestCase
 {
+    public void testBindIn()
+    {
+        _throws t = _throws.of( IOException.class );
+        System.out.println( t );
+        assertEquals(
+            N + "    throws java.io.IOException", t.toString()  );
+        t  = _throws.of( "{+someException+}" );
+        System.out.println( t );
+        assertEquals(
+            N + "    throws {+someException+}", t.toString()  );
+        
+        t.bindIn( VarContext.of( "someException", IOException.class ) );
+        System.out.println( t );
+        assertEquals(
+            N + "    throws java.io.IOException", t.toString()  );        
+    }
+    
     public void testThrowsNone()
     {
         _throws t = _throws.of();

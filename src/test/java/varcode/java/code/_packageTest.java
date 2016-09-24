@@ -16,6 +16,26 @@ import varcode.context.VarContext;
 public class _packageTest
      extends TestCase
 {
+    
+    public void testBindIn()
+    {
+        _package p = _package.of( null );
+        p.bindIn(VarContext.of() );
+        
+        _package pt = _package.of( "i.o.c" );
+        assertEquals( "package i.o.c;", pt.toString().trim() );
+        p.bindIn( VarContext.of() );
+        assertEquals( "package i.o.c;", pt.toString().trim() );
+        
+        _package pa = _package.of( "i.o.{+a*+}" );
+        
+        assertEquals( "package i.o.{+a*+};", pa.toString().trim() );
+        
+        pa.bindIn( VarContext.of("a", "aaaa" ) );
+        
+        assertEquals( "package i.o.aaaa;", pa.toString().trim() );                
+    }
+    
     public void testPackageNull()
     {
         _package p = _package.of( null );

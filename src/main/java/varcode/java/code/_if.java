@@ -94,6 +94,7 @@ public class _if
     @Override
     public String bind( VarContext context, Directive...directives )
     {
+        System.out.println( "IF BIND" );
         String elseIfs = "";
         for( int i = 0; i < elseIfs.length(); i++ )
         {

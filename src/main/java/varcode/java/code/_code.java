@@ -89,6 +89,28 @@ public class _code
         );
 	}
     
+    public _code bindIn( VarContext context )
+    {
+        for( int i = 0; i < this.codeSequence.size(); i++ )
+        {
+            Object o = codeSequence.get( i );
+            /*
+            if( o instanceof Template.Base )
+            {   //try, do, while, if, for, _thread, 
+                ((Template.Base)o).bindIn( context );
+            }
+            else 
+            */
+            if( o instanceof String )
+            {
+                codeSequence.set( i , 
+                    Author.code( BindML.compile( (String)o ), context ) );
+            }
+            //else dunno
+        }
+        return this;
+    }
+    
 	@Override
     public String bind( VarContext context, Directive...directives )
     {

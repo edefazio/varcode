@@ -57,6 +57,15 @@ public class _constructors
 	{
 	}
 
+    public _constructors bindIn( VarContext context )
+    {
+        for( int i = 0; i < this.constructors.size(); i++ )
+        {
+            this.constructors.get( i ).bindIn( context ); 
+        }
+        return this;
+    }
+    
 	public List<_constructor> getConstructors()
 	{
 		return this.constructors;
@@ -141,11 +150,17 @@ public class _constructors
 		{
 			_constructor c =  new _constructor(
 				_signature.from( prototype.constructorSig ) );
-			
+			c.annotations = prototype.getAnnotations();
+            c.javadoc = _javadoc.of( prototype.getJavadoc().getComment() );
+            
 			c.body( prototype.body );
 			return c;			
 		}
 		
+        private _annotate annotations;
+        
+        private _javadoc javadoc;
+        
 		private _signature constructorSig;
 		
 		private _code body;
@@ -153,25 +168,75 @@ public class _constructors
 		public _constructor( _signature sig )
 		{
 			this.constructorSig = sig;
+            this.annotations = new _annotate();
 		}
+        
+        public _constructor bindIn( VarContext context )
+        {
+            this.constructorSig = this.constructorSig.bindIn( context );
+            this.body = this.body.bindIn( context );
+            if( this.javadoc != null )
+            {
+                this.javadoc = this.javadoc.bindIn( context );
+            }
+            if( this.annotations != null )
+            {
+                this.annotations.bindIn( context );
+            }
+            return this;
+        }
 		
 		public _constructor( String constructorSignature )
 		{
 			this.constructorSig = _signature.of( constructorSignature );
+            this.annotations = new _annotate();
 		}
 	
+        public _constructor annotate( Object...annotations )
+        {
+            this.annotations.add( annotations );
+            return this;
+        }
+        
         public _signature getSignature()
         {
             return constructorSig;
         }
         
+        public _javadoc getJavadoc()
+        {
+            return this.javadoc;
+        }
+        
+        public _annotate getAnnotations()
+        {
+            return this.annotations;
+        }
+        
+        @Override
         public _constructor replace( String target, String replacement )
         {
+            if( this.javadoc != null  && ! this.javadoc.isEmpty() )
+            {
+                this.javadoc.replace( target, replacement );
+            }
+            
+            if( this.annotations != null  && ! this.annotations.isEmpty() )
+            {
+                this.annotations.replace( target, replacement );
+            }
+            
             this.body.replace( target, replacement );
 			
             this.constructorSig.replace( target, replacement );
 			
             
+            return this;
+        }
+        
+        public _constructor javadoc( String comment )
+        {
+            this.javadoc = new _javadoc( comment );
             return this;
         }
         
@@ -222,22 +287,29 @@ public class _constructors
 		}
 	
 		public static final Dom CONSTRUCTOR = 
-			BindML.compile( 
+			BindML.compile(
+                "{+javadoc+}" + 
+                "{+annotations+}" +         
 				"{+constructorSig*+}" + N +
 				"{" + N +
 				"{+$>(body)+}" + N +
 				"}" );
 	
+        
+        @Override
 		public String author( Directive... directives ) 
 		{
 			return Author.code(
 				CONSTRUCTOR, 
 				VarContext.of(
+                    "javadoc", javadoc,    
+                    "annotations", this.annotations,   
 					"constructorSig", constructorSig,
 					"body", body ),
 				directives );
 		}
 	
+        @Override
 		public String toString()
 		{
 			return author();
@@ -263,11 +335,23 @@ public class _constructors
 				this.throwsExceptions = throwsExceptions;
 			}
 
+            public _signature bindIn( VarContext context )
+            {
+                this.className = Author.code( 
+                    BindML.compile( this.className ), 
+                    context );
+                this.modifiers.bindIn( context );
+                this.params.bindIn( context ); 
+                this.throwsExceptions.bindIn( context );
+                return this;
+                
+            }
             public String getClassName()
             {
                 return this.className;
             }
             
+            @Override
             public _signature replace( String target, String replacement )
             {
                 this.className = 

@@ -15,9 +15,6 @@ public class _package
 		BindML.compile( 
             "{{+?name:package {+name+};" + N + N +
 			"+}}" );
-    
-			//"{{+:package {+name+};" + N + N +
-			//"+}}" );
 	
 	public static _package from ( _package prototype )
 	{		
@@ -77,8 +74,19 @@ public class _package
             VarContext.of( "name", this.name ), directives );
 	}
 
+    public _package bindIn( VarContext context )
+    {
+        if( this.name != null )
+        {
+            String res = Author.code( BindML.compile( this.name ), context );
+            System.out.println ( "RED" + res );
+            this.name = res;
+        }
+        return this;
+    }
+    
     @Override
-    public String bind(VarContext context, Directive... directives)
+    public String bind( VarContext context, Directive... directives )
     {
         Dom dom = BindML.compile(author() );
         return Author.code( dom, context, directives );

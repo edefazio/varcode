@@ -6,12 +6,20 @@ import varcode.context.VarContext;
 public class _argumentsTest
 	extends TestCase
 {
+    public void testBindTo()
+    {
+        
+    }
 
     public void testParameterizedArguments()
     {        
         //I might not have the argument yet, (it may be lazily bound)
         assertEquals( "( {+count+} )", _arguments.of( "{+count+}" ).toString() );
+        _arguments args = _arguments.of("{+count+}");
         
+        args.bindIn( VarContext.of("count", "a") );
+                
+        assertEquals( "( a )", args ); 
     }
     
     public void testReplace()

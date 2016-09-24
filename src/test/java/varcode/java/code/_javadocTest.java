@@ -15,6 +15,20 @@ import varcode.context.VarContext;
 public class _javadocTest
      extends TestCase
 {
+    
+    static String N = "\r\n";
+    
+    public void testBindIn()
+    {
+        _javadoc j = _javadoc.of( "A comment {+name+}" );
+        j.bindIn( VarContext.of( "name", "Eric" ) );
+        System.out.println( j );
+        assertEquals(
+        "/**" + N + 
+        " * A comment Eric" + N + 
+        " */", j.toString().trim() );
+    }
+    
     public void testJavadoc()
     {
         _javadoc j = _javadoc.of();
