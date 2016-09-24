@@ -59,20 +59,7 @@ public class _parameters
 	public static _parameters of( String[] tokens )
 	{
 		List<_parameter> params = new ArrayList<_parameter>();
-		
-        /*
-        if( tokens.length % 2 != 0 )
-		{
-            System.out.println( params );
-			throw new VarException( 
-				"There must be an even number of <type>, <name> token parameters" 
-              + System.lineSeparator() + params);            
-		}
-        for( int i = 0; i < tokens.length / 2 ; i++ )
-		{
-			params.add( new _parameter( tokens[ i * 2 ], tokens[ ( i * 2 ) + 1 ]) );
-		}
-        */ 
+
         List<String> currentTokens = new ArrayList<String>();
         int prefix = 0;
         for( int i = 0; i < tokens.length; i++ )
@@ -234,6 +221,18 @@ public class _parameters
 		return author();
 	}
 
+    public _parameters bindIn( VarContext context )
+    {
+        List<_parameter> modifiedParams = new ArrayList<_parameter>();
+        for( int i = 0; i < this.params.size(); i++ )
+        {
+            modifiedParams.add(
+                params.get( i ).bindIn( context ) );            
+        }        
+        this.params = modifiedParams;
+        return this;
+    }
+    
     @Override
     public _parameters replace( String target, String replacement )
     {
@@ -370,6 +369,15 @@ public class _parameters
             return this.name;
         }
 
+        public _parameter bindIn( VarContext context )
+        {
+            this.type = Author.code(BindML.compile(this.type), context);
+            this.name = Author.code(BindML.compile(this.name), context);
+            this.parameterAnnotation = 
+                 this.parameterAnnotation.bindIn( context );
+            return this;
+        }
+        
         @Override
         public _parameter replace( String target, String replacement )
         {
@@ -412,9 +420,78 @@ public class _parameters
 			index +"] out of range [0..."+ ( count() -1 ) +"]" );
 	}
 
+   
+    
+    /**
+     * If we have this:
+     * 
+     * _parameters.of( "String ... g" );
+     * 
+     * we tokenize the parameters as:
+     * {"String", "...", "g"}
+     * 
+     * we want to treat them as:
+     * {"String...", "g"}
+     * 
+     * ...also, if I have this:
+     * _parameters.of( "String...g");
+     *
+     * we tokenize the parameters as:
+     * {"String...g"}
+     * 
+     * we want to treat it as:
+     * {"String...", "g"}
+     * 
+     * 
+     * If we encounter a single token containing "..." (but NOT ENDING in "...")
+     * we split it into two tokens
+     * <PRE>
+     * so if we see 
+     * String[] tokens = {"String...names"};
+     * we split it into :
+     * String[] tokens = {"String...", "names"};
+     * </PRE>
+     * @return 
+     */
+    private static String[] splitVarargsTokens( String[] tokens )
+    {
+        List<String> toks = new ArrayList<String>();
+        for( int i = 0; i < tokens.length; i++ )
+        {
+            
+            if( i > 0 && tokens[ i ].equals( "..." ) )
+            {   //add the "..." to the end of the previous token
+                toks.set( i - 1, toks.get( i - 1 ).trim() + "..." );
+            }
+            /**
+             * If a Token contains (but does not end with varargs)
+             * i.e. "String...names"
+             * then separate it into (2) tokens
+             * {"String...", "names"}
+             */
+            else if( tokens[ i ].contains( "..." ) 
+                && !tokens[ i ].endsWith( "..." ) )
+            {
+                toks.add( tokens[ i ]
+                    .substring( 0, 
+                       tokens[ i ].indexOf( "..." ) + 3 ) );
+                
+                toks.add( tokens[ i ]
+                    .substring( tokens[ i ].indexOf( "..." ) + 3 ) );
+            }
+            else
+            {
+                toks.add( tokens[ i ] );
+            }
+        }
+        return toks.toArray( new String[ 0 ] );
+    }
+    
+    
 	public static _parameters of( String parameterString ) 
 	{
 		String[] tokens = normalizeTokens( parameterString );
+        tokens = splitVarargsTokens( tokens );
 		return _parameters.of( tokens );
 	}
 }
