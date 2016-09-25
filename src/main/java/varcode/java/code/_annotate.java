@@ -226,10 +226,10 @@ public class _annotate
             this.values = new ArrayList<Object>();            
         }
         
-        public void bindTo( VarContext context )
+        public _attributes bindIn( VarContext context )
         {
             for( int i = 0; i < names.size(); i++ )
-            {            
+            {
                 Object thisName = names.get( i );
                 if( thisName instanceof Template.Base )
                 {
@@ -240,6 +240,47 @@ public class _annotate
                     names.set( i, 
                         Author.code( BindML.compile((String)thisName), context ) );
                 }   
+            }
+            for( int i = 0; i < values.size(); i++ )
+            {
+                Object thisValue = values.get( i );
+                if( thisValue instanceof Template.Base )
+                {
+                    values.set( i , ((Template.Base) thisValue).bind( context ) );
+                }
+                else if( thisValue instanceof String )
+                {
+                    values.set( i, 
+                        Author.code(BindML.compile((String)thisValue), context ) );
+                }   
+            }
+            return this;
+        }
+        
+        public void bindTo( VarContext context )
+        {
+            for( int i = 0; i < names.size(); i++ )
+            {            
+                Object thisName = names.get( i );
+                Object thisValue = values.get( i );
+                if( thisName instanceof Template.Base )
+                {
+                    names.set( i , ((Template.Base) thisName).bind( context ) );                                        
+                }
+                else if( thisName instanceof String )
+                {
+                    names.set( i, 
+                        Author.code( BindML.compile((String)thisName), context ) );
+                }
+                if( thisValue instanceof Template.Base )
+                {
+                    values.set( i , ((Template.Base) thisValue).bind( context ) );                                        
+                }
+                else if( thisValue instanceof String )
+                {
+                    values.set( i, 
+                        Author.code( BindML.compile((String)thisValue ), context ) );
+                }
             }
         }
          

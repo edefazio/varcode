@@ -79,6 +79,12 @@ public class _thread
             this.body.addTailCode( codeLines );            
         }
         
+        public _runnable bindIn( VarContext context )
+        {
+            this.body.bindIn( context );
+            return this;
+        }
+        
         public _runnable start()
         {
             this.start = true;

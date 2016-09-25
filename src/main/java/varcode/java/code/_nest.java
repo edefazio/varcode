@@ -45,6 +45,9 @@ public interface _nest
 		 */
 		public _imports getImports();
         
+        
+        public component bindIn( VarContext context );
+                
         public Template.Base replace( String target, String replacement );
 	}
 	
@@ -67,12 +70,7 @@ public interface _nest
         {
             for( int i = 0; i < components.size(); i++ )
             {
-                //TODO fix this
-                
-                //this.components.get( i ).bindIn( context );
-                
-                
-                
+                this.components.get( i ).bindIn( context );                
             }
             return this;
         }

@@ -90,6 +90,14 @@ public class _if
         return Author.code( IF_BLOCK, getContext(), directives );
     }
 
+    public _if bindIn( VarContext context )
+    {
+        this.condition = this.condition.bindIn( context );
+        this.body = this.body.bindIn( context );
+        this.elseBody = this.elseBody.bindIn( context );
+        this.body.bindIn( context );
+        return this;
+    }
     
     @Override
     public String bind( VarContext context, Directive...directives )
@@ -160,11 +168,20 @@ public class _if
             this.elseIfBody = elseIfBody;
         }
         
+        public _elseIf bindIn( VarContext context )
+        {
+            this.condition.bindIn( context );
+            this.elseIfBody.bindIn( context );
+            return this;
+        }
+        
         //TODO
         @Override
-        public Base replace(String target, String replacement)
-        {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        public _elseIf replace(String target, String replacement)
+        {  
+            this.condition.replace(target, replacement);
+            this.elseIfBody.replace(target, replacement);
+            return this;
         }
 
         public VarContext getContext()

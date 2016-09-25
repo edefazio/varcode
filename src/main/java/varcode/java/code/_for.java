@@ -137,6 +137,16 @@ public class _for
     }
 
     @Override
+    public _for bindIn( VarContext context )
+    {
+        this.init = Author.code( BindML.compile( this.init ), context );
+        this.condition = Author.code( BindML.compile( this.condition ), context );
+        this.code = this.code.bindIn( context );
+        this.update = Author.code( BindML.compile( this.update ), context );
+        return this;
+    }
+    
+    @Override
     public _for replace(String target, String replacement)
     {
         this.init = this.init.replace( target, replacement );

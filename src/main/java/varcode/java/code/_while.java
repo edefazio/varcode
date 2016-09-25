@@ -43,6 +43,13 @@ public class _while
         this.body = _code.of( bodyLines );        
     }
 
+    public _while bindIn( VarContext context )
+    {
+        this.condition.bindIn( context );
+        this.body.bindIn( context );
+        return this;
+    }
+    
     @Override
     public _while replace(String target, String replacement)
     {

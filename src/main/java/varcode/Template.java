@@ -75,6 +75,8 @@ public interface Template
             return Author.code( dom, context, directives );
         }
         
+        public abstract Template.Base bindIn( VarContext context );
+        
         public abstract Base replace( String target, String replacement );
         
         public static final Directive INDENT4 = Prefix.INDENT_4_SPACES;

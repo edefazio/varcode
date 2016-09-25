@@ -96,7 +96,7 @@ public class _try
     /** the body inside the try/catch or try/finally or try/catch/finally*/
     private _code body;
     
-    private List<CatchHandleExceptionBlock> catchExceptionHandleBlocks;
+    private List<_catchHandleBlock> catchExceptionHandleBlocks;
     
     private _code withResources;
     
@@ -130,7 +130,7 @@ public class _try
     public _try( _code body )
     {
         this.catchExceptionHandleBlocks = 
-            new ArrayList<CatchHandleExceptionBlock>();
+            new ArrayList<_catchHandleBlock>();
         this.body = body;
         this.withResources = new _code();
         this.finallyBlock = new _code();
@@ -152,7 +152,7 @@ public class _try
         Object exceptionClass, Object... handleExceptionCode )
     {
         this.catchExceptionHandleBlocks.add( 
-            new CatchHandleExceptionBlock( exceptionClass, _code.of( handleExceptionCode) ) );
+            new _catchHandleBlock( exceptionClass, _code.of( handleExceptionCode) ) );
         return this;
     }
     
@@ -160,7 +160,7 @@ public class _try
         Object execptionClass, _code handleExceptionCode )
     {
         this.catchExceptionHandleBlocks.add( 
-            new CatchHandleExceptionBlock( execptionClass, handleExceptionCode ) );
+            new _catchHandleBlock( execptionClass, handleExceptionCode ) );
         return this;
     }
 
@@ -178,18 +178,27 @@ public class _try
         return this;
     }
 
+    public _try bindIn( VarContext context )
+    {
+        this.body.bindIn( context );
+        this.finallyBlock.bindIn(context);
+        this.withResources.bindIn( context );
+        for(int i=0; i<this.catchExceptionHandleBlocks.size(); i++)
+        {
+            catchExceptionHandleBlocks.get( i ).bindIn( context );
+        }
+        return this;
+    }
 
-        
-    public static class CatchHandleExceptionBlock
+    public static class _catchHandleBlock
         extends Template.Base
     {
         private String exception;
         private _code handleBlock;
         
-        public CatchHandleExceptionBlock( Object exception, _code handleBlock )
+        public _catchHandleBlock( Object exception, _code handleBlock )
         {
             this.handleBlock = handleBlock;
-            System.out.println (" HB  "+ handleBlock );
             if( exception instanceof Class )
             {
                 this.exception = ((Class) exception).getCanonicalName();    
@@ -200,8 +209,15 @@ public class _try
             }                        
         }
 
+        public _catchHandleBlock bindIn( VarContext context )
+        {
+            this.exception = Author.code( BindML.compile( this.exception ), context );
+            this.handleBlock.bindIn( context );
+            return this;
+        }
+        
         @Override
-        public CatchHandleExceptionBlock replace(String target, String replacement)
+        public _catchHandleBlock replace(String target, String replacement)
         {
             this.exception = this.exception.replace( target, replacement );
             this.handleBlock = this.handleBlock.replace( target, replacement);

@@ -130,6 +130,34 @@ public class _forCount
             "body", this.body );
     }
     
+    private static Object doBindIn( Object element, VarContext context )
+    {
+        if( element == null )
+        {
+            return null;            
+        }
+        if( element instanceof String )
+        {
+            return Author.code( BindML.compile((String)element), context );
+        }
+        if( element instanceof Template.Base )
+        {
+            return ((Template.Base)element).bindIn( context );
+        }
+        return element;
+    }
+        
+    public _forCount bindIn( VarContext context )
+    {
+        this.varName = Author.code( BindML.compile( this.varName ), context );
+        this.delta = doBindIn( this.delta , context );
+        this.initialValue = doBindIn( this.initialValue, context );
+        this.operator = doBindIn( this.operator, context );
+        this.endValue = doBindIn( this.endValue, context );
+        this.body.bindIn( context );
+        return this;
+    }
+        
     /**
      * 
      * @param context contains bound variables and scripts to bind data into
@@ -213,6 +241,8 @@ public class _forCount
         }
         return o.toString().replace( target, replacement );
     }
+    
+
     
     @Override
     public _forCount replace( String target, String replacement )

@@ -90,6 +90,22 @@ public class _enum
 		this.nests = _nestGroup.from( prototype.nests );
 	}
 	
+    
+    public _enum bindIn( VarContext context )
+    {
+        this.enumPackage.bindIn( context);
+        this.imports.bindIn(context);
+        this.javadoc.bindIn(context);
+        this.annotations.bindIn(context);
+        this.enumSignature.bindIn(context);
+        this.constructors.bindIn(context);
+        this.staticBlock.bindIn(context);
+        this.fields.bindIn(context);
+        this.values.bindIn(context);
+        this.methods.bindIn(context);
+        this.nests.bindIn(context);
+        return this;
+    }
     public String getName()
     {
         return this.enumSignature.getName();
@@ -553,6 +569,17 @@ public class _enum
                 "Invalid value construct index [" + index + "]");
         }
         
+        @Override
+        public _valueConstructs bindIn( VarContext context )
+        {
+            for( int i = 0; i < this.valueConstructs.size(); i++ )
+            {
+                this.valueConstructs.get( i ).bindIn( context );
+            }
+            return this;
+        }
+                
+        @Override
         public _valueConstructs replace( String target, String replacement )
         {
             for( int i = 0; i < this.valueConstructs.size(); i++ )
@@ -560,9 +587,6 @@ public class _enum
                 this.valueConstructs.get( i ).replace( target, replacement );
             }
             return this;
-            //Set<String> repValueNames = new HashSet<String>();
-            //String[] valueNameArray = this.valueNames.toArray( new String[ 0 ] );
-            //for(int )
         }
         
 		public static class _valueConstruct
@@ -606,7 +630,16 @@ public class _enum
 			
 			public Dom VALUE_CONSTRUCT = BindML.compile(
 				"{+name*+}{+args+}" );
-					
+				
+            
+            public _valueConstruct bindIn( VarContext context )
+            {
+                this.name = Author.code( BindML.compile(this.name), context );
+                this.args.bindIn( context );
+                return this;
+            }
+            
+            @Override
 			public String author( Directive... directives ) 
 			{
 				VarContext vc = VarContext.of( "name", name );
@@ -676,6 +709,15 @@ public class _enum
 				directives );
 		} 
 		
+        @Override
+        public _signature bindIn( VarContext context )
+        {
+            this.enumName = Author.code(BindML.compile(this.enumName), context );
+            this.implementsFrom.bindIn( context );
+            this.modifiers.bindIn( context );
+            return this;
+        }
+        
 		public static _signature from( _signature prototype ) 
 		{
 			_signature s = new _signature();
@@ -685,11 +727,13 @@ public class _enum
 			return s; 			
 		}
 
+        @Override
 		public String toString()
 		{
 			return author();
 		}
 
+        @Override
         public _signature replace( String target, String replacement )
         {
             this.enumName = this.enumName.replace(target, replacement);
@@ -835,11 +879,13 @@ public class _enum
 		}	
 	}
 
+    @Override
 	public Dom getDom() 
 	{
 		return ENUM;
 	}
 
+    @Override
 	public _enum replace( String target, String replacement  ) 
 	{
         this.constructors = this.constructors.replace( target, replacement );

@@ -131,6 +131,18 @@ public class _interface
 	private _imports imports;
 	private _nestGroup nests;
 	
+    public _interface bindIn( VarContext context )
+    {
+        this.interfacePackage.bindIn(context);
+        this.fields.bindIn(context);
+        this.imports.bindIn(context);
+        this.interfaceSignature.bindIn( context );
+        this.javadoc.bindIn(context);
+        this.methods.bindIn( context );
+        this.nests.bindIn( context );
+        return this;
+    }
+    
     public _interface replace( String target, String replacement )
     {
         this.interfacePackage.replace( target, replacement );
@@ -345,6 +357,7 @@ public class _interface
 		public static final Dom INTERFACE_SIGNATURE = 
 			BindML.compile("{+modifiers+}interface {+interfaceName*+}{+extendsFrom+}" );
 
+        @Override
 		public String author( Directive... directives ) 
 		{
 			return Author.code( INTERFACE_SIGNATURE, 
@@ -364,6 +377,16 @@ public class _interface
 			return clone;
 		}
 		
+        @Override
+        public _signature bindIn( VarContext context )
+        {
+            this.interfaceName = Author.code(BindML.compile(this.interfaceName), context );
+            this.extendsFrom.bindIn( context );
+            this.modifiers.bindIn( context );
+            return this;
+        }
+        
+        @Override
         public _signature replace( String target, String replacement )
         {
             this.interfaceName = this.interfaceName.replace( target, replacement );

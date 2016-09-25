@@ -54,7 +54,8 @@ public class _do
     public VarContext getContext()
     {
         return VarContext.of(
-            "condition", this.condition, "body", this.body );
+            "condition", this.condition, 
+            "body", this.body );
     }
     
     public static final Dom DO_WHILE_LOOP = BindML.compile(
@@ -68,6 +69,13 @@ public class _do
     public String author( Directive... directives )
     {
         return Author.code( DO_WHILE_LOOP, getContext(), directives );
+    }
+    
+    public _do bindIn( VarContext context )
+    {
+        this.body.bindIn( context );
+        this.condition.bindIn( context );
+        return this;
     }
     
     @Override

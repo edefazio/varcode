@@ -94,7 +94,9 @@ public class _code
         for( int i = 0; i < this.codeSequence.size(); i++ )
         {
             Object o = codeSequence.get( i );
-            /*
+            
+            /* TODO NEED TO DO THIS
+            
             if( o instanceof Template.Base )
             {   //try, do, while, if, for, _thread, 
                 ((Template.Base)o).bindIn( context );

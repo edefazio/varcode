@@ -84,6 +84,17 @@ public class _switch
         return author();
     }
     
+    public _switch bindIn( VarContext context )
+    {
+        this.varName.bindIn( context );
+        this.defaultCase.bindIn( context );
+        for(int i=0; i< this.cases.size(); i++ )
+        {
+            this.cases.get(i).bindIn( context );
+        }
+        return this;
+    }
+    
     @Override
     public _switch replace(String target, String replacement)
     {
