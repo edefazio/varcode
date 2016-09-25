@@ -26,13 +26,13 @@ public class _constructors
 {
 	private List<_constructor>constructors = new ArrayList<_constructor>();
 
-	public static _constructors from( _constructors prototype ) 
+	public static _constructors cloneOf( _constructors prototype ) 
 	{
 		_constructors c = new _constructors();
 		for( int i = 0; i < prototype.count(); i++ )
 		{
 			c.addConstructor( 
-				_constructor.from( prototype.constructors.get( i ) ) );
+				_constructor.cloneOf( prototype.constructors.get( i ) ) );
 		}
 		return c;
 	}
@@ -146,12 +146,15 @@ public class _constructors
 	public static class _constructor
 		extends Template.Base
 	{
-		public static _constructor from( _constructor prototype )
+		public static _constructor cloneOf( _constructor prototype )
 		{
 			_constructor c =  new _constructor(
-				_signature.from( prototype.constructorSig ) );
+				_signature.cloneOf( prototype.constructorSig ) );
 			c.annotations = prototype.getAnnotations();
-            c.javadoc = _javadoc.of( prototype.getJavadoc().getComment() );
+            if( prototype.javadoc != null )
+            {
+                c.javadoc = _javadoc.of( prototype.getJavadoc().getComment() );
+            }
             
 			c.body( prototype.body );
 			return c;			
@@ -490,13 +493,13 @@ public class _constructors
 				return new _signature( mods, className, params, throwsExceptions );			
 			}
 
-			public static _signature from( _signature prototype )
+			public static _signature cloneOf( _signature prototype )
 			{
 				return new _signature(
-					_modifiers.from( prototype.modifiers ),
+					_modifiers.cloneOf( prototype.modifiers ),
 					 prototype.className,
-					_parameters.from( prototype.params ),
-					_throws.from( prototype.throwsExceptions ));				
+					_parameters.cloneOf( prototype.params ),
+					_throws.cloneOf( prototype.throwsExceptions ));				
 			}
 			
 			public static final Dom CONSTRUCTOR_SIGNATURE = 

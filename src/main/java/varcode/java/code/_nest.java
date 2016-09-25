@@ -115,7 +115,7 @@ public interface _nest
 		}
 
         
-		public static _nestGroup from( _nestGroup nests ) 
+		public static _nestGroup cloneOf( _nestGroup nests ) 
 		{
 			if( nests == null || nests.count() == 0 )
 			{
@@ -129,15 +129,15 @@ public interface _nest
 				component thisComp = components.get( i ); 
 				if( thisComp instanceof _class )
 				{
-					clone.add( _class.from( (_class)thisComp ) );
+					clone.add( _class.cloneOf( (_class)thisComp ) );
 				}
 				else if( thisComp instanceof _enum )
 				{
-					clone.add( _enum.from( (_enum)thisComp ) );
+					clone.add( _enum.cloneOf( (_enum)thisComp ) );
 				}
 				else if( thisComp instanceof _interface )
 				{
-					clone.add( _interface.from( (_interface)thisComp ) );
+					clone.add( _interface.cloneOf( (_interface)thisComp ) );
 				}
 				else
 				{

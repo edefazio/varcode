@@ -102,7 +102,7 @@ public class _interface
 		return of( "", interfaceSignature );
 	}
 	
-	public static _interface from( _interface prototype )
+	public static _interface cloneOf( _interface prototype )
 	{
 		return new _interface( prototype );
 	}
@@ -162,15 +162,15 @@ public class _interface
 	 */
 	public _interface( _interface prototype )
 	{
-		this.interfacePackage = _package.from( prototype.interfacePackage );
-		this.javadoc = _javadoc.from( prototype.javadoc );
-		this.interfaceSignature = _signature.from( prototype.interfaceSignature  );
-		this.fields = _fields.from( prototype.fields );
-		this.methods = _methods.from( prototype.methods );
-		this.imports = _imports.from( prototype.imports );
+		this.interfacePackage = _package.cloneOf( prototype.interfacePackage );
+		this.javadoc = _javadoc.cloneOf( prototype.javadoc );
+		this.interfaceSignature = _signature.cloneOf( prototype.interfaceSignature  );
+		this.fields = _fields.cloneOf( prototype.fields );
+		this.methods = _methods.cloneOf( prototype.methods );
+		this.imports = _imports.cloneOf( prototype.imports );
 		
 		//NESTEDS
-		this.nests = _nestGroup.from( prototype.nests );
+		this.nests = _nestGroup.cloneOf( prototype.nests );
 	}
 	
 	public _interface( String packageName, String interfaceSignature )
@@ -368,12 +368,12 @@ public class _interface
 				directives );
 		} 
 		
-		public static _signature from( _signature prototype ) 
+		public static _signature cloneOf( _signature prototype ) 
 		{
 			_signature clone = new _signature( );
-			clone.modifiers = _modifiers.from( prototype.modifiers );
+			clone.modifiers = _modifiers.cloneOf( prototype.modifiers );
 			clone.interfaceName = prototype.interfaceName + "";
-			clone.extendsFrom = _extends.from( prototype.extendsFrom );
+			clone.extendsFrom = _extends.cloneOf( prototype.extendsFrom );
 			return clone;
 		}
 		

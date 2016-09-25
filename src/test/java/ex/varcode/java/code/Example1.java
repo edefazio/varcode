@@ -55,7 +55,7 @@ public class Example1
     
     public void testLazyBind()
     {
-        _class myTuple = _class.from( Tuple );
+        _class myTuple = _class.cloneOf( Tuple );
         myTuple.replace( "tupleName", "MyTuple" );
         
         

@@ -62,19 +62,19 @@ public class _enum
 			"+}}" +
 			"}" );
 	
-	public static _enum from(_enum prototype )
+	public static _enum cloneOf(_enum prototype )
 	{
 		return new _enum( prototype );
 	}
 	
 	public _enum( _enum prototype )
 	{
-		this.enumPackage = _package.from( prototype.enumPackage );
-		this.imports = _imports.from( prototype.imports );
-		this.javadoc = _javadoc.from( prototype.javadoc );
-        this.annotations = _annotate.from( prototype.annotations );
-		this.enumSignature = _signature.from( prototype.enumSignature  );
-		this.constructors = _constructors.from( prototype.constructors );
+		this.enumPackage = _package.cloneOf( prototype.enumPackage );
+		this.imports = _imports.cloneOf( prototype.imports );
+		this.javadoc = _javadoc.cloneOf( prototype.javadoc );
+        this.annotations = _annotate.cloneOf( prototype.annotations );
+		this.enumSignature = _signature.cloneOf( prototype.enumSignature  );
+		this.constructors = _constructors.cloneOf( prototype.constructors );
 		if( prototype.staticBlock!= null && !prototype.staticBlock.isEmpty() )
 		{
 			this.staticBlock = _staticBlock.of( prototype.staticBlock.getBody() );
@@ -83,11 +83,11 @@ public class _enum
 		{
 			this.staticBlock = new _staticBlock();
 		}
-		this.fields = _fields.from( prototype.fields );
-		this.values = _valueConstructs.from( prototype.values );
-		this.methods = _methods.from( prototype.methods );		
+		this.fields = _fields.cloneOf( prototype.fields );
+		this.values = _valueConstructs.cloneOf( prototype.values );
+		this.methods = _methods.cloneOf( prototype.methods );		
 		//NESTEDS
-		this.nests = _nestGroup.from( prototype.nests );
+		this.nests = _nestGroup.cloneOf( prototype.nests );
 	}
 	
     
@@ -548,12 +548,12 @@ public class _enum
 		
 		//NOTE : must be unique names
 		
-		public static _valueConstructs from( _valueConstructs prototype ) 
+		public static _valueConstructs cloneOf( _valueConstructs prototype ) 
 		{
 			_valueConstructs clone = new _valueConstructs();
 			for( int i = 0; i < prototype.count(); i++ )
 			{
-				clone.addEnumValue( _valueConstruct.from( 
+				clone.addEnumValue( _valueConstruct.cloneOf( 
 			        prototype.valueConstructs.get( i ) ) );
 			}
 			return clone;
@@ -615,11 +615,11 @@ public class _enum
 				return new _valueConstruct( name, _arguments.of( arguments ) );								
 			}
 			
-			public static _valueConstruct from( _valueConstruct construct )
+			public static _valueConstruct cloneOf( _valueConstruct construct )
 			{
 				return new _valueConstruct( 
 					construct.name,
-					_arguments.from( construct.args ) );
+					_arguments.cloneOf( construct.args ) );
 					
 			}
 			public _valueConstruct( String name, _arguments args )
@@ -718,12 +718,12 @@ public class _enum
             return this;
         }
         
-		public static _signature from( _signature prototype ) 
+		public static _signature cloneOf( _signature prototype ) 
 		{
 			_signature s = new _signature();
 			s.enumName = prototype.enumName + "";
-			s.implementsFrom = _implements.from( prototype.implementsFrom );
-			s.modifiers = _modifiers.from( prototype.modifiers );
+			s.implementsFrom = _implements.cloneOf( prototype.implementsFrom );
+			s.modifiers = _modifiers.cloneOf( prototype.modifiers );
 			return s; 			
 		}
 

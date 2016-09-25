@@ -28,7 +28,7 @@ public class _parameters
 	public static final Dom PARAMS_LIST = 
         BindML.compile( "( {{+:{+params+}, +}} )" );
 	
-	public static _parameters from( _parameters prototype )
+	public static _parameters cloneOf( _parameters prototype )
 	{
 		List<_parameter> clone = new ArrayList<_parameter>();
 		for( int i = 0; i < prototype.params.size(); i++ )
@@ -221,6 +221,7 @@ public class _parameters
 		return author();
 	}
 
+    @Override
     public _parameters bindIn( VarContext context )
     {
         List<_parameter> modifiedParams = new ArrayList<_parameter>();
@@ -369,12 +370,16 @@ public class _parameters
             return this.name;
         }
 
+        @Override
         public _parameter bindIn( VarContext context )
         {
             this.type = Author.code(BindML.compile(this.type), context);
             this.name = Author.code(BindML.compile(this.name), context);
-            this.parameterAnnotation = 
-                 this.parameterAnnotation.bindIn( context );
+            if( this.parameterAnnotation != null && !this.parameterAnnotation.isEmpty() )
+            {
+                this.parameterAnnotation = 
+                    this.parameterAnnotation.bindIn( context );
+            }
             return this;
         }
         
@@ -419,9 +424,7 @@ public class _parameters
 			"unable to get parameter ["+ 
 			index +"] out of range [0..."+ ( count() -1 ) +"]" );
 	}
-
    
-    
     /**
      * If we have this:
      * 

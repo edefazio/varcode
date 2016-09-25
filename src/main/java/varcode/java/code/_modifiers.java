@@ -17,7 +17,7 @@ import varcode.markup.bindml.BindML;
 public class _modifiers
 	extends Template.Base	
 {
-	public static _modifiers from( _modifiers mods )
+	public static _modifiers cloneOf( _modifiers mods )
 	{
 		return of( mods.getBits() );
 	}

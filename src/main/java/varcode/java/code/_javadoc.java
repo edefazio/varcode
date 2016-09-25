@@ -16,11 +16,11 @@ import varcode.markup.bindml.BindML;
 public class _javadoc
     extends Base
 {
-	public static _javadoc from( _javadoc jdoc )
+	public static _javadoc cloneOf( _javadoc jdoc )
 	{
 		if( jdoc != null && !jdoc.isEmpty() )
 		{
-			return of( jdoc.comment );
+			return new _javadoc( jdoc.comment );
 		}
 		return new _javadoc();
 	}

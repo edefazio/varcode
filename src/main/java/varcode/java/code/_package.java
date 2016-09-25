@@ -16,7 +16,7 @@ public class _package
             "{{+?name:package {+name+};" + N + N +
 			"+}}" );
 	
-	public static _package from ( _package prototype )
+	public static _package cloneOf( _package prototype )
 	{		
 		return of( prototype.name );
 	}

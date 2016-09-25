@@ -32,13 +32,13 @@ public class _fields
             "{{+?instanceFields:{+instanceFields+}" + N +
             "+}}" );
     
-	public static _fields from( _fields prototype ) 
+	public static _fields cloneOf( _fields prototype ) 
 	{
 		_fields fs = new _fields();
 		
         for( int i = 0; i < prototype.fields.size(); i++)
 		{			
-			fs.addFields( _field.of( prototype.fields.get( i  ) ) );
+			fs.addFields( _field.from( prototype.fields.get( i ) ) );
 		}
 		return fs;		
 	}
@@ -170,9 +170,9 @@ public class _fields
 		extends Template.Base
 	{
 		public static final Dom FIELD = BindML.compile(
-			"{+javadocComment+}{+fieldAnnotations+}{+modifiers+}{+type+} {+varName+}{+init+};" ); 
+			"{+javadoc+}{+fieldAnnotations+}{+modifiers+}{+type+} {+varName+}{+init+};" ); 
 		
-		public static _field of( _field prototype )
+		public static _field from( _field prototype )
 		{
 			_field f = new _field( 
 				_modifiers.of( prototype.mods.getBits() ),
@@ -183,9 +183,10 @@ public class _fields
 				f.setInit( prototype.init.initCode );
 			}
 			if( prototype.javadoc != null 
-				&& ! ( prototype.javadoc.getComment() == null ) 
+				&& !( prototype.javadoc.getComment() == null ) 
 				&& ( prototype.javadoc.getComment().trim().length() == 0 ) )
 			{
+                //System.out.println ("cloning JDoc");
 				f.javadoc( prototype.javadoc.getComment() );
 			}
             if( prototype.fieldAnnotations != null 
@@ -331,12 +332,13 @@ public class _fields
 		
         public VarContext getContext()
         {
-            return VarContext.of("javadocComment", javadoc,
-                    "fieldAnnotations", this.fieldAnnotations,    
-					"modifiers", mods,
-					"type", type,
-					"varName", name,
-					"init", init );
+            return VarContext.of(
+                "javadoc", this.javadoc,
+                "fieldAnnotations", this.fieldAnnotations,    
+				"modifiers", this.mods,
+				"type", this.type,
+				"varName", this.name,
+				"init", this.init );
         }
         @Override
 		public String author( Directive... directives ) 
@@ -385,9 +387,9 @@ public class _fields
 			return this;
 		}
 		
-		public _field javadoc( String javaDocComment )
+		public _field javadoc( String javadoc )
 		{
-			this.javadoc = new _javadoc( javaDocComment );
+			this.javadoc = new _javadoc( javadoc );
 			return this;
 		}
 

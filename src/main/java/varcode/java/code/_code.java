@@ -3,6 +3,7 @@ package varcode.java.code;
 import varcode.Template;
 import java.util.ArrayList;
 import java.util.List;
+import varcode.Cloner;
 
 import varcode.context.VarContext;
 import varcode.doc.Author;
@@ -61,7 +62,31 @@ public class _code
 		}
 		return code;
 	}
-	    
+	 
+    
+    public static _code cloneOf( _code prototype )
+    {
+        Object[] cloneArr = new Object[ prototype.codeSequence.size() ];
+        for( int i = 0; i < prototype.codeSequence.size(); i++ )
+        {
+            Object o = prototype.codeSequence.get( i );
+            if( o == null )
+            {
+                cloneArr[i] = null;
+            }
+            else if( o instanceof String )
+            {
+                cloneArr[i]= (String) o;
+            }
+            else 
+            {
+                cloneArr[i] = Cloner.clone( o ); 
+            }
+        }
+        _code theClone = _code.of( cloneArr );
+        return theClone;
+    }
+    
 	public boolean isEmpty()
 	{
 		return codeSequence.isEmpty();

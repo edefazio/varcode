@@ -26,6 +26,15 @@ public class _staticBlock
 	{
 		return new _staticBlock( code );
 	}
+    
+    public static _staticBlock cloneOf( _staticBlock prototype )
+    {
+        if( prototype == null || prototype.isEmpty() )
+        {
+            return new _staticBlock();
+        }
+        return _staticBlock.of( _code.cloneOf( prototype.body) );
+    }
 	
 	private _code body;
 	

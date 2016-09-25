@@ -23,7 +23,7 @@ public class _throws
 	
 	private List<String> throwsException;
 	
-	public static _throws from( _throws prototype )
+	public static _throws cloneOf( _throws prototype )
 	{
 		_throws t = new _throws();
 		for( int i = 0; i < prototype.count(); i++ )

@@ -223,7 +223,7 @@ public class _auto_dto
             finalInitCode.addTailCode( 
                 "this." + f.getName() + " = " + f.getName()+";" );
         }
-        _class dtoClass = _class.from( this.theClass );
+        _class dtoClass = _class.cloneOf( this.theClass );
             
         String constructorSig = 
             "public " + this.theClass.getSignature().getName() 

@@ -48,7 +48,7 @@ public class _class
 	/** Nested inner classes, static inner classes, interfaces, enums */
 	private _nestGroup nests;
 	
-	public static _class from( _class prototype )
+	public static _class cloneOf( _class prototype )
 	{
 		return new _class( prototype );
 	}
@@ -137,14 +137,14 @@ public class _class
 	 */
 	public _class( _class prototype )
 	{
-        this.annotations = _annotate.from( prototype.annotations );
-		this.classPackage = _package.from( prototype.classPackage );
-		this.imports = _imports.from( prototype.imports );
-		this.signature = _signature.from(prototype.signature  );
+        this.annotations = _annotate.cloneOf( prototype.annotations );
+		this.classPackage = _package.cloneOf( prototype.classPackage );
+		this.imports = _imports.cloneOf( prototype.imports );
+		this.signature = _signature.cloneOf(prototype.signature  );
 		
-		this.javadoc = _javadoc.from( prototype.javadoc );
-		this.methods = _methods.from( prototype.methods );
-		this.fields = _fields.from( prototype.fields );
+		this.javadoc = _javadoc.cloneOf( prototype.javadoc );
+		this.methods = _methods.cloneOf( prototype.methods );
+		this.fields = _fields.cloneOf( prototype.fields );
 		if( prototype.staticBlock != null && ! prototype.staticBlock.isEmpty() )
 		{
 			this.staticBlock = _staticBlock.of( prototype.staticBlock.getBody() );
@@ -153,10 +153,10 @@ public class _class
 		{
 			this.staticBlock = new _staticBlock();
 		}
-		this.constructors = _constructors.from( prototype.constructors );
+		this.constructors = _constructors.cloneOf( prototype.constructors );
 		
 		//NESTEDS
-		this.nests = _nestGroup.from( prototype.nests );
+		this.nests = _nestGroup.cloneOf( prototype.nests );
 	}
 	
 	public static final Dom CLASS = 
@@ -478,6 +478,26 @@ public class _class
         return this;
     }
     
+    /** 
+     * adds a single field with a javadoc comment i.e.
+     * field("comment", "public int a");
+     * 
+     * is:
+     * /**
+     *  * comment
+     *  * /
+     * public int a;
+     * 
+     * @param comment
+     * @param field
+     * @return 
+     */
+    public _class field( String comment, String field )
+	{
+		fields.addFields( _fields._field.of( field ).javadoc( comment ) );		
+		return this;
+	}
+    
 	public _class field( String field )
 	{
 		fields.addFields( _fields._field.of( field ) );		
@@ -649,13 +669,13 @@ public class _class
             return this.modifiers;
         }
 		
-		public static _signature from ( _signature prototype )
+		public static _signature cloneOf( _signature prototype )
 		{
 			_signature clone = new _signature();
 			clone.className = prototype.className + "";
-			clone.extendsFrom = _extends.from( prototype.extendsFrom );
-			clone.implementsFrom = _implements.from( prototype.implementsFrom );
-			clone.modifiers = _modifiers.from( prototype.modifiers );
+			clone.extendsFrom = _extends.cloneOf( prototype.extendsFrom );
+			clone.implementsFrom = _implements.cloneOf( prototype.implementsFrom );
+			clone.modifiers = _modifiers.cloneOf( prototype.modifiers );
 			
 			return clone;
 		}

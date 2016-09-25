@@ -18,7 +18,7 @@ public class _extends
 	
 	private List<String> extendsFrom;
 	
-	public static _extends from( _extends prototype )
+	public static _extends cloneOf( _extends prototype )
 	{
 		_extends e = new _extends();
 		if( prototype != null )

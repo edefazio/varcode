@@ -16,7 +16,7 @@ public class _implements
 {
 	public static final _implements NONE = new _implements();
 	
-	public static _implements from( _implements prototype ) 
+	public static _implements cloneOf( _implements prototype ) 
 	{
 		_implements impl = new _implements();
 		if( prototype != null )

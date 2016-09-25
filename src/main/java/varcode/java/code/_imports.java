@@ -27,7 +27,7 @@ public class _imports
     extends Base    
 {
 	/** Create and return a mutable clone given the imports */
-	public static _imports from( _imports imports )
+	public static _imports cloneOf( _imports imports )
 	{
 		_imports created = new _imports();
 		created.merge( imports );

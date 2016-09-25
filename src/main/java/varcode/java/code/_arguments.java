@@ -44,7 +44,7 @@ public class _arguments
      */
     public static final String STRING_LITERAL_PREFIX = "$$";
     
-	public static _arguments from( _arguments prototype ) 
+	public static _arguments cloneOf( _arguments prototype ) 
 	{
 		_arguments clone = new _arguments();
 		for( int i = 0; i < prototype.count(); i++ )

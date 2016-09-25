@@ -45,7 +45,7 @@ import varcode.markup.bindml.BindML;
 public class _annotate
     extends Template.Base
 {    
-    public static _annotate from( _annotate annotations )
+    public static _annotate cloneOf( _annotate annotations )
     {
         List<Object> clone = new ArrayList<Object>();
         for( int i = 0; i < annotations.count(); i++ )

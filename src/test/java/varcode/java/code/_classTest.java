@@ -27,6 +27,45 @@ import varcode.java.adhoc.Workspace;
 public class _classTest
     extends TestCase
 {
+ 
+    public void testClassFields()
+    {
+        _class c = _class.of("A").field("A comment", "public int a");
+        System.out.println( c );
+        assertEquals(
+        "public class A" + N +
+        "{" + N +
+        "    /**" + N + 
+        "     * A comment"+ N +
+        "     */"+ N + 
+        "    public int a;"+ N + 
+        "}", c.toString() );        
+    }
+    
+    public void testClone()
+    {
+        _class c = _class.of("A").field("A comment", "public int x" );
+        _class d = _class.cloneOf( c );
+        
+        assertEquals(
+        "public class A" + N +
+        "{" + N +
+        "    /**" + N + 
+        "     * A comment"+ N +
+        "     */"+ N + 
+        "    public int x;"+ N + 
+        "}", c.toString() );        
+        
+        assertEquals(
+        "public class A" + N +
+        "{" + N +
+        "    /**" + N + 
+        "     * A comment"+ N +
+        "     */"+ N + 
+        "    public int x;"+ N + 
+        "}", d.toString() );        
+              
+    }
     
     public void testClassAnnotation()
     {

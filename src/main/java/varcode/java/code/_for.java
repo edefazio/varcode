@@ -28,22 +28,6 @@ import varcode.markup.bindml.BindML;
 public class _for 
     extends Template.Base
 {
-    private String init;
-    private String condition;
-    private String update;
-    private _code code;
-    
-    public _for( String init, String condition, String update )
-    {
-        this.init = init;
-        this.condition = condition;
-        this.update = update;
-        this.code = new _code();
-    }
-    
-    //"for( int i = startIndex; i < startIndex + partitionCount; i++ )",
-    //"for( int i = {+init*+}; i {+terminal*+}; i++ )"
-    //
     public static _forCount count( int count )
     {
         return _forCount.up( count );
@@ -63,8 +47,34 @@ public class _for
     public static _forCount count( String varName, int count )
     {
         return _forCount.up( varName, count );
-        //return new _for( 
-         //   "int " + varName + " = 0", varName + " < " + count, varName + "++" );
+    }
+    
+    public static _forEach each( Class elementType, String elementName, String array )
+    {
+        return _forEach.of( elementType, elementName, array );
+    }
+    
+    public static _forEach each( String type, String elementName, String array )
+    {
+        return _forEach.of( type, elementName, array );
+    }
+    
+    public static _for of( String init, String condition, String update )
+    {
+        return new _for( init, condition, update );
+    }
+    
+    private String init;
+    private String condition;
+    private String update;
+    private _code code;
+    
+    public _for( String init, String condition, String update )
+    {
+        this.init = init;
+        this.condition = condition;
+        this.update = update;
+        this.code = new _code();
     }
     
     /**
@@ -80,13 +90,14 @@ public class _for
     
     /** 
      * Add code to the end of the body of the for loop and returns 
+     * @param code
+     * @return this (modified)
      */
     public _for body( Object... code )
     {
         this.code.addTailCode( code );
         return this;
     }
-    
     
     /**
      * <PRE>
@@ -96,6 +107,7 @@ public class _for
      * {
      * }
      * </PRE>
+     * @param count the start count
      */
     public static _for countDown( int count )
     {

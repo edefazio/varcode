@@ -20,12 +20,12 @@ public class _methods
 	private Map<String, List<_method>>methodsByName = 
 		new HashMap<String, List<_method>>();
 	
-	public static _methods from( _methods prototype )
+	public static _methods cloneOf( _methods prototype )
 	{
 		_methods m = new _methods();
 		String[] methodNames = 
 			prototype.methodsByName.keySet().toArray( new String[ 0 ] );
-		for( int i=0; i< methodNames.length; i++)
+		for( int i = 0; i < methodNames.length; i++)
 		{
 			List<_method> methodsWithName = 
 				prototype.methodsByName.get( methodNames[ i ] );
@@ -293,7 +293,7 @@ public class _methods
 		{
 			_method m = 
 				new _method( _signature.from(prototype.signature ) );
-			m.javadoc = _javadoc.from(prototype.javadoc );
+			m.javadoc = _javadoc.cloneOf(prototype.javadoc );
 			m.methodBody = prototype.getBody();			
             m.annotations = new _annotate( prototype.annotations.getAnnotations() );
 			return m;
@@ -441,11 +441,11 @@ public class _methods
 			public static _signature from( _signature prototype )
 			{
 				return new _signature(
-				    _modifiers.from( prototype.modifiers),
+				    _modifiers.cloneOf( prototype.modifiers),
 					prototype.returnType + "",
 					prototype.methodName + "",
-					_parameters.from( prototype.params ),
-					_throws.from( prototype.throwsExceptions )
+					_parameters.cloneOf( prototype.params ),
+					_throws.cloneOf( prototype.throwsExceptions )
 					);
 			}
 			private _modifiers modifiers;

@@ -5,7 +5,7 @@ import varcode.java.JavaNaming;
 
 public class _identifier
 {
-	public static _identifier from( _identifier id )
+	public static _identifier cloneOf( _identifier id )
 	{
 		return new _identifier( id.identifierName );
 	}
