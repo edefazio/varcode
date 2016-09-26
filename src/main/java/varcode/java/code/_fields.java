@@ -38,7 +38,7 @@ public class _fields
 		
         for( int i = 0; i < prototype.fields.size(); i++)
 		{			
-			fs.addFields( _field.from( prototype.fields.get( i ) ) );
+			fs.addFields( _field.cloneOf( prototype.fields.get( i ) ) );
 		}
 		return fs;		
 	}
@@ -172,21 +172,23 @@ public class _fields
 		public static final Dom FIELD = BindML.compile(
 			"{+javadoc+}{+fieldAnnotations+}{+modifiers+}{+type+} {+varName+}{+init+};" ); 
 		
-		public static _field from( _field prototype )
+		public static _field cloneOf( _field prototype )
 		{
 			_field f = new _field( 
 				_modifiers.of( prototype.mods.getBits() ),
 				prototype.type + "",
 				prototype.name + "" );
+            
 			if( prototype.init != null && !prototype.init.isEmpty() )
 			{
 				f.setInit( prototype.init.initCode );
 			}
+            //System.out.println("CLONE for "+ prototype );
 			if( prototype.javadoc != null 
 				&& !( prototype.javadoc.getComment() == null ) 
-				&& ( prototype.javadoc.getComment().trim().length() == 0 ) )
+				&& ( prototype.javadoc.getComment().trim().length() > 0 ) )
 			{
-                //System.out.println ("cloning JDoc");
+                //System.out.println ( "cloning JDoc " + prototype.javadoc.getComment() );
 				f.javadoc( prototype.javadoc.getComment() );
 			}
             if( prototype.fieldAnnotations != null 

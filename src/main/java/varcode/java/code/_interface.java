@@ -219,6 +219,7 @@ public class _interface
 	{
 		return this.nests;
 	}
+    
 	public _interface imports( Object... imports )
 	{
 		this.imports.addImports( imports );
@@ -271,7 +272,7 @@ public class _interface
 		return method( null, signature );
 	}
 	
-	public _interface staticMethod( String signature, String...linesOfCode )
+	public _interface staticMethod( String signature, Object...linesOfCode )
 	{
 		_method method = _method.of( null, signature, linesOfCode);
 		
@@ -329,6 +330,20 @@ public class _interface
 		return this;
 	}
 	
+    public _interface field( String comment, String fieldSignature )
+    {
+        _fields._field m = _fields._field.of( fieldSignature );
+        
+		if( !m.hasInit() )
+		{
+			throw new VarException("Field : " + N + m +  N 
+				+ " has not been initialized for interface ");
+		}
+        m.javadoc( comment );
+		fields.addFields( m );		
+		return this;    
+    }
+    
 	public _interface field( String fieldSignature )
 	{
 		_fields._field m = _fields._field.of( fieldSignature );
