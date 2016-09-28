@@ -21,21 +21,26 @@ import varcode.doc.Directive;
 import varcode.doc.translate.JavaTranslate;
 import varcode.java.JavaCase;
 import varcode.java.JavaNaming;
+import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.code._code;
 import varcode.java.code._enum;
 import varcode.java.code._enum._valueConstructs;
 import varcode.java.code._enum._valueConstructs._valueConstruct;
 import varcode.java.code._fields;
 import varcode.java.code._fields._field;
+import varcode.java.code._implements;
 import varcode.java.code._imports;
 import varcode.java.code._modifiers;
 
 /**
  * Simplified _enum model where the enum is populated with _properties
  * 
- * This is a Lazy API Model "on-top" of an existing API model (_enum)
+ * This is a Lazy API Model "on-top" of an existing API model (_enum).
+ * 
+ * We collect properties and lazily build the _enum model
+ 
  * <PRE>
- * _auto_enum auto = 
+ * _autoEnum auto = 
  *     _autoEnum.of( "ex.varcode.e.MyEnum" )
  *     .property( int.class, "age")
  *     .value( "Eric", 42 );
@@ -60,24 +65,20 @@ import varcode.java.code._modifiers;
  *        return this.age;
  *    }
  * }
+ * </PRE>
  * 
- * each _property is 
- * created as a private final _field
- * a getter is created
- * a parameter is added to the constructor
- * 
- * @author M. Eric DeFazio
+ * @author M. Eric DeFazio eric@carcode.io
  */
-public class _auto_enum
+public class _autoEnum
     implements JavaCase.JavaCaseAuthor    
-{
-    
-    //private static final TranslateBuffer tb = new TranslateBuffer();    
+{ 
     private final String packageName;
     private final String className;
     
     private final _imports imports = new _imports();
     private final _fields fields = new _fields();
+    
+    private final _implements implementFrom = new _implements();
     
     /**
      * Constructors for enum values, i.e. <PRE>
@@ -97,16 +98,21 @@ public class _auto_enum
      * @param fullClassName
      * @return 
      */
-    public static _auto_enum of( String fullClassName )
+    public static _autoEnum of( String fullClassName )
     {
          String[] packageAndClassName = 
             JavaNaming.ClassName.extractPackageAndClassName( fullClassName );
         
-        return new _auto_enum( 
+        return new _autoEnum( 
             packageAndClassName[ 0 ], packageAndClassName[ 1 ] );
     }
     
-    public _auto_enum( String packageName, String className )
+    public static _autoEnum of( String packageName, String className )
+    {
+        return new _autoEnum( packageName, className );
+    }
+    
+    public _autoEnum( String packageName, String className )
     {
         this.packageName = packageName;
         this.className = className;       
@@ -115,12 +121,12 @@ public class _auto_enum
     
     public String getName()
     {
-        return this.className; //iEnum.getName();
+        return this.className; 
     }
     
     public String getPackageName()
     {
-        return this.packageName; //iEnum.getPackageName();
+        return this.packageName;
     }
     
     /** 
@@ -128,10 +134,21 @@ public class _auto_enum
      * @param clazz classes to import
      * @return this
      */
-    public _auto_enum imports( Class... clazz )
+    public _autoEnum imports( Class... clazz )
     {
-        //this.iEnum.imports( (Object[]) clazz );
         this.imports.addImports( (Object[])clazz );
+        return this;
+    }
+    
+    public _autoEnum implement( Class...implementsClass )
+    {
+        this.implementFrom.implement(implementsClass);
+        return this;
+    }
+    
+    public _autoEnum implement( String...implement )
+    {
+        this.implementFrom.implement( implement );
         return this;
     }
     
@@ -177,7 +194,7 @@ public class _auto_enum
      * }
      * </PRE>
      */
-    public _auto_enum property( Class clazz, String name )
+    public _autoEnum property( Class clazz, String name )
     {
         this.imports.addImport( clazz ); //import the clazz if necessary
         _field f = new _field( 
@@ -222,15 +239,10 @@ public class _auto_enum
      * }
      * </PRE>
      */
-    public _auto_enum property( String fieldDefinition )
+    public _autoEnum property( String fieldDefinition )
     {
         _field f = _field.of( fieldDefinition );
-        this.fields.addFields( f );
-        
-         //add the getter
-        //this.iEnum.method(
-        //    "public " + f.getType() + " get" + firstUpper( f.getName() ) + "()",
-        //   "return this." + f.getName() +";");             
+        this.fields.addFields( f );           
         return this;
     }
     
@@ -252,7 +264,13 @@ public class _auto_enum
         //dynamically create me an _enum 
         _enum derived = 
             _enum.of( this.packageName, "public enum " + this.className ); 
-        
+        if( this.implementFrom != null)
+        {
+            for(int i=0; i< this.implementFrom.count(); i++ )
+            {
+                derived.implement( this.implementFrom.get( i ) );
+            }
+        }
         derived.imports( this.imports.getImports().toArray() );
         
         
@@ -287,11 +305,24 @@ public class _auto_enum
         return derived;
     }
     
+    
+    public Class loadClass( AdHocClassLoader adHoc )
+    {
+        return toJavaCase( ).loadClass( adHoc ); 
+    }
+    
+    public Class loadClass()
+    {
+        return toJavaCase( ).loadClass(); 
+    }
+    
+    @Override
     public JavaCase toJavaCase( Directive... directives )
     {
         return toJavaCase( null, directives );
     }
 
+    @Override
     public JavaCase toJavaCase( VarContext context, Directive... directives )
     {
         //build a clone of the enum (adding in any constructors)
@@ -307,9 +338,10 @@ public class _auto_enum
         }        
     }    
 
-    public _auto_enum value( String name, Object...values )
+    public _autoEnum value( String name, Object...values )
     {
         this.valueConstructs.addEnumValue( _valueConstruct.of( name, values ) );
         return this;
     }
+
 }

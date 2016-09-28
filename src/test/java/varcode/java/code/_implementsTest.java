@@ -43,7 +43,7 @@ public class _implementsTest
         assertEquals( "MyInterface", impls.get( 0 ) ); 
         assertEquals( "implements MyInterface", impls.toString().trim() );
         
-        impls.addImplements( Serializable.class );
+        impls.implement( Serializable.class );
         
         assertEquals( "implements MyInterface, java.io.Serializable", 
             impls.toString().trim() );

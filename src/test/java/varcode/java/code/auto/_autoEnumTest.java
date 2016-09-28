@@ -17,25 +17,41 @@ package varcode.java.code.auto;
 
 import junit.framework.TestCase;
 import varcode.java.Java;
-import varcode.java.adhoc.AdHocClassLoader;
-import varcode.java.adhoc.Workspace;
 import varcode.java.code._enum;
 import varcode.java.code._literal;
 
 /**
- *
+ * 
  * @author M. Eric DeFazio eric@varcode.io
  */
-public class _auto_enumTest
+public class _autoEnumTest
     extends TestCase
 {
     
+    public void testSimpleToUse()
+    {
+        Class enumClass = _autoEnum.of("ex.varcode.Place")
+          .property("int count")
+          .property(String.class, "name")
+          .value("FIRST", 1, "\"first\"")
+          .value("SECOND", 2, "\"second\"")
+          .loadClass();
+        
+        assertTrue( enumClass.isEnum() );
+        assertEquals( 2,  enumClass.getEnumConstants().length );
+        assertEquals( "first", Java.invoke(enumClass.getEnumConstants()[0], "getName" ) );
+        assertEquals( "second", Java.invoke(enumClass.getEnumConstants()[1], "getName" ) );
+        
+        assertEquals( 1, Java.invoke(enumClass.getEnumConstants()[0], "getCount" ) );
+        assertEquals( 2, Java.invoke(enumClass.getEnumConstants()[1], "getCount" ) );
+        
+    }
     /**
      * This will create
      */
     public void testIncrementallyAdd()
     {
-        _auto_enum auto = _auto_enum.of( "ex.varcode.e.MyEnum" )
+        _autoEnum auto = _autoEnum.of( "ex.varcode.e.MyEnum" )
             .property( int.class, "age")
             .value( "Eric", 42 );
         
@@ -49,15 +65,14 @@ public class _auto_enumTest
         enumClass = auto.toJavaCase( ).loadClass();
         
         assertEquals(
-            22,  Java.invoke( enumClass.getEnumConstants()[ 1 ], "getAge" ) );
-        
+            22,  Java.invoke( enumClass.getEnumConstants()[ 1 ], "getAge" ) );        
     }
     
 
     
     public void testEnumClone()
     {
-        _auto_enum ae = _auto_enum.of( "MyEnum" );
+        _autoEnum ae = _autoEnum.of( "MyEnum" );
         
         _enum e = ae.getEnum();
         e.field("public static final int ID = 100;");
@@ -69,7 +84,7 @@ public class _auto_enumTest
     
     public void testAutoEnum()
     {
-        _auto_enum ae = _auto_enum.of( "MyEnum" );
+        _autoEnum ae = _autoEnum.of( "MyEnum" );
         
         assertEquals( "MyEnum", ae.getName() );
         assertEquals( "", ae.getPackageName() );
@@ -80,7 +95,7 @@ public class _auto_enumTest
         assertEquals( "MyEnum", enumClass.getCanonicalName() );
         assertEquals( 0, enumClass.getEnumConstants().length );
         
-        ae = _auto_enum.of( "ex.varcode.e.MyEnum" );
+        ae = _autoEnum.of( "ex.varcode.e.MyEnum" );
         
         assertEquals( "MyEnum", enumClass.getName() );
         assertEquals( "ex.varcode.e", ae.getPackageName() );
@@ -99,7 +114,7 @@ public class _auto_enumTest
         assertEquals( 
             "WILLIAM", Java.invoke( enumClass.getEnumConstants()[0], "getId" ) );
         
-        ae = _auto_enum.of( "ex.varcode.e.MyEnum" );
+        ae = _autoEnum.of( "ex.varcode.e.MyEnum" );
         ae.property( "public final int count;" );
         ae.value( "_1", 1 );
         

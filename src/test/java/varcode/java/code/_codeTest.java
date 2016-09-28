@@ -16,6 +16,44 @@ import varcode.context.VarContext;
 public class _codeTest
     extends TestCase
 {
+    public void cloneTest()
+    {
+        _code c = _code.of();
+        
+        _code d = _code.cloneOf( c );
+        
+        assertEquals(c.toString(), d.toString());
+        
+        c = _code.of( "//a single line of code" );
+        d = _code.cloneOf( c );
+        
+        assertEquals( c.toString(), d.toString() );
+        
+        //verify that mutating the clone doesnt mutate the original
+        d.addTailCode("//another line of code");
+        
+        assertFalse( c.toString().equals( d.toString() ) );
+        
+    }
+    
+    public void cloneTestNested()
+    {
+        _code c = _code.of(
+        _try.catchAndHandle(_code.of(
+            _if.is("x=1", 
+                _for.count(10)
+                    .body("System.out.println(i);")
+                )
+            ),  
+        IOException.class, 
+        _code.of("LOG.error(\"IOException\");") ) );
+        
+        _code d = _code.cloneOf( c );
+        
+        assertEquals( c.toString(), d.toString() );
+    }
+    
+    
     public void testStringOrCodeBind()
     {
         //adding Strings or code just appends code to the codeblock

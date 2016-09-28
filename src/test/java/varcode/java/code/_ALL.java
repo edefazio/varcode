@@ -5,7 +5,7 @@
  */
 package varcode.java.code;
 
-import varcode.java.code.auto._auto_dtoTest;
+import varcode.java.code.auto._autoDtoTest;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -22,7 +22,7 @@ public class _ALL
         suite.addTestSuite( _classTest.class );
         suite.addTestSuite( _codeTest.class );
         suite.addTestSuite( _constructorsTest.class );
-        suite.addTestSuite(_auto_dtoTest.class );
+        suite.addTestSuite(_autoDtoTest.class );
         suite.addTestSuite( _enumTest.class );
         suite.addTestSuite( _extendsTest.class );        
         suite.addTestSuite( _fieldsTest.class );

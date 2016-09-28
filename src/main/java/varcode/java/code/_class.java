@@ -429,9 +429,34 @@ public class _class
 		return this;
 	}
 
+    public _class implement( Class...classes )
+    {
+        if( signature.implementsFrom == null )
+        {
+            signature.implementsFrom = new _implements();
+        }
+        this.signature.implementsFrom.implement(classes );
+        return this;
+    }
+    
     public _class annotate( Object... annotations )
     {
         this.annotations.add( annotations );
+        return this;
+    }
+    
+    public _class methods ( _methods methods )
+    {
+        String[] methodNames = methods.getNames();
+        
+        for( int i = 0; i < methods.count(); i++ )
+        {
+            List<_method> methodsByName = methods.getByName( methodNames[ i ] );
+            for( int j = 0; j < methodsByName.size(); j++ )
+            {
+                method( methodsByName.get( j ) ); 
+            }
+        }        
         return this;
     }
     
@@ -689,6 +714,18 @@ public class _class
             return this;
         }
         
+        
+        public _signature implement( Class... interfaceClasses )
+        {
+            this.implementsFrom.implement( interfaceClasses );            
+            return this;
+        }
+        
+        public _signature implement( String... interfaceClasses )
+        {
+            this.implementsFrom.implement( interfaceClasses );  
+            return this;
+        }
         /**
          * finds the index of the target token 
          * @param tokens

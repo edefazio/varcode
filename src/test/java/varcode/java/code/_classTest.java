@@ -45,7 +45,7 @@ public class _classTest
     public void testClone()
     {
         _class c = _class.of("A").field("A comment", "public int x" );
-        _class d = _class.cloneOf( c );
+        
         
         assertEquals(
         "public class A" + N +
@@ -55,6 +55,8 @@ public class _classTest
         "     */"+ N + 
         "    public int x;"+ N + 
         "}", c.toString() );        
+        
+        _class d = _class.cloneOf( c );
         
         assertEquals(
         "public class A" + N +

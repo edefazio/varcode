@@ -181,6 +181,18 @@ public class _enum
         return toJavaCase().loadClass();
     }
     
+    public _enum implement( Class...implementClass )
+    {
+        this.enumSignature.implementsFrom.implement( implementClass );
+        return this;
+    }
+    
+    public _enum implement( String...implementClass )
+    {
+        this.enumSignature.implementsFrom.implement( implementClass );
+        return this;
+    }
+    
     public Class loadClass( AdHocClassLoader adHocClassLoader )
     {
         return toJavaCase().loadClass( adHocClassLoader );

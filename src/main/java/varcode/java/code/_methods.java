@@ -47,6 +47,13 @@ public class _methods
 		"{{+?nonStaticMethods:" + N + "{+nonStaticMethods+}+}}" +
 		"{{+?abstractMethods:" + N + "{+abstractMethods+};+}}" );
 	
+    
+    
+    public String[] getNames()
+    {
+        return methodsByName.keySet().toArray( new String[ 0 ] );
+    }
+    
     @Override
     public String bind( VarContext context, Directive...directives )
     {
@@ -367,6 +374,16 @@ public class _methods
         private _method body( _code body )
         {
             this.methodBody = body;
+            return this;
+        }
+        
+        /** Add code to the end (tail) of the current body of code 
+         * @param code code to append
+         * @return this
+         */
+        public _method addToBody( Object... code )
+        {
+            this.methodBody.addTailCode( code );
             return this;
         }
         

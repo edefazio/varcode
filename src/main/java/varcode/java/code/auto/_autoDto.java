@@ -23,6 +23,7 @@ import varcode.doc.Directive;
 import varcode.java.JavaCase;
 import varcode.java.JavaCase.JavaCaseAuthor;
 import varcode.java.JavaNaming;
+import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.code._class;
 import varcode.java.code._code;
 import varcode.java.code._fields;
@@ -46,7 +47,7 @@ import varcode.java.code._modifiers;
  * 
  * NOTE: 
  */
-public class _auto_dto
+public class _autoDto
     implements JavaCaseAuthor
 {
     private _class theClass;
@@ -58,12 +59,12 @@ public class _auto_dto
      * @param fullClassName
      * @return 
      */
-    public static _auto_dto of( String fullClassName )
+    public static _autoDto of( String fullClassName )
     {
          String[] packageAndClassName = 
             JavaNaming.ClassName.extractPackageAndClassName( fullClassName );
         
-        return new _auto_dto( packageAndClassName[ 0 ], packageAndClassName[ 1 ] );
+        return new _autoDto( packageAndClassName[ 0 ], packageAndClassName[ 1 ] );
     }
     
     /**
@@ -76,7 +77,7 @@ public class _auto_dto
      * @param packageName
      * @param className 
      */
-    public _auto_dto( String packageName, String className )
+    public _autoDto( String packageName, String className )
     {
        this.theClass = _class.of( packageName, "public class "+className );        
     }
@@ -91,7 +92,7 @@ public class _auto_dto
      * @param clazz classes to import
      * @return this
      */
-    public _auto_dto imports( Class... clazz )
+    public _autoDto imports( Class... clazz )
     {
         this.theClass.imports( clazz );
         return this;
@@ -127,7 +128,7 @@ public class _auto_dto
      * }
      * </PRE>
      */
-    public _auto_dto property( Class clazz, String name )
+    public _autoDto property( Class clazz, String name )
     {
         this.theClass.imports( clazz ); //import the clazz if necessary
         _field f = new _field( 
@@ -156,7 +157,7 @@ public class _auto_dto
      * @param fieldDef
      * @return this
      */
-    public _auto_dto property( String fieldDef )
+    public _autoDto property( String fieldDef )
     {
         //first add the field
         _field f = _field.of( fieldDef );
@@ -231,6 +232,27 @@ public class _auto_dto
         
         dtoClass.constructor( constructorSig, finalInitCode );
         return dtoClass;
+    }
+    
+    
+    public Object instance( AdHocClassLoader classLoader, Object...args )
+    {
+        return toJavaCase().instance( classLoader, args );
+    }
+    
+    public Object instance( Object...args )
+    {
+        return toJavaCase().instance( args );
+    }
+    
+    public Class loadClass()
+    {
+        return toJavaCase().loadClass();
+    }
+    
+    public Class loadClass( AdHocClassLoader classLoader )
+    {
+        return toJavaCase().loadClass( classLoader );
     }
     
     @Override

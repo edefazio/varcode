@@ -45,7 +45,7 @@ public class Workspace
      * Build a Workspace containing the Java source output from the 
      * {@code JavaCaseAuthor}s
      * 
-     * @param caseAuthors authores of Java Cases that contain Java code
+     * @param caseAuthors authors of Java Cases that contain Java code
      * @return a Workspace containing the JavaFiles that are
      */
     public static Workspace ofAuthors( JavaCaseAuthor...caseAuthors )
@@ -254,21 +254,24 @@ public class Workspace
      * Adds one of more JavaCases containing (.java) source code
      * to be compiled within the workspace
      * 
-     * @param javaCase a JavaCase
-     * @return the Workspace
+     * @param javaCases one or more Java cases to be compiled together
+     * @return the Workspace a workspace managing 
      */
-	public final Workspace addCases( JavaCase...javaCase )
+	public final Workspace addCases( JavaCase...javaCases )
 	{
-        for( int i = 0; i < javaCase.length; i++ )
+        for( int i = 0; i < javaCases.length; i++ )
 		{
-			AdHocJavaFile javaCode = javaCase[ i ].javaCode();
-			//classNameToAdHocJavaFileMap.put( javaCode.getClassName(), javaCode );
+			AdHocJavaFile javaCode = javaCases[ i ].javaCode();
             addCode( javaCode );
 		}
 		return this;
 	}
 	
-    /** adds a java code to the Workspace and returns the Workspace */
+    /** 
+     * adds java code to the Workspace and returns the Workspace
+     * @param javaCode
+     * @return  the Workspace
+     */
 	public final Workspace addCode( AdHocJavaFile... javaCode )
 	{        
         for( int i = 0; i < javaCode.length; i++ )

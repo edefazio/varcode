@@ -3,7 +3,7 @@ package varcode.java.code;
 import varcode.Template;
 import java.util.ArrayList;
 import java.util.List;
-import varcode.Cloner;
+import varcode.java.adhoc.Cloner;
 
 import varcode.context.VarContext;
 import varcode.doc.Author;

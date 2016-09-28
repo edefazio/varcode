@@ -43,7 +43,7 @@ import varcode.java.code._classTest;
 import varcode.java.code._codeTest;
 import varcode.java.code._constructorsTest;
 import varcode.java.code._doTest;
-import varcode.java.code.auto._auto_dtoTest;
+import varcode.java.code.auto._autoDtoTest;
 import varcode.java.code._enumTest;
 import varcode.java.code._extendsTest;
 import varcode.java.code._fieldsTest;
@@ -62,7 +62,7 @@ import varcode.java.code._threadTest;
 import varcode.java.code._throwsTest;
 import varcode.java.code._tryTest;
 import varcode.java.code._whileTest;
-import varcode.java.code.auto._auto_enumTest;
+import varcode.java.code.auto._autoEnumTest;
 import varcode.java.code.minTest;
 import varcode.markup.MarkupParserTest;
 import varcode.markup.VarNameAuditTest;
@@ -251,8 +251,8 @@ public class AllTestSuite
         
         suite.addTestSuite( minTest.class );
                 
-        suite.addTestSuite( _auto_dtoTest.class );
-        suite.addTestSuite( _auto_enumTest.class );
+        suite.addTestSuite(_autoDtoTest.class );
+        suite.addTestSuite(_autoEnumTest.class );
                 
         //Functional / Integration Tests
         suite.addTestSuite( ModelFeatureTest.class );

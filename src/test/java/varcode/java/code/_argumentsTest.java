@@ -19,7 +19,7 @@ public class _argumentsTest
         
         args.bindIn( VarContext.of("count", "a") );
                 
-        assertEquals( "( a )", args ); 
+        assertEquals( "( a )", args.toString() ); 
     }
     
     public void testReplace()

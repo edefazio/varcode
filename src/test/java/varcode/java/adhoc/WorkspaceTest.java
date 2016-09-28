@@ -7,7 +7,7 @@ import junit.framework.TestCase;
 import varcode.VarException;
 import varcode.java.Java;
 import varcode.java.code._class;
-import varcode.java.code.auto._auto_enum;
+import varcode.java.code.auto._autoEnum;
 
 public class WorkspaceTest
 	extends TestCase
@@ -39,7 +39,7 @@ public class WorkspaceTest
      */
     public void testIncrementallyAddWorkspace()
     {
-        _auto_enum auto = _auto_enum.of( "ex.varcode.e.MyEnum" )
+        _autoEnum auto = _autoEnum.of( "ex.varcode.e.MyEnum" )
             .property( int.class, "age")
             .value( "Eric", 42 );
         

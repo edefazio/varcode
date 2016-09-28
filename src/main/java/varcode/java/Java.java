@@ -329,6 +329,19 @@ public enum Java
 		}
     }
     
+    public static void setFieldValue( Object instance, String fieldName, Object value )
+    {
+        try 
+		{
+			Field f = instance.getClass().getField( fieldName );			
+			f.set( instance, value );
+		}
+        catch( Exception e )
+        {
+            throw new VarException(
+                "Unable to set \"" + fieldName + "\" as "+ value );
+        }
+    }
     /**
      * Gets the value of the Field 
      * @param instanceOrClass

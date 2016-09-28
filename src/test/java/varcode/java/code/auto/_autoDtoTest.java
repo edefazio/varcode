@@ -25,28 +25,29 @@ import varcode.java.JavaCase;
  *
  * @author eric
  */
-public class _auto_dtoTest
+public class _autoDtoTest
     extends TestCase
 {
     
     //tests the easy one-liner DT
     public void testOneStatement()
     {
-        Class c = 
-            _auto_dto.of("ex.varcode.dto.FluentDto")
-                 .property( String.class, "name" )
-                 .property( int.class, "age")
-                 .property( String[].class, "aliases")
-                 .toJavaCase( ).loadClass();
+        Object instance = 
+            _autoDto.of("ex.varcode.dto.FluentDto")
+                .property( String.class, "name" )
+                .property( int.class, "age")
+                .property( String[].class, "aliases")
+                .instance();
+        
     }
     public void testAutoDto()
     {
-        _auto_dto d = _auto_dto.of( "MyDto" );
+        _autoDto d = _autoDto.of( "MyDto" );
         Object o = d.toJavaCase( ).instance();
         assertEquals( o.getClass().getName(), "MyDto" );
         
         
-        d = _auto_dto.of("ex.varcode.dto.MyDto");
+        d = _autoDto.of("ex.varcode.dto.MyDto");
         o = d.toJavaCase( ).instance();
         
         assertEquals( "MyDto", o.getClass().getSimpleName() );
@@ -81,7 +82,7 @@ public class _auto_dtoTest
     // the constructor
     public void testFinals()
     {
-        _auto_dto d = _auto_dto.of("ex.varcode.dto.MyDto")
+        _autoDto d = _autoDto.of("ex.varcode.dto.MyDto")
             .imports( Map.class)    
             .property( "public String name;" )
             .property( "private final int count = 100;" )

@@ -53,15 +53,21 @@ public class _implements
         return this;
     }
         
-    public _implements addImplements( Class implementerClass )
+    public _implements implement( Class... interfaceClass )
 	{
-		impls.add( implementerClass.getCanonicalName() );
+        for( int i = 0; i < interfaceClass.length; i++ )
+        {
+            impls.add( interfaceClass[ i ].getCanonicalName() );
+        }
 		return this;
 	}
     
-	public _implements addImplements( String implementerClass )
+	public _implements implement( String... interfaceClass )
 	{
-		impls.add( implementerClass );
+		for( int i = 0; i < interfaceClass.length; i++ )
+        {
+            impls.add( interfaceClass[ i ] );
+        }
 		return this;
 	}
 	
@@ -75,6 +81,16 @@ public class _implements
         return count() == 0;
     }
 	
+    public boolean contains( String interfaceClassName )
+    {
+        return this.impls.contains( interfaceClassName );
+    }
+    
+    public boolean contains( Class interfaceClass )
+    {
+        return contains( interfaceClass.getCanonicalName() );
+    }
+    
     public _implements replace( String target, String replacement )
     {
         List<String> replaced = new ArrayList<String>();
@@ -94,7 +110,7 @@ public class _implements
 		_implements impl = new _implements();
 		for( int i = 0; i < classes.length; i++ )
 		{
-			impl.addImplements( classes[ i ] );
+			impl.implement( classes[ i ] );
 		}
 		return impl;
 	}
@@ -105,7 +121,7 @@ public class _implements
 		_implements impl = new _implements();
 		for( int i = 0; i < tokens.length; i++ )
 		{
-			impl.addImplements( tokens[ i ] );
+			impl.implement( tokens[ i ] );
 		}
 		return impl;
 	}
