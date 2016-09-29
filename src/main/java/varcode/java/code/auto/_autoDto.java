@@ -189,7 +189,7 @@ public class _autoDto
      * 
      * @return a constructed clone of the internal _class
      */
-    public _class getDtoClass()
+    public _class toClassModel()
     {
         //we need a constructor with all the uninitialized final fields
         //verify that all fields are either
@@ -264,7 +264,7 @@ public class _autoDto
     @Override
     public JavaCase toJavaCase( VarContext context, Directive... directives )
     {
-        _class dtoClass = getDtoClass();
+        _class dtoClass = toClassModel();
         if( context == null )
         {
             return dtoClass.toJavaCase( directives );

@@ -63,6 +63,7 @@ import varcode.java.code._throwsTest;
 import varcode.java.code._tryTest;
 import varcode.java.code._whileTest;
 import varcode.java.code.auto._autoEnumTest;
+import varcode.java.code.auto._autoExternalizableTest;
 import varcode.java.code.minTest;
 import varcode.markup.MarkupParserTest;
 import varcode.markup.VarNameAuditTest;
@@ -253,6 +254,7 @@ public class AllTestSuite
                 
         suite.addTestSuite(_autoDtoTest.class );
         suite.addTestSuite(_autoEnumTest.class );
+        suite.addTestSuite(_autoExternalizableTest.class );
                 
         //Functional / Integration Tests
         suite.addTestSuite( ModelFeatureTest.class );

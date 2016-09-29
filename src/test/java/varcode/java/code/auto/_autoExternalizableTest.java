@@ -29,6 +29,17 @@ public class _autoExternalizableTest
     extends TestCase
 {
     
+    public void testTransient()
+    {
+        _class c = _class.of("TransientFields")
+           .field("public transient int count = 1;");
+        
+        _class e = _autoExternalizable.of( c );
+        
+        System.out.println( e );
+        
+    }
+    
     public void testAllPrimitives()
     {        
         _class c = _class.of("AllPrimitiveFields");
@@ -41,7 +52,7 @@ public class _autoExternalizableTest
         c.field("public float aFloat = Float.MIN_VALUE;");
         c.field("public double aDouble = Double.MIN_VALUE;");
         
-        _class e = _auto_externalizable.of( c );
+        _class e = _autoExternalizable.of( c );
         System.out.println( e );
         Object instance = e.instance( );
         
@@ -72,7 +83,7 @@ public class _autoExternalizableTest
         c.field("public float[] floatArr = new float[]{Float.MIN_VALUE};");
         c.field("public double[] doubleArr = new double[]{Double.MIN_VALUE};");
         
-        _class e = _auto_externalizable.of( c );
+        _class e = _autoExternalizable.of( c );
         //System.out.println( e );
         Object instance = e.instance( );
         
@@ -115,7 +126,7 @@ public class _autoExternalizableTest
         c.field("public long[] longArr");
         c.field("public float[] floatArr");
         c.field("public double[] doubleArr");        
-        e = _auto_externalizable.of( c );
+        e = _autoExternalizable.of( c );
         
         instance = e.instance( );
         

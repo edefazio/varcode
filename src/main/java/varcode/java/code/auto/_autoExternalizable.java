@@ -32,7 +32,7 @@ import varcode.java.code._methods._method;
  * 
  * @author M. Eric DeFazio eric@varcode.io
  */
-public class _auto_externalizable
+public class _autoExternalizable
 {
     public static _class of( _class c )
     {
@@ -51,18 +51,7 @@ public class _auto_externalizable
     public static _class externalize( _class c )
     {
         _class extern = _class.cloneOf( c );
-        /*
-        List<_method> writeExt = extern.getMethodsByName( "writeExternal" );
-        List<_method> readExt = extern.getMethodsByName( "readExternal" );
-        if( writeExt != null && writeExt.size() > 0 
-            || readExt != null && readExt.size() > 0 )
-        {
-            throw new VarException(
-                "the class " + c + 
-                "already contains readExternal or writeExternal method" );
-        }
-        */
-        
+
         extern.getSignature().implement( Externalizable.class );
         
         extern.imports( 
@@ -70,7 +59,6 @@ public class _auto_externalizable
             IOException.class, ObjectInput.class, ObjectOutput.class );
         
         _fields fields = extern.getFields();
-        
         
         _methods externalizableMethods = 
             externalizableMethodsForFields( fields );
@@ -85,7 +73,7 @@ public class _auto_externalizable
         _methods methods = new _methods();
         
         _method writeExternal = _method.of(
-        "public void writeExternal( ObjectOutput out ) throws IOException" );
+            "public void writeExternal( ObjectOutput out ) throws IOException" );
         
         writeExternal.annotate("@Override");
         
@@ -102,6 +90,11 @@ public class _auto_externalizable
         {
             _field field = fields.getAt( i );
 
+            //transient fields are not serialized
+            if( field.getModifiers().contains( "transient" ) )
+            {
+                continue;
+            }
             String type = field.getType();
             
             if( type.equals( "int" ) || type.equals( "java.lang.int" ) )

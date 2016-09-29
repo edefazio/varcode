@@ -146,8 +146,6 @@ public class Prefix
 	
 	public Object eval( VarContext context, String input ) 
 	{
-		//String s = (String)this.getInputParser().parse( context, input );	
-		//String s = (String)context.resolveVar( input );
 		Object val = context.resolveVar( input );
 		if( val != null )
 		{

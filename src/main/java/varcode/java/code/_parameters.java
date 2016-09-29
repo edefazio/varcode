@@ -260,7 +260,8 @@ public class _parameters
             {
                 p.setFinal();
             }
-            if( ! prototype.parameterAnnotation.isEmpty() )
+            if( prototype.parameterAnnotation != null 
+              && ! prototype.parameterAnnotation.isEmpty() )
             {
                 p.annotate( prototype.parameterAnnotation );
             }

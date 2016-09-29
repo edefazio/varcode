@@ -319,7 +319,7 @@ public class _fields
 				System.arraycopy( tokens, 0, arr, 0, arr.length );
 				_modifiers mods = _modifiers.of( arr ); 
 				if( mods.containsAny( 
-					Modifier.ABSTRACT, Modifier.NATIVE, Modifier.SYNCHRONIZED, Modifier.TRANSIENT, Modifier.STRICT ) )
+					Modifier.ABSTRACT, Modifier.NATIVE, Modifier.SYNCHRONIZED, Modifier.STRICT ) )
 				{
 					throw new VarException( "field contains invalid modifier " + N + mods.toString() );
 				}

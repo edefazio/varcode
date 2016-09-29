@@ -69,12 +69,10 @@ public class JavaTranslate
     	if( input instanceof CharSequence )
     	{
     		return ((CharSequence)input).toString();    		
-    	}
-    	
-    	StringBuilder sb = new StringBuilder();
-    	
+    	}    	
     	if( input.getClass().isArray() )
         {
+            StringBuilder sb = new StringBuilder();
     		int len = Array.getLength( input );
          			
          	for( int i = 0; i < len; i++ )
@@ -87,6 +85,7 @@ public class JavaTranslate
                 Object translated = o;
              	for( int j = 0; j < this.translators.length; j++ )
              	{
+                    //TODO I could have a Map between Classes and translators
              		translated = this.translators[ j ].translate( translated );
              	}
          		sb.append( translated ); 
@@ -105,7 +104,9 @@ public class JavaTranslate
     		return translate( translated );
     	}
     	//if there was no translation, just append
-    	sb.append( translated );
-        return sb.toString();
+    	
+        return translated.toString();
+        //sb.append( translated );
+        //return sb.toString();
     }   
 }

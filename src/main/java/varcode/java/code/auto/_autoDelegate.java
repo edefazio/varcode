@@ -31,7 +31,7 @@ import varcode.java.code._imports;
  * 
  * @author M. Eric DeFazio eric@varcode.io
  */
-public class _auto_delegate
+public class _autoDelegate
 {    
     private Class[] implementedInterfaces;
     
@@ -42,7 +42,7 @@ public class _auto_delegate
     private Map<Method, _delegateCode> methodToDelegateCode = 
         new HashMap<Method, _delegateCode>();
     
-    public _auto_delegate( Class clazz )
+    public _autoDelegate( Class clazz )
     {
         Class<?>[] interfaces = clazz.getInterfaces();
         this.imports = new _imports();
@@ -51,25 +51,25 @@ public class _auto_delegate
         this.fields = new _fields();
     }
     
-    public _auto_delegate imports( Object...imports )
+    public _autoDelegate imports( Object...imports )
     {
         this.imports.addImports( imports );
         return this;
     }
     
-    public _auto_delegate field( String fieldDef )
+    public _autoDelegate field( String fieldDef )
     {
         this.fields.addFields( _field.of( fieldDef ) );
         return this;
     }
     
-    public _auto_delegate before( String methodName, Object...code )
+    public _autoDelegate before( String methodName, Object...code )
     {
         
         return this;
     }
     
-    public _auto_delegate after( String methodName, Object...code )
+    public _autoDelegate after( String methodName, Object...code )
     {
         
         return this;
@@ -77,7 +77,7 @@ public class _auto_delegate
     
     public static void main( String[] args )
     {
-        _auto_delegate ad = new _auto_delegate( MySimpleClass.class );
+        _autoDelegate ad = new _autoDelegate( MySimpleClass.class );
         //add some imports
         //ad.imports( org.slf4j.Logger.class, org.slf4j.LoggerFactory.class );
         //create a static logger instance
