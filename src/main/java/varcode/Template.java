@@ -40,6 +40,13 @@ import varcode.markup.bindml.BindML;
  */
 public interface Template
 {
+    /** 
+     * Strings passed in with this prefix signify they are 
+     * Literals and not a String representation of an entity
+     * 
+     */
+    public static final String STRING_LITERAL_PREFIX = "$$";
+    
     /**
      * <UL>
      *  <LI>Builds the template for the entity (it may contain unbound marks like "{+name+}") 
@@ -52,8 +59,23 @@ public interface Template
      * @param directives directives applied to the 
      * @return the bound element
      */
-    public String bind( VarContext context, Directive...directives );
+    String bind( VarContext context, Directive...directives );
  
+    /**
+     * 
+     * @param context
+     * @return 
+     */
+    Template bindIn( VarContext context );
+        
+    /**
+     * A "Brute Force" replace for the content within the template
+     * @param target the target string to look for
+     * @param replacement the replacement string
+     * @return the modified variant, (if it is mutable) or a modified clone
+     */
+    Template replace( String target, String replacement ); 
+        
     /**
      * Base way of specializing the Parameterized VarCode
      */
@@ -70,20 +92,8 @@ public interface Template
         @Override
         public String bind( VarContext context, Directive...directives )
         {
-            
-            //System.out.println( author( ) );
             Dom dom = BindML.compile( author() ); 
             return Author.code( dom, context, directives );
-        }
-        
-        public abstract Template.Base bindIn( VarContext context );
-        
-        /**
-         * A "Brute Force" replace for the content within the template
-         * @param target the target string to look for
-         * @param replacement the replacement string
-         * @return the modified variant, (if it is mutable) or a modified clone
-         */
-        public abstract Base replace( String target, String replacement );            
+        }        
     }
 }
