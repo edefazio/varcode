@@ -233,7 +233,7 @@ public class _annotate
                 Object thisName = names.get( i );
                 if( thisName instanceof Template.Base )
                 {
-                    names.set( i , ((Template.Base) thisName).bind( context ) );
+                    names.set( i , ((Template.Base) thisName).bindIn( context ) );
                 }
                 else if (thisName instanceof String )
                 {
@@ -246,12 +246,12 @@ public class _annotate
                 Object thisValue = values.get( i );
                 if( thisValue instanceof Template.Base )
                 {
-                    values.set( i , ((Template.Base) thisValue).bind( context ) );
+                    values.set( i , ((Template.Base) thisValue).bindIn( context ) );
                 }
                 else if( thisValue instanceof String )
                 {
                     values.set( i, 
-                        Author.code(BindML.compile((String)thisValue), context ) );
+                        Author.code( BindML.compile((String)thisValue), context ) );
                 }   
             }
             return this;
@@ -265,7 +265,7 @@ public class _annotate
                 Object thisValue = values.get( i );
                 if( thisName instanceof Template.Base )
                 {
-                    names.set( i , ((Template.Base) thisName).bind( context ) );                                        
+                    names.set( i , ((Template.Base) thisName).bindIn( context ) );                                        
                 }
                 else if( thisName instanceof String )
                 {
@@ -274,7 +274,7 @@ public class _annotate
                 }
                 if( thisValue instanceof Template.Base )
                 {
-                    values.set( i , ((Template.Base) thisValue).bind( context ) );                                        
+                    values.set( i , ((Template.Base) thisValue).bindIn( context ) );                                        
                 }
                 else if( thisValue instanceof String )
                 {
