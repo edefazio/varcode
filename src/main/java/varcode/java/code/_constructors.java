@@ -4,6 +4,7 @@ import varcode.Template;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
+import varcode.CodeAuthor;
 
 import varcode.VarException;
 import varcode.context.VarContext;
@@ -22,19 +23,24 @@ import varcode.markup.bindml.BindML;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _constructors
-    extends Template.Base
+    implements Template, CodeAuthor
 {
 	private List<_constructor>constructors = new ArrayList<_constructor>();
 
+    /**
+     * Builds and returns a clone of the prototype constructors
+     * @param prototype baseline to build clone from
+     * @return a new _constructors based from the prototype
+     */
 	public static _constructors cloneOf( _constructors prototype ) 
 	{
-		_constructors c = new _constructors();
+		_constructors ctors = new _constructors();
 		for( int i = 0; i < prototype.count(); i++ )
 		{
-			c.addConstructor( 
+			ctors.addConstructor( 
 				_constructor.cloneOf( prototype.constructors.get( i ) ) );
 		}
-		return c;
+		return ctors;
 	}
 	
 	/**
@@ -57,6 +63,14 @@ public class _constructors
 	{
 	}
 
+    @Override
+    public String bind( VarContext context, Directive... directives )
+    {
+        Dom dom = BindML.compile( author() );
+        return Author.code( dom, context, directives );
+    }
+    
+    @Override
     public _constructors bindIn( VarContext context )
     {
         for( int i = 0; i < this.constructors.size(); i++ )
@@ -73,35 +87,36 @@ public class _constructors
     
     public _constructor getAt( int index )
     {
-        if( index < count() )
+        if( index >= 0  && index < count() )
         {
             return this.constructors.get( index );
         }
-        throw new VarException( "invalid index ["+index+"]" );
+        throw new VarException( "invalid index [" + index + "]" );
     }
     
 	public static final Dom CONSTRUCTORS = BindML.compile(
 		"{{+?constructors:{+constructors+}" + N + "+}}" );
 
+    @Override
 	public String author( Directive... directives ) 
 	{
 		if( constructors.size() > 0 )
 		{
 			return Author.code(
 				CONSTRUCTORS,
-				VarContext.of( 
-					"constructors", constructors ), 
+				VarContext.of( "constructors", constructors ), 
 				directives );
 		}	
 		return "";
 	}
 
+    @Override
 	public String toString()
 	{
 		return author();
 	}
 
-	public void verifyNoConflicts( _constructor constructor )	
+	private void verifyNoConflicts( _constructor constructor )	
 	{
 		for( int i = 0; i < this.constructors.size(); i++ )
 		{
@@ -128,36 +143,27 @@ public class _constructors
 	
 	public _constructors addConstructor( _constructor constructor )
 	{
-		for( int i = 0; i < constructors.size(); i++ )
-		{   			
-			if( constructors.get( i ).matchesExisting( constructor ) )
-			{
-				throw new VarException(
-					"adding constructor " + N + constructor + N + 
-					" failed, constructor conflicts with existing constructor" + N + 
-					constructors.get( i ).toString() );
-			}
-		}
+        verifyNoConflicts( constructor );
 		constructors.add( constructor );
 		return this; 
 	}
 	
-	/** Constructor model */
+	/** Individual constructor model */
 	public static class _constructor
-		extends Template.Base
+		implements Template, CodeAuthor
 	{
 		public static _constructor cloneOf( _constructor prototype )
 		{
-			_constructor c =  new _constructor(
+			_constructor ctor =  new _constructor(
 				_signature.cloneOf( prototype.constructorSig ) );
-			c.annotations = prototype.getAnnotations();
+			ctor.annotations = prototype.getAnnotations();
             if( prototype.javadoc != null )
             {
-                c.javadoc = _javadoc.of( prototype.getJavadoc().getComment() );
+                ctor.javadoc = _javadoc.of( prototype.getJavadoc().getComment() );
             }
             
-			c.body( prototype.body );
-			return c;			
+			ctor.body( prototype.body );
+			return ctor;			
 		}
 		
         private _annotate annotations;
@@ -174,6 +180,14 @@ public class _constructors
             this.annotations = new _annotate();
 		}
         
+        @Override
+        public String bind( VarContext context, Directive... directives )
+        {
+            Dom dom = BindML.compile( author() );
+            return Author.code( dom, context, directives );
+        }
+    
+        @Override
         public _constructor bindIn( VarContext context )
         {
             this.constructorSig = this.constructorSig.bindIn( context );
@@ -233,7 +247,6 @@ public class _constructors
 			
             this.constructorSig.replace( target, replacement );
 			
-            
             return this;
         }
         
@@ -268,14 +281,12 @@ public class _constructors
 		{
 			_constructor._signature sig =  constructor.constructorSig;
 			
-			if ( sig.className.toString().equals( 
-                this.constructorSig.className.toString() ) )
+			if ( sig.className.equals( this.constructorSig.className ) )
 			{
 				if( sig.params.count() == this.constructorSig.params.count() )
 				{				
 					for( int i = 0; i < sig.params.count(); i++ )
-					{
-						
+					{						
 						if(! sig.params.get( i ).getType().equals
 							( this.constructorSig.params.get( i ).getType() ) )
 						{							
@@ -297,8 +308,7 @@ public class _constructors
 				"{" + N +
 				"{+$>(body)+}" + N +
 				"}" );
-	
-        
+	        
         @Override
 		public String author( Directive... directives ) 
 		{
@@ -318,8 +328,9 @@ public class _constructors
 			return author();
 		}
 	
+        /** constructor signature */
 		public static class _signature
-			extends Template.Base
+			implements Template, CodeAuthor
 		{
 			private String className;
 			private _modifiers modifiers; //public protected private
@@ -338,6 +349,14 @@ public class _constructors
 				this.throwsExceptions = throwsExceptions;
 			}
 
+            @Override
+            public String bind( VarContext context, Directive... directives )
+            {
+                Dom dom = BindML.compile( author() );
+                return Author.code( dom, context, directives );
+            }
+            
+            @Override
             public _signature bindIn( VarContext context )
             {
                 this.className = Author.code( 
@@ -346,9 +365,9 @@ public class _constructors
                 this.modifiers.bindIn( context );
                 this.params.bindIn( context ); 
                 this.throwsExceptions.bindIn( context );
-                return this;
-                
+                return this;                
             }
+            
             public String getClassName()
             {
                 return this.className;
@@ -410,9 +429,9 @@ public class _constructors
 						}
 					}
 				}
-				//System.out.println( toksList );
 				return toksList.toArray( new String[ 0 ] );
 			}
+            
 			public static _signature of( String constructorSpec )
 			{
 				constructorSpec = constructorSpec.trim();
@@ -433,8 +452,7 @@ public class _constructors
 					}
 	
 					String paramInside = constructorSpec.substring( 
-							openParenIndex + 1 , closeParenIndex );
-					//	System.out.println( "PARAMS "+ paramInside );
+                        openParenIndex + 1 , closeParenIndex );
 				
 					if( paramInside.trim().length() > 0 )
 					{
@@ -505,6 +523,7 @@ public class _constructors
 			public static final Dom CONSTRUCTOR_SIGNATURE = 
 				BindML.compile( "{+modifiers+}{+className+}{+params+}{+throwsExceptions+}" );
 
+            @Override
 			public String author( Directive... directives ) 
 			{
 				return Author.code( CONSTRUCTOR_SIGNATURE, 
@@ -516,6 +535,7 @@ public class _constructors
 					directives );
 			}
 
+            @Override
 			public String toString()
 			{
 				return author();
@@ -524,12 +544,13 @@ public class _constructors
 	}
 
 	//called when the class/ enum is renamed (renames all of the constructors
+    @Override
 	public _constructors replace( String target, String replacement ) 
 	{
 		for( int i = 0; i < constructors.size(); i++ )
 		{
 			_constructor cons = constructors.get( i );
-			cons = cons.replace( target, replacement );
+            constructors.set( i, cons.replace( target, replacement ) );			
 		}
         return this;
 	}

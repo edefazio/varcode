@@ -2,7 +2,9 @@ package varcode.java.code;
 
 import varcode.Template;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import varcode.CodeAuthor;
 import varcode.java.adhoc.Cloner;
 
 import varcode.context.VarContext;
@@ -27,7 +29,7 @@ import varcode.markup.bindml.BindML;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _code
-    extends Template.Base    
+    implements Template, CodeAuthor
 {    
 	/**
 	 * Creates a code from the objects (Strings, _code) for instance:<PRE>
@@ -55,15 +57,16 @@ public class _code
 		_code code = new _code();
 		if( codeSequence != null )
 		{
-			for( int i = 0; i < codeSequence.length; i++ )
-			{
-                code.codeSequence.add( codeSequence[ i ] );                
-			}
+            code.codeSequence.addAll( Arrays.asList( codeSequence ) );
 		}
 		return code;
 	}
 	 
-    
+    /**
+     * Create and return a clone of the prototype code
+     * @param prototype the prototype code
+     * @return some code
+     */
     public static _code cloneOf( _code prototype )
     {
         Object[] cloneArr = new Object[ prototype.codeSequence.size() ];
@@ -72,15 +75,15 @@ public class _code
             Object o = prototype.codeSequence.get( i );
             if( o == null )
             {
-                cloneArr[i] = null;
+                cloneArr[ i ] = null;
             }
             else if( o instanceof String )
             {
-                cloneArr[i]= (String) o;
+                cloneArr[ i ] = (String) o;
             }
             else 
             {
-                cloneArr[i] = Cloner.clone( o ); 
+                cloneArr[ i ] = Cloner.clone( o ); 
             }
         }
         _code theClone = _code.of( cloneArr );
@@ -98,15 +101,17 @@ public class _code
 	 * <UL>
 	 *   <LI>Strings
 	 *   <LI>_code
-     *   <LI>Template.Base entities (like: _try, _for, _while, _if, _do)
+     *   <LI>Template entities (like: _try, _for, _while, _if, _do)
 	 * </UL>  
 	 */
 	private List<Object>codeSequence = new ArrayList<Object>();
 	
-	public static final Dom CODEBLOCK = BindML.compile(      
-		"{+codeBlock+}" );
+	public static final Dom CODEBLOCK = BindML.compile( "{+codeBlock+}" );
 	
-	
+	/**
+     * The context 
+     * @return context prior to Authoring
+     */
 	public VarContext getContext()
 	{
 		return VarContext.of(
@@ -121,17 +126,21 @@ public class _code
         {
             Object o = codeSequence.get( i );
             
-            if( o instanceof Template.Base )
+            if( o instanceof Template )
             {   //try, do, while, if, for, _thread, 
                 codeSequence.set( i, 
-                   ((Template.Base)o).bindIn( context ) );
+                   ((Template)o).bindIn( context ) );
             }
             else if( o instanceof String )
             {
                 codeSequence.set( i , 
                     Author.code( BindML.compile( (String)o ), context ) );
             }
-            //else dunno
+            else
+            {
+                codeSequence.set( i , 
+                    Author.code( BindML.compile( o.toString() ), context ) );
+            }
         }
         return this;
     }
@@ -139,15 +148,14 @@ public class _code
 	@Override
     public String bind( VarContext context, Directive...directives )
     {
+       
         String codeB = null;
         
         if( this.codeSequence != null && !this.codeSequence.isEmpty() )
         {
             codeB = bindify( this.codeSequence, context, directives );
-        }
-        
-        VarContext vc = VarContext.of( 
-           "codeBlock", codeB ); 
+        } 
+        VarContext vc = VarContext.of( "codeBlock", codeB ); 
   
         return Author.code( getDom(), vc, directives );
     }
@@ -159,12 +167,12 @@ public class _code
         {
             if( i > 0 )
             {
-                sb.append( "\r\n" );
+                sb.append( N );
             }
             Object o = list.get( i );
-            if( o instanceof Template.Base )
+            if( o instanceof Template )
             {
-                sb.append( ((Base) o).bind( context, directives ) );                
+                sb.append( ((Template)o).bind( context, directives ) );                
             }
             else
             {
@@ -192,11 +200,6 @@ public class _code
 			sb.append( codeComponents.get( i ).toString() );			
 		}
 		return sb.toString();
-	}
-	
-	private boolean isEmpty( List list )
-	{
-		return list == null || list.isEmpty();
 	}
 	
 	public Dom getDom()
@@ -237,42 +240,35 @@ public class _code
 	public _code addHeadCode( Object... codeLines )
 	{
 		List<Object> headCode = new ArrayList<Object>();
-		for( int i = 0; i < codeLines.length; i++ )
-		{
-			headCode.add( codeLines[ i ] );
-		}
+        headCode.addAll( Arrays.asList( codeLines ) );
 		headCode.addAll( codeSequence );
 		this.codeSequence = headCode;
 		return this;
 	}
 	
-	/** Adds lines of code to the tail (bottom) of the code block */
+	/** 
+     * Adds lines of code to the tail (bottom) of the code block
+     * @param codeLines lines of code to add to the tail
+     * @return this (modified) 
+     */
 	public _code addTailCode( Object...codeLines )
 	{
-		for( int i = 0; i < codeLines.length; i++ )
-		{
-			this.codeSequence.add( codeLines[ i ] );
-		}
+        this.codeSequence.addAll(Arrays.asList(codeLines));
 		return this;
 	}
 	
+    /**
+     * Add code to the tail
+     * @param codeBlock a code block to add
+     * @return this (modified)
+     */
 	public _code addTailCode( _code codeBlock )
 	{
 		this.codeSequence.add( codeBlock );		
 		return this;
 	}
 	
-	public List<_code>doReplaceCode( 
-        List<_code>list, String target, String replacement )
-	{
-		for(int i=0; i<list.size(); i++)
-		{
-			list.set(i, list.get( i ).replace( target, replacement ) );
-		}
-		return list;
-	}
-	
-	public List<Object>doReplace( 
+	private static List<Object>doReplace( 
         List<Object>list, String target, String replacement )
 	{
 		List<Object> replace = new ArrayList<Object>();
@@ -283,9 +279,9 @@ public class _code
 			{
 				replace.add( ((String)obj).replace( target, replacement) ); 
 			}
-			else if( obj instanceof Template.Base )
+			else if( obj instanceof Template )
 			{
-				replace.add(  ((Template.Base)obj ).replace( target, replacement ) );
+				replace.add(  ((Template)obj ).replace( target, replacement ) );
 			}
 			else
 			{

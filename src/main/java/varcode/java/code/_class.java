@@ -30,9 +30,8 @@ import varcode.markup.bindml.BindML;
  * 
  * @author M. Eric DeFazio eric@varcode.io
  */
-public class _class
-    extends Template.Base    
-	implements JavaCaseAuthor, _nest.component
+public class _class    
+	implements Template, JavaCaseAuthor, _nest.component
 {	
 	private _package classPackage;
 	private _imports imports;

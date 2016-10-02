@@ -18,6 +18,7 @@ package varcode.java.code;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import varcode.CodeAuthor;
 import varcode.Template;
 import varcode.VarException;
 import varcode.context.VarContext;
@@ -44,7 +45,7 @@ import varcode.markup.bindml.BindML;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _annotate
-    extends Template.Base
+    implements Template, CodeAuthor
 {    
     public static _annotate cloneOf( _annotate annotations )
     {
@@ -99,6 +100,20 @@ public class _annotate
         return VarContext.of( "annotation", listOfAnnotations );
     }
     
+    /**
+     * 
+     * @param context contains bound variables and scripts to bind data into
+     * the template
+     * @param directives pre-and post document directives 
+     * @return the populated Template bound with Data from the context
+     */
+    @Override
+    public String bind( VarContext context, Directive...directives )
+    {
+            Dom dom = BindML.compile( author() ); 
+            return Author.code( dom, context, directives );
+    }        
+        
     @Override
     public _annotate bindIn( VarContext context )
     {

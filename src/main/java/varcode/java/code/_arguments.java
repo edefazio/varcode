@@ -3,6 +3,7 @@ package varcode.java.code;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import varcode.CodeAuthor;
 import varcode.Template;
 import varcode.VarException;
 
@@ -37,7 +38,7 @@ import varcode.markup.bindml.BindML;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _arguments 
-	extends Template.Base
+	implements Template, CodeAuthor
 {
 
     /** creates a new _arguments as a clone of prototype
@@ -89,6 +90,20 @@ public class _arguments
             this.arguments.add( stringFormOf( arguments[ i ] ) );
         }
         return this;
+    }
+    
+    /**
+     * TODO REMOVE THIS
+     * @param context contains bound variables and scripts to bind data into
+     * the template
+     * @param directives pre-and post document directives 
+     * @return the populated Template bound with Data from the context
+     */
+    @Override
+    public String bind( VarContext context, Directive...directives )
+    {
+        Dom dom = BindML.compile( author() ); 
+        return Author.code( dom, context, directives );
     }
     
     @Override
