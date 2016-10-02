@@ -70,6 +70,7 @@ public interface Template
         @Override
         public String bind( VarContext context, Directive...directives )
         {
+            
             //System.out.println( author( ) );
             Dom dom = BindML.compile( author() ); 
             return Author.code( dom, context, directives );
@@ -77,34 +78,12 @@ public interface Template
         
         public abstract Template.Base bindIn( VarContext context );
         
-        public abstract Base replace( String target, String replacement );
-        
-        public static final Directive INDENT4 = Prefix.INDENT_4_SPACES;
-        
-        private static final String[] INDENT = new String[]
-    {
-        "",
-        "    ", 
-        "        ", 
-        "            ",
-        "                ",
-        "                    ",
-        "                        ",
-        "                            ",
-        "                                ",
-        "                                    ",
-        "                                        ",
-        "                                            ",
-        "                                                ",
-        "                                                    ",
-        "                                                        ",
-        "                                                            ",
-        "                                                                ",
-        "                                                                    ",
-    };
-        public String indent( int count )
-        {
-            return INDENT[ count ];
-        }
+        /**
+         * A "Brute Force" replace for the content within the template
+         * @param target the target string to look for
+         * @param replacement the replacement string
+         * @return the modified variant, (if it is mutable) or a modified clone
+         */
+        public abstract Base replace( String target, String replacement );            
     }
 }
