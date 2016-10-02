@@ -148,7 +148,6 @@ public class _code
 	@Override
     public String bind( VarContext context, Directive...directives )
     {
-       
         String codeB = null;
         
         if( this.codeSequence != null && !this.codeSequence.isEmpty() )

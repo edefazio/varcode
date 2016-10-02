@@ -110,8 +110,8 @@ public class _annotate
     @Override
     public String bind( VarContext context, Directive...directives )
     {
-            Dom dom = BindML.compile( author() ); 
-            return Author.code( dom, context, directives );
+        Dom dom = BindML.compile( author() ); 
+        return Author.code( dom, context, directives );
     }        
         
     @Override

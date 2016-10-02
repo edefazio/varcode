@@ -267,7 +267,7 @@ public class _class
         this.nests = this.nests.bindIn( context );      
         return this;
     }
-     
+        
     @Override
     public final String bind( VarContext context, Directive...directives )
     {

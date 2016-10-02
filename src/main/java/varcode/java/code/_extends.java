@@ -2,6 +2,7 @@ package varcode.java.code;
 
 import java.util.ArrayList;
 import java.util.List;
+import varcode.CodeAuthor;
 import varcode.Template;
 
 import varcode.VarException;
@@ -11,8 +12,14 @@ import varcode.doc.Directive;
 import varcode.dom.Dom;
 import varcode.markup.bindml.BindML;
 
+/**
+ * extends Keyword used on Classes and interfaces
+ * 
+ * @author M. Eric DeFazio eric@varcode.io
+ */
 public class _extends
-    extends Template.Base    
+    implements Template, CodeAuthor
+        
 {
 	public static final _extends NONE = new _extends();
 	
@@ -31,18 +38,36 @@ public class _extends
 		return e;
 	}
 	
+        
+    /**
+     * 
+     * @param context contains bound variables and scripts to bind data into
+     * the template
+     * @param directives pre-and post document directives 
+     * @return the populated Template bound with Data from the context
+     */
+    @Override
+    public String bind( VarContext context, Directive...directives )
+    {
+        Dom dom = BindML.compile( author() ); 
+        return Author.code( dom, context, directives );
+    }
+    
+    @Override
     public _extends bindIn( VarContext context )
     {
         List<String>replaced = new ArrayList<String>();
         for( int i = 0; i < extendsFrom.size(); i++ )
         {
             replaced.add( 
-                Author.code(BindML.compile( extendsFrom.get( i ) ) , context ) );
+                Author.code( 
+                    BindML.compile( extendsFrom.get( i ) ) , context ) );
         }
         this.extendsFrom = replaced;
         return this;
     }
     
+    @Override
     public _extends replace( String source, String replacement ) 
     {
         List<String>replaced = new ArrayList<String>();
@@ -79,10 +104,11 @@ public class _extends
 		if( index > count() -1 )
 		{
 			throw new VarException(
-				"extends[" + index + "] is out of range[0..." + ( count() -1 )+"]" );
+				"extends[" + index + "] is out of range[0..." + ( count() -1 ) + "]" );
 		}
-		return extendsFrom.get( index ).toString();
+		return extendsFrom.get( index );
 	}
+    
 	public _extends( String extendsFromClass )
 	{
 		 extendsFrom = new ArrayList<String>();
@@ -111,12 +137,14 @@ public class _extends
 		return xtends;
 	}
 	
+    @Override
 	public String author( Directive... directives ) 
 	{
 		VarContext vc = VarContext.of( "extendsFrom", extendsFrom );
 		return Author.code( EXTENDS, vc, directives );
 	}
 	
+    @Override
 	public String toString()
 	{
 		return author();

@@ -15,6 +15,7 @@
  */
 package varcode.java.code;
 
+import varcode.CodeAuthor;
 import varcode.Template;
 import varcode.context.VarContext;
 import varcode.doc.Author;
@@ -23,11 +24,11 @@ import varcode.dom.Dom;
 import varcode.markup.bindml.BindML;
 
 /**
- *
+ * model for a do while loop
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _do
-    extends Template.Base
+    implements Template, CodeAuthor
 {
     public static _do whileIs( Object condition, Object... bodyLines )
     {
@@ -71,6 +72,21 @@ public class _do
         return Author.code( DO_WHILE_LOOP, getContext(), directives );
     }
     
+        /**
+     * TODO REMOVE THIS
+     * @param context contains bound variables and scripts to bind data into
+     * the template
+     * @param directives pre-and post document directives 
+     * @return the populated Template bound with Data from the context
+     */
+    @Override
+    public String bind( VarContext context, Directive...directives )
+    {
+        Dom dom = BindML.compile( author() ); 
+        return Author.code( dom, context, directives );
+    }
+    
+    @Override
     public _do bindIn( VarContext context )
     {
         this.body.bindIn( context );

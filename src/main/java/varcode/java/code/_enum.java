@@ -4,6 +4,7 @@ import varcode.java.JavaCase.JavaCaseAuthor;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
+import varcode.CodeAuthor;
 import varcode.Template;
 
 import varcode.VarException;
@@ -25,8 +26,7 @@ import varcode.markup.bindml.BindML;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _enum
-    extends Template.Base   
-	implements JavaCaseAuthor, _nest.component
+	implements Template, JavaCaseAuthor, _nest.component
 {
 	private _package enumPackage = new _package( "" ); 
 	private _imports imports = new _imports();
@@ -40,7 +40,6 @@ public class _enum
 	private _methods methods = new _methods();
 	private _nest._nestGroup nests = new _nestGroup();
 	
-    
 	public static final Dom ENUM = 
 		BindML.compile( 
 			"{+pckage+}" +
@@ -86,10 +85,23 @@ public class _enum
 		this.fields = _fields.cloneOf( prototype.fields );
 		this.values = _valueConstructs.cloneOf( prototype.values );
 		this.methods = _methods.cloneOf( prototype.methods );		
-		//NESTEDS
 		this.nests = _nestGroup.cloneOf( prototype.nests );
 	}
 	
+    /**
+     * TODO REMOVE THIS
+     * @param context contains bound variables and scripts to bind data into
+     * the template
+     * @param directives pre-and post document directives 
+     * @return the populated Template bound with Data from the context
+     */
+    @Override
+    public String bind( VarContext context, Directive...directives )
+    {
+        Dom dom = BindML.compile( author() ); 
+        return Author.code( dom, context, directives );
+    }
+    
     
     public _enum bindIn( VarContext context )
     {
@@ -106,6 +118,7 @@ public class _enum
         this.nests.bindIn(context);
         return this;
     }
+    
     public String getName()
     {
         return this.enumSignature.getName();
@@ -125,6 +138,7 @@ public class _enum
         return this.annotations;
     }
     
+    @Override
 	public VarContext getContext()
 	{
 		String[] n = null;
@@ -198,6 +212,7 @@ public class _enum
         return toJavaCase().loadClass( adHocClassLoader );
     }
     
+    @Override
 	public JavaCase toJavaCase( Directive... directives) 
 	{	
 		return JavaCase.of(
@@ -207,6 +222,7 @@ public class _enum
 			directives );
 	}
     
+    @Override
 	public JavaCase toJavaCase( VarContext context, Directive...directives ) 
 	{
         String FullClassName = this.getFullyQualifiedClassName();
@@ -216,10 +232,6 @@ public class _enum
         
         //first lets print out the structure and optional Marks
         String authored = this.author( directives );
-            //JavaCase.of( 
-            //theClassName,
-            //ENUM, 
-            //getContext() ).toString();
         
         //now compile the marks and fill them in with the context
 		return JavaCase.of(
@@ -287,17 +299,18 @@ public class _enum
 		}
 	}
 	
+    @Override
 	public String author( Directive... directives ) 
 	{
 		return toJavaCase( directives ).toString();
 	}
 
+    @Override
 	public String toString()
 	{
 		return author();
 	}
 	
-    
 	public static _enum of( String enumSignature )
 	{
 		_signature sig = _signature.of( enumSignature );
@@ -401,7 +414,7 @@ public class _enum
 	
 	public _enum method( String methodSignature, String... bodyLines )
 	{
-		return method( _method.of( null, methodSignature, bodyLines ) );
+		return method( _method.of( null, methodSignature, (Object[]) bodyLines ) );
 	}
 
 	public _enum method( _method m )
@@ -421,6 +434,7 @@ public class _enum
 		return this;
 	}
 	
+    @Override
 	public _imports getImports()
 	{
 		for( int i = 0; i < nests.count(); i++ )
@@ -466,6 +480,8 @@ public class _enum
      * myEnum.field( "public final int value;" );
      * myEnum.field( "private String value = \"Butler\";" );
      * </PRE>
+     * @param field field to add
+     * @return this (modified)
      */
 	public _enum field( String field )
 	{
@@ -524,7 +540,7 @@ public class _enum
 	 * 
 	 */
 	public static class _valueConstructs
-		extends Template.Base
+		implements Template, CodeAuthor
 	{
         /** TODO, cant I just iterate through each time w/o having to keep this around??*/
 		//private Set<String> valueNames = new HashSet<String>();
@@ -542,11 +558,6 @@ public class _enum
                         "Enum already contains a value for \"" + value.name +"\"" );
                 }
             }
-			//if( this.valueNames.contains( value.name.toString() ) )
-			//{
-				
-			//}
-			//this.valueNames.add( value.name.toString() );
 			this.valueConstructs.add( value );
 			return this;
 		}
@@ -581,6 +592,20 @@ public class _enum
                 "Invalid value construct index [" + index + "]");
         }
         
+        /**
+         * TODO REMOVE THIS
+         * @param context contains bound variables and scripts to bind data into
+         * the template
+         * @param directives pre-and post document directives 
+         * @return the populated Template bound with Data from the context
+         */
+        @Override
+        public String bind( VarContext context, Directive...directives )
+        {
+            Dom dom = BindML.compile( author() ); 
+            return Author.code( dom, context, directives );
+        }
+            
         @Override
         public _valueConstructs bindIn( VarContext context )
         {
@@ -601,8 +626,11 @@ public class _enum
             return this;
         }
         
+        /**
+         * Individual construction of an Enum Value
+         */
 		public static class _valueConstruct
-			extends Template.Base
+			implements Template, CodeAuthor
 		{
 			private String name;
 			private _arguments args;
@@ -634,6 +662,7 @@ public class _enum
 					_arguments.cloneOf( construct.args ) );
 					
 			}
+            
 			public _valueConstruct( String name, _arguments args )
 			{
 				this.name = name;
@@ -642,8 +671,22 @@ public class _enum
 			
 			public Dom VALUE_CONSTRUCT = BindML.compile(
 				"{+name*+}{+args+}" );
-				
-            
+			
+            /**
+             * TODO REMOVE THIS
+             * @param context contains bound variables and scripts to bind data into
+             * the template
+             * @param directives pre-and post document directives 
+             * @return the populated Template bound with Data from the context
+             */
+            @Override
+            public String bind( VarContext context, Directive...directives )
+            {
+                Dom dom = BindML.compile( author() ); 
+                return Author.code( dom, context, directives );
+            }
+    
+            @Override
             public _valueConstruct bindIn( VarContext context )
             {
                 this.name = Author.code( BindML.compile(this.name), context );
@@ -662,11 +705,13 @@ public class _enum
 				return Author.code( VALUE_CONSTRUCT, vc, directives );
 			}		
 			
+            @Override
 			public String toString()
 			{
 				return author(); 
 			}
             
+            @Override
             public _valueConstruct replace( String target, String replacement )
             {
                 this.args = this.args.replace( target, replacement );
@@ -701,8 +746,11 @@ public class _enum
 		}
 	}
 	
+    /**
+     * Enum Constructor signature
+     */
 	public static class _signature
-		extends Template.Base
+		implements Template, CodeAuthor
 	{
 		private String enumName = "";		
 		private _implements implementsFrom = new _implements();
@@ -711,6 +759,7 @@ public class _enum
 		public static final Dom CLASS_SIGNATURE = 
 			BindML.compile( "{+modifiers+}enum {+enumName*+}{+implementsFrom+}" );
 
+        @Override
 		public String author( Directive... directives ) 
 		{
 			return Author.code( CLASS_SIGNATURE, 
@@ -721,6 +770,20 @@ public class _enum
 				directives );
 		} 
 		
+        /**
+         * TODO REMOVE THIS
+         * @param context contains bound variables and scripts to bind data into
+         * the template
+         * @param directives pre-and post document directives 
+         * @return the populated Template bound with Data from the context
+         */
+        @Override
+        public String bind( VarContext context, Directive...directives )
+        {
+            Dom dom = BindML.compile( author() ); 
+            return Author.code( dom, context, directives );
+        }
+        
         @Override
         public _signature bindIn( VarContext context )
         {
@@ -768,7 +831,7 @@ public class _enum
 			return this.enumName;
 		}
         
-                /**
+        /**
          * finds the index of the target token 
          * @param tokens
          * @param target
@@ -790,8 +853,6 @@ public class _enum
 		{
 			_signature sig = new _signature();
 		
-			//MUST have sequence
-			//   ...class 
 			String[] tokens = enumSignature.split(" ");
 		
 			int enumTokenIndex = -1;
@@ -903,13 +964,6 @@ public class _enum
         this.constructors = this.constructors.replace( target, replacement );
         this.enumPackage = this.enumPackage.replace( target, replacement);
         this.enumSignature = this.enumSignature.replace( target, replacement );
-        /*
-		this.enumSignature.enumName = 
-            this.enumSignature.getName().replace( target, replacement );
-
-		this.constructors.replace( target, replacement );		
-        */
-        
         return this;
 	}
 }

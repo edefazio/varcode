@@ -3,6 +3,7 @@ package varcode.java.code;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
+import varcode.CodeAuthor;
 import varcode.Template;
 
 import varcode.VarException;
@@ -21,10 +22,23 @@ import varcode.markup.bindml.BindML;
  *  
  */
 public class _fields
-    extends Template.Base
+    implements Template, CodeAuthor
 {
-	//private static final Logger LOG = LoggerFactory.getLogger( _members.class );
-	
+        
+    /**
+     * 
+     * @param context contains bound variables and scripts to bind data into
+     * the template
+     * @param directives pre-and post document directives 
+     * @return the populated Template bound with Data from the context
+     */
+    @Override
+    public String bind( VarContext context, Directive...directives )
+    {
+        Dom dom = BindML.compile( author() ); 
+        return Author.code( dom, context, directives );
+    }
+    
     public static final Dom FIELDS = 
         BindML.compile( 
             "{{+?staticFields:{+staticFields+}" + N +
@@ -51,6 +65,7 @@ public class _fields
         fields = new ArrayList<_field>();
     }
     
+    @Override
     public _fields bindIn( VarContext context )
     {
         for( int i = 0; i < fields.size(); i++ )
@@ -65,8 +80,11 @@ public class _fields
     	return fields.size();
     }
 
-    /** returns the field at this index */
-    public  _field getAt( int index )
+    /** returns the field at this index
+     * @param index 
+     * @return the field at the index
+     */
+    public _field getAt( int index )
     {
         if( index < count() && index >= 0 )
         {
@@ -75,7 +93,10 @@ public class _fields
         throw new VarException( "invalid field index ["+ index + "]" );
     }
             
-    //returns the names of all the fields
+    /**
+     * returns the names of all the fields
+     * @return all field names
+     */
     public String[] getFieldNames()
     {
         String[] fieldNames = new String[ this.fields.size() ];
@@ -86,7 +107,11 @@ public class _fields
         return fieldNames;
     }
     
-    /** Verify there is no other field with this name */
+    /** 
+     * Verify there is no other field with this name
+     * @param fieldName name of a field to be added
+     * @return true if the field can be added
+     */
     public boolean canAddFieldName( String fieldName )
     {
         for( int i = 0; i < fields.size(); i++ )
@@ -117,6 +142,7 @@ public class _fields
      * @param replacement 
      * @return this field after modification 
      */
+    @Override
     public _fields replace( String target, String replacement )
     {
 		for( int i = 0; i < fields.size(); i++ )
@@ -127,12 +153,14 @@ public class _fields
         return this;
     }
     
-    /** Adds one or more _field to the _fields */
+    /** Adds one or more _field to the _fields
+     * @param fields fields to add
+     * @return this (modified)
+     */
     public _fields addFields( _field... fields )
     {
     	for( int i = 0; i < fields.length; i++ )
     	{
-            //check 
             if( canAddFieldName( fields[ i ].name ) )
             {
                 this.fields.add( fields[ i ] );
@@ -164,41 +192,53 @@ public class _fields
 	}
 	
     /**
-     * field 
+     * model for a field 
      */
 	public static class _field
-		extends Template.Base
+		implements Template, CodeAuthor
 	{
 		public static final Dom FIELD = BindML.compile(
 			"{+javadoc+}{+fieldAnnotations+}{+modifiers+}{+type+} {+varName+}{+init+};" ); 
 		
+        /**
+         * Creates and returns a clone of the prototype field
+         * @param prototype
+         * @return 
+         */
 		public static _field cloneOf( _field prototype )
 		{
-			_field f = new _field( 
+			_field clone = new _field( 
 				_modifiers.of( prototype.mods.getBits() ),
 				prototype.type + "",
 				prototype.name + "" );
             
 			if( prototype.init != null && !prototype.init.isEmpty() )
 			{
-				f.setInit( prototype.init.initCode );
+				clone.setInit( prototype.init.initCode );
 			}
-            //System.out.println("CLONE for "+ prototype );
 			if( prototype.javadoc != null 
 				&& !( prototype.javadoc.getComment() == null ) 
 				&& ( prototype.javadoc.getComment().trim().length() > 0 ) )
 			{
-                //System.out.println ( "cloning JDoc " + prototype.javadoc.getComment() );
-				f.javadoc( prototype.javadoc.getComment() );
+				clone.javadoc( prototype.javadoc.getComment() );
 			}
             if( prototype.fieldAnnotations != null 
                 && !prototype.fieldAnnotations.isEmpty() )
             {
-                f.annotate( prototype.fieldAnnotations );
+                clone.annotate( prototype.fieldAnnotations );
             }
-			return f;
+			return clone;
 		}
 		
+        /**
+         * set the initialization for this field on declaration) <PRE> 
+         * i.e.
+         * public String name = "Eric";
+         *                   ^^^^^^^^^ 
+         * </PRE> 
+         * @param initialization
+         * @return this (modified)
+         */
 		public _field init( _init initialization )
 		{
 			this.init = initialization;
@@ -235,8 +275,23 @@ public class _fields
             name = name.replace( target, replacement );
             type = type.replace( target, replacement );
             return this;
+        }        
+            
+        /**
+         * 
+         * @param context contains bound variables and scripts to bind data into
+         * the template
+         * @param directives pre-and post document directives 
+         * @return the populated Template bound with Data from the context
+         */
+        @Override
+        public String bind( VarContext context, Directive...directives )
+        {
+            Dom dom = BindML.compile( author() ); 
+            return Author.code( dom, context, directives );
         }
         
+        @Override
         public _field bindIn( VarContext context )
         {
             this.javadoc.bindIn( context );
@@ -306,12 +361,11 @@ public class _fields
 			String[] tokens = _var.normalizeTokens( fieldDef );
 			if( tokens.length < 2 )
 			{
-				throw new VarException( "Expected at least (2) tokens for field <type> <name>" );
+				throw new VarException( 
+                    "Expected at least (2) tokens for field <type> <name>" );
 			}
 			String name = tokens[ tokens.length - 1 ];
             
-			//_type t = varcode.java.code._type.of( tokens[ tokens.length - 2 ] );
-			
             String t = tokens[ tokens.length - 2 ];
 			if( tokens.length > 2 )
 			{
@@ -319,13 +373,16 @@ public class _fields
 				System.arraycopy( tokens, 0, arr, 0, arr.length );
 				_modifiers mods = _modifiers.of( arr ); 
 				if( mods.containsAny( 
-					Modifier.ABSTRACT, Modifier.NATIVE, Modifier.SYNCHRONIZED, Modifier.STRICT ) )
+					Modifier.ABSTRACT, Modifier.NATIVE, Modifier.SYNCHRONIZED, 
+                    Modifier.STRICT ) )
 				{
-					throw new VarException( "field contains invalid modifier " + N + mods.toString() );
+					throw new VarException( 
+                        "field contains invalid modifier " + N + mods.toString() );
 				}
 				if( mods.containsAll( Modifier.FINAL, Modifier.VOLATILE ) ) 
 				{
-					throw new VarException( "field cannot be BOTH final AND volatile" );
+					throw new VarException( 
+                        "field cannot be BOTH final AND volatile" );
 				}
 				return new _field( mods, t, name );
 			}
@@ -432,6 +489,7 @@ public class _fields
 			"instanceFields", instanceFields ); 
     }
     
+    @Override
     public String author(  Directive...directives )
     {             
         return Author.code( 
@@ -440,6 +498,7 @@ public class _fields
 			directives );	
     }
     
+    @Override
 	public String toString()
 	{
 		return author( );
@@ -454,7 +513,7 @@ public class _fields
 	 * </PRE>        
 	 */
 	public static class _init 
-		extends Template.Base
+		implements Template, CodeAuthor
 	{
 		private String initCode;
 	
@@ -482,6 +541,21 @@ public class _fields
 
 		public static final Dom INIT = BindML.compile( " ={+initCode*+}" );
 	
+        /**
+         * 
+         * @param context contains bound variables and scripts to bind data into
+         * the template
+         * @param directives pre-and post document directives 
+         * @return the populated Template bound with Data from the context
+         */
+        @Override
+        public String bind( VarContext context, Directive...directives )
+        {
+            Dom dom = BindML.compile( author() ); 
+            return Author.code( dom, context, directives );
+        }
+        
+        @Override
         public _init bindIn( VarContext context )
         {
             if( this.initCode != null )
@@ -491,6 +565,7 @@ public class _fields
             return this;
         }
         
+        @Override
 		public String author( Directive... directives ) 
 		{
 			if( initCode != null )
@@ -500,6 +575,7 @@ public class _fields
 			return "";
 		}
 	
+        @Override
 		public String toString()
 		{
 			return author();
@@ -510,6 +586,7 @@ public class _fields
 			return initCode;
 		}
 
+        @Override
 		public _init replace( String target, String replacement ) 
 		{
             if( this.initCode != null )
