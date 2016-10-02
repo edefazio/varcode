@@ -123,7 +123,8 @@ public class _code
             
             if( o instanceof Template.Base )
             {   //try, do, while, if, for, _thread, 
-                ((Template.Base)o).bindIn( context );
+                codeSequence.set( i, 
+                   ((Template.Base)o).bindIn( context ) );
             }
             else if( o instanceof String )
             {
