@@ -39,7 +39,7 @@ import varcode.markup.bindml.BindML;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public interface Template
-{
+{   
     /** 
      * Strings passed in with this prefix signify they are 
      * Literals and not a String representation of an entity
