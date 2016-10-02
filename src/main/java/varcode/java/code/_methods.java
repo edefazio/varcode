@@ -280,12 +280,18 @@ public class _methods
 			return m;
 		}
         
-        public static _method of( String methodSingature, _code body )
+        public static _method of( String methodSignature, _code body )
         {
-            _method m = new _method( methodSingature );
+            _method m = new _method( methodSignature );
             return m.body( body );            
         }
 		
+        public static _method of( String signature, Object... body )
+        {
+            _method m = new _method( signature );
+            return m.body( body );            
+        }
+        
         public String getName()
         {
             return this.signature.getName();
