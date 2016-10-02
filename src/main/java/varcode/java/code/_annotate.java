@@ -16,6 +16,7 @@
 package varcode.java.code;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import varcode.Template;
 import varcode.VarException;
@@ -53,7 +54,7 @@ public class _annotate
             Object o = annotations.getAt( i );
             if( o instanceof _annotation )
             {
-                clone.add(_annotation.from( (_annotation)o ) );
+                clone.add(_annotation.cloneOf( (_annotation)o ) );
             }
             else if( o instanceof String )
             {
@@ -97,16 +98,17 @@ public class _annotate
     {
         return VarContext.of( "annotation", listOfAnnotations );
     }
-        
     
+    @Override
     public _annotate bindIn( VarContext context )
     {
         for( int i = 0; i < this.listOfAnnotations.size(); i++ )
         {
             Object thisAnn = this.listOfAnnotations.get( i );
-            if( thisAnn instanceof _annotation )
+            if( thisAnn instanceof Template.Base )
             {
-                ((_annotation)thisAnn).bindIn( context );
+                this.listOfAnnotations.set( i, 
+                    ((Template.Base)thisAnn).bindIn( context ) );
             }
             else if( thisAnn instanceof String )
             {
@@ -120,20 +122,23 @@ public class _annotate
     
     public _annotate add( Object...annotations )
     {
-        for( int i = 0; i < annotations.length; i++ )
-        {
-            this.listOfAnnotations.add( annotations[ i ] );
-        }
+        this.listOfAnnotations.addAll( Arrays.asList( annotations ) );
         return this;
     }
     
-    public Object getAt(int index )
+    /** 
+     * gets the annotation at a index
+     * @param index the index of the annotation
+     * @return the annotation
+     * @throw VarException if invalid index
+     */
+    public Object getAt( int index )
     {
         if( index < count() && index >= 0 )
         {
             return this.listOfAnnotations.get( index ); 
         }
-        throw new VarException("Could not get annotation at [" + index + "]" );                
+        throw new VarException( "Could not get annotation at [" + index + "]" );                
     }
     
     @Override
@@ -147,7 +152,7 @@ public class _annotate
             {
                 repList.add( ((String)o).replace( target, replacement ) );
             }
-            else if (o instanceof Template.Base )
+            else if( o instanceof Template.Base )
             {
                 repList.add( ((Template.Base)o).replace( target, replacement ) );
             }
@@ -216,9 +221,8 @@ public class _annotate
             return new _attributes( nameValues );
         }
         
-        
-        private List<Object>names;
-        private List<Object>values;
+        private final List<Object>names;
+        private final List<Object>values;
 
         public _attributes()
         {            
@@ -226,6 +230,7 @@ public class _annotate
             this.values = new ArrayList<Object>();            
         }
         
+        @Override
         public _attributes bindIn( VarContext context )
         {
             for( int i = 0; i < names.size(); i++ )
@@ -235,10 +240,10 @@ public class _annotate
                 {
                     names.set( i , ((Template.Base) thisName).bindIn( context ) );
                 }
-                else if (thisName instanceof String )
+                else if( thisName instanceof String )
                 {
                     names.set( i, 
-                        Author.code( BindML.compile((String)thisName), context ) );
+                        Author.code( BindML.compile( (String)thisName), context ) );
                 }   
             }
             for( int i = 0; i < values.size(); i++ )
@@ -246,7 +251,7 @@ public class _annotate
                 Object thisValue = values.get( i );
                 if( thisValue instanceof Template.Base )
                 {
-                    values.set( i , ((Template.Base) thisValue).bindIn( context ) );
+                    values.set( i, ((Template.Base) thisValue).bindIn( context ) );
                 }
                 else if( thisValue instanceof String )
                 {
@@ -391,16 +396,24 @@ public class _annotate
         }        
     }
     
+    /**
+     * A single annotation
+     */
     public static class _annotation
         extends Template.Base
     {
-        public static _annotation from( _annotation base )
+        /** Create and return a clone of this annotation
+         * @param prototype the prototype annotation
+         * @return a new clone of the base annotation
+         */
+        public static _annotation cloneOf( _annotation prototype )
         {
-            _annotation ann = new _annotation( base.annotation + "" );
-            ann.attributes( base.attributes );            
+            _annotation ann = new _annotation( prototype.annotation + "" );
+            ann.attributes(prototype.attributes );            
             return ann;
         }
         
+        @Override
         public _annotation bindIn( VarContext context )
         {
             if( this.annotation != null )
@@ -453,8 +466,7 @@ public class _annotate
                 {
                     this.annotation = "@" + annotation.toString();
                 }
-            }
-            
+            }            
         }
 
         public boolean isEmpty()
@@ -468,7 +480,7 @@ public class _annotate
         }
         
         @Override
-        public _annotation replace(String target, String replacement)
+        public _annotation replace( String target, String replacement )
         {
             if( this.annotation != null )
             {
@@ -503,7 +515,6 @@ public class _annotate
                 VarContext.of( 
                     "annotation", annotation, "attributes", attributes ), 
                 directives ); 
-                    
         }        
         
         @Override
