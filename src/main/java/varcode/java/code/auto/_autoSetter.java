@@ -23,17 +23,25 @@ import varcode.java.code._methods._method;
 import varcode.markup.bindml.BindML;
 
 /**
- * Automatically builds and returns Setter {@code _method}
+ * Automatically builds and returns Setter {@code _method} i.e.<PRE>
  * 
+ * _field f = _field.of("public int count");
+ * _method m = _autoSetter.of( f );
+ *  // ... were m = 
+ * public void setCount( int count )
+ * {
+ *     this.count = count;
+ * }
+ * </PRE>
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _autoSetter
 {
-    /** composes the signature for the Setter method */
+    /** composes the signature for the setter*/
     public static final Dom SIGNATURE = BindML.compile( 
         "public void set{+$^(fieldName)*+}( {+type*+} {+fieldName*+} )" );
     
-    
+    /** composes the body of the setter */
     public static final Dom BODY = BindML.compile(
         "this.{+fieldName*+} = {+fieldName*+};" );
     
@@ -57,15 +65,22 @@ public class _autoSetter
     }
     
     /**
-     * Creates a Fluent style Setter that
-     * has the set method return the containing class
+     * Creates a Fluent style Setter 
+     * <PRE>
+     * public MyBean setCount( int count )
+     * {
+     *     this.count = count;
+     *     return this;
+     * }
+     * </PRE>
+     * ...that has the set method return the containing class
      * so you can string together set methods like this
      * <PRE>
-     * Bean b = new Bean().setA("1").setB("2").setC("3");
+     * MyBean b = new MyBean().setA("1").setB("2").setC("3");
      * 
      * //instead of this:
      * 
-     * Bean b = new Bean();
+     * MyBean b = new MyBean();
      * b.setA("1");
      * b.setB("2");
      * b.setC("3");
