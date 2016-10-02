@@ -82,7 +82,7 @@ public class _class
 		return new _class( packageName, classSignature ); 
 	}
 	
-    /** Create and return a builder for a new class<PRE> 
+    /** Create and the model for a new class<PRE> 
      * i.e. _class.of( 
      * "A Sample Ad Hoc Class", 
      * "ex.varcode", 
@@ -99,7 +99,7 @@ public class _class
 	public static _class of( String javadoc, String packageName, String classSignature )
 	{
 		_class c = new _class( packageName, classSignature );
-		c.javaDoc( javadoc );
+		c.javadoc( javadoc );
 		return c;
 	}
 	
@@ -182,7 +182,7 @@ public class _class
     @Override
 	public String author( Directive... directives ) 
 	{
-        return Author.code( CLASS,getContext(), directives );			
+        return Author.code( CLASS, getContext(), directives );			
 	}
 	
     public _annotate getAnnotations()
@@ -204,11 +204,13 @@ public class _class
 				component comp = nests.components.get( i );
 				VarContext vc = comp.getContext();
 				
-				//inner classes inherit package
+				//inner classes inherit package, so remove the package
 				vc.getScopeBindings().remove( "pckage" );
 				
-				//inner classes have imports at top level
+				//inner classes have imports at top level so remove imports
 				vc.getScopeBindings().remove( "imports" );
+                
+                //author the member class/enum/interface w/o package or imports
 				nested[ i ] = Author.code( comp.getDom(), vc );				
 			}
 			n = nested;			
@@ -251,6 +253,7 @@ public class _class
 				"nests", n );
 	}
 	
+    @Override
     public _class bindIn( VarContext context )
     {
         this.classPackage = this.classPackage.bindIn( context );
@@ -262,21 +265,11 @@ public class _class
         this.staticBlock = this.staticBlock.bindIn( context );
         this.methods = this.methods.bindIn( context );
         this.constructors = this.constructors.bindIn( context );
-        this.nests = this.nests.bindIn( context );
-        
-        
-        
-        /*
-        for( int i = 0; i < arguments.size(); i++ )
-        {
-            this.arguments.set( i, 
-                Author.code( BindML.compile( this.arguments.get( i ) ), context ) );
-            //this.name = Author.code( BindML.compile( this.name ), context );
-        }
-        */
+        this.nests = this.nests.bindIn( context );      
         return this;
     }
      
+    @Override
     public final String bind( VarContext context, Directive...directives )
     {
          VarContext vc = VarContext.of(
@@ -314,39 +307,76 @@ public class _class
 		}
 	}
 	
+    /**
+     * <UL> 
+     *  <LI>Build the (.java) source of the {@code _class} model
+     *  <LI>compile the source using Javac to create .class
+     *  <LI>load the .class in a new {@code AdHocClassLoader}
+     *  <LI>return a reference to the loaded class
+     * </UL>
+     * @return the {@code Class } loaded from a {@code AdHocClassLoader}
+     */
     public Class loadClass( )
     {
         return toJavaCase().loadClass();
     }
     
+    /**
+     * <UL> 
+     *  <LI>Build the (.java) source of the {@code _class} model
+     *  <LI>compile the source using Javac to create .class
+     *  <LI>load the .class in the {@code adHocClassLoader}
+     *  <LI>return a reference to the loaded class
+     * </UL>
+     * @param adHocClassLoader the class Loader used for compiling and loading
+     * the class.
+     * @return the {@code Class } loaded from in the a {@code AdHocClassLoader}
+     */
     public Class loadClass( AdHocClassLoader adHocClassLoader )
     {
         return toJavaCase().loadClass( adHocClassLoader );
     }
     
+    /**
+     * <UL> 
+     *  <LI>Build the (.java) source of the {@code _class} model
+     *  <LI>compile the source using Javac to create .class
+     *  <LI>load the .class in a new {@code AdHocClassLoader}
+     *  <LI>create a new instance of the class using {@code constructorArgs} 
+     * </UL>
+     * @param constructorArgs arguments passed into the constructor
+     * @return  a new instance of the Ad Hoc class
+     */
     public Object instance( Object...constructorArgs )
     {
         return toJavaCase().instance( constructorArgs );
     }
     
+    /**
+     * <UL> 
+     *  <LI>Build the (.java) source of the {@code _class} model
+     *  <LI>compile the source using Javac to create .class
+     *  <LI>load the .class in the {@code adHocClassLoader}
+     *  <LI>create a new instance of the class using {@code constructorArgs} 
+     * </UL>
+     * @param classLoader the class Loader used for compiling and loading
+     * the Class.
+     * @param constructorArgs arguments for the construction of the class
+     * @return the {@code Class } loaded from in the a {@code AdHocClassLoader}
+     */
     public Object instance( AdHocClassLoader classLoader, Object...constructorArgs )
     {
         return toJavaCase().instance( classLoader, constructorArgs );
     }
     
-    @Override
-    public JavaCase toJavaCase( Directive... directives) 
-	{	
-		return JavaCase.of(
-			getFullyQualifiedClassName(),
-			CLASS, 
-			getContext(),
-			directives );
-	}
-    
+   
 
     /**
-     * 
+     * <UL>
+     *  <LI>Binds in the context into the _class and (optional) directives
+     *  <LI>Build the (.java) source of the {@code _class} model
+     *  <LI>return the JavaCase
+     * </UL>
      * @param context contains bound variables and scripts to bind data into
      * the template
      * @param directives pre-and post document directives 
@@ -366,8 +396,13 @@ public class _class
     }
         
     /**
-     * Bind the Context variables into the _class model as needed 
-     * then compile and load the class in a new ClassLoader and return the class
+     * <UL> 
+     *  <LI>Bind in the context into the _class and (optional) directives
+     *  <LI>Build the (.java) source of the {@code _class} model
+     *  <LI>compile the source using Javac to create .class
+     *  <LI>load the .class in the {@code adHocClassLoader}
+     *  <LI>return a reference to the loaded class
+     * </UL>
      * @param context the context for filling in Marks within the Class
      * @param directives directives for 
      * @return 
@@ -384,6 +419,15 @@ public class _class
         return jc.instance( parameters );
     }
     
+    @Override
+    public JavaCase toJavaCase( Directive... directives) 
+	{	
+		return JavaCase.of(
+			getFullyQualifiedClassName(),
+			CLASS, 
+			getContext(),
+			directives );
+	} 
     
     @Override
 	public JavaCase toJavaCase( VarContext context, Directive...directives ) 
@@ -408,27 +452,39 @@ public class _class
 	}
 	
 	/**
+     * Adds a new constructor
 	 * <PRE>{@code 
 	 * _class MyAClass = new _class("public A")
 	 *     .addConstructor("public A( String name )", "this.name = name;");}</PRE>
 	 *     
-	 * @param constructorSignature
-	 * @param body
-	 * @return
+	 * @param constructorSignature the signature of the constructor
+	 * @param body the body of the constructor
+	 * @return this
 	 */
 	public _class constructor( String constructorSignature, Object... body )
 	{
-		_constructors._constructor c = new _constructors._constructor( constructorSignature ).body( body );
+		_constructors._constructor c = 
+            new _constructors._constructor( constructorSignature ).body( body );
 		constructors.addConstructor( c );
 		return this;
 	}
-	
-	public _class javaDoc( String classJavaDocComment )
+	/** 
+     * Sets the Javadoc comment for the class
+     * 
+     * @param javadoc the Javadoc comment
+     * @return this
+     */
+	public _class javadoc( String javadoc )
 	{
-		this.javadoc = new _javadoc( classJavaDocComment );
+		this.javadoc = new _javadoc( javadoc );
 		return this;
 	}
 
+    /**
+     * Implement one or more interfaces
+     * @param classes to implement
+     * @return this
+     */
     public _class implement( Class...classes )
     {
         if( signature.implementsFrom == null )
@@ -623,6 +679,9 @@ public class _class
 		return this;
 	}
 	
+    /**
+     * signature of the _class
+     */
 	public static class _signature
 		extends Template.Base
 	{
@@ -649,6 +708,7 @@ public class _class
 				directives );
 		} 
 		
+        @Override
         public _signature bindIn( VarContext context )
         {
             this.className = Author.code( 
@@ -726,6 +786,7 @@ public class _class
             this.implementsFrom.implement( interfaceClasses );  
             return this;
         }
+        
         /**
          * finds the index of the target token 
          * @param tokens
@@ -744,12 +805,16 @@ public class _class
             return -1;
         }
         
+        /** Creates a Signature by parsing the classSDignature provided 
+         * 
+         * @param classSignature the signature 
+         * (i.e. "public class MyClass extends A implements B")
+         * @return the signature for the clas
+         */
 		public static _signature of( String classSignature )
 		{
 			_signature sig = new _signature();
 		
-			//MUST have sequence
-			//   ...class 
 			String[] tokens = classSignature.split(" ");
 		
 			int classTokenIndex = -1;
@@ -780,7 +845,6 @@ public class _class
 				}
 				else if( tokens[ i ].equals( "implements" ) )
 				{
-					//System.out.println( "implementsTokenIndex " + i );
 					implementsTokenIndex = i;
 				}
 			}
@@ -788,7 +852,7 @@ public class _class
 			if( ( classTokenIndex < 0 ) || ( classTokenIndex > tokens.length -1 ) )
 			{   //cant be 
 				throw new VarException(
-					"class token cant be not found or the last token"); 
+					"class token cant be not found or the last token" ); 
 			}
 			sig.className = tokens[ classTokenIndex + 1 ];
 		
@@ -801,7 +865,8 @@ public class _class
 					Modifier.NATIVE, Modifier.SYNCHRONIZED, Modifier.NATIVE,
 					Modifier.TRANSIENT, Modifier.VOLATILE, Modifier.STRICT ) )
 				{
-					throw new VarException( "classSignature contains invalid modifiers" );
+					throw new VarException( 
+                        "classSignature \"" + classSignature + "\" contains invalid modifiers" );
 				}
 				
 				if( sig.modifiers.containsAll(
@@ -815,14 +880,14 @@ public class _class
 				if( extendsTokenIndex == tokens.length -1 )
 				{
 					throw new VarException( 
-						"Extends token cannot be the last token" );
+						"\"extends\" token cannot be the last token" );
 				}                
 				sig.extendsFrom = new _extends( tokens[ extendsTokenIndex + 1 ] );						
                 if(( implementsTokenIndex < 0 ) && 
                    ( tokens.length - 2 > extendsTokenIndex ) )
                 {
                     throw new VarException(
-                        "Class can only use single extension inheritance ");
+                        "class can only use single extension inheritance ");
                 }
 			}
 			if( implementsTokenIndex > 0 )
