@@ -1,6 +1,7 @@
 package varcode.java.code;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import varcode.Template;
 import varcode.VarException;
@@ -18,7 +19,7 @@ import varcode.markup.bindml.BindML;
  * <LI>ONE: ( "AString" ) 
  * <LI>or MORE THAN ONE:( "Hey", 5, new HashMap<Integer,String>(), true, 'c' )
  * </UL>
- * arguments
+ * arguments passed to methods
  * 
  * NOTE: to differentiate between a String and Some code, String literals
  * can be prefixed with "$$"
@@ -33,17 +34,16 @@ import varcode.markup.bindml.BindML;
  * "( new HashMap(), \"StringLiteral\" )"
  * 
  * </PRE>
- * 
+ * @author M. Eric DeFazio eric@varcode.io
  */
 public class _arguments 
 	extends Template.Base
 {
-    /** 
-     * Strings passed in with this prefix signify they are 
-     * Literals and not a String representation of an entity
+
+    /** creates a new _arguments as a clone of prototype
+     * @param prototype the prototype to base the clone
+     * @return new clone instance
      */
-    public static final String STRING_LITERAL_PREFIX = "$$";
-    
 	public static _arguments cloneOf( _arguments prototype ) 
 	{
 		_arguments clone = new _arguments();
@@ -57,9 +57,12 @@ public class _arguments
 	public static final Dom ARGUMENTS_LIST = 
 		BindML.compile( "( {{+:{+args+}, +}} )" );
 	
-    
-    /** returns the argument at the index */
-    public String get( int index )
+    /** 
+     * returns the argument at the index
+     * @param index the index of the argument to get
+     * @return String the argument at this index
+     */
+    public String getAt( int index )
     {
         if( index < count() && index >= 0 )
         {
@@ -68,9 +71,14 @@ public class _arguments
         throw new VarException( "Invalid argument index ["+ index + "]" );
     }
     
+    /** 
+     * Adds an argument at the end of the current arguments list
+     * @param argument an argument to add to the end of existing arguments
+     * @return this (updated with new argument)
+     */
     public _arguments addArgument( Object argument )
     {
-        this.arguments.add( argumentFor( argument ) );
+        this.arguments.add( stringFormOf( argument ) );
         return this;
     }
     
@@ -78,22 +86,23 @@ public class _arguments
     {
         for( int i = 0; i< arguments.length; i++ )
         {
-            this.arguments.add( argumentFor( arguments[ i ] ) );
+            this.arguments.add( stringFormOf( arguments[ i ] ) );
         }
         return this;
     }
     
+    @Override
     public _arguments bindIn( VarContext context )
     {
         for( int i = 0; i < arguments.size(); i++ )
         {
             this.arguments.set( i, 
                 Author.code( BindML.compile( this.arguments.get( i ) ), context ) );
-            //this.name = Author.code( BindML.compile( this.name ), context );
         }
         return this;
     }
     
+    @Override
 	public String author( Directive... directives ) 
 	{
 		return Author.code( 
@@ -107,20 +116,37 @@ public class _arguments
 		return arguments.size();
 	}
 	
-    private String argumentFor( Object obj )
+    /**
+     * Decides how arguments are displayed (as Strings) 
+     * since we store arguments as Strings
+     * <UL>
+     * <LI>sometimes we want a String i.e. "myBean" to be a reference to an entity/instance),
+     * <LI>sometimes we want the String "Dear Sir or Madam" to be treated as a String literal):
+     * we do this by prefixing String literals with "$$", so:
+     * <PRE>
+     * _arguments args = _arguments.of( "$$Dear Sir or Madam" );
+     * will print "( \"Dear Sir or Madam\" );
+     * <LI>Sometimes we encounter a null, we want to print "null"
+     * <LI>Sometimes we have an entity that describes itself as a String 
+     * (i.e. an anonymous class) and we call toString() on it
+     * </PRE>
+     * @param obj an object argument
+     * @return the String representation of the argument (as it would appear in code)
+     */
+    private static String stringFormOf( Object obj )
     {
         if( obj != null )
 	    {
             if( obj.getClass().getPackage().getName()
-                   .startsWith( "java.lang" ) )
+                .startsWith( "java.lang" ) )
             {       
-                //if you want to pass a String, then yuo need to identify it 
+                //to pass a String, then you need to identify it 
                 //as a literal
                 if( obj instanceof String )
                 {
                     String str = (String) obj;
                     //the String can begin with "$$"
-                    if( str.startsWith( "$$" ) )
+                    if( str.startsWith( STRING_LITERAL_PREFIX ) )
                     {                            
                         return _literal.of( str.substring( 2 ) ).toString();
                     }
@@ -148,12 +174,8 @@ public class _arguments
     }
     
 	/**
-	 * KeyValue pairs of type - names
-	 * "int", "x"
-	 * "String", "name"
-	 * "double", 
 	 * @param arguments the arguments
-	 * @return
+	 * @return a new _arguments container
 	 */
 	public static _arguments of( Object... arguments )
 	{
@@ -166,69 +188,27 @@ public class _arguments
 		
 		for( int i = 0; i < arguments.length ; i++ )
 		{
-			if( arguments[ i ] != null )
-			{
-                if( arguments[ i ].getClass().getPackage().getName()
-                   .startsWith( "java.lang" ) )
-                {          
-                    //if you want to pass a String, then yuo need to identify it 
-                    //as a literal
-                    if( arguments[ i ] instanceof String )
-                    {
-                        String str = (String) arguments[ i ];
-                        //the String can begin with "$$"
-                        if( str.startsWith( "$$" ) )
-                        {                            
-                            args.add( _literal.of( str.substring( 2 ) ).toString() );
-                        }
-                        else
-                        {
-                            args.add( arguments[ i ].toString() );	
-                        }
-                    }
-                    else
-                    {
-                        try
-                        {
-                            _literal l = _literal.of( arguments[ i ] );
-                            args.add( l.toString() );
-                        }
-                        catch( Exception e )
-                        {
-                            args.add( arguments[i ].toString() );
-                        }
-                    }
-                }
-				else
-				{
-					 args.add( arguments[i ].toString() );
-				}				
-			}
-			else
-			{
-				args.add( "null" );
-			}
+            args.add( stringFormOf( arguments[ i ] ) );            
 		}
 		return new _arguments( args.toArray( new String[ 0 ] ) );
 	}
 	
-	private List<String> arguments;
+    /** the arguments list */
+	private final List<String> arguments;
 	
 	public _arguments( String...args )
 	{
-        arguments = new ArrayList<String>();
-        
-        for( int i = 0; i < args.length; i++ )
-        {
-            arguments.add( args[ i ] );
-        }
+        arguments = new ArrayList<String>();        
+        arguments.addAll(Arrays.asList(args));
 	}
 		
+    @Override
 	public String toString()
 	{
 		return author();
     }
 
+    @Override
     public _arguments replace( String target, String replacement )
     {
         for( int i = 0; i < this.arguments.size(); i++ )
