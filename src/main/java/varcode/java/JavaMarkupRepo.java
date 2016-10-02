@@ -11,6 +11,8 @@ import varcode.markup.repo.MarkupRepo;
  * This provides some "conventional" places where the source code might be
  * (as it relates to System Properties, specifically "user.dir" and "markup.dir")
  *  
+ * this uses "conventional" places where java source code exists
+ * 
  * @author M. Eric DeFazio eric@varcode.io
  */
 public enum JavaMarkupRepo
@@ -44,7 +46,12 @@ public enum JavaMarkupRepo
            TEST_DIRECTORY,
            SRC_TEST_JAVA_DIRECTORY );
 
-    
+    /**
+     * 
+     * @param markupId the Id of the Markup source to load
+     * @return MarkupStream for reading the input
+     */
+    @Override
     public MarkupStream markupStream( String markupId )
     {
         String markupDir = System.getProperty( "markup.dir" );
@@ -68,7 +75,18 @@ public enum JavaMarkupRepo
      */
     public MarkupStream markupStream( Class<?> localClass )
     {
-    	 return markupStream( localClass.getCanonicalName() + ".java" );
+        //need to check if it's a member class 
+        if ( localClass.isMemberClass() )
+        {
+            // at the moment any Member class just returns the Declaring Classes
+            // full source code
+            return markupStream( 
+                localClass.getDeclaringClass().getCanonicalName() + ".java" ); 
+        }
+        else
+        {
+            return markupStream( localClass.getCanonicalName() + ".java" );
+        }
     }
         
     public String describe()
