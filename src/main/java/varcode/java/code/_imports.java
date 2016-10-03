@@ -1,17 +1,15 @@
 package varcode.java.code;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
-import varcode.CodeAuthor;
-import varcode.Template;
 
 import varcode.VarException;
 import varcode.context.VarContext;
-import varcode.doc.Author;
+import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.dom.Dom;
 import varcode.markup.bindml.BindML;
+import varcode.Model;
 
 /**
  * 
@@ -25,7 +23,7 @@ import varcode.markup.bindml.BindML;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _imports
-    implements Template, CodeAuthor
+    implements Model
 {        
     /**
      * 
@@ -38,7 +36,7 @@ public class _imports
     public String bind( VarContext context, Directive...directives )
     {
         Dom dom = BindML.compile( author() ); 
-        return Author.code( dom, context, directives );
+        return Compose.asString( dom, context, directives );
     }
     
 	/** Create and return a mutable clone given the imports */
@@ -56,8 +54,7 @@ public class _imports
         Set<String> importClassesBound = new TreeSet<String>();
         for( int i = 0; i < ics.length; i++ )
         {
-            importClassesBound.add( 
-                Author.code( BindML.compile( ics[ i ] ), context ) );
+            importClassesBound.add(Compose.asString( BindML.compile( ics[ i ] ), context ) );
         }
         this.importClasses = importClassesBound;
         
@@ -65,8 +62,7 @@ public class _imports
         Set<String> sisBound = new TreeSet<String>();
         for( int i = 0; i < sis.length; i++ )
         {
-            sisBound.add( 
-                Author.code( BindML.compile( sis[ i ] ), context ) );
+            sisBound.add(Compose.asString( BindML.compile( sis[ i ] ), context ) );
         }
         this.staticImports = sisBound;        
         return this;
@@ -119,7 +115,7 @@ public class _imports
 	
 	public String author( Directive... directives ) 
 	{
-		return Author.code( 
+		return Compose.asString( 
 			IMPORTS, 
 			VarContext.of( 
 				"imports", this.importClasses, 

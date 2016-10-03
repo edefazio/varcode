@@ -3,19 +3,19 @@ package varcode.java.code;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
-import varcode.CodeAuthor;
 
 import varcode.VarException;
 import varcode.context.VarContext;
-import varcode.doc.Author;
+import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.lib.text.EscapeString;
 import varcode.dom.Dom;
-import varcode.Template;
 import varcode.markup.bindml.BindML;
+import varcode.Model;
+import varcode.java.Java;
 
 public class _javadoc
-    implements Template, CodeAuthor
+    implements Model
 {        
     /**
      * 
@@ -28,7 +28,7 @@ public class _javadoc
     public String bind( VarContext context, Directive...directives )
     {
         Dom dom = BindML.compile( author() ); 
-        return Author.code( dom, context, directives );
+        return Compose.asString( dom, context, directives );
     }
     
 	public static _javadoc cloneOf( _javadoc jdoc )
@@ -45,11 +45,12 @@ public class _javadoc
 		return new _javadoc( commentLines );
 	}
 	
+    @Override
     public _javadoc bindIn( VarContext context )
     {
         if( this.comment != null )
         {
-            this.comment = Author.code( BindML.compile( this.comment ), context );
+            this.comment = Compose.asString( BindML.compile( this.comment ), context );
         }
         return this;
     }
@@ -171,6 +172,7 @@ public class _javadoc
 		return "";
 	}
 	
+    @Override
 	public _javadoc replace( String target, String replacement )
 	{
 		if( this.comment != null )
@@ -180,15 +182,17 @@ public class _javadoc
 		return this;
 	}
 	
+    @Override
 	public String author( Directive... directives ) 
-	{
-		return Author.code( 
-			this.getClass(), 
+	{       
+        return Compose.asString(  
 			JAVADOC_DOM, 
-			VarContext.of( "comment", comment ), 
+			VarContext.of( "comment", comment, "markup.class", _javadoc.class ), 
 			directives );
+        
 	}
 	
+    @Override
 	public String toString()
 	{
 		return author();

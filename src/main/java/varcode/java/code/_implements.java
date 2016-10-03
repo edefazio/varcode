@@ -2,18 +2,17 @@ package varcode.java.code;
 
 import java.util.ArrayList;
 import java.util.List;
-import varcode.CodeAuthor;
-import varcode.Template;
 
 import varcode.VarException;
 import varcode.context.VarContext;
-import varcode.doc.Author;
+import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.dom.Dom;
 import varcode.markup.bindml.BindML;
+import varcode.Model;
 
 public class _implements
-    implements Template, CodeAuthor
+    implements Model
 {        
     /**
      * 
@@ -26,7 +25,7 @@ public class _implements
     public String bind( VarContext context, Directive...directives )
     {
         Dom dom = BindML.compile( author() ); 
-        return Author.code( dom, context, directives );
+        return Compose.asString( dom, context, directives );
     }
     
 	public static final _implements NONE = new _implements();
@@ -56,13 +55,13 @@ public class _implements
 		impls = new ArrayList<String>();
 	}
 	
+    @Override
     public _implements bindIn( VarContext context )
     {
         List<String>replaced = new ArrayList<String>();
         for( int i = 0; i < impls.size(); i++ )
         {
-            replaced.add( 
-                Author.code(BindML.compile( impls.get( i ) ) , context ) );
+            replaced.add(Compose.asString(BindML.compile( impls.get( i ) ) , context ) );
         }
         this.impls = replaced;
         return this;
@@ -106,6 +105,7 @@ public class _implements
         return contains( interfaceClass.getCanonicalName() );
     }
     
+    @Override
     public _implements replace( String target, String replacement )
     {
         List<String> replaced = new ArrayList<String>();
@@ -141,18 +141,20 @@ public class _implements
 		return impl;
 	}
 	
+    @Override
 	public String author( Directive... directives ) 
 	{
 		VarContext vc = VarContext.of( "impls", impls );
-		return Author.code( IMPLEMENTS, vc, directives );
+		return Compose.asString( IMPLEMENTS, vc, directives );
 	}
 	
+    @Override
 	public String toString()
 	{
 		return author();
 	}
 
-	public String get( int index ) 
+	public String getAt( int index ) 
 	{
 		if( index > impls.size() -1 )
 		{
@@ -160,6 +162,6 @@ public class _implements
 				"index [" + index + "] is outside of implements range [0..."
 			    + ( impls.size() -1 ) + "]" );
 		}
-		return impls.get( index ).toString();
+		return impls.get( index );
 	}
 }

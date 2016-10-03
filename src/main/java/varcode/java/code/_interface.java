@@ -4,12 +4,10 @@ import varcode.java.JavaCase.JavaCaseAuthor;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
-import varcode.CodeAuthor;
-import varcode.Template;
 
 import varcode.VarException;
 import varcode.context.VarContext;
-import varcode.doc.Author;
+import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.dom.Dom;
 import varcode.java.JavaCase;
@@ -18,10 +16,11 @@ import varcode.java.code._methods._method;
 import varcode.java.code._nest._nestGroup;
 import varcode.java.code._nest.component;
 import varcode.markup.bindml.BindML;
+import varcode.Model;
 
 //allow default methods
 public class _interface 
-	implements Template, JavaCaseAuthor, _nest.component
+	implements JavaCaseAuthor, _nest.component
 {
     /**
      * 
@@ -34,7 +33,7 @@ public class _interface
     public String bind( VarContext context, Directive...directives )
     {
         Dom dom = BindML.compile( author() ); 
-        return Author.code( dom, context, directives );
+        return Compose.asString( dom, context, directives );
     }
     
 	public static final Dom INTERFACE = 
@@ -67,7 +66,7 @@ public class _interface
 				VarContext vc = comp.getContext();
 				vc.getScopeBindings().remove("pckage");
 				vc.getScopeBindings().remove("imports");
-				nested[ i ] = Author.code( comp.getDom(), vc );				
+				nested[ i ] = Compose.asString( comp.getDom(), vc );				
 			}
 			n = nested;			
 		}
@@ -382,7 +381,7 @@ public class _interface
 	
     /** interface signature */
 	public static class _signature
-        implements Template, CodeAuthor
+        implements Model
     {        
         /**
          * 
@@ -395,7 +394,7 @@ public class _interface
         public String bind( VarContext context, Directive...directives )
         {
             Dom dom = BindML.compile( author() ); 
-            return Author.code( dom, context, directives );
+            return Compose.asString( dom, context, directives );
         }
         
 		private _modifiers modifiers = new _modifiers();
@@ -408,7 +407,7 @@ public class _interface
         @Override
 		public String author( Directive... directives ) 
 		{
-			return Author.code( INTERFACE_SIGNATURE, 
+			return Compose.asString( INTERFACE_SIGNATURE, 
 				VarContext.of(
 					"modifiers", modifiers,
 					"interfaceName", interfaceName,				
@@ -428,7 +427,7 @@ public class _interface
         @Override
         public _signature bindIn( VarContext context )
         {
-            this.interfaceName = Author.code(BindML.compile(this.interfaceName), context );
+            this.interfaceName = Compose.asString(BindML.compile(this.interfaceName), context );
             this.extendsFrom.bindIn( context );
             this.modifiers.bindIn( context );
             return this;
@@ -594,7 +593,7 @@ public class _interface
     @Override
 	public String author( Directive... directives ) 
 	{
-        return Author.code( INTERFACE, getContext(), directives);
+        return Compose.asString( INTERFACE, getContext(), directives);
 	}
     
     @Override
@@ -603,7 +602,7 @@ public class _interface
         String FullClassName = this.getFullyQualifiedClassName();
         Dom classNameDom = BindML.compile( FullClassName );
         
-        String theClassName = Author.code( classNameDom, context ); 
+        String theClassName = Compose.asString( classNameDom, context ); 
         
         System.out.println( theClassName );
         //first lets print out the structure and optional Marks
