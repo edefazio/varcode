@@ -1,12 +1,11 @@
 package varcode.java.code;
 
-import varcode.Template;
-import varcode.CodeAuthor;
 import varcode.context.VarContext;
-import varcode.doc.Author;
+import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.dom.Dom;
 import varcode.markup.bindml.BindML;
+import varcode.Model;
 
 /**
  * package representation
@@ -14,7 +13,7 @@ import varcode.markup.bindml.BindML;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _package
-    implements Template, CodeAuthor 
+    implements Model
 {
 	public static final Dom PACKAGE = 
 		BindML.compile( 
@@ -38,7 +37,10 @@ public class _package
 		return name == null || name.trim().length() == 0;
 	}
 	
-    /** Gets the package name (in canonical '.' form) */
+    /** 
+     * Gets the package name (in canonical '.' form)
+     * @return  the package name in canonical form 
+     */
 	public String getName()
 	{
 		return name;
@@ -76,7 +78,7 @@ public class _package
     @Override
 	public String author( Directive... directives ) 
 	{
-		return Author.code( 
+		return Compose.asString( 
             PACKAGE, 
             VarContext.of( "name", this.name ), directives );
 	}
@@ -86,7 +88,7 @@ public class _package
     {
         if( this.name != null )
         {
-            String res = Author.code( BindML.compile( this.name ), context );
+            String res = Compose.asString( BindML.compile( this.name ), context );
             System.out.println ( "RED" + res );
             this.name = res;
         }
@@ -97,6 +99,6 @@ public class _package
     public String bind( VarContext context, Directive... directives )
     {
         Dom dom = BindML.compile(author() );
-        return Author.code( dom, context, directives );
+        return Compose.asString( dom, context, directives );
     }
 }

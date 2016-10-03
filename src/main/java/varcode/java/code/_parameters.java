@@ -2,16 +2,15 @@ package varcode.java.code;
 
 import java.util.ArrayList;
 import java.util.List;
-import varcode.CodeAuthor;
-import varcode.Template;
 
 import varcode.VarException;
 import varcode.context.VarContext;
-import varcode.doc.Author;
+import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.dom.Dom;
 import varcode.java.code._annotate._annotation;
 import varcode.markup.bindml.BindML;
+import varcode.Model;
 
 /**
  * Models 
@@ -24,7 +23,7 @@ import varcode.markup.bindml.BindML;
  *
  */
 public class _parameters
-    implements Template, CodeAuthor
+    implements Model
 {        
     /**
      * 
@@ -37,7 +36,7 @@ public class _parameters
     public String bind( VarContext context, Directive...directives )
     {
         Dom dom = BindML.compile( author() ); 
-        return Author.code( dom, context, directives );
+        return Compose.asString( dom, context, directives );
     }
     
 	public static final Dom PARAMS_LIST = 
@@ -222,7 +221,7 @@ public class _parameters
 	{
         if( params != null && params.size() > 0 )            
         {
-            return Author.code( 
+            return Compose.asString( 
                 PARAMS_LIST, 
                 VarContext.of( 
                     "params", params ), directives );
@@ -264,7 +263,7 @@ public class _parameters
 	
     /** a single name-value parameter to a method, constructor, etc. */
 	public static class _parameter
-        implements Template, CodeAuthor
+        implements Model
     {        
         /**
          * 
@@ -277,7 +276,7 @@ public class _parameters
         public String bind( VarContext context, Directive...directives )
         {
             Dom dom = BindML.compile( author() ); 
-            return Author.code( dom, context, directives );
+            return Compose.asString( dom, context, directives );
         }
         
 		public static _parameter cloneOf( _parameter prototype ) 
@@ -403,8 +402,8 @@ public class _parameters
         @Override
         public _parameter bindIn( VarContext context )
         {
-            this.type = Author.code( BindML.compile( this.type ), context);
-            this.name = Author.code( BindML.compile( this.name ), context);
+            this.type = Compose.asString( BindML.compile( this.type ), context);
+            this.name = Compose.asString( BindML.compile( this.name ), context);
             if( this.parameterAnnotation != null && !this.parameterAnnotation.isEmpty() )
             {
                 this.parameterAnnotation = 
@@ -426,7 +425,7 @@ public class _parameters
         @Override
         public String author( Directive... directives )
         {
-            return Author.code( 
+            return Compose.asString( 
                 PARAMS, getContext(), directives );
         }
         

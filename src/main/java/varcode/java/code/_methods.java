@@ -5,22 +5,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import varcode.Template;
 
 import varcode.VarException;
 import varcode.context.VarContext;
-import varcode.doc.Author;
+import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.dom.Dom;
-import varcode.CodeAuthor;
 import varcode.markup.bindml.BindML;
+import varcode.Model;
 
 /**
- *   
+ * Grouping of methods belonging to an entity (class, enum, interface)
+ * 
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _methods
-    implements Template, CodeAuthor
+    implements Model
 {        
 	private Map<String, List<_method>>methodsByName = 
 		new HashMap<String, List<_method>>();
@@ -92,7 +92,7 @@ public class _methods
             "nonStaticMethods", nonStaticMethods,    
             "abstractMethods", abstractMethods);
         
-        return Author.code( METHODS, vc, directives );
+        return Compose.asString( METHODS, vc, directives );
     }
      
     
@@ -124,7 +124,7 @@ public class _methods
 				}
 			}			
 		}
-		return Author.code( 
+		return Compose.asString( 
 			METHODS, 
 			VarContext.of( 
 				"staticMethods", staticMethods,
@@ -263,7 +263,7 @@ public class _methods
     
 	/** model of a method */
 	public static class _method		
-        implements Template, CodeAuthor
+        implements Model
     {      
         
 		public static final Dom METHOD = 
@@ -441,11 +441,11 @@ public class _methods
         
             if( this.isAbstract() )
             {
-                return Author.code( ABSTRACT_METHOD, vc, directives );    
+                return Compose.asString( ABSTRACT_METHOD, vc, directives );    
             }
             else
             {
-                return Author.code( METHOD, vc, directives );    
+                return Compose.asString( METHOD, vc, directives );    
             }            
         }
         
@@ -454,17 +454,17 @@ public class _methods
 		{            
 			if( this.isAbstract() )
 			{
-				return Author.code( ABSTRACT_METHOD, 
+				return Compose.asString( ABSTRACT_METHOD, 
 					getContext(),
 					directives );
 			}
-			return Author.code( METHOD, 
+			return Compose.asString( METHOD, 
 				getContext(),
 				directives );
 		}
 		
 		public static class _signature
-            implements Template, CodeAuthor
+            implements Model
         {        
             /**
             * 
@@ -477,7 +477,7 @@ public class _methods
             public String bind( VarContext context, Directive...directives )
             {
                 Dom dom = BindML.compile( author() ); 
-                return Author.code( dom, context, directives );
+                return Compose.asString( dom, context, directives );
             }
             
 			public static _signature cloneOf( _signature prototype )
@@ -534,11 +534,11 @@ public class _methods
             @Override
 			public _signature bindIn( VarContext context )
             {
-                this.methodName = Author.code( 
+                this.methodName = Compose.asString( 
                     BindML.compile( this.methodName ), 
                     context );
                                 
-                this.returnType = Author.code( 
+                this.returnType = Compose.asString( 
                     BindML.compile( this.returnType ), 
                     context );
                 this.params.bindIn( context ); 
@@ -707,7 +707,7 @@ public class _methods
             @Override
 			public String author( Directive... directives ) 
 			{
-				return Author.code( METHOD_SIGNATURE, 
+				return Compose.asString( METHOD_SIGNATURE, 
 					VarContext.of(
 						"modifiers", modifiers,
 						"returnType", returnType,

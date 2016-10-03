@@ -17,20 +17,19 @@ package varcode.java.code;
 
 import java.util.ArrayList;
 import java.util.List;
-import varcode.CodeAuthor;
-import varcode.Template;
 import varcode.context.VarContext;
-import varcode.doc.Author;
+import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.dom.Dom;
 import varcode.markup.bindml.BindML;
+import varcode.Model;
 
 /**
  *
  * @author eric
  */
 public class _try
-    implements Template, CodeAuthor
+    implements Model
 {        
     /**
      * 
@@ -43,7 +42,7 @@ public class _try
     public String bind( VarContext context, Directive...directives )
     {
         Dom dom = BindML.compile( author() ); 
-        return Author.code( dom, context, directives );
+        return Compose.asString( dom, context, directives );
     }
     
     /**
@@ -98,7 +97,7 @@ public class _try
     @Override
     public String author( Directive... directives )
     {
-        return Author.code( TRY_CATCH_FINALLY_BLOCK, getContext(), directives );
+        return Compose.asString( TRY_CATCH_FINALLY_BLOCK, getContext(), directives );
     }
     
     @Override
@@ -180,14 +179,14 @@ public class _try
     @Override
     public _try replace( String target, String replacement )
     {
-        this.body = this.body.replace(target, replacement);
-        for(int i=0; i< this.catchExceptionHandleBlocks.size(); i++)
+        this.body = this.body.replace( target, replacement );
+        for( int i = 0; i < this.catchExceptionHandleBlocks.size(); i++)
         {
             this.catchExceptionHandleBlocks.get( i )
                 .replace( target, replacement );
         }
-        this.finallyBlock.replace(target, replacement);
-        this.withResources.replace(target, replacement);        
+        this.finallyBlock.replace( target, replacement );
+        this.withResources.replace( target, replacement );        
         return this;
     }
 
@@ -195,17 +194,21 @@ public class _try
     public _try bindIn( VarContext context )
     {
         this.body.bindIn( context );
-        this.finallyBlock.bindIn(context);
+        this.finallyBlock.bindIn( context );
         this.withResources.bindIn( context );
-        for(int i=0; i<this.catchExceptionHandleBlocks.size(); i++)
+        for( int i = 0; i < this.catchExceptionHandleBlocks.size(); i++ )
         {
             catchExceptionHandleBlocks.get( i ).bindIn( context );
         }
         return this;
     }
 
+    /**
+     * A block of code for catching and handling a specific exception
+     * 
+     */
     public static class _catchHandleBlock
-        implements Template, CodeAuthor
+        implements Model
     {        
         /**
          * 
@@ -218,7 +221,7 @@ public class _try
         public String bind( VarContext context, Directive...directives )
         {
             Dom dom = BindML.compile( author() ); 
-            return Author.code( dom, context, directives );
+            return Compose.asString( dom, context, directives );
         }
         
         private String exception;
@@ -240,13 +243,13 @@ public class _try
         @Override
         public _catchHandleBlock bindIn( VarContext context )
         {
-            this.exception = Author.code( BindML.compile( this.exception ), context );
+            this.exception = Compose.asString( BindML.compile( this.exception ), context );
             this.handleBlock.bindIn( context );
             return this;
         }
         
         @Override
-        public _catchHandleBlock replace(String target, String replacement)
+        public _catchHandleBlock replace( String target, String replacement )
         {
             this.exception = this.exception.replace( target, replacement );
             this.handleBlock = this.handleBlock.replace( target, replacement);
@@ -254,10 +257,9 @@ public class _try
         }
 
         @Override
-        public String author(Directive... directives)
+        public String author( Directive... directives )
         {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-        
+        }        
     }
 }

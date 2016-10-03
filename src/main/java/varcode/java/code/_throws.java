@@ -2,15 +2,14 @@ package varcode.java.code;
 
 import java.util.ArrayList;
 import java.util.List;
-import varcode.CodeAuthor;
-import varcode.Template;
 import varcode.VarException;
 
 import varcode.context.VarContext;
-import varcode.doc.Author;
+import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.dom.Dom;
 import varcode.markup.bindml.BindML;
+import varcode.Model;
 
 /**
  * Declaration on a method the throwing of exception
@@ -18,7 +17,7 @@ import varcode.markup.bindml.BindML;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _throws
-    implements Template, CodeAuthor
+    implements Model
 {        
     /**
      * 
@@ -31,7 +30,7 @@ public class _throws
     public String bind( VarContext context, Directive...directives )
     {
         Dom dom = BindML.compile( author() ); 
-        return Author.code( dom, context, directives );
+        return Compose.asString( dom, context, directives );
     }
     
 	public static final _throws NONE = new _throws();
@@ -59,8 +58,8 @@ public class _throws
     {
         for( int i = 0; i < throwsException.size(); i++ )
         {
-            throwsException.set( i , 
-                Author.code( 
+            throwsException.set(i , 
+                Compose.asString( 
                     BindML.compile( throwsException.get( i ) ), context ) );            
         }
         return this;
@@ -70,7 +69,7 @@ public class _throws
 	public String author( Directive... directives ) 
 	{
 		VarContext vc = VarContext.of( "throwsException", throwsException );
-		return Author.code( THROWS, vc, directives );
+		return Compose.asString( THROWS, vc, directives );
 	}
 	
     

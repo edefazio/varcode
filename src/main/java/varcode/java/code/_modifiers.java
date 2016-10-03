@@ -6,15 +6,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import varcode.CodeAuthor;
-import varcode.Template;
 
 import varcode.VarException;
 import varcode.context.VarContext;
-import varcode.doc.Author;
+import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.dom.Dom;
 import varcode.markup.bindml.BindML;
+import varcode.Model;
 
 /**
  * Group of modifiers applied to classes, fields, methods, etc.)
@@ -23,7 +22,7 @@ import varcode.markup.bindml.BindML;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _modifiers
-    implements Template, CodeAuthor
+    implements Model
 {        
     /**
      * 
@@ -36,7 +35,7 @@ public class _modifiers
     public String bind( VarContext context, Directive...directives )
     {
         Dom dom = BindML.compile( author() ); 
-        return Author.code( dom, context, directives );
+        return Compose.asString( dom, context, directives );
     }
     
 	public static _modifiers cloneOf( _modifiers mods )
@@ -110,7 +109,7 @@ public class _modifiers
 		{
 			set( keywords[ i ] );
 		}
-		this.validate( mods );
+		validate( mods );
 		return this;
 	}
 	
@@ -423,7 +422,7 @@ public class _modifiers
 	public String author( Directive... directives )  
 	{
 		validate( this.mods );		
-		return Author.code( BindML.compile( bitsToKeywordsString() ), VarContext.of( ), directives );
+		return Compose.asString( BindML.compile( bitsToKeywordsString() ), VarContext.of( ), directives );
 	}
 	
     @Override

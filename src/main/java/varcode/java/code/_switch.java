@@ -18,14 +18,13 @@ package varcode.java.code;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
-import varcode.CodeAuthor;
-import varcode.Template;
 import varcode.context.VarContext;
-import varcode.doc.Author;
+import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.translate.JavaTranslate;
 import varcode.dom.Dom;
 import varcode.markup.bindml.BindML;
+import varcode.Model;
 
 /**
  *
@@ -45,7 +44,7 @@ import varcode.markup.bindml.BindML;
  * @author eric
  */
 public class _switch
-    implements Template, CodeAuthor
+    implements Model
 {        
     /**
      * 
@@ -58,7 +57,7 @@ public class _switch
     public String bind( VarContext context, Directive...directives )
     {
         Dom dom = BindML.compile( author() ); 
-        return Author.code( dom, context, directives );
+        return Compose.asString( dom, context, directives );
     }
     
     public static _switch of( String variable )
@@ -77,14 +76,14 @@ public class _switch
 
     public _code varName;
     
-    public List<Template>cases;
+    public List<Model>cases;
     
     public DefaultCase defaultCase;
     
     public _switch( String varName )
     {
         this.varName = _code.of( varName );
-        this.cases = new ArrayList<Template>();
+        this.cases = new ArrayList<Model>();
     }
     
     public VarContext getContext()
@@ -136,7 +135,7 @@ public class _switch
     @Override
     public String author( Directive... directives )
     {
-        return Author.code( SWITCH, getContext(), directives );
+        return Compose.asString( SWITCH, getContext(), directives );
     }
     
     public _switch addCase( Object equal, String code, boolean breakAfter )
@@ -158,8 +157,10 @@ public class _switch
      *        System.out.println(\"1,2,3\");
      *    break;
      * 
-     * @param equal
-     * @param code 
+     * @param equal the case equality
+     * @param code code for this case
+     * @param breakAfter add a break after this case?
+     * @return this (modified) 
      */
     public _switch addCase( Object equal, _code code, boolean breakAfter )
     {
@@ -197,7 +198,7 @@ public class _switch
     }
     
     public static class DefaultCase
-        implements Template, CodeAuthor
+        implements Model
     {        
         /**
          * 
@@ -210,7 +211,7 @@ public class _switch
         public String bind( VarContext context, Directive...directives )
         {
             Dom dom = BindML.compile( author() ); 
-            return Author.code( dom, context, directives );
+            return Compose.asString( dom, context, directives );
         }
         
         public _code code;
@@ -240,7 +241,7 @@ public class _switch
         @Override
         public String author( Directive... directives )
         {
-            return Author.code( DEFAULT_CASE, getContext(), directives );
+            return Compose.asString( DEFAULT_CASE, getContext(), directives );
         }
         
         @Override
@@ -260,7 +261,7 @@ public class _switch
     
     /** Individual case within a Switch statement */
     public static class Case
-        implements Template, CodeAuthor
+        implements Model
     {        
         /**
          * 
@@ -273,7 +274,7 @@ public class _switch
         public String bind( VarContext context, Directive...directives )
         {
             Dom dom = BindML.compile( author() ); 
-            return Author.code( dom, context, directives );
+            return Compose.asString( dom, context, directives );
         }
         
         public _code caseEqual;
@@ -313,7 +314,7 @@ public class _switch
         @Override
         public String author( Directive... directives )
         {
-            return Author.code( CASE, getContext(), directives );
+            return Compose.asString( CASE, getContext(), directives );
         }
         
         @Override
@@ -334,12 +335,24 @@ public class _switch
         }
     }
     
+    /**
+     * A Multi-Case within a Switch statement ie.<PRE>
+     * switch( count )
+     * {
+     * case 1:
+     * case 2:
+     * case 3:
+     *    return "small";
+     *  ...
+     * }
+     * </PRE>
+     */
     public static class MultiCase
-        implements Template, CodeAuthor
+        implements Model
     {        
         /**
-        * 
-        * @param context contains bound variables and scripts to bind data into
+         * 
+         * @param context contains bound variables and scripts to bind data into
          * the template
          * @param directives pre-and post document directives 
          * @return the populated Template bound with Data from the context
@@ -348,7 +361,7 @@ public class _switch
         public String bind( VarContext context, Directive...directives )
         {
             Dom dom = BindML.compile( author() ); 
-            return Author.code( dom, context, directives );
+            return Compose.asString( dom, context, directives );
         }
         
         public _code[] caseEquals;
@@ -389,7 +402,7 @@ public class _switch
         @Override
         public String author( Directive... directives )
         {
-            return Author.code( MULTICASE, getContext(), directives );
+            return Compose.asString( MULTICASE, getContext(), directives );
         }
         
         @Override

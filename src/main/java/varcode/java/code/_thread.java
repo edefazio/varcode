@@ -15,13 +15,12 @@
  */
 package varcode.java.code;
 
-import varcode.CodeAuthor;
-import varcode.Template;
 import varcode.context.VarContext;
-import varcode.doc.Author;
+import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.dom.Dom;
 import varcode.markup.bindml.BindML;
+import varcode.Model;
 
 /**
  * Thread template idioms which benefit from editor-based code completion
@@ -70,7 +69,7 @@ public class _thread
             
     /** Creates an anonymous runnable for threading */
     public static class _runnable
-        implements Template, CodeAuthor
+        implements Model
     {        
         /**
          * 
@@ -83,7 +82,7 @@ public class _thread
         public String bind( VarContext context, Directive...directives )
         {
             Dom dom = BindML.compile( author() ); 
-            return Author.code( dom, context, directives );
+            return Compose.asString( dom, context, directives );
         }
         
         private _code body; 
@@ -134,7 +133,7 @@ public class _thread
         @Override
         public String author( Directive... directives )
         {
-            return Author.code(THREAD_RUN, getContext(), directives);
+            return Compose.asString(THREAD_RUN, getContext(), directives);
         }
         
         @Override

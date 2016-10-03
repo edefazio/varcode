@@ -1,12 +1,11 @@
 package varcode.java.code;
 
-import varcode.CodeAuthor;
-import varcode.Template;
 import varcode.context.VarContext;
-import varcode.doc.Author;
+import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.dom.Dom;
 import varcode.markup.bindml.BindML;
+import varcode.Model;
 
 /**
  * Model of a Static block
@@ -14,7 +13,7 @@ import varcode.markup.bindml.BindML;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _staticBlock
-    implements Template, CodeAuthor
+    implements Model
 {        
     /**
      * 
@@ -27,7 +26,7 @@ public class _staticBlock
     public String bind( VarContext context, Directive...directives )
     {
         Dom dom = BindML.compile( author() ); 
-        return Author.code( dom, context, directives );
+        return Compose.asString( dom, context, directives );
     }
     
 	public static final Dom STATIC_BLOCK = 
@@ -97,6 +96,7 @@ public class _staticBlock
         return this;
     }
     
+    @Override
     public _staticBlock bindIn( VarContext context )
     {
         if( this.body != null )
@@ -111,7 +111,7 @@ public class _staticBlock
 	{
 		if( !body.isEmpty() )
 		{
-			return Author.code( STATIC_BLOCK, VarContext.of( "body", body ), directives );
+			return Compose.asString( STATIC_BLOCK, VarContext.of( "body", body ), directives );
 		}
 		return "";
 	}
@@ -121,5 +121,4 @@ public class _staticBlock
 	{
 		return author(); 
 	}
-
 }

@@ -2,15 +2,14 @@ package varcode.java.code;
 
 import java.util.ArrayList;
 import java.util.List;
-import varcode.CodeAuthor;
-import varcode.Template;
 
 import varcode.VarException;
 import varcode.context.VarContext;
-import varcode.doc.Author;
+import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.dom.Dom;
 import varcode.markup.bindml.BindML;
+import varcode.Model;
 
 /**
  * Components (classes, interfaces, enums) 
@@ -29,9 +28,16 @@ import varcode.markup.bindml.BindML;
  */
 public interface _nest 
 {	
+    /**
+     * A Component that can be nested (_class, _enum, _interface)
+     * within a top level model (_class, _enum, _interface)
+     */
 	public interface component 
-	    extends CodeAuthor
+	    extends Model
 	{
+        /** Retrieve the Dom used to structure the text/code
+         * @return the Dom of the component
+         */
 		public Dom getDom();
 		
 		/**
@@ -46,15 +52,14 @@ public interface _nest
 		 * @return imports for this Component
 		 */
 		public _imports getImports();
-        
-        
-        public component bindIn( VarContext context );
-                
-        public Template replace( String target, String replacement );
 	}
 	
+    /**
+     * a grouping of all nested (classes, enums, interfaces)
+     * 
+     */
 	public static class _nestGroup
-        implements Template, CodeAuthor
+        implements Model
     {        
         /**
          * 
@@ -67,7 +72,7 @@ public interface _nest
         public String bind( VarContext context, Directive...directives )
         {
             Dom dom = BindML.compile( author() ); 
-            return Author.code( dom, context, directives );
+            return Compose.asString( dom, context, directives );
         }
 		public List<component>components = new ArrayList<component>();
 
@@ -81,6 +86,7 @@ public interface _nest
 			return this;
 		}
 		
+        @Override
         public _nestGroup bindIn( VarContext context )
         {
             for( int i = 0; i < components.size(); i++ )
@@ -90,6 +96,7 @@ public interface _nest
             return this;
         }
         
+        @Override
         public _nestGroup replace( String target, String replacement )
         {
             for( int i = 0; i < components.size(); i++ )
@@ -109,21 +116,23 @@ public interface _nest
             return count() == 0;
         }
         
+        @Override
 		public String author( Directive... directives ) 
 		{
-			if( components == null || components.size() == 0 )
+			if( components == null || components.isEmpty() )
 			{
 				return "";
 			}
 			StringBuilder sb = new StringBuilder();
 			for( int i = 0; i < components.size(); i++ )
 			{
-				sb.append( "\r\n" );
-				sb.append(components.get(i).author( directives ) );				
+				sb.append( N );  
+				sb.append( components.get( i ).author( directives ) );				
 			}
 			return sb.toString();
 		}		
 		
+        @Override
 		public String toString()
 		{
 			return author();
