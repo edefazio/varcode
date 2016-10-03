@@ -18,6 +18,7 @@ package varcode.java.code;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
+import varcode.CodeAuthor;
 import varcode.Template;
 import varcode.context.VarContext;
 import varcode.doc.Author;
@@ -44,8 +45,22 @@ import varcode.markup.bindml.BindML;
  * @author eric
  */
 public class _switch
-    extends Template.Base    
-{
+    implements Template, CodeAuthor
+{        
+    /**
+     * 
+     * @param context contains bound variables and scripts to bind data into
+     * the template
+     * @param directives pre-and post document directives 
+     * @return the populated Template bound with Data from the context
+     */
+    @Override
+    public String bind( VarContext context, Directive...directives )
+    {
+        Dom dom = BindML.compile( author() ); 
+        return Author.code( dom, context, directives );
+    }
+    
     public static _switch of( String variable )
     {
         return new _switch( variable );
@@ -62,28 +77,31 @@ public class _switch
 
     public _code varName;
     
-    public List<Template.Base>cases;
+    public List<Template>cases;
     
     public DefaultCase defaultCase;
     
     public _switch( String varName )
     {
         this.varName = _code.of( varName );
-        this.cases = new ArrayList<Template.Base>();
+        this.cases = new ArrayList<Template>();
     }
     
     public VarContext getContext()
     {
-        return VarContext.of("varName", this.varName,  
-                "cases", this.cases, 
-                "defaultCase", this.defaultCase );
+        return VarContext.of(
+            "varName", this.varName,  
+            "cases", this.cases, 
+            "defaultCase", this.defaultCase );
     }
     
+    @Override
     public String toString()
     {
         return author();
     }
     
+    @Override
     public _switch bindIn( VarContext context )
     {
         this.varName.bindIn( context );
@@ -116,7 +134,7 @@ public class _switch
     }
 
     @Override
-    public String author(Directive... directives)
+    public String author( Directive... directives )
     {
         return Author.code( SWITCH, getContext(), directives );
     }
@@ -179,8 +197,22 @@ public class _switch
     }
     
     public static class DefaultCase
-        extends Template.Base
-    {
+        implements Template, CodeAuthor
+    {        
+        /**
+         * 
+         * @param context contains bound variables and scripts to bind data into
+         * the template
+         * @param directives pre-and post document directives 
+         * @return the populated Template bound with Data from the context
+         */
+        @Override
+        public String bind( VarContext context, Directive...directives )
+        {
+            Dom dom = BindML.compile( author() ); 
+            return Author.code( dom, context, directives );
+        }
+        
         public _code code;
          
         public static Dom DEFAULT_CASE = BindML.compile(
@@ -211,6 +243,7 @@ public class _switch
             return Author.code( DEFAULT_CASE, getContext(), directives );
         }
         
+        @Override
         public DefaultCase bindIn( VarContext context )
         {
             code = code.bindIn( context );
@@ -225,9 +258,24 @@ public class _switch
         }
     }        
     
+    /** Individual case within a Switch statement */
     public static class Case
-        extends Template.Base
-    {
+        implements Template, CodeAuthor
+    {        
+        /**
+         * 
+         * @param context contains bound variables and scripts to bind data into
+         * the template
+         * @param directives pre-and post document directives 
+         * @return the populated Template bound with Data from the context
+         */
+        @Override
+        public String bind( VarContext context, Directive...directives )
+        {
+            Dom dom = BindML.compile( author() ); 
+            return Author.code( dom, context, directives );
+        }
+        
         public _code caseEqual;
         public _code code;
         public boolean breakAfter;
@@ -268,6 +316,7 @@ public class _switch
             return Author.code( CASE, getContext(), directives );
         }
         
+        @Override
         public Case bindIn( VarContext context )
         {
             caseEqual = caseEqual.bindIn( context );
@@ -283,17 +332,30 @@ public class _switch
             this.code.replace(target, replacement);
             return this;
         }
-
     }
     
     public static class MultiCase
-        extends Template.Base
-    {
+        implements Template, CodeAuthor
+    {        
+        /**
+        * 
+        * @param context contains bound variables and scripts to bind data into
+         * the template
+         * @param directives pre-and post document directives 
+         * @return the populated Template bound with Data from the context
+         */
+        @Override
+        public String bind( VarContext context, Directive...directives )
+        {
+            Dom dom = BindML.compile( author() ); 
+            return Author.code( dom, context, directives );
+        }
+        
         public _code[] caseEquals;
         public _code code;
         public boolean breakAfter = false;
         
-        public MultiCase(_code[] caseEquals, _code code, boolean breakAfter )
+        public MultiCase( _code[] caseEquals, _code code, boolean breakAfter )
         {
             this.caseEquals = caseEquals;
             this.code = code;
@@ -330,6 +392,7 @@ public class _switch
             return Author.code( MULTICASE, getContext(), directives );
         }
         
+        @Override
         public MultiCase bindIn( VarContext context )
         {
             for( int i = 0; i < caseEquals.length; i++ )
@@ -340,6 +403,4 @@ public class _switch
             return this;
         }
     }
-    
-   
 }

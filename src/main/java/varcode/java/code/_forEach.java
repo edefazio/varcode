@@ -15,6 +15,7 @@
  */
 package varcode.java.code;
 
+import varcode.CodeAuthor;
 import varcode.Template;
 import varcode.context.VarContext;
 import varcode.doc.Author;
@@ -28,8 +29,21 @@ import varcode.markup.bindml.BindML;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _forEach
-    extends Template.Base
-{
+    implements Template, CodeAuthor
+{        
+    /**
+     * 
+     * @param context contains bound variables and scripts to bind data into
+     * the template
+     * @param directives pre-and post document directives 
+     * @return the populated Template bound with Data from the context
+     */
+    @Override
+    public String bind( VarContext context, Directive...directives )
+    {
+        Dom dom = BindML.compile( author() ); 
+        return Author.code( dom, context, directives );
+    }
         /**
      * builds a forEach statement with body: <PRE>
      * _forEach( int.class, "x", "array")

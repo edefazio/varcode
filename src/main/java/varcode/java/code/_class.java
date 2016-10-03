@@ -5,6 +5,7 @@ import varcode.java.JavaCase.JavaCaseAuthor;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
+import varcode.CodeAuthor;
 
 import varcode.VarException;
 import varcode.context.VarContext;
@@ -682,9 +683,23 @@ public class _class
      * signature of the _class
      */
 	public static class _signature
-		extends Template.Base
-	{
-		private _modifiers modifiers;
+        implements Template, CodeAuthor
+    {        
+        /**
+         * 
+         * @param context contains bound variables and scripts to bind data into
+         * the template
+         * @param directives pre-and post document directives 
+         * @return the populated Template bound with Data from the context
+         */
+        @Override
+        public String bind( VarContext context, Directive...directives )
+        {
+            Dom dom = BindML.compile( author() ); 
+            return Author.code( dom, context, directives );
+        }
+        
+   		private _modifiers modifiers;
 		private String className;
 		private _extends extendsFrom;
 		private _implements implementsFrom;

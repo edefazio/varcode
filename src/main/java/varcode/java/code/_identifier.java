@@ -3,6 +3,7 @@ package varcode.java.code;
 import varcode.VarException;
 import varcode.java.JavaNaming;
 
+
 public class _identifier
 {
 	public static _identifier cloneOf( _identifier id )
@@ -40,6 +41,7 @@ public class _identifier
 		this.identifierName = identifierName.toString();
 	}
 		
+    @Override
 	public String toString()
 	{
 		return identifierName;

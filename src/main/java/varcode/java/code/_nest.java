@@ -7,8 +7,10 @@ import varcode.Template;
 
 import varcode.VarException;
 import varcode.context.VarContext;
+import varcode.doc.Author;
 import varcode.doc.Directive;
 import varcode.dom.Dom;
+import varcode.markup.bindml.BindML;
 
 /**
  * Components (classes, interfaces, enums) 
@@ -48,12 +50,25 @@ public interface _nest
         
         public component bindIn( VarContext context );
                 
-        public Template.Base replace( String target, String replacement );
+        public Template replace( String target, String replacement );
 	}
 	
 	public static class _nestGroup
-		extends Template.Base
-	{
+        implements Template, CodeAuthor
+    {        
+        /**
+         * 
+         * @param context contains bound variables and scripts to bind data into
+         * the template
+         * @param directives pre-and post document directives 
+         * @return the populated Template bound with Data from the context
+         */
+        @Override
+        public String bind( VarContext context, Directive...directives )
+        {
+            Dom dom = BindML.compile( author() ); 
+            return Author.code( dom, context, directives );
+        }
 		public List<component>components = new ArrayList<component>();
 
 		public _nestGroup()

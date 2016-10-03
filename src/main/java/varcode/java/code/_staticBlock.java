@@ -1,5 +1,6 @@
 package varcode.java.code;
 
+import varcode.CodeAuthor;
 import varcode.Template;
 import varcode.context.VarContext;
 import varcode.doc.Author;
@@ -7,9 +8,28 @@ import varcode.doc.Directive;
 import varcode.dom.Dom;
 import varcode.markup.bindml.BindML;
 
+/**
+ * Model of a Static block
+ * 
+ * @author M. Eric DeFazio eric@varcode.io
+ */
 public class _staticBlock
-	extends Template.Base	
-{	
+    implements Template, CodeAuthor
+{        
+    /**
+     * 
+     * @param context contains bound variables and scripts to bind data into
+     * the template
+     * @param directives pre-and post document directives 
+     * @return the populated Template bound with Data from the context
+     */
+    @Override
+    public String bind( VarContext context, Directive...directives )
+    {
+        Dom dom = BindML.compile( author() ); 
+        return Author.code( dom, context, directives );
+    }
+    
 	public static final Dom STATIC_BLOCK = 
 		BindML.compile(
 			"static" + N +	

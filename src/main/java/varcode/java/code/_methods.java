@@ -12,11 +12,16 @@ import varcode.context.VarContext;
 import varcode.doc.Author;
 import varcode.doc.Directive;
 import varcode.dom.Dom;
+import varcode.CodeAuthor;
 import varcode.markup.bindml.BindML;
 
+/**
+ *   
+ * @author M. Eric DeFazio eric@varcode.io
+ */
 public class _methods
-	extends Template.Base
-{
+    implements Template, CodeAuthor
+{        
 	private Map<String, List<_method>>methodsByName = 
 		new HashMap<String, List<_method>>();
 	
@@ -32,7 +37,7 @@ public class _methods
 			
 			for( int j = 0; j < methodsWithName.size(); j++ )
 			{
-				m.addMethod( _method.from( methodsWithName.get( j ) ) );				
+				m.addMethod( _method.cloneOf( methodsWithName.get( j ) ) );				
 			}			
 		}
 		return m;
@@ -47,7 +52,6 @@ public class _methods
 		"{{+?nonStaticMethods:" + N + "{+nonStaticMethods+}+}}" +
 		"{{+?abstractMethods:" + N + "{+abstractMethods+};+}}" );
 	
-    
     
     public String[] getNames()
     {
@@ -186,7 +190,7 @@ public class _methods
 		{//verify there is no conflict
 			for( int i = 0; i < methodsWithTheSameName.size(); i++ )
 			{
-				if( m.signature.matchesParamType(methodsWithTheSameName.get( i ).signature ) )
+				if( m.signature.matchesSignature(methodsWithTheSameName.get( i ).signature ) )
 				{
 					throw new VarException( 
                         "Could not add method; another method "+ N +
@@ -228,6 +232,7 @@ public class _methods
         return this;
     }
     
+    @Override
     public _methods bindIn( VarContext context )
     {
         Map<String, List<_method>> replacedMethods = 
@@ -256,10 +261,11 @@ public class _methods
         return this;
     }
     
-	
+	/** model of a method */
 	public static class _method		
-		extends Template.Base
-	{
+        implements Template, CodeAuthor
+    {      
+        
 		public static final Dom METHOD = 
 			BindML.compile(
 				"{+javadocComment+}" +	
@@ -302,10 +308,10 @@ public class _methods
             return this.annotations;
         }
         
-		public static _method from( _method prototype ) 
+		public static _method cloneOf( _method prototype ) 
 		{
 			_method m = 
-				new _method( _signature.from(prototype.signature ) );
+				new _method( _signature.cloneOf(prototype.signature ) );
 			m.javadoc = _javadoc.cloneOf(prototype.javadoc );
 			m.methodBody = prototype.getBody();			
             m.annotations = new _annotate( prototype.annotations.getAnnotations() );
@@ -440,8 +446,7 @@ public class _methods
             else
             {
                 return Author.code( METHOD, vc, directives );    
-            }
-            
+            }            
         }
         
         @Override
@@ -459,9 +464,23 @@ public class _methods
 		}
 		
 		public static class _signature
-			extends Template.Base
-		{
-			public static _signature from( _signature prototype )
+            implements Template, CodeAuthor
+        {        
+            /**
+            * 
+            * @param context contains bound variables and scripts to bind data into
+            * the template
+            * @param directives pre-and post document directives 
+            * @return the populated Template bound with Data from the context
+            */
+            @Override
+            public String bind( VarContext context, Directive...directives )
+            {
+                Dom dom = BindML.compile( author() ); 
+                return Author.code( dom, context, directives );
+            }
+            
+			public static _signature cloneOf( _signature prototype )
 			{
 				return new _signature(
 				    _modifiers.cloneOf( prototype.modifiers),
@@ -512,6 +531,7 @@ public class _methods
                 return this;
             }
             
+            @Override
 			public _signature bindIn( VarContext context )
             {
                 this.methodName = Author.code( 
@@ -652,7 +672,14 @@ public class _methods
                     mods, returnType, methodName, params, throwsExceptions );			
 			}
 	
-			public boolean matchesParamType( _signature sig )
+            /**
+             * Does this method signature "match" this other method signature?
+             * 
+             * @param sig the signature
+             * @return true if the signatures match (meaning these two methods
+             * cannot exist on the same (enum, class)
+             */
+			protected boolean matchesSignature( _signature sig )
 			{
 				if( sig.methodName.equals( this.methodName ) )
 				{
@@ -677,6 +704,7 @@ public class _methods
 				BindML.compile(
                     "{+modifiers+}{+returnType+} {+methodName+}{+params+}{+throwsExceptions+}");
 	
+            @Override
 			public String author( Directive... directives ) 
 			{
 				return Author.code( METHOD_SIGNATURE, 
@@ -689,6 +717,7 @@ public class _methods
 					directives );
 			}
 	
+            @Override
 			public String toString()
 			{
 				return author();
@@ -696,6 +725,7 @@ public class _methods
 		}
         
 		/** searches through the contents to find target and replaces with replacement */
+        @Override
 		public _method replace( String target, String replacement ) 
 		{
 			this.javadoc.replace( target, replacement );
@@ -707,6 +737,7 @@ public class _methods
             return this;
 		}	
         
+        @Override
         public _method bindIn( VarContext context )
         {
             this.javadoc.bindIn( context );

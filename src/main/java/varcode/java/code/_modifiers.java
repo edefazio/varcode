@@ -6,17 +6,39 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import varcode.CodeAuthor;
 import varcode.Template;
 
 import varcode.VarException;
 import varcode.context.VarContext;
 import varcode.doc.Author;
 import varcode.doc.Directive;
+import varcode.dom.Dom;
 import varcode.markup.bindml.BindML;
 
+/**
+ * Group of modifiers applied to classes, fields, methods, etc.)
+ * @see java.lang.Modifier
+ * 
+ * @author M. Eric DeFazio eric@varcode.io
+ */
 public class _modifiers
-	extends Template.Base	
-{
+    implements Template, CodeAuthor
+{        
+    /**
+     * 
+     * @param context contains bound variables and scripts to bind data into
+     * the template
+     * @param directives pre-and post document directives 
+     * @return the populated Template bound with Data from the context
+     */
+    @Override
+    public String bind( VarContext context, Directive...directives )
+    {
+        Dom dom = BindML.compile( author() ); 
+        return Author.code( dom, context, directives );
+    }
+    
 	public static _modifiers cloneOf( _modifiers mods )
 	{
 		return of( mods.getBits() );
@@ -42,11 +64,13 @@ public class _modifiers
 		
 	}
     
+    @Override
     public _modifiers bindIn ( VarContext context )
     {
         return this;
     }
     
+    @Override
     public _modifiers replace( String target, String replacement )
     {
         List<String> keywords = this.bitsToKeywords( );
@@ -280,8 +304,8 @@ public class _modifiers
 		}
 	}
 	
-	public static Map<String,Integer>KEYWORD_TO_BIT_MAP = new HashMap<String, Integer>();
-	public static Map<Integer,String>BIT_TO_KEYWORD_MAP = new HashMap<Integer, String>();
+	public static final Map<String,Integer>KEYWORD_TO_BIT_MAP = new HashMap<String, Integer>();
+	public static final Map<Integer,String>BIT_TO_KEYWORD_MAP = new HashMap<Integer, String>();
 	
 	static
 	{
@@ -323,7 +347,10 @@ public class _modifiers
 		BIT_TO_KEYWORD_MAP.put( 1 << 12, "default" );
 	}
 
-	/** is this combination of modifiers represented by a bitmask valid?*/
+	/** is this combination of modifiers represented by a bitmask valid
+     * @param modifiers
+     * @return true if it is valid
+     */
 	public static boolean isValid( int modifiers )
 	{
 		if( ( ( modifiers & ( ( 1 << 13 ) -1 ) ) != modifiers ) )
@@ -392,12 +419,14 @@ public class _modifiers
 		}		
 	}
 	
+    @Override
 	public String author( Directive... directives )  
 	{
 		validate( this.mods );		
 		return Author.code( BindML.compile( bitsToKeywordsString() ), VarContext.of( ), directives );
 	}
 	
+    @Override
 	public String toString()
 	{
 		return bitsToKeywordsString();

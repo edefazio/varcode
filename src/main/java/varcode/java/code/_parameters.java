@@ -2,6 +2,7 @@ package varcode.java.code;
 
 import java.util.ArrayList;
 import java.util.List;
+import varcode.CodeAuthor;
 import varcode.Template;
 
 import varcode.VarException;
@@ -23,8 +24,22 @@ import varcode.markup.bindml.BindML;
  *
  */
 public class _parameters
-	extends Template.Base
-{
+    implements Template, CodeAuthor
+{        
+    /**
+     * 
+     * @param context contains bound variables and scripts to bind data into
+     * the template
+     * @param directives pre-and post document directives 
+     * @return the populated Template bound with Data from the context
+     */
+    @Override
+    public String bind( VarContext context, Directive...directives )
+    {
+        Dom dom = BindML.compile( author() ); 
+        return Author.code( dom, context, directives );
+    }
+    
 	public static final Dom PARAMS_LIST = 
         BindML.compile( "( {{+:{+params+}, +}} )" );
 	
@@ -33,7 +48,7 @@ public class _parameters
 		List<_parameter> clone = new ArrayList<_parameter>();
 		for( int i = 0; i < prototype.params.size(); i++ )
 		{
-			clone.add( _parameter.from( prototype.params.get( i ) ) );
+			clone.add( _parameter.cloneOf( prototype.params.get( i ) ) );
 		}
 		return new _parameters( clone );
 	}
@@ -175,7 +190,6 @@ public class _parameters
             throw new VarException( 
                 "unable to parse tokens, remaining temp = "+temp);
         }
-		//System.out.println( toksList );
 		return toksList.toArray( new String[ 0 ] );
 	}
 	
@@ -203,6 +217,7 @@ public class _parameters
 		return this.params;
 	}
 	
+    @Override
 	public String author( Directive... directives ) 
 	{
         if( params != null && params.size() > 0 )            
@@ -247,10 +262,25 @@ public class _parameters
         return this;
     }
 	
+    /** a single name-value parameter to a method, constructor, etc. */
 	public static class _parameter
-        extends Template.Base
-	{			
-		public static _parameter from( _parameter prototype ) 
+        implements Template, CodeAuthor
+    {        
+        /**
+         * 
+         * @param context contains bound variables and scripts to bind data into
+         * the template
+         * @param directives pre-and post document directives 
+         * @return the populated Template bound with Data from the context
+         */
+        @Override
+        public String bind( VarContext context, Directive...directives )
+        {
+            Dom dom = BindML.compile( author() ); 
+            return Author.code( dom, context, directives );
+        }
+        
+		public static _parameter cloneOf( _parameter prototype ) 
 		{
 			_parameter p = new _parameter( 
 				prototype.type + "", 
@@ -296,7 +326,6 @@ public class _parameters
         private _annotation parameterAnnotation;
         
 		public static final Dom PARAMS = 
-            //BindML.compile( "{{+:{+parameterAnnotation+}{+type*+} {+name*+}+}}" );
             BindML.compile( 
                 "{+parameterAnnotation+}" +
                 "{{+?isFinal:final +}}"+        
@@ -316,9 +345,9 @@ public class _parameters
             this.isFinal = true;
             return this;
         }
+        
         public _parameter( String...tokens )
         {
-            //this.parameterAnnotation = new _annotation();
             for( int i = 0; i < tokens.length; i++ )
             {
                 if( tokens[ i ].equals( "final" ) )
@@ -374,8 +403,8 @@ public class _parameters
         @Override
         public _parameter bindIn( VarContext context )
         {
-            this.type = Author.code(BindML.compile(this.type), context);
-            this.name = Author.code(BindML.compile(this.name), context);
+            this.type = Author.code( BindML.compile( this.type ), context);
+            this.name = Author.code( BindML.compile( this.name ), context);
             if( this.parameterAnnotation != null && !this.parameterAnnotation.isEmpty() )
             {
                 this.parameterAnnotation = 
@@ -404,9 +433,9 @@ public class _parameters
         public VarContext getContext()
         {
             VarContext vc = VarContext.of( 
-                    "type", type, 
-                    "name", name, 
-                    "parameterAnnotation", this.parameterAnnotation);        
+                "type", type, 
+                "name", name, 
+                "parameterAnnotation", this.parameterAnnotation);        
             if( isFinal )
             {
                 vc.set( "isFinal", true );

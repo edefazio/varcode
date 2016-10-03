@@ -4,6 +4,7 @@ import varcode.java.JavaCase.JavaCaseAuthor;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
+import varcode.CodeAuthor;
 import varcode.Template;
 
 import varcode.VarException;
@@ -20,9 +21,22 @@ import varcode.markup.bindml.BindML;
 
 //allow default methods
 public class _interface 
-    extends Template.Base
-	implements JavaCaseAuthor, _nest.component
+	implements Template, JavaCaseAuthor, _nest.component
 {
+    /**
+     * 
+     * @param context contains bound variables and scripts to bind data into
+     * the template
+     * @param directives pre-and post document directives 
+     * @return the populated Template bound with Data from the context
+     */
+    @Override
+    public String bind( VarContext context, Directive...directives )
+    {
+        Dom dom = BindML.compile( author() ); 
+        return Author.code( dom, context, directives );
+    }
+    
 	public static final Dom INTERFACE = 
 		BindML.compile( 
 			"{+pckage+}" +
@@ -38,6 +52,7 @@ public class _interface
 			"+}}" +
 			"}" );
 	
+    @Override
 	public VarContext getContext() 
 	{
 		String[] n = null;
@@ -131,6 +146,7 @@ public class _interface
 	private _imports imports;
 	private _nestGroup nests;
 	
+    @Override
     public _interface bindIn( VarContext context )
     {
         this.interfacePackage.bindIn(context);
@@ -143,6 +159,7 @@ public class _interface
         return this;
     }
     
+    @Override
     public _interface replace( String target, String replacement )
     {
         this.interfacePackage.replace( target, replacement );
@@ -226,6 +243,7 @@ public class _interface
 		return this;
 	}
 	
+    @Override
 	public _imports getImports()
 	{
 		for( int i = 0; i < nests.count(); i++ )
@@ -362,9 +380,24 @@ public class _interface
 		return this;
 	}
 	
+    /** interface signature */
 	public static class _signature
-		extends Template.Base
-	{
+        implements Template, CodeAuthor
+    {        
+        /**
+         * 
+         * @param context contains bound variables and scripts to bind data into
+         * the template
+         * @param directives pre-and post document directives 
+         * @return the populated Template bound with Data from the context
+         */
+        @Override
+        public String bind( VarContext context, Directive...directives )
+        {
+            Dom dom = BindML.compile( author() ); 
+            return Author.code( dom, context, directives );
+        }
+        
 		private _modifiers modifiers = new _modifiers();
 		private String interfaceName;		
 		private _extends extendsFrom = new _extends();
@@ -415,6 +448,7 @@ public class _interface
 			return this.interfaceName;
 		}
 		
+        @Override
 		public String toString()
 		{
 			return author();
@@ -437,9 +471,9 @@ public class _interface
 		
 			if( tokens.length < 2 )
 			{
-				throw new VarException( "interface signature must have at least (2) tokens interface <name>" );	
+				throw new VarException( 
+                    "interface signature must have at least (2) tokens interface <name>" );	
 			}
-			//	"public final class HelloWorld extends Blah implements Serializable, Externalizable" 
 		
 			for( int i = 0; i < tokens.length; i++ )
 			{
@@ -479,7 +513,8 @@ public class _interface
 				int tokensLeft = tokens.length - ( extendsTokenIndex + 1 );
 				String[] extendsTokens = new String[ tokensLeft ];
 				
-				System.arraycopy( tokens, extendsTokenIndex + 1, extendsTokens, 0, tokensLeft );
+				System.arraycopy( 
+                    tokens, extendsTokenIndex + 1, extendsTokens, 0, tokensLeft );
 				List<String>normalExtendsTokens = new ArrayList<String>();
 				for( int i = 0; i < extendsTokens.length; i++)
 				{
@@ -509,12 +544,13 @@ public class _interface
 					}
 				}
 				sig.extendsFrom = varcode.java.code._extends.of( 
-					normalExtendsTokens.toArray( new String[ 0 ] ) ); //className.of( implementsTokens );
+					normalExtendsTokens.toArray( new String[ 0 ] ) ); 
 			}
 			return sig;		
 		}	
 	}
 
+    @Override
 	public JavaCase toJavaCase( Directive... directives ) 
 	{
 		return JavaCase.of( getFullyQualifiedClassName(), INTERFACE, getContext(), directives );
@@ -545,7 +581,6 @@ public class _interface
     
 	public String getFullyQualifiedClassName()
 	{
-		
 		if( this.interfacePackage != null && ! this.interfacePackage.isEmpty() )
 		{
 			return this.interfacePackage.getName() + "." + this.interfaceSignature.getName();
@@ -556,13 +591,13 @@ public class _interface
 		}
 	}
 	
+    @Override
 	public String author( Directive... directives ) 
 	{
-		//return toJavaCase( directives ).toString();
         return Author.code( INTERFACE, getContext(), directives);
 	}
-
     
+    @Override
 	public JavaCase toJavaCase( VarContext context, Directive...directives ) 
 	{
         String FullClassName = this.getFullyQualifiedClassName();
@@ -584,11 +619,14 @@ public class _interface
 			context,
 			directives );			
 	}
+    
+    @Override
 	public String toString()
 	{
 		return author();
 	}
 	
+    @Override
 	public Dom getDom() 
 	{
 		return INTERFACE;

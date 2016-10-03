@@ -15,6 +15,7 @@
  */
 package varcode.java.code;
 
+import varcode.CodeAuthor;
 import varcode.Template;
 import varcode.context.VarContext;
 import varcode.doc.Author;
@@ -31,8 +32,8 @@ import varcode.markup.bindml.BindML;
  * @author M. Eric DeFazio eric@
  */
 public class _forCount
-    extends Template.Base        
-{       
+    implements Template, CodeAuthor
+{        
     public static _forCount up( int count )
     {
         return new _forCount( int.class, "i", 0, "<", count, "i++", new _code() );
@@ -140,9 +141,9 @@ public class _forCount
         {
             return Author.code( BindML.compile((String)element), context );
         }
-        if( element instanceof Template.Base )
+        if( element instanceof Template )
         {
-            return ((Template.Base)element).bindIn( context );
+            return ((Template)element).bindIn( context );
         }
         return element;
     }
@@ -235,9 +236,9 @@ public class _forCount
         {
             return ((String) o).replace(target, replacement);
         }
-        if( o instanceof Template.Base )
+        if( o instanceof Template )
         {
-            return ((Base) o).replace(target, replacement);
+            return ((Template)o).replace(target, replacement);
         }
         return o.toString().replace( target, replacement );
     }

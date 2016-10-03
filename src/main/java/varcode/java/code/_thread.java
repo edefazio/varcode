@@ -15,6 +15,7 @@
  */
 package varcode.java.code;
 
+import varcode.CodeAuthor;
 import varcode.Template;
 import varcode.context.VarContext;
 import varcode.doc.Author;
@@ -67,9 +68,24 @@ public class _thread
         return new _runnable( codeLines );
     }
             
+    /** Creates an anonymous runnable for threading */
     public static class _runnable
-        extends Template.Base
-    {
+        implements Template, CodeAuthor
+    {        
+        /**
+         * 
+         * @param context contains bound variables and scripts to bind data into
+         * the template
+         * @param directives pre-and post document directives 
+         * @return the populated Template bound with Data from the context
+         */
+        @Override
+        public String bind( VarContext context, Directive...directives )
+        {
+            Dom dom = BindML.compile( author() ); 
+            return Author.code( dom, context, directives );
+        }
+        
         private _code body; 
         private boolean start = false;
         
@@ -79,6 +95,7 @@ public class _thread
             this.body.addTailCode( codeLines );            
         }
         
+        @Override
         public _runnable bindIn( VarContext context )
         {
             this.body.bindIn( context );

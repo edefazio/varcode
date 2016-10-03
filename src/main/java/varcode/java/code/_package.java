@@ -8,8 +8,13 @@ import varcode.doc.Directive;
 import varcode.dom.Dom;
 import varcode.markup.bindml.BindML;
 
+/**
+ * package representation
+ * 
+ * @author M. Eric DeFazio eric@varcode.io
+ */
 public class _package
-    implements CodeAuthor, Template 
+    implements Template, CodeAuthor 
 {
 	public static final Dom PACKAGE = 
 		BindML.compile( 
@@ -55,25 +60,28 @@ public class _package
 		}
 	}
 	
+    @Override
 	public String toString()
 	{
         return author( );        
 	}
 
+    @Override
     public _package replace( String target, String replacement )
     {
         this.name = this.name.replace( target, replacement );
         return this;
     }
     
+    @Override
 	public String author( Directive... directives ) 
 	{
-        
 		return Author.code( 
             PACKAGE, 
             VarContext.of( "name", this.name ), directives );
 	}
 
+    @Override
     public _package bindIn( VarContext context )
     {
         if( this.name != null )
@@ -91,5 +99,4 @@ public class _package
         Dom dom = BindML.compile(author() );
         return Author.code( dom, context, directives );
     }
-
 }

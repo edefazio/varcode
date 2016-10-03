@@ -17,6 +17,7 @@ package varcode.java.code;
 
 import java.util.ArrayList;
 import java.util.List;
+import varcode.CodeAuthor;
 import varcode.Template;
 import varcode.context.VarContext;
 import varcode.doc.Author;
@@ -25,12 +26,14 @@ import varcode.dom.Dom;
 import varcode.markup.bindml.BindML;
 
 /**
- *
+ * Model of an if statement 
+ * 
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _if
-    extends Template.Base
-{
+    implements Template, CodeAuthor
+{        
+    
     public static _if is( Object condition, Object... bodyLines )
     {
         return new _if( condition, bodyLines );
@@ -90,6 +93,7 @@ public class _if
         return Author.code( IF_BLOCK, getContext(), directives );
     }
 
+    @Override
     public _if bindIn( VarContext context )
     {
         this.condition = this.condition.bindIn( context );
@@ -102,7 +106,6 @@ public class _if
     @Override
     public String bind( VarContext context, Directive...directives )
     {
-        System.out.println( "IF BIND" );
         String elseIfs = "";
         for( int i = 0; i < elseIfs.length(); i++ )
         {
@@ -112,8 +115,7 @@ public class _if
             "condition", this.condition.bind( context, directives ), 
             "body", this.body.bind( context, directives ), 
             "elseIfs", elseIfs,
-            "elseBody", this.elseBody.bind( context, directives )        
-                
+            "elseBody", this.elseBody.bind( context, directives )                        
         );        
         return Author.code( IF_BLOCK, vc, directives );
     }
@@ -151,8 +153,22 @@ public class _if
     }
         
     public static class _elseIf
-        extends Template.Base
-    {
+        implements Template, CodeAuthor
+    {        
+        /**
+        * 
+        * @param context contains bound variables and scripts to bind data into
+        * the template
+        * @param directives pre-and post document directives 
+        * @return the populated Template bound with Data from the context
+        */
+        @Override
+        public String bind( VarContext context, Directive...directives )
+        {
+            Dom dom = BindML.compile( author() ); 
+            return Author.code( dom, context, directives );
+        }
+        
         public static final Dom ELSEIF = BindML.compile( 
             "else if( {+condition*+} )" + N +  
             "{" + N + 
@@ -168,6 +184,7 @@ public class _if
             this.elseIfBody = elseIfBody;
         }
         
+        @Override
         public _elseIf bindIn( VarContext context )
         {
             this.condition.bindIn( context );
@@ -196,11 +213,10 @@ public class _if
             return Author.code( ELSEIF, getContext(), directives );
         }      
         
+        @Override
         public String toString()
         {
             return author();
         }
     }
-    
-
 }

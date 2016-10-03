@@ -120,10 +120,10 @@ public class _annotate
         for( int i = 0; i < this.listOfAnnotations.size(); i++ )
         {
             Object thisAnn = this.listOfAnnotations.get( i );
-            if( thisAnn instanceof Template.Base )
+            if( thisAnn instanceof Template )
             {
                 this.listOfAnnotations.set( i, 
-                    ((Template.Base)thisAnn).bindIn( context ) );
+                    ((Template)thisAnn).bindIn( context ) );
             }
             else if( thisAnn instanceof String )
             {
@@ -167,9 +167,9 @@ public class _annotate
             {
                 repList.add( ((String)o).replace( target, replacement ) );
             }
-            else if( o instanceof Template.Base )
+            else if( o instanceof Template )
             {
-                repList.add( ((Template.Base)o).replace( target, replacement ) );
+                repList.add( ((Template )o).replace( target, replacement ) );
             }
             else
             {
@@ -224,8 +224,21 @@ public class _annotate
      * 
      */
     public static class _attributes
-        extends Template.Base
-    {
+        implements Template, CodeAuthor
+    {        
+        /**
+         * 
+         * @param context contains bound variables and scripts to bind data into
+         * the template
+         * @param directives pre-and post document directives 
+         * @return the populated Template bound with Data from the context
+         */
+        @Override
+        public String bind( VarContext context, Directive...directives )
+        {
+            Dom dom = BindML.compile( author() ); 
+            return Author.code( dom, context, directives );
+        }
         
         public static _attributes of( Object... nameValues )
         {
@@ -251,9 +264,9 @@ public class _annotate
             for( int i = 0; i < names.size(); i++ )
             {
                 Object thisName = names.get( i );
-                if( thisName instanceof Template.Base )
+                if( thisName instanceof Template  )
                 {
-                    names.set( i , ((Template.Base) thisName).bindIn( context ) );
+                    names.set( i , ((Template) thisName).bindIn( context ) );
                 }
                 else if( thisName instanceof String )
                 {
@@ -264,9 +277,9 @@ public class _annotate
             for( int i = 0; i < values.size(); i++ )
             {
                 Object thisValue = values.get( i );
-                if( thisValue instanceof Template.Base )
+                if( thisValue instanceof Template )
                 {
-                    values.set( i, ((Template.Base) thisValue).bindIn( context ) );
+                    values.set( i, ((Template) thisValue).bindIn( context ) );
                 }
                 else if( thisValue instanceof String )
                 {
@@ -283,18 +296,18 @@ public class _annotate
             {            
                 Object thisName = names.get( i );
                 Object thisValue = values.get( i );
-                if( thisName instanceof Template.Base )
+                if( thisName instanceof Template )
                 {
-                    names.set( i , ((Template.Base) thisName).bindIn( context ) );                                        
+                    names.set( i , ((Template)thisName ).bindIn( context ) );                                        
                 }
                 else if( thisName instanceof String )
                 {
                     names.set( i, 
                         Author.code( BindML.compile((String)thisName), context ) );
                 }
-                if( thisValue instanceof Template.Base )
+                if( thisValue instanceof Template )
                 {
-                    values.set( i , ((Template.Base) thisValue).bindIn( context ) );                                        
+                    values.set( i , ((Template) thisValue).bindIn( context ) );                                        
                 }
                 else if( thisValue instanceof String )
                 {
@@ -415,8 +428,21 @@ public class _annotate
      * A single annotation
      */
     public static class _annotation
-        extends Template.Base
-    {
+        implements Template, CodeAuthor
+    {        
+        /**
+         * 
+         * @param context contains bound variables and scripts to bind data into
+         * the template
+         * @param directives pre-and post document directives 
+         * @return the populated Template bound with Data from the context
+         */
+        @Override
+        public String bind( VarContext context, Directive...directives )
+        {
+            Dom dom = BindML.compile( author() ); 
+            return Author.code( dom, context, directives );
+        }
         /** Create and return a clone of this annotation
          * @param prototype the prototype annotation
          * @return a new clone of the base annotation

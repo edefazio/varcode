@@ -17,7 +17,7 @@ package varcode.java.code;
 
 import java.util.ArrayList;
 import java.util.List;
-import static varcode.CodeAuthor.N;
+import varcode.CodeAuthor;
 import varcode.Template;
 import varcode.context.VarContext;
 import varcode.doc.Author;
@@ -30,8 +30,22 @@ import varcode.markup.bindml.BindML;
  * @author eric
  */
 public class _try
-    extends Template.Base
-{
+    implements Template, CodeAuthor
+{        
+    /**
+     * 
+     * @param context contains bound variables and scripts to bind data into
+     * the template
+     * @param directives pre-and post document directives 
+     * @return the populated Template bound with Data from the context
+     */
+    @Override
+    public String bind( VarContext context, Directive...directives )
+    {
+        Dom dom = BindML.compile( author() ); 
+        return Author.code( dom, context, directives );
+    }
+    
     /**
 	 * Any try(withResources)...catch()...finally() block of code
 	 */
@@ -117,7 +131,6 @@ public class _try
         return t;
     }
     
-    
     public static _try catchAndHandle( 
         _code body, Object exceptionClass, Object...handleCode)
     {
@@ -178,6 +191,7 @@ public class _try
         return this;
     }
 
+    @Override
     public _try bindIn( VarContext context )
     {
         this.body.bindIn( context );
@@ -191,8 +205,22 @@ public class _try
     }
 
     public static class _catchHandleBlock
-        extends Template.Base
-    {
+        implements Template, CodeAuthor
+    {        
+        /**
+         * 
+         * @param context contains bound variables and scripts to bind data into
+         * the template
+         * @param directives pre-and post document directives 
+         * @return the populated Template bound with Data from the context
+         */
+        @Override
+        public String bind( VarContext context, Directive...directives )
+        {
+            Dom dom = BindML.compile( author() ); 
+            return Author.code( dom, context, directives );
+        }
+        
         private String exception;
         private _code handleBlock;
         
@@ -209,6 +237,7 @@ public class _try
             }                        
         }
 
+        @Override
         public _catchHandleBlock bindIn( VarContext context )
         {
             this.exception = Author.code( BindML.compile( this.exception ), context );

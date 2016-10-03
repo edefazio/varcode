@@ -2,6 +2,7 @@ package varcode.java.code;
 
 import java.util.ArrayList;
 import java.util.List;
+import varcode.CodeAuthor;
 import varcode.Template;
 import varcode.VarException;
 
@@ -17,8 +18,22 @@ import varcode.markup.bindml.BindML;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _throws
-	extends Template.Base
-{
+    implements Template, CodeAuthor
+{        
+    /**
+     * 
+     * @param context contains bound variables and scripts to bind data into
+     * the template
+     * @param directives pre-and post document directives 
+     * @return the populated Template bound with Data from the context
+     */
+    @Override
+    public String bind( VarContext context, Directive...directives )
+    {
+        Dom dom = BindML.compile( author() ); 
+        return Author.code( dom, context, directives );
+    }
+    
 	public static final _throws NONE = new _throws();
 	
 	private List<String> throwsException;
@@ -39,6 +54,7 @@ public class _throws
 	    "    throws {+throwsList+}+}}" );
 	
     
+    @Override
     public _throws bindIn( VarContext context )
     {
         for( int i = 0; i < throwsException.size(); i++ )
@@ -50,6 +66,7 @@ public class _throws
         return this;
     }
     
+    @Override
 	public String author( Directive... directives ) 
 	{
 		VarContext vc = VarContext.of( "throwsException", throwsException );
@@ -90,6 +107,7 @@ public class _throws
 		return this;
 	}
     
+    @Override
     public _throws replace( String target, String replacement )
     {
         List<String> replacedNames = new ArrayList<String>();
@@ -133,6 +151,7 @@ public class _throws
         return count() == 0;
     }
 	
+    @Override
 	public String toString()
 	{
 		return author();

@@ -31,11 +31,13 @@ public class _var
 		this.varName = _identifier.of( varName );
 	}
 	
+    @Override
 	public void bindTo( VarBindings bindings ) 
 	{
 		bindings.setAllPublicFieldsOf( this );		
 	}
 	
+    @Override
 	public String toString()
 	{
 		return Author.code( DOM, VarContext.of( ).set( this ) );
