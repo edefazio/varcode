@@ -7,7 +7,7 @@ import java.util.List;
 import varcode.context.VarBindings;
 import varcode.context.VarBindings.SelfBinding;
 import varcode.context.VarContext;
-import varcode.doc.Author;
+import varcode.doc.Compose;
 import varcode.dom.Dom;
 import varcode.markup.bindml.BindML;
 
@@ -40,7 +40,7 @@ public class _var
     @Override
 	public String toString()
 	{
-		return Author.code( DOM, VarContext.of( ).set( this ) );
+		return Compose.asString( DOM, VarContext.of( ).set( this ) );
 	}
 	
 	public static String[] normalizeTokens( String commaAndSpaceSeparatedTokens )
