@@ -5,7 +5,7 @@ import java.io.ByteArrayInputStream;
 import junit.framework.TestCase;
 import varcode.context.VarContext;
 import varcode.doc.DocState;
-import varcode.doc.Author;
+import varcode.doc.Compose;
 import varcode.doc.lib.SHA1Checksum;
 import varcode.dom.Dom;
 import varcode.markup.bindml.BindML;
@@ -31,7 +31,7 @@ public class SHA1ChecksumTest
 	*/
 		Dom m = BindML.compile( "{$$checksum()$$}ABCDEFGHI" );
 		
-		DocState ts = Author.bind( m , VarContext.of() );
+		DocState ts = Compose.toState( m , VarContext.of() );
 		
 		//assertEquals( "SHA-1", m.getMetadata().get( SHA1Checksum.CHECKSUM_ALGORITHM_VARNAME) );
 		

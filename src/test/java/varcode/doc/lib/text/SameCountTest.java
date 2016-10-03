@@ -2,7 +2,7 @@ package varcode.doc.lib.text;
 
 import junit.framework.TestCase;
 import varcode.VarException;
-import varcode.doc.Author;
+import varcode.doc.Compose;
 import varcode.dom.Dom;
 import varcode.markup.bindml.BindML;
 
@@ -14,16 +14,16 @@ public class SameCountTest
 		// "#=" is "shorthand" for "sameCount"
 		Dom d = BindML.compile("{$#=(a,b)$}");
 		
-		Author.code( d, "a", 1, "b", 2 );
+		Compose.asString( d, "a", 1, "b", 2 );
 		
-		Author.code( d, "a", 1, "b", "hamburger" );
+		Compose.asString( d, "a", 1, "b", "hamburger" );
 		
 		//works if they are both null
-		Author.code( d, "a", null,"b", null );
+		Compose.asString( d, "a", null,"b", null );
 		
 		try
 		{
-			Author.code( d, "a", 1 ); //counts not the same
+			Compose.asString( d, "a", 1 ); //counts not the same
 		}
 		catch( VarException e)
 		{
@@ -33,7 +33,7 @@ public class SameCountTest
 		
 		try
 		{
-			Author.code( d, "a", 1, "b", null ); //counts not the same
+			Compose.asString( d, "a", 1, "b", null ); //counts not the same
 		}
 		catch( VarException e)
 		{

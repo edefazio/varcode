@@ -40,6 +40,7 @@ public class _autoDtoTest
                 .instance();
         
     }
+    
     public void testAutoDto()
     {
         _autoDto d = _autoDto.of( "MyDto" );

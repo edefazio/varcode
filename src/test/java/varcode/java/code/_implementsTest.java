@@ -27,7 +27,7 @@ public class _implementsTest
         
         try
         {
-            imps.get( 1 );
+            imps.getAt( 1 );
             fail("expected VarException for trying to acccess implements at bad index");
         }
         catch( VarException ve )
@@ -40,7 +40,7 @@ public class _implementsTest
     {
         _implements impls = _implements.of( "MyInterface" );
         assertEquals( 1, impls.count() ); 
-        assertEquals( "MyInterface", impls.get( 0 ) ); 
+        assertEquals( "MyInterface", impls.getAt( 0 ) ); 
         assertEquals( "implements MyInterface", impls.toString().trim() );
         
         impls.implement( Serializable.class );

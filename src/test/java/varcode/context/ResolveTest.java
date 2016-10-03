@@ -7,7 +7,7 @@ import java.util.TreeSet;
 
 import junit.framework.TestCase;
 import varcode.context.Resolve.SmartScriptResolver;
-import varcode.doc.Author;
+import varcode.doc.Compose;
 import varcode.dom.Dom;
 import varcode.markup.bindml.BindML;
 import varcode.script.VarScript;
@@ -56,7 +56,7 @@ public class ResolveTest
 		
 		//we can get values that are set in expressions
 		Dom d = BindML.compile("{((A=1))}{+A+}");
-		assertEquals( "1", Author.code( d ) ); //verify I can resolve a variable that is set as expression
+		assertEquals("1", Compose.asString( d ) ); //verify I can resolve a variable that is set as expression
 		
 		d = BindML.compile("{+A+}");
 		TreeSet<Integer> ts = new TreeSet<Integer>();
@@ -64,7 +64,7 @@ public class ResolveTest
 		ts.add(2);
 		ts.add(3);
 		ts.add(4);
-		assertEquals( "1, 2, 3, 4", Author.code( d , "A", ts ) ); 
+		assertEquals("1, 2, 3, 4", Compose.asString( d , "A", ts ) ); 
 		
 		//I need a Better way of printing Maps 
 		// right now = {A=1, B=2, C=3}
@@ -73,10 +73,10 @@ public class ResolveTest
 		m.put("A", 1);
 		m.put("B", 2);
 		m.put("C", 3);
-		System.out.println( Author.code( d, "A", m ) );
+		System.out.println(Compose.asString( d, "A", m ) );
 		
 		d = BindML.compile("{((A=[1,2,3,4]))}{+A+}");
-		assertEquals( "1, 2, 3, 4", Author.code( d ) ); //verify I can resolve a variable that is set as expression
+		assertEquals("1, 2, 3, 4", Compose.asString( d ) ); //verify I can resolve a variable that is set as expression
 		
 				
 		

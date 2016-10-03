@@ -3,7 +3,7 @@ package varcode.markup.bindml;
 import varcode.context.VarBindException.NullResult;
 import varcode.context.VarContext;
 import varcode.context.VarBindException.NullVar;
-import varcode.doc.Author;
+import varcode.doc.Compose;
 import varcode.markup.bindml.BindML;
 import junit.framework.TestCase;
 
@@ -25,7 +25,7 @@ public class TestRequiredBindML
 	{
 		try
 		{
-			Author.code( BindML.compile( mark ), VarContext.of() );
+			Compose.asString( BindML.compile( mark ), VarContext.of() );
 			fail( "expected RequiredButNull" );
 		}
 		catch( NullVar rbn )
@@ -39,7 +39,7 @@ public class TestRequiredBindML
 	{
 		try
 		{
-			Author.code( BindML.compile( mark ), VarContext.of() );
+			Compose.asString( BindML.compile( mark ), VarContext.of() );
 			fail( "expected RequiredButNull" );
 		}
 		catch( NullResult rbn )
@@ -62,7 +62,7 @@ public class TestRequiredBindML
 		verifyThrowsVarRequired( "{_+:{+fieldType*+} {+fieldName+}+_}" );
 		verifyThrowsVarRequired( "{_+:{+fieldType+} {+fieldName*+}+_}" );
 		
-		assertEquals( "",Author.code( BindML.compile( "{_+:{+fieldType+} {+fieldName+}*+_}" ), VarContext.of() ) );
+		assertEquals("",Compose.asString( BindML.compile( "{_+:{+fieldType+} {+fieldName+}*+_}" ), VarContext.of() ) );
 		
 		//verifyThrowsResult(  ); //get rid of this logic
 		

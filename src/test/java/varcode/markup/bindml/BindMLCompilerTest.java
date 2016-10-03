@@ -4,7 +4,7 @@ import varcode.context.VarBindException.NullResult;
 import varcode.context.VarBindException;
 import varcode.context.VarContext;
 import varcode.context.VarBindException.NullVar;
-import varcode.doc.Author;
+import varcode.doc.Compose;
 import varcode.doc.DocState;
 import varcode.dom.Dom;
 import varcode.eval.EvalException;
@@ -83,13 +83,13 @@ public class BindMLCompilerTest
 	public void testDefineVarAsExpressionResult()
 	{
 		Dom d = BindML.compile( "{#a=((1 + 2))#}{+a+}" );
-		assertEquals( "3", Author.code( d ) );		
+		assertEquals("3", Compose.asString( d ) );		
 	}
 	
 	public void testDefineStaticVarAsExpressionResult()
 	{
 		Dom d = BindML.compile( "{##a=((1 + 2))##}{+a+}" );
-		assertEquals( "3", Author.code( d ) );		
+		assertEquals("3", Compose.asString( d ) );		
 	}
 	/** 
 	 * these are essentially "functional tests"
@@ -235,14 +235,14 @@ public class BindMLCompilerTest
 	
 	public void assertDeriveMarkEquals( String mark, String expected, Object...keyValuePairs )
 	{
-		assertEquals( expected, Author.code( BindML.compile( mark ), keyValuePairs ) ); 
+		assertEquals(expected, Compose.asString( BindML.compile( mark ), keyValuePairs ) ); 
 	}
 	
 	public void assertVarContextUpdate( 
 		String mark, String varName, Object expected, Object...keyValuePairs )
 	{
 		VarContext vc = VarContext.of( keyValuePairs );
-		Author.code( BindML.compile( mark ), vc );
+		Compose.asString( BindML.compile( mark ), vc );
 		assertEquals( expected, vc.resolveVar( varName ) );
 	}
 	
@@ -271,7 +271,7 @@ public class BindMLCompilerTest
 	public void testMetadata()
 	{
 		VarContext vc = VarContext.of();
-		DocState ts = Author.bind( BindML.compile( "{@meta:data@}" ), vc );
+		DocState ts = Compose.toState( BindML.compile( "{@meta:data@}" ), vc );
 		
 		assertEquals("data", ts.getContext().resolveVar( "meta" ) );		
 	}

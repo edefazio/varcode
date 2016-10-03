@@ -6,9 +6,9 @@
 package varcode.java.code;
 
 import junit.framework.TestCase;
-import varcode.CodeAuthor;
 import varcode.VarException;
 import varcode.context.VarContext;
+import varcode.doc.lib.text.Prefix;
 import varcode.java.code._methods._method;
 import varcode.java.code._methods._method._signature;
 
@@ -283,7 +283,7 @@ public class _methodsTest
 			"}",
 			m.toString() );
 		
-		String indented = m.author( CodeAuthor.INDENT );
+		String indented = m.author( Prefix.INDENT_4_SPACES );
 		assertEquals(
 		"    public final String getX(  )" + System.lineSeparator()+ 
 		"    {" + N +

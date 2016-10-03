@@ -172,7 +172,7 @@ public class _classTest
 		_class c = new _class( "public class AllComponentsBlock extends SomeBaseClass implements Serializable" )
 			.staticBlock( "List<String> l = new ArrayList();" + N +"l.toString();" )
 			.staticBlock( "int a;" )
-			.javaDoc( "This is an example \"Authored\" class" + N + 
+			.javadoc( "This is an example \"Authored\" class" + N + 
 					"it is using the API to the fullest" )
 		    .field( "public int r;" )
 		    .field( "protected static final String ID = UUID.randomUUID().toString();")		   

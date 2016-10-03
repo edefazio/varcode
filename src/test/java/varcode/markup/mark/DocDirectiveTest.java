@@ -1,7 +1,7 @@
 package varcode.markup.mark;
 
 import varcode.context.VarContext;
-import varcode.doc.Author;
+import varcode.doc.Compose;
 import varcode.doc.lib.text.RemoveEmptyLines;
 import varcode.dom.Dom;
 import varcode.markup.codeml.CodeMLCompiler;
@@ -23,7 +23,7 @@ public class DocDirectiveTest
 			"removeEmptyLines", RemoveEmptyLines.INSTANCE );
 		
 		
-		System.out.println( Author.code(  markup, vc ) );
+		System.out.println(Compose.asString(  markup, vc ) );
 		
 	}
 }

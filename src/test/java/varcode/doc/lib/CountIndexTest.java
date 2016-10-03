@@ -3,7 +3,7 @@ package varcode.doc.lib;
 import junit.framework.TestCase;
 import varcode.context.VarBindException;
 import varcode.context.VarContext;
-import varcode.doc.Author;
+import varcode.doc.Compose;
 import varcode.markup.bindml.BindML;
 import varcode.markup.codeml.CodeML;
 
@@ -15,12 +15,12 @@ public class CountIndexTest
 	
 	public static String bindML( String s, VarContext vc )
 	{
-		return Author.code( BindML.compile( s ), vc );
+		return Compose.asString( BindML.compile( s ), vc );
 	}
 	
 	public static String codeML( String s, VarContext vc )
 	{
-		return Author.code( CodeML.compile( s ), vc );
+		return Compose.asString( CodeML.compile( s ), vc );
 	}
 	
 	public void testCountIndexMarks()

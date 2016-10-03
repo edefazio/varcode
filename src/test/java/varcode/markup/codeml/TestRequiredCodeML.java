@@ -5,7 +5,7 @@ import varcode.context.VarBindException.NullResult;
 import varcode.context.VarBindException;
 import varcode.context.VarContext;
 import varcode.context.VarBindException.NullVar;
-import varcode.doc.Author;
+import varcode.doc.Compose;
 
 /**
  * Test that Required Works as Expected for BindML
@@ -25,7 +25,7 @@ public class TestRequiredCodeML
 	{
 		try
 		{
-			Author.code( CodeML.compile( mark ), VarContext.of() );
+			Compose.asString( CodeML.compile( mark ), VarContext.of() );
 			fail( "expected RequiredButNull" );
 		}
 		catch( NullVar rbn )
@@ -45,7 +45,7 @@ public class TestRequiredCodeML
 	{
 		try
 		{
-			Author.code( CodeML.compile( mark ), VarContext.of() );
+			Compose.asString( CodeML.compile( mark ), VarContext.of() );
 			fail( "expected Exception "+ ExceptionClass );
 		}
 		catch( Exception exception )
@@ -63,7 +63,7 @@ public class TestRequiredCodeML
 	{
 		try
 		{
-			Author.code( CodeML.compile( mark ), VarContext.of() );
+			Compose.asString( CodeML.compile( mark ), VarContext.of() );
 			fail( "expected RequiredButNull" );
 		}
 		catch( NullResult rbn )
@@ -114,8 +114,8 @@ public class TestRequiredCodeML
 		//required                                    ^
 		
 		
-		assertEquals( "",
-			Author.code( CodeML.compile( "/*{_+:{+fieldType+} {+fieldName+}*+_}*/" ), VarContext.of() ) );
+		assertEquals("",
+			Compose.asString( CodeML.compile( "/*{_+:{+fieldType+} {+fieldName+}*+_}*/" ), VarContext.of() ) );
 
 	}
 }

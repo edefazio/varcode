@@ -1,7 +1,7 @@
 package varcode.markup.codeml;
 
 import varcode.context.VarContext;
-import varcode.doc.Author;
+import varcode.doc.Compose;
 import varcode.dom.Dom;
 import varcode.markup.MarkupException;
 import varcode.markup.mark.AddExpressionResult;
@@ -72,9 +72,9 @@ public class CodeMLParserMarkTest
     		+ "&& env < test ))#}*/" +
     		"/*{+?((captureInput==true)):$capture()+}*/" );
     	
-    	assertEquals( "", Author.code( d , VarContext.of() ) );
+    	assertEquals("", Compose.asString( d , VarContext.of() ) );
     	
-    	assertEquals( "", Author.code( d , VarContext.of( "env", 100, "test", 150 ) ) );
+    	assertEquals("", Compose.asString( d , VarContext.of( "env", 100, "test", 150 ) ) );
 
     }
     

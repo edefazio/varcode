@@ -6,9 +6,9 @@
 package varcode.java.code;
 
 import junit.framework.TestCase;
-import varcode.CodeAuthor;
 import varcode.VarException;
 import varcode.context.VarContext;
+import varcode.doc.lib.text.Prefix;
 import varcode.java.code._fields._field;
 
 /**
@@ -155,7 +155,7 @@ public class _fieldsTest
         
         assertEquals(
             "    public int a;" + System.lineSeparator()
-           +"    public int b;", f.author( CodeAuthor.INDENT ) );
+           +"    public int b;", f.author( Prefix.INDENT_4_SPACES ) );
         
         f = _fields.of("public static int a;", "public int b;" );
         
@@ -165,7 +165,7 @@ public class _fieldsTest
         
         assertEquals(
             "    public static int a;" + System.lineSeparator()
-           +"    public int b;", f.author( CodeAuthor.INDENT ) );
+           +"    public int b;", f.author( Prefix.INDENT_4_SPACES ) );
         
         assertNotNull( f.getByName("a") );       
     }

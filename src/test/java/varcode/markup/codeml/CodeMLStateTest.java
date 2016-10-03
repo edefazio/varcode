@@ -2,7 +2,7 @@ package varcode.markup.codeml;
 
 import junit.framework.TestCase;
 import varcode.context.VarContext;
-import varcode.doc.Author;
+import varcode.doc.Compose;
 import varcode.dom.Dom;
 
 public class CodeMLStateTest
@@ -59,8 +59,8 @@ public class CodeMLStateTest
         Dom cm = cmb.compile( );
         //System.out.println( cm.toString() );
         
-        assertEquals( "", Author.code( cm, VarContext.of(  ) ) );
-        assertEquals( "one", Author.code( cm, VarContext.of( "Name", "one" ) ) );
+        assertEquals("", Compose.asString( cm, VarContext.of(  ) ) );
+        assertEquals("one", Compose.asString( cm, VarContext.of( "Name", "one" ) ) );
         //assertTrue( BaseTailor.doAlter( cm, Pairs.of( "name", "one" ) ).equals( "One" ) );
         
         //there is one mark

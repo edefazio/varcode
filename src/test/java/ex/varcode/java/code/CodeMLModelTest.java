@@ -4,6 +4,7 @@ import junit.framework.TestCase;
 import varcode.java.Java;
 import varcode.java.JavaCase;
 import varcode.java.code._class;
+import varcode.java.code._code;
 import varcode.java.code._enum;
 import varcode.java.code._fields._field;
 import varcode.java.code._interface;
@@ -27,7 +28,7 @@ public class /*{+className*/CodeMLModelTest/*+}*/ /*{-*/extends TestCase/*-}*/
         _method m = _method.of(
             "Simple ToString method ", 
             "public String toString()", 
-            "return this.getClass().getName().toString();" );
+            _code.of("return this.getClass().getName().toString();") );
             
         JavaCase thisCase = JavaCase.of(
             CodeMLModelTest.class, 

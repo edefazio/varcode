@@ -6,7 +6,7 @@ import java.io.StringWriter;
 /*{-*/
 import junit.framework.TestCase;
 import varcode.VarException;
-import varcode.doc.Author;
+import varcode.doc.Compose;
 import varcode.doc.lib.java.ValidateIdentifierName;
 import varcode.doc.lib.java.ValidateTypeName;
 import varcode.dom.Dom;
@@ -24,17 +24,17 @@ public class _JavaCase_AllDirectivesTest
 			"{$sameCount(type,name)$}" + //verifies the number of types and names is the same
 			"{{+:{+type+} {+name+}, +}}" );
 		
-		System.out.println( Author.code( d, "type", int.class, "name", "Eric" ) );
+		System.out.println(Compose.asString( d, "type", int.class, "name", "Eric" ) );
 		
-		System.out.println( Author.code( d, 
+		System.out.println(Compose.asString( d, 
 			"type", new Class[]{int.class, String.class}, 
 			"name", new String[]{"Eric", "Daffy"} ) );
 		
-		Author.code( d , "type", "Map<String>", "name", "blah" );
+		Compose.asString( d , "type", "Map<String>", "name", "blah" );
 		
 		try
 		{
-			Author.code( d , "type", "4", "name", "blah" );	
+			Compose.asString( d , "type", "4", "name", "blah" );	
 		}
 		catch( VarException ve )
 		{
@@ -52,7 +52,7 @@ public class _JavaCase_AllDirectivesTest
 			"{$sameCount(type,name)$}" + //verifies the number of types and names is the same
 			"{{+:{+type+} {+name+}, +}}" );
 		
-		Author.code( d , "type", "Map<String>", "name", "blah" );
+		Compose.asString( d , "type", "Map<String>", "name", "blah" );
 	}
 	
 	
