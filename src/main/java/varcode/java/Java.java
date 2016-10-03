@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 import varcode.VarException;
 import varcode.context.VarContext;
 import varcode.context.VarScope;
-import varcode.doc.Author;
+import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.DocState;
 import varcode.dom.Dom;
@@ -156,7 +156,7 @@ public enum Java
     	context.set( JAVA_SIMPLE_CLASS_NAME, pckgClass[ 1 ], VarScope.INSTANCE );
     	
         //author the Document by binding the {@code Dom} with the {@code context}
-        docState = Author.bind( docState );
+        docState = Compose.toState( docState );
         
         if( pckgClass[ 0 ] != null )
         {
