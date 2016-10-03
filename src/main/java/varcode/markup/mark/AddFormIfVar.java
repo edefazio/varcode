@@ -89,11 +89,13 @@ public class AddFormIfVar
     	return targetValue;
     }
     
+    @Override
     public void fill( VarContext context, TranslateBuffer buffer )
     {
         buffer.append( derive( context ) );
     }
     
+    @Override
     public Object derive( VarContext context )
     {
         try
@@ -123,11 +125,13 @@ public class AddFormIfVar
         }
     }
     
+    @Override
     public Form getForm()
     {
         return form;
     }    
 
+    @Override
     public void collectVarNames( Set<String>varNames, VarContext context )
     {
         form.collectVarNames( varNames, context );

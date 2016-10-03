@@ -18,6 +18,7 @@ import varcode.java.code._nest._nestGroup;
 import varcode.java.code._nest.component;
 import varcode.markup.bindml.BindML;
 import varcode.Model;
+import varcode.java.code._constructors._constructor;
 
 /**
  * "parametric code" using a fluent builder pattern for 
@@ -462,11 +463,16 @@ public class _class
 	 */
 	public _class constructor( String constructorSignature, Object... body )
 	{
-		_constructors._constructor c = 
+		_constructors._constructor construct = 
             new _constructors._constructor( constructorSignature ).body( body );
-		constructors.addConstructor( c );
-		return this;
+		return constructor( construct );
 	}
+    
+    public _class constructor( _constructor construct )
+    {
+        constructors.addConstructor( construct );
+		return this;
+    }
 	/** 
      * Sets the Javadoc comment for the class
      * 

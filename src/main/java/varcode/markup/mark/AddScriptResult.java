@@ -67,6 +67,7 @@ public class AddScriptResult
         this.isRequired = isRequired;
     }
 	
+    @Override
 	public Object derive( VarContext context ) 
 	{	
 	    //VarScript script = context.getVarScript( scriptName );
@@ -99,26 +100,31 @@ public class AddScriptResult
         return "";
 	}
 	
+    @Override
 	public void fill( VarContext context, TranslateBuffer buffer )
 	{
 	    buffer.append( derive( context ) );
 	}
 
+    @Override
     public String getScriptName()
     {
         return scriptName;
     }
     
+    @Override
     public boolean isRequired()
     {
         return isRequired;
     }
 
+    @Override
 	public String getScriptInput() 
 	{
 		return scriptInput;
 	}
 
+    @Override
 	public void collectVarNames( Set<String> varNames, VarContext context ) 
 	{
 		VarScript script = context.resolveScript( scriptName, scriptInput );

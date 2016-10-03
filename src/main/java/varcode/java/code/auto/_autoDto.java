@@ -16,8 +16,6 @@
 package varcode.java.code.auto;
 
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.List;
 import varcode.context.VarContext;
 import varcode.doc.Directive;
 import varcode.java.JavaCase;
@@ -25,8 +23,7 @@ import varcode.java.JavaCase.JavaCaseAuthor;
 import varcode.java.JavaNaming;
 import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.code._class;
-import varcode.java.code._code;
-import varcode.java.code._fields;
+import varcode.java.code._constructors._constructor;
 import varcode.java.code._fields._field;
 import varcode.java.code._modifiers;
 
@@ -50,7 +47,7 @@ import varcode.java.code._modifiers;
 public class _autoDto
     implements JavaCaseAuthor
 {
-    private _class theClass;
+    private final _class theClass;
     
     /**
      * Create a dto at the full pathName:<PRE>
@@ -82,11 +79,6 @@ public class _autoDto
        this.theClass = _class.of( packageName, "public class "+className );        
     }
     
-    private static final String firstUpper( String s )
-    {
-        return Character.toUpperCase( s.charAt(0) ) + s.substring( 1 );
-    }
-    
     /**
      * Add class imports to the DTO
      * @param clazz classes to import
@@ -94,7 +86,7 @@ public class _autoDto
      */
     public _autoDto imports( Class... clazz )
     {
-        this.theClass.imports( clazz );
+        this.theClass.imports( (Object[]) clazz );
         return this;
     }
     
@@ -127,25 +119,19 @@ public class _autoDto
      *    }</B>
      * }
      * </PRE>
+     * @param clazz the class type of the property
+     * @param name the name of the property
+     * @return this (modified)
      */
     public _autoDto property( Class clazz, String name )
     {
         this.theClass.imports( clazz ); //import the clazz if necessary
         _field f = new _field( 
-            _modifiers.of("private"), clazz.getCanonicalName(), name ); 
+            _modifiers.of( "private" ), clazz.getCanonicalName(), name ); 
         this.theClass.getFields().addFields( f );  
         
-         //add the getter
-        this.theClass.method(
-            "public " + f.getType() + " get" + firstUpper( f.getName() )+"()",
-            "return this." + f.getName() +";");    
-        
-        //add a setter        
-        this.theClass.method(
-            "public void set" + firstUpper( f.getName() ) + "( " 
-                    + f.getType() + " " + f.getName()+" )",
-            "this." + f.getName() + " = " + f.getName() + ";" );    
-        
+        this.theClass.method( _autoGetter.of( f ) ); 
+        this.theClass.method( _autoSetter.of( f ) ); 
         return this;        
     }
     
@@ -163,18 +149,11 @@ public class _autoDto
         _field f = _field.of( fieldDef );
         this.theClass.field( f );
         
-        //add the getter
-        this.theClass.method(
-            "public "+f.getType() + " get" + firstUpper( f.getName() )+"()",
-            "return this." + f.getName() + ";" );    
-        
-        //if the field is Final, if NOT add a setter        
-        if( !f.getModifiers().contains( Modifier.FINAL ) )
+        this.theClass.method( _autoGetter.of( f ) ); 
+        if( ! f.getModifiers().contains( Modifier.FINAL ) ) 
         {
-            this.theClass.method(
-            "public void set" + firstUpper( f.getName() ) + "( " +f.getType()+" "+f.getName()+" )",
-            "this." + f.getName() + " = " + f.getName() + ";" );    
-        }        
+            this.theClass.method( _autoSetter.of( f ) ); 
+        }
         return this;        
     }
     
@@ -194,16 +173,17 @@ public class _autoDto
         //we need a constructor with all the uninitialized final fields
         //verify that all fields are either
         // nonfinal and they are final With an initializer
+        /*
         List<_field>uninitializedFinalFields = new ArrayList<_field>();
         
         _fields fs = this.theClass.getFields();
-        String[] fieldNames = this.theClass.getFields().getFieldNames();
+        String[] fieldNames = fs.getFieldNames();
         
         for( int i = 0; i < fieldNames.length; i++ )
         {
             _field f = fs.getByName( fieldNames[ i ] );
             if( f.getModifiers().contains( Modifier.FINAL ) && 
-                    !f.hasInit() )
+                !f.hasInit() )
             {
                 uninitializedFinalFields.add( f );
             }
@@ -224,13 +204,17 @@ public class _autoDto
             finalInitCode.addTailCode( 
                 "this." + f.getName() + " = " + f.getName()+";" );
         }
-        _class dtoClass = _class.cloneOf( this.theClass );
+        
             
         String constructorSig = 
             "public " + this.theClass.getSignature().getName() 
                 + "( " + paramList + " )";
+        */
+        _constructor constructor = _autoConstructor.of( theClass );
         
-        dtoClass.constructor( constructorSig, finalInitCode );
+        _class dtoClass = _class.cloneOf( this.theClass );
+        
+        dtoClass.constructor( constructor );
         return dtoClass;
     }
     

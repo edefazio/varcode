@@ -15,7 +15,7 @@
  */
 package varcode.java.code.auto;
 
-import varcode.doc.Author;
+import varcode.doc.Compose;
 import varcode.dom.Dom;
 import varcode.java.code._code;
 import varcode.java.code._fields._field;
@@ -47,6 +47,10 @@ public class _autoSetter
     
     public static _method of( _field f )
     {
+        if( f.getModifiers().contains( "final" ) )
+        {   //no setter methods for final fields
+            return null;
+        }
         return of( f.getName(), f.getType() );
     }
         
@@ -59,9 +63,8 @@ public class _autoSetter
      */ 
     public static _method of( String fieldName, Object type )
     {
-        return _method.of( 
-            Author.code( SIGNATURE, "fieldName", fieldName, "type", type ),
-            _code.of( Author.code( BODY, "fieldName", fieldName ) ) );
+        return _method.of(Compose.asString( SIGNATURE, "fieldName", fieldName, "type", type ),
+            _code.of(Compose.asString( BODY, "fieldName", fieldName ) ) );
     }
     
     /**
@@ -117,10 +120,9 @@ public class _autoSetter
          */
         public static _method of( String className, String fieldName, Object type )
         {
-            return _method.of( 
-                Author.code( 
+            return _method.of(Compose.asString( 
                     SIGNATURE, "className", className, "fieldName", fieldName, "type", type ),
-                _code.of( Author.code( BODY, "fieldName", fieldName ) ) );
+                _code.of(Compose.asString( BODY, "fieldName", fieldName ) ) );
         }
     }
 }

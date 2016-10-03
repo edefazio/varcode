@@ -4,7 +4,7 @@ import java.io.InputStream;
 
 import varcode.context.VarContext;
 import varcode.doc.Directive;
-import varcode.doc.Author;
+import varcode.doc.Compose;
 import varcode.doc.DocState;
 import varcode.dom.Dom;
 import varcode.markup.MarkupException;
@@ -136,7 +136,7 @@ public enum CodeML
 	public static String tailorCode( String codeMLMarkup, Object...keyValuePairs )
 	{
 		Dom dom = compile( codeMLMarkup );
-		return Author.code( dom, keyValuePairs );
+		return Compose.asString( dom, keyValuePairs );
 	}
 	
 	/**
@@ -150,18 +150,18 @@ public enum CodeML
 	public static String tailorCode( String codeMLMarkup, VarContext context, Directive...directives )
 	{
 		Dom dom = compile( codeMLMarkup );
-		return Author.code( dom, context, directives );
+		return Compose.asString( dom, context, directives );
 	}
 
 	public static DocState tailor( String codeMLMarkup, Object...keyValuePairs )
 	{
 		Dom dom = compile( codeMLMarkup );
-		return Author.bind( dom, VarContext.of( keyValuePairs ) );
+		return Compose.toState( dom, VarContext.of( keyValuePairs ) );
 	}
 
 	public static DocState tailor( String codeMLMarkup, VarContext context, Directive...directives )
 	{
 		Dom dom = compile( codeMLMarkup );
-		return Author.bind( dom, context, directives );
+		return Compose.toState( dom, context, directives );
 	}
 }

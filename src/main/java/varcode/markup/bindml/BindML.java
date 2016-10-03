@@ -1,7 +1,7 @@
 package varcode.markup.bindml;
 
 import varcode.context.VarContext;
-import varcode.doc.Author;
+import varcode.doc.Compose;
 import varcode.doc.DocState;
 import varcode.dom.Dom;
 import varcode.markup.bindml.BindMLParser.AddVarExpressionMark;
@@ -108,7 +108,7 @@ public enum BindML
 	public static String tailorCode( String bindMLMarkup, Object...keyValuePairs )
 	{
 		Dom dom = compile( bindMLMarkup );
-		return Author.code( dom, keyValuePairs );
+		return Compose.asString( dom, keyValuePairs );
 	}
 	
 	/**
@@ -121,7 +121,7 @@ public enum BindML
 	public static DocState tailor( String bindMLMarkup, Object...keyValuePairs )
 	{
 		Dom dom = compile( bindMLMarkup );
-		return Author.bind( dom, VarContext.of( keyValuePairs ) );
+		return Compose.toState( dom, VarContext.of( keyValuePairs ) );
 	}
 	
 	public enum Marks

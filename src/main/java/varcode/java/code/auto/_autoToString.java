@@ -23,17 +23,28 @@ import varcode.java.code._if;
 import varcode.java.code._methods._method;
 
 /**
- * creates a toString method for a class 
- * 
- * i.e. 
+ * Rough draft of a ToString generator
+ * given a _class model creates a toString method based on the fields 
+ * <PRE>
+ * class MyClass{
+ *    int a = 1;
+ *    String name = "eric";
+ * }
+ * ---prints :
+ * MyClass
+ *     a = 1
+ *     name = eric
+ * </PRE>
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _autoToString
 {
+    
     public static _class of ( _class classModel )
     {
         _class classWithToString = _class.cloneOf( classModel );
-        classWithToString.method( ofAllFields( classWithToString.getFields() ) );
+        classWithToString.method( 
+            ofAllFields( classWithToString.getFields() ) );
         classWithToString.imports( StringBuilder.class );
         
         
@@ -43,7 +54,9 @@ public class _autoToString
     public static _method ofAllFields( _fields fields )
     {
         _method toString = _method.of("public String toString()") 
-            .body( "StringBuilder sb = new StringBuilder();");
+            .body( "StringBuilder sb = new StringBuilder();",
+                "sb.append( getClass().getName() );",
+                "sb.append( System.lineSeparator() );");
         
         toString.annotate("@Override");
         
@@ -55,15 +68,13 @@ public class _autoToString
                  toString.addToBody( "sb.append( System.lineSeparator() );");
             }
             if( f.getType().endsWith( "]" ) )
-            {
-                //it's an array                
+            {   //it's an array                
                 toString.addToBody(
-                    "sb.append( \"" + f.getName() + "\" );",    
+                    "sb.append( \"    " + f.getName() + "\" );",    
                     _if.is( f.getName() + " == null",
                         "sb.append( \" = null\" );")
                     ._else(
-                        "sb.append( \" = [\" );",                                
-                        //todo    
+                        "sb.append( \" = [\" );",                                  
                         _for.of( "int i = 0", "i < " + f.getName() + ".length", "i++")                                
                             .body(
                                 "sb.append( " + f.getName() + "[ i ] );",
@@ -77,9 +88,8 @@ public class _autoToString
             }
             else
             {
-            //TODO need to handle arrays
                 toString.addToBody( 
-                    "sb.append( \"" + f.getName() + "\" );",
+                    "sb.append( \"    " + f.getName() + "\" );",
                     "sb.append( \" = \" );",
                     "sb.append( " + f.getName() + " );" );
             
@@ -88,22 +98,5 @@ public class _autoToString
         toString.addToBody("return sb.toString();");
      
         return toString;
-    }
-    
-    public static void main( String[] args )
-    {
-        _autoDto a = _autoDto.of("ex.varcode.MyDto")
-            .property( "public int count = 1;" )
-            .property( "public String name = \"Default\";" )
-            .property( "public int[] values = new int[]{1,2,3,4}");
-        
-        _class toStrung = of( a.toClassModel() );
-        
-        System.out.println( toStrung );
-        
-        Object inst = toStrung.instance( );
-        System.out.println ( inst );
-        
-            
-    }
+    }    
 }

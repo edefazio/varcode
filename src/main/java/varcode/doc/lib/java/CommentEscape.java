@@ -31,11 +31,13 @@ public enum CommentEscape
         new PostReplace( CommentEscapeMap );
 
 
+    @Override
 	public void postProcess( DocState tailorState ) 
 	{
 		COMMENT_REPLACE.postProcess( tailorState );
 	}
 	
+    @Override
 	public String toString()
 	{
 		return this.getClass().getName()+" \"/+*\" -> \"/*\" & \"*+/\" -> \"*/\" ";

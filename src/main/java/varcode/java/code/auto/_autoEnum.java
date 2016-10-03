@@ -268,7 +268,7 @@ public class _autoEnum
         {
             for(int i=0; i< this.implementFrom.count(); i++ )
             {
-                derived.implement( this.implementFrom.get( i ) );
+                derived.implement( this.implementFrom.getAt( i ) );
             }
         }
         derived.imports( this.imports.getImports().toArray() );
