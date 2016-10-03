@@ -15,21 +15,20 @@
  */
 package varcode.java.code;
 
-import varcode.CodeAuthor;
-import varcode.Template;
 import varcode.context.VarContext;
-import varcode.doc.Author;
+import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.translate.JavaTranslate;
 import varcode.dom.Dom;
 import varcode.markup.bindml.BindML;
+import varcode.Model;
 
 /**
  *
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _forEach
-    implements Template, CodeAuthor
+    implements Model
 {        
     /**
      * 
@@ -42,7 +41,7 @@ public class _forEach
     public String bind( VarContext context, Directive...directives )
     {
         Dom dom = BindML.compile( author() ); 
-        return Author.code( dom, context, directives );
+        return Compose.asString( dom, context, directives );
     }
         /**
      * builds a forEach statement with body: <PRE>
@@ -120,9 +119,9 @@ public class _forEach
     @Override
     public _forEach bindIn(VarContext context)
     {
-        this.collection = Author.code( BindML.compile(this.collection), context );
-        this.elementType = Author.code( BindML.compile(this.elementType), context );
-        this.elementName = Author.code( BindML.compile(this.elementName), context );
+        this.collection = Compose.asString( BindML.compile(this.collection), context );
+        this.elementType = Compose.asString( BindML.compile(this.elementType), context );
+        this.elementName = Compose.asString( BindML.compile(this.elementName), context );
         this.body.bindIn( context );
         return this;
     }
@@ -175,7 +174,7 @@ public class _forEach
     @Override
     public String author( Directive... directives )
     {
-        return Author.code( FOREACH, getContext(), directives );
+        return Compose.asString( FOREACH, getContext(), directives );
     }
     
     @Override

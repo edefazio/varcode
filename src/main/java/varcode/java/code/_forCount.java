@@ -15,14 +15,13 @@
  */
 package varcode.java.code;
 
-import varcode.CodeAuthor;
-import varcode.Template;
 import varcode.context.VarContext;
-import varcode.doc.Author;
+import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.translate.JavaTranslate;
 import varcode.dom.Dom;
 import varcode.markup.bindml.BindML;
+import varcode.Model;
 
 /**
  * This will be a static inner class inside _for
@@ -32,7 +31,7 @@ import varcode.markup.bindml.BindML;
  * @author M. Eric DeFazio eric@
  */
 public class _forCount
-    implements Template, CodeAuthor
+    implements Model
 {        
     public static _forCount up( int count )
     {
@@ -139,18 +138,19 @@ public class _forCount
         }
         if( element instanceof String )
         {
-            return Author.code( BindML.compile((String)element), context );
+            return Compose.asString( BindML.compile((String)element), context );
         }
-        if( element instanceof Template )
+        if( element instanceof Model )
         {
-            return ((Template)element).bindIn( context );
+            return ((Model)element).bindIn( context );
         }
         return element;
     }
         
+    @Override
     public _forCount bindIn( VarContext context )
     {
-        this.varName = Author.code( BindML.compile( this.varName ), context );
+        this.varName = Compose.asString( BindML.compile( this.varName ), context );
         this.delta = doBindIn( this.delta , context );
         this.initialValue = doBindIn( this.initialValue, context );
         this.operator = doBindIn( this.operator, context );
@@ -169,27 +169,26 @@ public class _forCount
     @Override
     public String bind( VarContext context, Directive...directives )
     {
-        VarContext vc = VarContext.of(
-            "varType", this.varType,
-            "varName", Author.code( BindML.compile( this.varName ), context, directives ),
-            "init",  Author.code( BindML.compile( JavaTranslate.INSTANCE.translate( this.initialValue ) ), context, directives ),
-            "operator", Author.code( BindML.compile( JavaTranslate.INSTANCE.translate( this.operator ) ), context, directives ),
-            "endValue", Author.code( BindML.compile( JavaTranslate.INSTANCE.translate( this.endValue ) ), context, directives ),
-            "delta", Author.code( BindML.compile( JavaTranslate.INSTANCE.translate( this.initialValue ) ), context, directives ),
-            "body", this.body.bind(context, directives)
+        VarContext vc = VarContext.of("varType", this.varType,
+            "varName", Compose.asString( BindML.compile( this.varName ), context, directives ),
+            "init",  Compose.asString( BindML.compile( JavaTranslate.INSTANCE.translate( this.initialValue ) ), context, directives ),
+            "operator", Compose.asString( BindML.compile( JavaTranslate.INSTANCE.translate( this.operator ) ), context, directives ),
+            "endValue", Compose.asString( BindML.compile( JavaTranslate.INSTANCE.translate( this.endValue ) ), context, directives ),
+            "delta", Compose.asString( BindML.compile( JavaTranslate.INSTANCE.translate( this.initialValue ) ), context, directives ),
+            "body", this.body.bind( context, directives )
         );
                 
         //Dom dom = BindML.compile( author() ); 
-        return Author.code( FOR_COUNT, vc, directives );
+        return Compose.asString( FOR_COUNT, vc, directives );
     }
         
     @Override
     public String author( Directive... directives )
     {
-        return Author.code( FOR_COUNT, getContext(), directives ); 
+        return Compose.asString( FOR_COUNT, getContext(), directives ); 
     }
     
-    
+    @Override
     public String toString()
     {
         return author();
@@ -236,9 +235,9 @@ public class _forCount
         {
             return ((String) o).replace(target, replacement);
         }
-        if( o instanceof Template )
+        if( o instanceof Model )
         {
-            return ((Template)o).replace(target, replacement);
+            return ((Model)o).replace(target, replacement);
         }
         return o.toString().replace( target, replacement );
     }

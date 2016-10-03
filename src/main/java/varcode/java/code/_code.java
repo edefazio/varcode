@@ -1,17 +1,16 @@
 package varcode.java.code;
 
-import varcode.Template;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import varcode.CodeAuthor;
 import varcode.java.adhoc.Cloner;
 
 import varcode.context.VarContext;
-import varcode.doc.Author;
+import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.dom.Dom;
 import varcode.markup.bindml.BindML;
+import varcode.Model;
 
 /**
  * TODO I'm considering whether I should be able to "register Dependency"
@@ -29,7 +28,7 @@ import varcode.markup.bindml.BindML;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _code
-    implements Template, CodeAuthor
+    implements Model
 {    
 	/**
 	 * Creates a code from the objects (Strings, _code) for instance:<PRE>
@@ -126,20 +125,20 @@ public class _code
         {
             Object o = codeSequence.get( i );
             
-            if( o instanceof Template )
+            if( o instanceof Model )
             {   //try, do, while, if, for, _thread, 
-                codeSequence.set( i, 
-                   ((Template)o).bindIn( context ) );
+                codeSequence.set(i, 
+                   ((Model)o).bindIn( context ) );
             }
             else if( o instanceof String )
             {
-                codeSequence.set( i , 
-                    Author.code( BindML.compile( (String)o ), context ) );
+                codeSequence.set(i , 
+                    Compose.asString( BindML.compile( (String)o ), context ) );
             }
             else
             {
-                codeSequence.set( i , 
-                    Author.code( BindML.compile( o.toString() ), context ) );
+                codeSequence.set(i , 
+                    Compose.asString( BindML.compile( o.toString() ), context ) );
             }
         }
         return this;
@@ -156,7 +155,7 @@ public class _code
         } 
         VarContext vc = VarContext.of( "codeBlock", codeB ); 
   
-        return Author.code( getDom(), vc, directives );
+        return Compose.asString( getDom(), vc, directives );
     }
     
     private static String bindify( List list, VarContext context, Directive... directives  )
@@ -169,14 +168,13 @@ public class _code
                 sb.append( N );
             }
             Object o = list.get( i );
-            if( o instanceof Template )
+            if( o instanceof Model )
             {
-                sb.append( ((Template)o).bind( context, directives ) );                
+                sb.append(((Model)o).bind( context, directives ) );                
             }
             else
             {
-                sb.append( 
-                    Author.code( 
+                sb.append(Compose.asString( 
                         BindML.compile( o.toString() ), context, directives ) );                
             }
         }
@@ -209,7 +207,7 @@ public class _code
     @Override
 	public String author( Directive... directives ) 
 	{			
-		return Author.code(
+		return Compose.asString(
 			getDom(), 
 			getContext(), 
 			directives );
@@ -278,9 +276,9 @@ public class _code
 			{
 				replace.add( ((String)obj).replace( target, replacement) ); 
 			}
-			else if( obj instanceof Template )
+			else if( obj instanceof Model )
 			{
-				replace.add(  ((Template)obj ).replace( target, replacement ) );
+				replace.add(((Model)obj ).replace( target, replacement ) );
 			}
 			else
 			{

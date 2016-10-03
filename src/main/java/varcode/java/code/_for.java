@@ -1,12 +1,11 @@
 package varcode.java.code;
 
-import varcode.CodeAuthor;
-import varcode.Template;
 import varcode.context.VarContext;
-import varcode.doc.Author;
+import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.dom.Dom;
 import varcode.markup.bindml.BindML;
+import varcode.Model;
 
 /**
  * Construct Simple for... loops with a _code body
@@ -27,7 +26,7 @@ import varcode.markup.bindml.BindML;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _for 
-    implements Template, CodeAuthor
+    implements Model
 {        
     /**
      * 
@@ -40,7 +39,7 @@ public class _for
     public String bind( VarContext context, Directive...directives )
     {
         Dom dom = BindML.compile( author() ); 
-        return Author.code( dom, context, directives );
+        return Compose.asString( dom, context, directives );
     }
     public static _forCount count( int count )
     {
@@ -122,6 +121,7 @@ public class _for
      * }
      * </PRE>
      * @param count the start count
+     * @return new _for model
      */
     public static _for countDown( int count )
     {
@@ -150,7 +150,7 @@ public class _for
     @Override
     public String author( Directive... directives )
     {
-        return Author.code( FOR, getContext(), directives );
+        return Compose.asString( FOR, getContext(), directives );
     }
     
     public VarContext getContext()
@@ -165,10 +165,10 @@ public class _for
     @Override
     public _for bindIn( VarContext context )
     {
-        this.init = Author.code( BindML.compile( this.init ), context );
-        this.condition = Author.code( BindML.compile( this.condition ), context );
+        this.init = Compose.asString( BindML.compile( this.init ), context );
+        this.condition = Compose.asString( BindML.compile( this.condition ), context );
         this.code = this.code.bindIn( context );
-        this.update = Author.code( BindML.compile( this.update ), context );
+        this.update = Compose.asString( BindML.compile( this.update ), context );
         return this;
     }
     

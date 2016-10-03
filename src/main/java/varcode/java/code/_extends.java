@@ -2,15 +2,14 @@ package varcode.java.code;
 
 import java.util.ArrayList;
 import java.util.List;
-import varcode.CodeAuthor;
-import varcode.Template;
 
 import varcode.VarException;
 import varcode.context.VarContext;
-import varcode.doc.Author;
+import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.dom.Dom;
 import varcode.markup.bindml.BindML;
+import varcode.Model;
 
 /**
  * extends Keyword used on Classes and interfaces
@@ -18,8 +17,7 @@ import varcode.markup.bindml.BindML;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _extends
-    implements Template, CodeAuthor
-        
+    implements Model        
 {
 	public static final _extends NONE = new _extends();
 	
@@ -50,7 +48,7 @@ public class _extends
     public String bind( VarContext context, Directive...directives )
     {
         Dom dom = BindML.compile( author() ); 
-        return Author.code( dom, context, directives );
+        return Compose.asString( dom, context, directives );
     }
     
     @Override
@@ -59,8 +57,7 @@ public class _extends
         List<String>replaced = new ArrayList<String>();
         for( int i = 0; i < extendsFrom.size(); i++ )
         {
-            replaced.add( 
-                Author.code( 
+            replaced.add(Compose.asString( 
                     BindML.compile( extendsFrom.get( i ) ) , context ) );
         }
         this.extendsFrom = replaced;
@@ -141,7 +138,7 @@ public class _extends
 	public String author( Directive... directives ) 
 	{
 		VarContext vc = VarContext.of( "extendsFrom", extendsFrom );
-		return Author.code( EXTENDS, vc, directives );
+		return Compose.asString( EXTENDS, vc, directives );
 	}
 	
     @Override

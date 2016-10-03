@@ -18,14 +18,13 @@ package varcode.java.code;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import varcode.CodeAuthor;
-import varcode.Template;
 import varcode.VarException;
 import varcode.context.VarContext;
-import varcode.doc.Author;
+import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.dom.Dom;
 import varcode.markup.bindml.BindML;
+import varcode.Model;
 
 /**
  * This represents the act of annotating within a Java Class File
@@ -45,7 +44,7 @@ import varcode.markup.bindml.BindML;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _annotate
-    implements Template, CodeAuthor
+    implements Model
 {    
     public static _annotate cloneOf( _annotate annotations )
     {
@@ -111,7 +110,7 @@ public class _annotate
     public String bind( VarContext context, Directive...directives )
     {
         Dom dom = BindML.compile( author() ); 
-        return Author.code( dom, context, directives );
+        return Compose.asString( dom, context, directives );
     }        
         
     @Override
@@ -120,14 +119,14 @@ public class _annotate
         for( int i = 0; i < this.listOfAnnotations.size(); i++ )
         {
             Object thisAnn = this.listOfAnnotations.get( i );
-            if( thisAnn instanceof Template )
+            if( thisAnn instanceof Model )
             {
-                this.listOfAnnotations.set( i, 
-                    ((Template)thisAnn).bindIn( context ) );
+                this.listOfAnnotations.set(i, 
+                    ((Model)thisAnn).bindIn( context ) );
             }
             else if( thisAnn instanceof String )
             {
-                thisAnn = Author.code( BindML.compile( (String)thisAnn), context );
+                thisAnn = Compose.asString( BindML.compile( (String)thisAnn), context );
                 this.listOfAnnotations.set( i, thisAnn );
             }
             //otherwise... dont bother            
@@ -167,9 +166,9 @@ public class _annotate
             {
                 repList.add( ((String)o).replace( target, replacement ) );
             }
-            else if( o instanceof Template )
+            else if( o instanceof Model )
             {
-                repList.add( ((Template )o).replace( target, replacement ) );
+                repList.add(((Model )o).replace( target, replacement ) );
             }
             else
             {
@@ -185,7 +184,7 @@ public class _annotate
     {
         if( ! isEmpty() )
         {
-            return Author.code( ANNOTATION_LIST, getContext(), directives );
+            return Compose.asString( ANNOTATION_LIST, getContext(), directives );
         }
         return "";
     }
@@ -224,7 +223,7 @@ public class _annotate
      * 
      */
     public static class _attributes
-        implements Template, CodeAuthor
+        implements Model
     {        
         /**
          * 
@@ -237,7 +236,7 @@ public class _annotate
         public String bind( VarContext context, Directive...directives )
         {
             Dom dom = BindML.compile( author() ); 
-            return Author.code( dom, context, directives );
+            return Compose.asString( dom, context, directives );
         }
         
         public static _attributes of( Object... nameValues )
@@ -264,27 +263,27 @@ public class _annotate
             for( int i = 0; i < names.size(); i++ )
             {
                 Object thisName = names.get( i );
-                if( thisName instanceof Template  )
+                if( thisName instanceof Model  )
                 {
-                    names.set( i , ((Template) thisName).bindIn( context ) );
+                    names.set(i , ((Model) thisName).bindIn( context ) );
                 }
                 else if( thisName instanceof String )
                 {
-                    names.set( i, 
-                        Author.code( BindML.compile( (String)thisName), context ) );
+                    names.set(i, 
+                        Compose.asString( BindML.compile( (String)thisName), context ) );
                 }   
             }
             for( int i = 0; i < values.size(); i++ )
             {
                 Object thisValue = values.get( i );
-                if( thisValue instanceof Template )
+                if( thisValue instanceof Model )
                 {
-                    values.set( i, ((Template) thisValue).bindIn( context ) );
+                    values.set(i, ((Model) thisValue).bindIn( context ) );
                 }
                 else if( thisValue instanceof String )
                 {
-                    values.set( i, 
-                        Author.code( BindML.compile((String)thisValue), context ) );
+                    values.set(i, 
+                        Compose.asString( BindML.compile((String)thisValue), context ) );
                 }   
             }
             return this;
@@ -296,23 +295,23 @@ public class _annotate
             {            
                 Object thisName = names.get( i );
                 Object thisValue = values.get( i );
-                if( thisName instanceof Template )
+                if( thisName instanceof Model )
                 {
-                    names.set( i , ((Template)thisName ).bindIn( context ) );                                        
+                    names.set(i , ((Model)thisName ).bindIn( context ) );                                        
                 }
                 else if( thisName instanceof String )
                 {
-                    names.set( i, 
-                        Author.code( BindML.compile((String)thisName), context ) );
+                    names.set(i, 
+                        Compose.asString( BindML.compile((String)thisName), context ) );
                 }
-                if( thisValue instanceof Template )
+                if( thisValue instanceof Model )
                 {
-                    values.set( i , ((Template) thisValue).bindIn( context ) );                                        
+                    values.set(i , ((Model) thisValue).bindIn( context ) );                                        
                 }
                 else if( thisValue instanceof String )
                 {
-                    values.set( i, 
-                        Author.code( BindML.compile((String)thisValue ), context ) );
+                    values.set(i, 
+                        Compose.asString( BindML.compile((String)thisValue ), context ) );
                 }
             }
         }
@@ -404,12 +403,12 @@ public class _annotate
             {
                 if( names.size() == 1 && names.get( 0 ) == null )
                 {
-                    return Author.code(
+                    return Compose.asString(
                         SINGLE_VALUE_ATTRIBUTE, 
                         VarContext.of( "value", values ), 
                         directives );
                 }
-                return Author.code(
+                return Compose.asString(
                     ATTRIBUTES, 
                     VarContext.of( "name", names, "value", values ), 
                     directives );
@@ -428,7 +427,7 @@ public class _annotate
      * A single annotation
      */
     public static class _annotation
-        implements Template, CodeAuthor
+        implements Model
     {        
         /**
          * 
@@ -441,7 +440,7 @@ public class _annotate
         public String bind( VarContext context, Directive...directives )
         {
             Dom dom = BindML.compile( author() ); 
-            return Author.code( dom, context, directives );
+            return Compose.asString( dom, context, directives );
         }
         /** Create and return a clone of this annotation
          * @param prototype the prototype annotation
@@ -459,7 +458,7 @@ public class _annotate
         {
             if( this.annotation != null )
             {
-                this.annotation = Author.code( BindML.compile( this.annotation ), context );            
+                this.annotation = Compose.asString( BindML.compile( this.annotation ), context );            
             }
             if (this.attributes != null && !attributes.isEmpty() )
             {
@@ -549,10 +548,10 @@ public class _annotate
             }
             if( this.attributes == null || this.attributes.isEmpty() )
             {
-                return Author.code( ANNOTATION, 
+                return Compose.asString( ANNOTATION, 
                     VarContext.of( "annotation", annotation ), directives );
             }
-            return Author.code( ANNOTATION_ATTRIBUTES, 
+            return Compose.asString( ANNOTATION_ATTRIBUTES, 
                 VarContext.of( 
                     "annotation", annotation, "attributes", attributes ), 
                 directives ); 

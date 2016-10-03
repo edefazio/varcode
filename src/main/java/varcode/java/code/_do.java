@@ -15,20 +15,19 @@
  */
 package varcode.java.code;
 
-import varcode.CodeAuthor;
-import varcode.Template;
 import varcode.context.VarContext;
-import varcode.doc.Author;
+import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.dom.Dom;
 import varcode.markup.bindml.BindML;
+import varcode.Model;
 
 /**
  * model for a do while loop
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _do
-    implements Template, CodeAuthor
+    implements Model
 {
     public static _do whileIs( Object condition, Object... bodyLines )
     {
@@ -69,7 +68,7 @@ public class _do
     @Override
     public String author( Directive... directives )
     {
-        return Author.code( DO_WHILE_LOOP, getContext(), directives );
+        return Compose.asString( DO_WHILE_LOOP, getContext(), directives );
     }
     
         /**
@@ -83,7 +82,7 @@ public class _do
     public String bind( VarContext context, Directive...directives )
     {
         Dom dom = BindML.compile( author() ); 
-        return Author.code( dom, context, directives );
+        return Compose.asString( dom, context, directives );
     }
     
     @Override

@@ -3,15 +3,14 @@ package varcode.java.code;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import varcode.CodeAuthor;
-import varcode.Template;
 import varcode.VarException;
 
 import varcode.context.VarContext;
-import varcode.doc.Author;
+import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.dom.Dom;
 import varcode.markup.bindml.BindML;
+import varcode.Model;
 
 /**
  * Models 
@@ -38,7 +37,7 @@ import varcode.markup.bindml.BindML;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _arguments 
-	implements Template, CodeAuthor
+	implements Model
 {
 
     /** creates a new _arguments as a clone of prototype
@@ -103,7 +102,7 @@ public class _arguments
     public String bind( VarContext context, Directive...directives )
     {
         Dom dom = BindML.compile( author() ); 
-        return Author.code( dom, context, directives );
+        return Compose.asString( dom, context, directives );
     }
     
     @Override
@@ -111,8 +110,8 @@ public class _arguments
     {
         for( int i = 0; i < arguments.size(); i++ )
         {
-            this.arguments.set( i, 
-                Author.code( BindML.compile( this.arguments.get( i ) ), context ) );
+            this.arguments.set(i, 
+                Compose.asString( BindML.compile( this.arguments.get( i ) ), context ) );
         }
         return this;
     }
@@ -120,7 +119,7 @@ public class _arguments
     @Override
 	public String author( Directive... directives ) 
 	{
-		return Author.code( 
+		return Compose.asString( 
 			ARGUMENTS_LIST, 
 			VarContext.of( "args", arguments ), 
 			directives );

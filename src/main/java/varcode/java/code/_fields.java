@@ -3,15 +3,14 @@ package varcode.java.code;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
-import varcode.CodeAuthor;
-import varcode.Template;
 
 import varcode.VarException;
 import varcode.context.VarContext;
-import varcode.doc.Author;
+import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.dom.Dom;
 import varcode.markup.bindml.BindML;
+import varcode.Model;
 
 /**
  * 
@@ -22,9 +21,8 @@ import varcode.markup.bindml.BindML;
  *  
  */
 public class _fields
-    implements Template, CodeAuthor
-{
-        
+    implements Model
+{        
     /**
      * 
      * @param context contains bound variables and scripts to bind data into
@@ -36,7 +34,7 @@ public class _fields
     public String bind( VarContext context, Directive...directives )
     {
         Dom dom = BindML.compile( author() ); 
-        return Author.code( dom, context, directives );
+        return Compose.asString( dom, context, directives );
     }
     
     public static final Dom FIELDS = 
@@ -195,7 +193,7 @@ public class _fields
      * model for a field 
      */
 	public static class _field
-		implements Template, CodeAuthor
+		implements Model
 	{
 		public static final Dom FIELD = BindML.compile(
 			"{+javadoc+}{+fieldAnnotations+}{+modifiers+}{+type+} {+varName+}{+init+};" ); 
@@ -288,7 +286,7 @@ public class _fields
         public String bind( VarContext context, Directive...directives )
         {
             Dom dom = BindML.compile( author() ); 
-            return Author.code( dom, context, directives );
+            return Compose.asString( dom, context, directives );
         }
         
         @Override
@@ -298,8 +296,8 @@ public class _fields
             this.init.bindIn( context );
             this.fieldAnnotations.bindIn(context);
             this.mods.bindIn( context );
-            this.name = Author.code( BindML.compile(this.name), context );
-            this.type = Author.code( BindML.compile(this.type), context );
+            this.name = Compose.asString( BindML.compile(this.name), context );
+            this.type = Compose.asString( BindML.compile(this.type), context );
             return this;
         }
         
@@ -402,7 +400,7 @@ public class _fields
         @Override
 		public String author( Directive... directives ) 
 		{
-			return Author.code( FIELD, 
+			return Compose.asString( FIELD, 
 				getContext(),
 				directives );
 		}
@@ -492,7 +490,7 @@ public class _fields
     @Override
     public String author(  Directive...directives )
     {             
-        return Author.code( 
+        return Compose.asString( 
 			FIELDS, 
             getContext(),			
 			directives );	
@@ -513,7 +511,7 @@ public class _fields
 	 * </PRE>        
 	 */
 	public static class _init 
-		implements Template, CodeAuthor
+		implements Model
 	{
 		private String initCode;
 	
@@ -552,7 +550,7 @@ public class _fields
         public String bind( VarContext context, Directive...directives )
         {
             Dom dom = BindML.compile( author() ); 
-            return Author.code( dom, context, directives );
+            return Compose.asString( dom, context, directives );
         }
         
         @Override
@@ -560,7 +558,7 @@ public class _fields
         {
             if( this.initCode != null )
             {
-                this.initCode = Author.code( BindML.compile( this.initCode ), context );
+                this.initCode = Compose.asString( BindML.compile( this.initCode ), context );
             }
             return this;
         }
@@ -570,7 +568,7 @@ public class _fields
 		{
 			if( initCode != null )
 			{
-				return Author.code( INIT, VarContext.of( "initCode", initCode ), directives );
+				return Compose.asString( INIT, VarContext.of( "initCode", initCode ), directives );
 			}
 			return "";
 		}

@@ -1,15 +1,13 @@
 package varcode.java.code;
 
-import varcode.Template;
 import varcode.java.JavaCase.JavaCaseAuthor;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
-import varcode.CodeAuthor;
 
 import varcode.VarException;
 import varcode.context.VarContext;
-import varcode.doc.Author;
+import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.dom.Dom;
 import varcode.java.JavaCase;
@@ -19,6 +17,7 @@ import varcode.java.code._methods._method;
 import varcode.java.code._nest._nestGroup;
 import varcode.java.code._nest.component;
 import varcode.markup.bindml.BindML;
+import varcode.Model;
 
 /**
  * "parametric code" using a fluent builder pattern for 
@@ -32,7 +31,7 @@ import varcode.markup.bindml.BindML;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _class    
-	implements Template, JavaCaseAuthor, _nest.component
+	implements JavaCaseAuthor, _nest.component
 {	
 	private _package classPackage;
 	private _imports imports;
@@ -182,7 +181,7 @@ public class _class
     @Override
 	public String author( Directive... directives ) 
 	{
-        return Author.code( CLASS, getContext(), directives );			
+        return Compose.asString( CLASS, getContext(), directives );			
 	}
 	
     public _annotate getAnnotations()
@@ -211,7 +210,7 @@ public class _class
 				vc.getScopeBindings().remove( "imports" );
                 
                 //author the member class/enum/interface w/o package or imports
-				nested[ i ] = Author.code( comp.getDom(), vc );				
+				nested[ i ] = Compose.asString( comp.getDom(), vc );				
 			}
 			n = nested;			
 		}
@@ -285,7 +284,7 @@ public class _class
             "nests", this.nests.bind(context, directives ) );
             //"body", this.body.bind( context, directives ) );
         
-        return Author.code( CLASS, vc, directives );
+        return Compose.asString( CLASS, vc, directives );
     }
         
     @Override
@@ -386,7 +385,7 @@ public class _class
     {
         String FullClassName = this.getFullyQualifiedClassName();
         Dom classNameDom = BindML.compile( FullClassName );
-        String theClassName = Author.code( classNameDom, context ); 
+        String theClassName = Compose.asString( classNameDom, context ); 
         
         Dom dom = BindML.compile( author() ); 
         
@@ -435,7 +434,7 @@ public class _class
         String FullClassName = this.getFullyQualifiedClassName();
         Dom classNameDom = BindML.compile( FullClassName );
         
-        String theClassName = Author.code( classNameDom, context ); 
+        String theClassName = Compose.asString( classNameDom, context ); 
         
         //first lets print out the structure and optional Marks
         String authored = JavaCase.of( 
@@ -683,7 +682,7 @@ public class _class
      * signature of the _class
      */
 	public static class _signature
-        implements Template, CodeAuthor
+        implements Model
     {        
         /**
          * 
@@ -696,7 +695,7 @@ public class _class
         public String bind( VarContext context, Directive...directives )
         {
             Dom dom = BindML.compile( author() ); 
-            return Author.code( dom, context, directives );
+            return Compose.asString( dom, context, directives );
         }
         
    		private _modifiers modifiers;
@@ -713,7 +712,7 @@ public class _class
         @Override
 		public String author( Directive... directives ) 
 		{
-			return Author.code( CLASS_SIGNATURE, 
+			return Compose.asString( CLASS_SIGNATURE, 
 				VarContext.of(
 					"className", className,
 					"modifiers", modifiers,
@@ -725,7 +724,7 @@ public class _class
         @Override
         public _signature bindIn( VarContext context )
         {
-            this.className = Author.code( 
+            this.className = Compose.asString( 
                 BindML.compile( this.className ), 
                 context );
             this.modifiers.bindIn( context );

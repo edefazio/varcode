@@ -1,17 +1,16 @@
 package varcode.java.code;
 
-import varcode.Template;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
-import varcode.CodeAuthor;
 
 import varcode.VarException;
 import varcode.context.VarContext;
-import varcode.doc.Author;
+import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.dom.Dom;
 import varcode.markup.bindml.BindML;
+import varcode.Model;
 
 /**
  * Model for building one or more constructors 
@@ -23,7 +22,7 @@ import varcode.markup.bindml.BindML;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _constructors
-    implements Template, CodeAuthor
+    implements Model
 {
 	private List<_constructor>constructors = new ArrayList<_constructor>();
 
@@ -48,6 +47,7 @@ public class _constructors
 	 * _constructors cs = _constructors.of(
 	 *    "public MyClass(String message)",
 	 *    "this.message = message;" ); 
+     * </PRE>
 	 * @param signature
 	 * @param linesOfCode
 	 * @return
@@ -67,7 +67,7 @@ public class _constructors
     public String bind( VarContext context, Directive... directives )
     {
         Dom dom = BindML.compile( author() );
-        return Author.code( dom, context, directives );
+        return Compose.asString( dom, context, directives );
     }
     
     @Override
@@ -102,7 +102,7 @@ public class _constructors
 	{
 		if( constructors.size() > 0 )
 		{
-			return Author.code(
+			return Compose.asString(
 				CONSTRUCTORS,
 				VarContext.of( "constructors", constructors ), 
 				directives );
@@ -150,8 +150,15 @@ public class _constructors
 	
 	/** Individual constructor model */
 	public static class _constructor
-		implements Template, CodeAuthor
+		implements Model
 	{
+        public static _constructor of( String constructorSig, Object... body )
+        {
+            _constructor ctor = new _constructor( constructorSig );
+            ctor.body( body );
+            return ctor;
+        }
+        
 		public static _constructor cloneOf( _constructor prototype )
 		{
 			_constructor ctor =  new _constructor(
@@ -184,7 +191,7 @@ public class _constructors
         public String bind( VarContext context, Directive... directives )
         {
             Dom dom = BindML.compile( author() );
-            return Author.code( dom, context, directives );
+            return Compose.asString( dom, context, directives );
         }
     
         @Override
@@ -312,7 +319,7 @@ public class _constructors
         @Override
 		public String author( Directive... directives ) 
 		{
-			return Author.code(
+			return Compose.asString(
 				CONSTRUCTOR, 
 				VarContext.of(
                     "javadoc", javadoc,    
@@ -330,7 +337,7 @@ public class _constructors
 	
         /** constructor signature */
 		public static class _signature
-			implements Template, CodeAuthor
+			implements Model
 		{
 			private String className;
 			private _modifiers modifiers; //public protected private
@@ -353,13 +360,13 @@ public class _constructors
             public String bind( VarContext context, Directive... directives )
             {
                 Dom dom = BindML.compile( author() );
-                return Author.code( dom, context, directives );
+                return Compose.asString( dom, context, directives );
             }
             
             @Override
             public _signature bindIn( VarContext context )
             {
-                this.className = Author.code( 
+                this.className = Compose.asString( 
                     BindML.compile( this.className ), 
                     context );
                 this.modifiers.bindIn( context );
@@ -526,7 +533,7 @@ public class _constructors
             @Override
 			public String author( Directive... directives ) 
 			{
-				return Author.code( CONSTRUCTOR_SIGNATURE, 
+				return Compose.asString( CONSTRUCTOR_SIGNATURE, 
 					VarContext.of(
 						"modifiers", modifiers,
 						"className", className,

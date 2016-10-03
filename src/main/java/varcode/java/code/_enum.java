@@ -4,12 +4,10 @@ import varcode.java.JavaCase.JavaCaseAuthor;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
-import varcode.CodeAuthor;
-import varcode.Template;
 
 import varcode.VarException;
 import varcode.context.VarContext;
-import varcode.doc.Author;
+import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.dom.Dom;
 import varcode.java.JavaCase;
@@ -20,13 +18,14 @@ import varcode.java.code._methods._method;
 import varcode.java.code._nest._nestGroup;
 import varcode.java.code._nest.component;
 import varcode.markup.bindml.BindML;
+import varcode.Model;
 
 /**
  * 
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _enum
-	implements Template, JavaCaseAuthor, _nest.component
+	implements JavaCaseAuthor, _nest.component
 {
 	private _package enumPackage = new _package( "" ); 
 	private _imports imports = new _imports();
@@ -99,10 +98,10 @@ public class _enum
     public String bind( VarContext context, Directive...directives )
     {
         Dom dom = BindML.compile( author() ); 
-        return Author.code( dom, context, directives );
+        return Compose.asString( dom, context, directives );
     }
     
-    
+    @Override
     public _enum bindIn( VarContext context )
     {
         this.enumPackage.bindIn( context);
@@ -153,7 +152,7 @@ public class _enum
 				VarContext vc = comp.getContext();
 				vc.getScopeBindings().remove("pckage");
 				vc.getScopeBindings().remove("imports");
-				nested[ i ] = Author.code( comp.getDom(), vc );				
+				nested[ i ] = Compose.asString( comp.getDom(), vc );				
 			}
 			n = nested;			
 		}
@@ -228,7 +227,7 @@ public class _enum
         String FullClassName = this.getFullyQualifiedClassName();
         Dom classNameDom = BindML.compile( FullClassName );
         
-        String theClassName = Author.code( classNameDom, context ); 
+        String theClassName = Compose.asString( classNameDom, context ); 
         
         //first lets print out the structure and optional Marks
         String authored = this.author( directives );
@@ -537,10 +536,10 @@ public class _enum
 	 * }
 	 * </PRE>
 	 * this abstractions contains the List and verifies that
-	 * 
+	 *    
 	 */
 	public static class _valueConstructs
-		implements Template, CodeAuthor
+		implements varcode.Model
 	{
         /** TODO, cant I just iterate through each time w/o having to keep this around??*/
 		//private Set<String> valueNames = new HashSet<String>();
@@ -603,7 +602,7 @@ public class _enum
         public String bind( VarContext context, Directive...directives )
         {
             Dom dom = BindML.compile( author() ); 
-            return Author.code( dom, context, directives );
+            return Compose.asString( dom, context, directives );
         }
             
         @Override
@@ -630,7 +629,7 @@ public class _enum
          * Individual construction of an Enum Value
          */
 		public static class _valueConstruct
-			implements Template, CodeAuthor
+			implements Model
 		{
 			private String name;
 			private _arguments args;
@@ -683,13 +682,13 @@ public class _enum
             public String bind( VarContext context, Directive...directives )
             {
                 Dom dom = BindML.compile( author() ); 
-                return Author.code( dom, context, directives );
+                return Compose.asString( dom, context, directives );
             }
     
             @Override
             public _valueConstruct bindIn( VarContext context )
             {
-                this.name = Author.code( BindML.compile(this.name), context );
+                this.name = Compose.asString( BindML.compile(this.name), context );
                 this.args.bindIn( context );
                 return this;
             }
@@ -702,7 +701,7 @@ public class _enum
 				{
 					vc.set( "args", args );
 				}
-				return Author.code( VALUE_CONSTRUCT, vc, directives );
+				return Compose.asString( VALUE_CONSTRUCT, vc, directives );
 			}		
 			
             @Override
@@ -724,11 +723,10 @@ public class _enum
 			"{{+:    {+valueConstructs+}," + N 
 		 + "+}};" + N + N );
 		
-		
         @Override
 		public String author( Directive... directives ) 
 		{
-			return Author.code( 
+			return Compose.asString( 
 				VALUE_CONSTRUCTORS, 
 				VarContext.of( "valueConstructs", valueConstructs ),
 				directives );
@@ -750,7 +748,7 @@ public class _enum
      * Enum Constructor signature
      */
 	public static class _signature
-		implements Template, CodeAuthor
+		implements Model
 	{
 		private String enumName = "";		
 		private _implements implementsFrom = new _implements();
@@ -762,7 +760,7 @@ public class _enum
         @Override
 		public String author( Directive... directives ) 
 		{
-			return Author.code( CLASS_SIGNATURE, 
+			return Compose.asString( CLASS_SIGNATURE, 
 				VarContext.of(
 					"enumName", enumName,
 					"modifiers", modifiers,
@@ -781,13 +779,13 @@ public class _enum
         public String bind( VarContext context, Directive...directives )
         {
             Dom dom = BindML.compile( author() ); 
-            return Author.code( dom, context, directives );
+            return Compose.asString( dom, context, directives );
         }
         
         @Override
         public _signature bindIn( VarContext context )
         {
-            this.enumName = Author.code(BindML.compile(this.enumName), context );
+            this.enumName = Compose.asString(BindML.compile(this.enumName), context );
             this.implementsFrom.bindIn( context );
             this.modifiers.bindIn( context );
             return this;
@@ -948,7 +946,7 @@ public class _enum
 
 		public String getImplements( int index ) 
 		{			
-			return implementsFrom.get( index );
+			return implementsFrom.getAt( index );
 		}	
 	}
 
