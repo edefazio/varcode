@@ -9,7 +9,24 @@ import varcode.context.VarContext;
 import varcode.doc.Directive;
 
 /**
- * Each component can be lazily bound...where BindML tags:
+ * Hierarchal Model of structured text 
+ * NOT specific or limited to Java or any particular
+ * language (C, C++, Javascript) or format, but any
+ * type of structured text:
+ * <UL>
+ *  <LI>SQL
+ *  <LI>IDL Data Format
+ *  <LI>Contract
+ *  <LI>SVG Graphics
+ *  <LI>Schema / DDL
+ *  <LI>Property File
+ *  <LI>Build Script
+ *  <LI>Container Configuration
+ *  <LI>etc...
+ * </UL>
+ * 
+ * the structured text can (internally) contain {@code varcode.markup.Mark}s in 
+ * {@code varcode.markup.bindml.BindML}
  * <UL>
  *  <LI>"{+name+}"
  *  <LI>"{+((a = b))+}"
@@ -34,14 +51,24 @@ import varcode.doc.Directive;
  * 
  * @author M. Eric DeFazio eric@varcode.io
  */
-public interface Template
+public interface Model
 {   
+    public static final String N = "\r\n";
+	
     /** 
      * Strings passed in with this prefix signify they are 
      * Literals and not a String representation of an entity
      * 
      */
     public static final String STRING_LITERAL_PREFIX = "$$";
+    
+    /** 
+     * Authors the code for an entity
+     * @param directives optional directives to apply when 
+     * authoring the representation
+     * @return a textual code representation of the entity
+     */ 
+	String author( Directive... directives );
     
     /**
      * <UL>
@@ -62,7 +89,7 @@ public interface Template
      * @param context
      * @return 
      */
-    Template bindIn( VarContext context );
+    Model bindIn( VarContext context );
         
     /**
      * A "Brute Force" replace for the content within the template
@@ -70,5 +97,5 @@ public interface Template
      * @param replacement the replacement string
      * @return the modified variant, (if it is mutable) or a modified clone
      */
-    Template replace( String target, String replacement );     
+    Model replace( String target, String replacement );     
 }
