@@ -51,12 +51,14 @@ public interface MarkupRepo
     public interface MarkupStream
     {
         /** An InputStream to the Markup File*/
-        public InputStream getInputStream();
+        InputStream getInputStream();
         
         /** the identity of the Markup to be loaded */
-        public String getMarkupId();
+        String getMarkupId();
         
         /** describe the nature of the Stream (a File, a (remote Server, etc.) */
-        public String describe();        
+        String describe();        
+       
+        String asString();
     }
 }

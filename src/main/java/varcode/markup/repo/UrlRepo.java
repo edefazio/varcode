@@ -1,7 +1,9 @@
 package varcode.markup.repo;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -110,6 +112,41 @@ public class UrlRepo
 		{
 			return "[URL] " + url;
 		}
-		
+        
+        public String asString()
+        {
+            try
+            {
+                return getFileContent( getInputStream(), "UTF-8" );
+            }
+            catch( IOException ioe )
+            {
+                throw new VarException( 
+                    " unable to read to a String ", ioe );
+            }
+        }
+        
+        public static String getFileContent( InputStream fis, String encoding ) 
+            throws IOException
+        {
+            try
+            {
+                BufferedReader br = new BufferedReader( 
+                    new InputStreamReader( fis, encoding ) );
+            
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while( ( line = br.readLine() ) != null ) 
+                {
+                    sb.append( line );
+                    sb.append( '\n' );                
+                }
+                return sb.toString();
+            }
+            catch( IOException ioe )
+            {
+                throw new VarException( "Unable to get the String from the Stream" );
+            }        
+        }		
 	}
 }
