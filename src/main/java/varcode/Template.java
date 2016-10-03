@@ -6,11 +6,7 @@
 package varcode;
 
 import varcode.context.VarContext;
-import varcode.doc.Author;
 import varcode.doc.Directive;
-import varcode.doc.lib.text.Prefix;
-import varcode.dom.Dom;
-import varcode.markup.bindml.BindML;
 
 /**
  * Each component can be lazily bound...where BindML tags:
@@ -74,26 +70,5 @@ public interface Template
      * @param replacement the replacement string
      * @return the modified variant, (if it is mutable) or a modified clone
      */
-    Template replace( String target, String replacement ); 
-        
-    /**
-     * Base way of specializing the Parameterized VarCode
-     */
-    public static abstract class Base
-        implements Template, CodeAuthor
-    {        
-        /**
-         * 
-         * @param context contains bound variables and scripts to bind data into
-         * the template
-         * @param directives pre-and post document directives 
-         * @return the populated Template bound with Data from the context
-         */
-        @Override
-        public String bind( VarContext context, Directive...directives )
-        {
-            Dom dom = BindML.compile( author() ); 
-            return Author.code( dom, context, directives );
-        }        
-    }
+    Template replace( String target, String replacement );     
 }
