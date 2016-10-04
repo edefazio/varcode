@@ -86,20 +86,6 @@ public class _enum
 		this.methods = _methods.cloneOf( prototype.methods );		
 		this.nests = _nestGroup.cloneOf( prototype.nests );
 	}
-	
-    /**
-     * TODO REMOVE THIS
-     * @param context contains bound variables and scripts to bind data into
-     * the template
-     * @param directives pre-and post document directives 
-     * @return the populated Template bound with Data from the context
-     */
-    @Override
-    public String bind( VarContext context, Directive...directives )
-    {
-        Dom dom = BindML.compile( author() ); 
-        return Compose.asString( dom, context, directives );
-    }
     
     @Override
     public _enum bindIn( VarContext context )
@@ -590,20 +576,6 @@ public class _enum
             throw new VarException(
                 "Invalid value construct index [" + index + "]");
         }
-        
-        /**
-         * TODO REMOVE THIS
-         * @param context contains bound variables and scripts to bind data into
-         * the template
-         * @param directives pre-and post document directives 
-         * @return the populated Template bound with Data from the context
-         */
-        @Override
-        public String bind( VarContext context, Directive...directives )
-        {
-            Dom dom = BindML.compile( author() ); 
-            return Compose.asString( dom, context, directives );
-        }
             
         @Override
         public _valueConstructs bindIn( VarContext context )
@@ -669,21 +641,7 @@ public class _enum
 			}
 			
 			public Dom VALUE_CONSTRUCT = BindML.compile(
-				"{+name*+}{+args+}" );
-			
-            /**
-             * TODO REMOVE THIS
-             * @param context contains bound variables and scripts to bind data into
-             * the template
-             * @param directives pre-and post document directives 
-             * @return the populated Template bound with Data from the context
-             */
-            @Override
-            public String bind( VarContext context, Directive...directives )
-            {
-                Dom dom = BindML.compile( author() ); 
-                return Compose.asString( dom, context, directives );
-            }
+				"{+name*+}{+args+}" );			
     
             @Override
             public _valueConstruct bindIn( VarContext context )
@@ -767,20 +725,6 @@ public class _enum
 					"implementsFrom", implementsFrom ), 
 				directives );
 		} 
-		
-        /**
-         * TODO REMOVE THIS
-         * @param context contains bound variables and scripts to bind data into
-         * the template
-         * @param directives pre-and post document directives 
-         * @return the populated Template bound with Data from the context
-         */
-        @Override
-        public String bind( VarContext context, Directive...directives )
-        {
-            Dom dom = BindML.compile( author() ); 
-            return Compose.asString( dom, context, directives );
-        }
         
         @Override
         public _signature bindIn( VarContext context )

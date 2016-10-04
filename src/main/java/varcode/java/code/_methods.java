@@ -56,45 +56,7 @@ public class _methods
     public String[] getNames()
     {
         return methodsByName.keySet().toArray( new String[ 0 ] );
-    }
-    
-    @Override
-    public String bind( VarContext context, Directive...directives )
-    {
-        List<String>nonStaticMethods = new ArrayList<String>();
-		List<String>staticMethods = new ArrayList<String>();
-		List<String>abstractMethods = new ArrayList<String>();
-		
-		String[] methodNames = methodsByName.keySet().toArray( new String[ 0 ] );
-		
-		for( int i = 0; i < methodNames.length; i++ )
-		{
-			List<_method> oMethods = methodsByName.get( methodNames[ i ] );
-			for( int j = 0; j < oMethods.size(); j++ )
-			{
-				if( oMethods.get( j ).signature.modifiers.contains( Modifier.ABSTRACT ) )
-				{
-					abstractMethods.add( oMethods.get( j ).signature.bind(context, directives) );
-				}					
-				else if( oMethods.get( j ).signature.modifiers.contains( Modifier.STATIC ) )
-				{
-					staticMethods.add( oMethods.get( j ).bind(context, directives) ); 
-				}
-				else
-				{
-					nonStaticMethods.add( oMethods.get( j ).bind(context, directives) );
-				}
-			}			
-		}
-        
-        VarContext vc = VarContext.of(
-            "staticMethods", staticMethods,
-            "nonStaticMethods", nonStaticMethods,    
-            "abstractMethods", abstractMethods);
-        
-        return Compose.asString( METHODS, vc, directives );
-    }
-     
+    }     
     
     @Override
 	public String author( Directive... directives ) 
@@ -431,25 +393,6 @@ public class _methods
         }
         
         @Override
-        public String bind( VarContext context, Directive...directives )
-        {
-            VarContext vc = VarContext.of(
-                "javadocComment", javadoc.bind( context, directives ),
-                "methodAnnotations", annotations.bind( context, directives ),    
-                "methodSignature", signature.bind( context, directives ),                        
-				"methodBody", methodBody.bind( context, directives )   );
-        
-            if( this.isAbstract() )
-            {
-                return Compose.asString( ABSTRACT_METHOD, vc, directives );    
-            }
-            else
-            {
-                return Compose.asString( METHOD, vc, directives );    
-            }            
-        }
-        
-        @Override
 		public String author( Directive... directives ) 
 		{            
 			if( this.isAbstract() )
@@ -465,21 +408,7 @@ public class _methods
 		
 		public static class _signature
             implements Model
-        {        
-            /**
-            * 
-            * @param context contains bound variables and scripts to bind data into
-            * the template
-            * @param directives pre-and post document directives 
-            * @return the populated Template bound with Data from the context
-            */
-            @Override
-            public String bind( VarContext context, Directive...directives )
-            {
-                Dom dom = BindML.compile( author() ); 
-                return Compose.asString( dom, context, directives );
-            }
-            
+        {                    
 			public static _signature cloneOf( _signature prototype )
 			{
 				return new _signature(
@@ -602,8 +531,11 @@ public class _methods
                     {
                         if( ! throwsTokens.startsWith( "throws" ) )
                         {
-                            throw new VarException( 
-                                "Tokens found after (parameters); expected throws ..., got \"" + throwsTokens + "\"");
+                            throw new VarException( methodSpec );
+                                /*
+                                "Tokens found after method parameters() in:" + N +
+                                methodSig + N 
+                                " only \"throws\" allowed, got \"" + throwsTokens + "\"" ); */
                         }
                         throwsTokens = throwsTokens.substring( "throws".length() );
 					
@@ -687,8 +619,8 @@ public class _methods
 					{
 						for( int i = 0; i < sig.params.count(); i++ )
 						{
-							if( !sig.params.get( i ).getType().equals( 
-								this.params.get( i ).getType() ) )
+							if( !sig.params.getAt( i ).getType().equals( 
+								this.params.getAt( i ).getType() ) )
 							{
 								return false;
 							}

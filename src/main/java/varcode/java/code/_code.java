@@ -143,43 +143,6 @@ public class _code
         }
         return this;
     }
-    
-	@Override
-    public String bind( VarContext context, Directive...directives )
-    {
-        String codeB = null;
-        
-        if( this.codeSequence != null && !this.codeSequence.isEmpty() )
-        {
-            codeB = bindify( this.codeSequence, context, directives );
-        } 
-        VarContext vc = VarContext.of( "codeBlock", codeB ); 
-  
-        return Compose.asString( getDom(), vc, directives );
-    }
-    
-    private static String bindify( List list, VarContext context, Directive... directives  )
-    {
-        StringBuilder sb = new StringBuilder();
-        for( int i = 0; i < list.size(); i++ )
-        {
-            if( i > 0 )
-            {
-                sb.append( N );
-            }
-            Object o = list.get( i );
-            if( o instanceof Model )
-            {
-                sb.append(((Model)o).bind( context, directives ) );                
-            }
-            else
-            {
-                sb.append(Compose.asString( 
-                        BindML.compile( o.toString() ), context, directives ) );                
-            }
-        }
-        return sb.toString();
-    }
         
 	private String stringify( List<Object>codeComponents )
 	{

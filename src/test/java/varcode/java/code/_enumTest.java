@@ -20,7 +20,7 @@ import varcode.java.code._parameters._parameter;
 
 /**
  *
- * @author eric
+ * @author M. Eric DeFazio eric@varcode.io
  */
 public class _enumTest
     extends TestCase
@@ -127,7 +127,7 @@ public class _enumTest
         assertTrue( cons.getSignature().getModifiers().contains("private") );        
         _parameters params = cons.getSignature().getParameters();
         assertEquals( 1, params.count() );
-        _parameter p = params.get( 0 );
+        _parameter p = params.getAt( 0 );
         assertEquals( "name", p.getName() );
         assertEquals( "String", p.getType() );
         

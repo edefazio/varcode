@@ -105,7 +105,7 @@ public class _modifiersTest
     {
         _modifiers m = new _modifiers();
         assertEquals( "", m.author( ) );
-        assertEquals( "", m.bind( VarContext.of() ) );
+        assertEquals( "", m.bindIn( VarContext.of() ).author() );
         assertFalse( m.contains( Modifier.ABSTRACT ) );
         assertFalse( m.containsAny( "public" ) );
         assertFalse( m.containsAll( "public", "static" ) );
@@ -137,7 +137,7 @@ public class _modifiersTest
         assertTrue( m.containsAll( "public" ) );
 
         assertEquals( "public ",  m.author( ) );
-        assertEquals( "public ", m.bind( VarContext.of() ) );
+        assertEquals( "public ", m.bindIn( VarContext.of() ).author() );
     }
     
     public void testCombo()

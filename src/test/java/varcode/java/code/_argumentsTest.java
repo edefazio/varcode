@@ -39,13 +39,13 @@ public class _argumentsTest
         assertEquals( "( {+count+} )", _arguments.of( "{+count+}" ).toString() );
         
         assertEquals( "( 4 )", 
-            _arguments.of("{+count+}").bind( VarContext.of( "count", 4 ) ) );
+            _arguments.of("{+count+}").bindIn( VarContext.of( "count", 4 ) ).author( ) );
         
         assertEquals( "(  )", 
-            _arguments.of("{+count+}").bind( VarContext.of( ) ) );
+            _arguments.of("{+count+}").bindIn( VarContext.of( ) ).author( ) );
         
         assertEquals( "( 1, 2, 3, 4 )", 
-            _arguments.of("{+count+}").bind( VarContext.of( "count", new int[]{1,2,3,4} ) ) );
+            _arguments.of("{+count+}").bindIn( VarContext.of( "count", new int[]{1,2,3,4} ) ).author( ) );
         
     }
     /** Obviously there is a difference between passing in NO arguments

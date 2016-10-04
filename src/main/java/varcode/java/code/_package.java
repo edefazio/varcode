@@ -94,11 +94,4 @@ public class _package
         }
         return this;
     }
-    
-    @Override
-    public String bind( VarContext context, Directive... directives )
-    {
-        Dom dom = BindML.compile(author() );
-        return Compose.asString( dom, context, directives );
-    }
 }

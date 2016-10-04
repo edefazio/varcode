@@ -24,21 +24,7 @@ import varcode.Model;
  */
 public class _parameters
     implements Model
-{        
-    /**
-     * 
-     * @param context contains bound variables and scripts to bind data into
-     * the template
-     * @param directives pre-and post document directives 
-     * @return the populated Template bound with Data from the context
-     */
-    @Override
-    public String bind( VarContext context, Directive...directives )
-    {
-        Dom dom = BindML.compile( author() ); 
-        return Compose.asString( dom, context, directives );
-    }
-    
+{            
 	public static final Dom PARAMS_LIST = 
         BindML.compile( "( {{+:{+params+}, +}} )" );
 	
@@ -264,21 +250,7 @@ public class _parameters
     /** a single name-value parameter to a method, constructor, etc. */
 	public static class _parameter
         implements Model
-    {        
-        /**
-         * 
-         * @param context contains bound variables and scripts to bind data into
-         * the template
-         * @param directives pre-and post document directives 
-         * @return the populated Template bound with Data from the context
-         */
-        @Override
-        public String bind( VarContext context, Directive...directives )
-        {
-            Dom dom = BindML.compile( author() ); 
-            return Compose.asString( dom, context, directives );
-        }
-        
+    {                
 		public static _parameter cloneOf( _parameter prototype ) 
 		{
 			_parameter p = new _parameter( 
@@ -443,7 +415,7 @@ public class _parameters
         }
 	}
 
-	public _parameter get( int index ) 
+	public _parameter getAt( int index ) 
 	{
 		if( index < count() )
 		{

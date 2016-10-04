@@ -5,10 +5,8 @@ import java.util.List;
 
 import varcode.VarException;
 import varcode.context.VarContext;
-import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.dom.Dom;
-import varcode.markup.bindml.BindML;
 import varcode.Model;
 
 /**
@@ -61,19 +59,6 @@ public interface _nest
 	public static class _nestGroup
         implements Model
     {        
-        /**
-         * 
-         * @param context contains bound variables and scripts to bind data into
-         * the template
-         * @param directives pre-and post document directives 
-         * @return the populated Template bound with Data from the context
-         */
-        @Override
-        public String bind( VarContext context, Directive...directives )
-        {
-            Dom dom = BindML.compile( author() ); 
-            return Compose.asString( dom, context, directives );
-        }
 		public List<component>components = new ArrayList<component>();
 
 		public _nestGroup()

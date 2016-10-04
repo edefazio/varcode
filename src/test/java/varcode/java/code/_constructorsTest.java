@@ -150,7 +150,7 @@ public class _constructorsTest
     public void testBind()
     {
         _constructors cs = new _constructors();
-        assertEquals("", cs.bind(VarContext.of() ) );
+        assertEquals("", cs.bindIn(VarContext.of() ).author( ) );
         
         cs.addConstructor( "public {+name+}()" );
         //System.out.println ( cs.toString() );
@@ -161,7 +161,7 @@ public class _constructorsTest
             "}" + N
             , cs.toString() );
         
-        String res = cs.bind( VarContext.of("name", "MyClass") );
+        String res = cs.bindIn( VarContext.of("name", "MyClass") ).author( );
         System.out.println(res);
         assertEquals( 
             "public MyClass(  )" + N +

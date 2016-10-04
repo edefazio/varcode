@@ -22,34 +22,18 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import varcode.VarException;
-import varcode.context.VarContext;
-import varcode.doc.Compose;
-import varcode.doc.Directive;
 import varcode.doc.FillInTheBlanks;
 import varcode.dom.Dom;
 import varcode.markup.bindml.BindML;
-import varcode.Model;
 
 /**
  * 
  * @author M. Eric DeFazio eric@varcode.io
  */
-public abstract class $Parse
-    implements Model
+public enum $Parse    
 {        
-    /**
-     * 
-     * @param context contains bound variables and scripts to bind data into
-     * the template
-     * @param directives pre-and post document directives 
-     * @return the populated Template bound with Data from the context
-     */
-    @Override
-    public String bind( VarContext context, Directive...directives )
-    {
-        Dom dom = BindML.compile( author() ); 
-        return Compose.asString( dom, context, directives );
-    }
+    ; //singleton enum idiom
+    
     
     /** signifies the beginning of the code form within a class */ 
     public static final String OPEN = "/*{$*/";
@@ -57,7 +41,7 @@ public abstract class $Parse
     /** signifies the end of the code form within a class */ 
     public static final String CLOSE = "/*$}*/";
  
-    protected static Dom parseTemplate( String $template )
+    protected static String parseTemplate( String $template )
     {
         BufferedReader sourceReader = 
             new BufferedReader( new StringReader( $template ) ); 
@@ -87,16 +71,22 @@ public abstract class $Parse
         
             String formString = template.fill( (Object[]) params.toArray( new String[0] ) );
         
-            System.out.println( "PREFIX SPACES " + prefixSpaces );
+            //System.out.println( "PREFIX SPACES " + prefixSpaces );
             
             formString = normalizeFormPrefixSpaces( formString, prefixSpaces ); 
             
-            return BindML.compile( formString );
+            return formString;
         }
         catch( IOException ioe )
         {
             throw new VarException( "Unable to parse template ", ioe );
         }
+    }
+    
+    protected static Dom parseTemplateDom( String $template )
+    {
+        String formString = parseTemplate( $template );
+        return BindML.compile( formString );        
     }
     
     public static String normalizeFormPrefixSpaces( String formString, int prefixSpaces )
@@ -208,12 +198,17 @@ public abstract class $Parse
     {
         if( Character.isUpperCase( $token$.charAt( 1 ) ) )
         {
-            return "{+$^(" + 
-                firstLower( $token$.substring( 1, $token$.length() ) ) + ")*+}";
+            String tokenName = firstLower( 
+                $token$.substring( 1, $token$.length() ) );
+            return "{+$^(" + tokenName + ")*+}";
         }
         else
         {
-            return "{+" + $token$.substring( 1, $token$.length() ) + "*+}";
+            String tokenName = $token$.substring( 1, $token$.length() );
+            //return "{+" + tokenName + "*+}";
+            //TODO make this an or
+            return "{+" + tokenName + "|" + tokenName + "+}";
+            
         }
     }
 }

@@ -15,8 +15,8 @@
  */
 package varcode.markup.$ml;
 
-import java.util.HashSet;
 import java.util.Set;
+import varcode.Model;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
@@ -27,24 +27,30 @@ import varcode.markup.bindml.BindML;
 import varcode.markup.repo.MarkupRepo;
 
 /**
- *
+ * Represents code that is compiled normally, but exists
+ * to be templated, where any $ $ delimited values such as:
+ * <PRE>
+ * public $fieldType$ $fieldName$
+ * </PRE>
+ * are intended to be overridden
+ * 
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class $CodeForm
-    extends $Parse
+    implements Model
 {
     /** This is the compiled Form for the code */
     protected Dom dom;
     
-    public $CodeForm()
+    protected $CodeForm()
     {
         MarkupRepo.MarkupStream ms = 
             JavaMarkupRepo.INSTANCE.markupStream( getClass() );
         String s = ms.asString();
-        int startIndex = s.indexOf( OPEN );
-        int endIndex = s.indexOf( CLOSE );
-        String inner = s.substring( startIndex + OPEN.length() , endIndex ).trim();
-        this.dom = parseTemplate( inner );
+        int startIndex = s.indexOf( $Parse.OPEN );
+        int endIndex = s.indexOf( $Parse.CLOSE );
+        String inner = s.substring( startIndex + $Parse.OPEN.length() , endIndex ).trim();
+        this.dom = $Parse.parseTemplateDom( inner );
     }
     
     private $CodeForm( Dom dom )
@@ -87,10 +93,12 @@ public class $CodeForm
         return Compose.asString( this.dom, VarContext.of() );
     }
     
-    /** gets the vars for the CodeTemplate */
+    /** 
+     * gets the vars for the CodeTemplate 
+     * @return 
+     */
     public Set<String> getVars()
     {
-        HashSet<String> varNames = new HashSet<String>();
         return this.dom.getAllVarNames( VarContext.of() );
     }
 

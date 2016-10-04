@@ -54,7 +54,7 @@ public class _implementsTest
     {
         _implements impls = _implements.of( "{+inter*+}" );
         assertEquals( "implements MahInter", 
-            impls.bind( VarContext.of( "inter", "MahInter" ) ).trim()  );
+            impls.bindIn( VarContext.of( "inter", "MahInter" ) ).author().trim()  );
     }
     
 }

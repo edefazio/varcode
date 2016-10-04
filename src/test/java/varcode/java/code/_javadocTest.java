@@ -68,7 +68,7 @@ public class _javadocTest
     public void testBind()
     {
         _javadoc j = _javadoc.of("this is a comment with {+mark+}");
-        String res = j.bind( VarContext.of( "mark", "TheMark" ) );
+        String res = j.bindIn( VarContext.of( "mark", "TheMark" ) ).author( );
         assertEquals(  
             "/**" + System.lineSeparator()+
             " * this is a comment with TheMark" + System.lineSeparator()+

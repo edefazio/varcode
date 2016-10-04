@@ -97,21 +97,7 @@ public class _annotate
     public VarContext getContext()
     {
         return VarContext.of( "annotation", listOfAnnotations );
-    }
-    
-    /**
-     * 
-     * @param context contains bound variables and scripts to bind data into
-     * the template
-     * @param directives pre-and post document directives 
-     * @return the populated Template bound with Data from the context
-     */
-    @Override
-    public String bind( VarContext context, Directive...directives )
-    {
-        Dom dom = BindML.compile( author() ); 
-        return Compose.asString( dom, context, directives );
-    }        
+    }    
         
     @Override
     public _annotate bindIn( VarContext context )
@@ -225,20 +211,6 @@ public class _annotate
     public static class _attributes
         implements Model
     {        
-        /**
-         * 
-         * @param context contains bound variables and scripts to bind data into
-         * the template
-         * @param directives pre-and post document directives 
-         * @return the populated Template bound with Data from the context
-         */
-        @Override
-        public String bind( VarContext context, Directive...directives )
-        {
-            Dom dom = BindML.compile( author() ); 
-            return Compose.asString( dom, context, directives );
-        }
-        
         public static _attributes of( Object... nameValues )
         {
             if( nameValues.length == 1 )
@@ -429,19 +401,6 @@ public class _annotate
     public static class _annotation
         implements Model
     {        
-        /**
-         * 
-         * @param context contains bound variables and scripts to bind data into
-         * the template
-         * @param directives pre-and post document directives 
-         * @return the populated Template bound with Data from the context
-         */
-        @Override
-        public String bind( VarContext context, Directive...directives )
-        {
-            Dom dom = BindML.compile( author() ); 
-            return Compose.asString( dom, context, directives );
-        }
         /** Create and return a clone of this annotation
          * @param prototype the prototype annotation
          * @return a new clone of the base annotation

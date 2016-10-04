@@ -77,7 +77,7 @@ public class _fieldsTest
         assertEquals(1, f.count());
         assertEquals( "public int a;", f.getByName( "a" ).toString() );
         assertFalse( f.canAddFieldName( "a" ) );
-        assertEquals( "public int a;", f.bind( VarContext.of() ) );        
+        assertEquals( "public int a;", f.bindIn( VarContext.of() ).author().trim() );        
     }
     
     public void testParameterized()
@@ -86,10 +86,13 @@ public class _fieldsTest
         
         assertEquals( "public int {+nme|vn+};", f.author( ).trim() );
         
-        assertEquals( "public int vn;", f.bind( VarContext.of() ) );        
         
-        assertEquals( "public int theName;", f.bind( 
-            VarContext.of( "nme", "theName" ) ) );        
+        assertEquals( "public int vn;", f.bindIn( VarContext.of() ).author().trim() );        
+        
+        //we have already bound, so 
+        f = _fields.of( "public int {+nme|vn+};");
+        assertEquals( "public int theName;", f.bindIn( 
+            VarContext.of( "nme", "theName" ) ).author().trim() );        
     }
      
     public void testBadModifiers()

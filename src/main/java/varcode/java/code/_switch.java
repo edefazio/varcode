@@ -41,25 +41,11 @@ import varcode.Model;
             break; //break After                               
     }
  * 
- * @author eric
+ * @author M. Eric DeFazio eric@varcode.io
  */
 public class _switch
     implements Model
-{        
-    /**
-     * 
-     * @param context contains bound variables and scripts to bind data into
-     * the template
-     * @param directives pre-and post document directives 
-     * @return the populated Template bound with Data from the context
-     */
-    @Override
-    public String bind( VarContext context, Directive...directives )
-    {
-        Dom dom = BindML.compile( author() ); 
-        return Compose.asString( dom, context, directives );
-    }
-    
+{   
     public static _switch of( String variable )
     {
         return new _switch( variable );
@@ -199,21 +185,7 @@ public class _switch
     
     public static class DefaultCase
         implements Model
-    {        
-        /**
-         * 
-         * @param context contains bound variables and scripts to bind data into
-         * the template
-         * @param directives pre-and post document directives 
-         * @return the populated Template bound with Data from the context
-         */
-        @Override
-        public String bind( VarContext context, Directive...directives )
-        {
-            Dom dom = BindML.compile( author() ); 
-            return Compose.asString( dom, context, directives );
-        }
-        
+    {   
         public _code code;
          
         public static Dom DEFAULT_CASE = BindML.compile(
@@ -262,21 +234,7 @@ public class _switch
     /** Individual case within a Switch statement */
     public static class Case
         implements Model
-    {        
-        /**
-         * 
-         * @param context contains bound variables and scripts to bind data into
-         * the template
-         * @param directives pre-and post document directives 
-         * @return the populated Template bound with Data from the context
-         */
-        @Override
-        public String bind( VarContext context, Directive...directives )
-        {
-            Dom dom = BindML.compile( author() ); 
-            return Compose.asString( dom, context, directives );
-        }
-        
+    {                
         public _code caseEqual;
         public _code code;
         public boolean breakAfter;
@@ -349,21 +307,7 @@ public class _switch
      */
     public static class MultiCase
         implements Model
-    {        
-        /**
-         * 
-         * @param context contains bound variables and scripts to bind data into
-         * the template
-         * @param directives pre-and post document directives 
-         * @return the populated Template bound with Data from the context
-         */
-        @Override
-        public String bind( VarContext context, Directive...directives )
-        {
-            Dom dom = BindML.compile( author() ); 
-            return Compose.asString( dom, context, directives );
-        }
-        
+    {                
         public _code[] caseEquals;
         public _code code;
         public boolean breakAfter = false;

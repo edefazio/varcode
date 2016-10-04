@@ -55,12 +55,12 @@ public class _packageTest
     public void testLazyBind()
     {
         _package p = _package.of( "" );
-        assertEquals( "", p.bind( VarContext.of() ) );
+        assertEquals( "", p.bindIn( VarContext.of() ).author( ) );
         
         p = _package.of( "my.pack" );
-        System.out.println (p.bind (VarContext.of( )) );
+        String s = p.bindIn( VarContext.of( ) ).author( ).trim();
         
-        assertEquals( "package my.pack;", p.bind( VarContext.of() ).trim() );
+        assertEquals( "package my.pack;", s );
         
         p = _package.of( "start.{+part*+}.p");
         
@@ -68,15 +68,16 @@ public class _packageTest
         
         try
         {
-            p.bind( VarContext.of( ) );
+            p.bindIn( VarContext.of( ) );
             fail("expected Exception for unbound required var {+part*+}");
         }
         catch( VarException ve )
         {
             //expwetced
         }
-        assertEquals( "package start.part.p;", p.bind( 
-                VarContext.of("part", "part") ).trim() );
+        p = _package.of( "start.{+part*+}.p");
+        assertEquals( "package start.part.p;", p.bindIn( 
+                VarContext.of("part", "part") ).author().trim() );
         
     }
    

@@ -15,12 +15,11 @@
  */
 package varcode.markup.$;
 
-import varcode.context.VarContext;
-import varcode.java.code._methods._method;
+import varcode.markup.$ml.$MethodForm;
 
 /**
  *
- * @author eric
+ * @author M. Eric DeFazio eric@varcode.io
  */
 public class $ExMethodForm
     extends $MethodForm
@@ -28,11 +27,14 @@ public class $ExMethodForm
     public class $type$ {}
     $type$[] $fieldName$;
     
+    
     public $ExMethodForm()
     {
-        super( "get$FieldName$At" );
+        super( );
     }
-    /*{{$*/
+    
+    
+    /*{$*/
     public $type$ get$FieldName$At( int index )
     {
         if( this.$fieldName$ == null )
@@ -46,14 +48,15 @@ public class $ExMethodForm
         }
         return this.$fieldName$[ index ];                            
     }
-    /*$}}*/
+    /*$}*/
     
-    /*
     public static void main(String[] args)
     {        
         //basically I find 
         $ExMethodForm em = new $ExMethodForm();
         
+        System.out.println( em.method );
+        /*
         _method m = .getMethod();
         
         form form = 
@@ -61,7 +64,9 @@ public class $ExMethodForm
         String derived = 
             f.derive( VarContext.of("type", int.class, "fieldName", "count" ) ); 
         
-        System.out.println( derived );
+        
+        //System.out.println( derived );
+        */
     }
-    */
+    
 }

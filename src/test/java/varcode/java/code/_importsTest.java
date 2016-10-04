@@ -66,13 +66,14 @@ public class _importsTest
         _imports im = _imports.of( "{+baseClass+}" );
         assertEquals("import {+baseClass+};", im.toString().trim());
         
-        assertEquals("import ex.MyBaseClass;", im.bind( 
-            VarContext.of("baseClass", "ex.MyBaseClass") ) ); 
+        assertEquals("import ex.MyBaseClass;", im.bindIn( 
+            VarContext.of("baseClass", "ex.MyBaseClass") ).author().trim() ); 
         
         im.addImport(Map.class);
         
-        assertEquals("import java.util.Map;" + System.lineSeparator() +
-                     "import ex.MyBaseClass;", 
-            im.bind( VarContext.of("baseClass", "ex.MyBaseClass") ).trim() );         
+        assertEquals(
+            "import ex.MyBaseClass;"+ System.lineSeparator() +
+            "import java.util.Map;",                       
+            im.bindIn( VarContext.of("baseClass", "ex.MyBaseClass") ).author().trim() );         
     }      
 }

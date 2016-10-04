@@ -24,30 +24,19 @@ import varcode.Model;
  */
 public class _imports
     implements Model
-{        
-    /**
-     * 
-     * @param context contains bound variables and scripts to bind data into
-     * the template
-     * @param directives pre-and post document directives 
-     * @return the populated Template bound with Data from the context
+{            
+	/** Create and return a mutable clone given the imports
+     * @param prototype the prototype imports
+     * @return a mutable clone
      */
-    @Override
-    public String bind( VarContext context, Directive...directives )
-    {
-        Dom dom = BindML.compile( author() ); 
-        return Compose.asString( dom, context, directives );
-    }
-    
-	/** Create and return a mutable clone given the imports */
-	public static _imports cloneOf( _imports imports )
+	public static _imports cloneOf( _imports prototype )
 	{
 		_imports created = new _imports();
-		created.merge( imports );
+		created.merge( prototype );
 		return created;
 	}
     
-    
+    @Override
     public _imports bindIn( VarContext context )
     {
         String[] ics = importClasses.toArray( new String[ 0 ] );
@@ -68,6 +57,7 @@ public class _imports
         return this;
     }
     
+    @Override
     public _imports replace( String target, String replacement )
     {
         Set<String> replaced = new TreeSet<String>();
@@ -113,6 +103,7 @@ public class _imports
 		return importClasses.contains( s ) || staticImports.contains( s );
 	}
 	
+    @Override
 	public String author( Directive... directives ) 
 	{
 		return Compose.asString( 

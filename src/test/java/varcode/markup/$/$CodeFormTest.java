@@ -22,7 +22,7 @@ import varcode.context.VarContext;
 
 /**
  *
- * @author eric
+ * @author M. Eric DeFazio eric@varcode.io
  */
 public class $CodeFormTest
     extends TestCase

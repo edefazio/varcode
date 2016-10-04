@@ -19,7 +19,7 @@ public class _staticBlockTest
     {
         _staticBlock sb = new _staticBlock();
         assertEquals( "", sb.author(  ) );
-        assertEquals( "", sb.bind( VarContext.of() ) );
+        assertEquals( "", sb.bindIn( VarContext.of() ).author( ) );
         
         
         assertTrue( sb.isEmpty() );
@@ -28,7 +28,7 @@ public class _staticBlockTest
         
         sb.replace("A", "Z");
         assertEquals( "", sb.author(  ) );
-        assertEquals( "", sb.bind( VarContext.of() ) );
+        assertEquals( "", sb.bindIn( VarContext.of() ).author() );
     }
     
     public static final String N = "\r\n";
@@ -83,7 +83,7 @@ public class _staticBlockTest
             "static" + N +
             "{" + N + 
             "    LOG.debug(\"HELLO\");" + N +
-            "}", sb.bind( VarContext.of( "message", "HELLO" ) ) );        
+            "}", sb.bindIn( VarContext.of( "message", "HELLO" ) ).author() );        
         
          
     }

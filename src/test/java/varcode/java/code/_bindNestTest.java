@@ -138,8 +138,8 @@ public class _bindNestTest
                 "{+doThis+}" );
         
         //this illustrates the priblem
-        String bind = i.bind( VarContext.of(
-            "doThis", "A\r\nB") );
+        String bind = i.bindIn( VarContext.of(
+            "doThis", "A\r\nB") ).author();
         
         assertEquals(
             "if( i > 0 )" + N +

@@ -31,19 +31,6 @@ public class _forEach
     implements Model
 {        
     /**
-     * 
-     * @param context contains bound variables and scripts to bind data into
-     * the template
-     * @param directives pre-and post document directives 
-     * @return the populated Template bound with Data from the context
-     */
-    @Override
-    public String bind( VarContext context, Directive...directives )
-    {
-        Dom dom = BindML.compile( author() ); 
-        return Compose.asString( dom, context, directives );
-    }
-        /**
      * builds a forEach statement with body: <PRE>
      * _forEach( int.class, "x", "array")
      *     .body("System.out.printlnt(x);");

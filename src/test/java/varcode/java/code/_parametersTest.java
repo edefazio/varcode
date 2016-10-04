@@ -83,7 +83,7 @@ public class _parametersTest
         
         try
         {
-            p.get( 1 );
+            p.getAt( 1 );
             fail( "Expected Exception index out of range" );
         }
         catch( VarException ve )
@@ -95,15 +95,15 @@ public class _parametersTest
         p.replace("A", "Z");        
         
         assertEquals("(  )", p.author( ) );
-        assertEquals("(  )", p.bind( VarContext.of() ) );
+        assertEquals("(  )", p.bindIn( VarContext.of() ) .author() );
     }
     
     public void testOneParam()
     {
         _parameters p = varcode.java.code._parameters.of(  "int a" );
-        assertEquals( "int a", p.get(0).toString() );
-        assertEquals( "int", p.get(0).getType() );
-        assertEquals( "a", p.get(0).getName() );
+        assertEquals( "int a", p.getAt(0).toString() );
+        assertEquals( "int", p.getAt(0).getType() );
+        assertEquals( "a", p.getAt(0).getName() );
         
         assertFalse( p.isEmpty() );
         assertEquals( 1, p.count() );
@@ -111,38 +111,39 @@ public class _parametersTest
         List<_parameter>ps =  p.getParameters();
         assertEquals( 1, ps.size() );
         assertEquals( "( int a )", p.author( ) );
-        assertEquals( "( int a )", p.bind( VarContext.of() ) );
+        assertEquals( "( int a )", p.bindIn( VarContext.of() ).author() );
         
         p.replace( "a", "b" );
         
-        assertEquals( "int b", p.get(0).toString() );
-        assertEquals( "int", p.get(0).getType() );
-        assertEquals( "b", p.get(0).getName() );
+        assertEquals( "int b", p.getAt(0).toString() );
+        assertEquals( "int", p.getAt(0).getType() );
+        assertEquals( "b", p.getAt(0).getName() );
         
         assertEquals( "( int b )", p.author( ) );
-        assertEquals( "( int b )", p.bind( VarContext.of() ) );                
+        assertEquals( "( int b )", p.bindIn( VarContext.of() ).author() );                
     }
     
     public void testParamParam()
     {
         _parameters p = _parameters.of( "{+pType+} a" );
         
-         assertEquals( "{+pType+} a", p.get(0).toString() );
-        assertEquals( "{+pType+}", p.get(0).getType() );
-        assertEquals( "a", p.get(0).getName() );
+         assertEquals( "{+pType+} a", p.getAt(0).toString() );
+        assertEquals( "{+pType+}", p.getAt(0).getType() );
+        assertEquals( "a", p.getAt(0).getName() );
         
         assertFalse( p.isEmpty() );
         assertEquals( 1, p.count() );
         
         assertEquals( "( {+pType+} a )", p.author( ) );
-        assertEquals( "(  a )", p.bind( VarContext.of() ) );
-        assertEquals( "( int a )", p.bind( VarContext.of("pType", int.class ) ) );
+        assertEquals( "(  a )", p.bindIn( VarContext.of() ).author() );
+        p = _parameters.of( "{+pType+} a" );
+        assertEquals( "( int a )", p.bindIn( VarContext.of("pType", int.class ) ).author() );
         
         p = _parameters.of( "int {+name*+}" );
         
-         assertEquals( "int {+name*+}", p.get(0).toString() );
-        assertEquals( "int", p.get(0).getType() );
-        assertEquals( "{+name*+}", p.get(0).getName() );
+         assertEquals( "int {+name*+}", p.getAt(0).toString() );
+        assertEquals( "int", p.getAt(0).getType() );
+        assertEquals( "{+name*+}", p.getAt(0).getName() );
         
         assertFalse( p.isEmpty() );
         assertEquals( 1, p.count() );
@@ -151,14 +152,15 @@ public class _parametersTest
         
         try
         { 
-            assertEquals( "( int  )", p.bind( VarContext.of() ) );
+            assertEquals( "( int  )", p.bindIn( VarContext.of() ).author( ) );
             fail("expected Exception for missing Required");
         }
         catch(VarException ve)
         {
             //expected
         }
-        assertEquals( "( int a )", p.bind( VarContext.of( "name", "a" ) ) );        
+        p = _parameters.of( "int {+name*+}" );
+        assertEquals( "( int a )", p.bindIn( VarContext.of( "name", "a" ) ).author() );        
     }
     
     public void testParameters()

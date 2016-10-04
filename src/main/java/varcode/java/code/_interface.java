@@ -21,21 +21,7 @@ import varcode.Model;
 //allow default methods
 public class _interface 
 	implements JavaCaseAuthor, _nest.component
-{
-    /**
-     * 
-     * @param context contains bound variables and scripts to bind data into
-     * the template
-     * @param directives pre-and post document directives 
-     * @return the populated Template bound with Data from the context
-     */
-    @Override
-    public String bind( VarContext context, Directive...directives )
-    {
-        Dom dom = BindML.compile( author() ); 
-        return Compose.asString( dom, context, directives );
-    }
-    
+{    
 	public static final Dom INTERFACE = 
 		BindML.compile( 
 			"{+pckage+}" +
@@ -382,21 +368,7 @@ public class _interface
     /** interface signature */
 	public static class _signature
         implements Model
-    {        
-        /**
-         * 
-         * @param context contains bound variables and scripts to bind data into
-         * the template
-         * @param directives pre-and post document directives 
-         * @return the populated Template bound with Data from the context
-         */
-        @Override
-        public String bind( VarContext context, Directive...directives )
-        {
-            Dom dom = BindML.compile( author() ); 
-            return Compose.asString( dom, context, directives );
-        }
-        
+    {                
 		private _modifiers modifiers = new _modifiers();
 		private String interfaceName;		
 		private _extends extendsFrom = new _extends();

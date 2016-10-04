@@ -70,21 +70,7 @@ public class _thread
     /** Creates an anonymous runnable for threading */
     public static class _runnable
         implements Model
-    {        
-        /**
-         * 
-         * @param context contains bound variables and scripts to bind data into
-         * the template
-         * @param directives pre-and post document directives 
-         * @return the populated Template bound with Data from the context
-         */
-        @Override
-        public String bind( VarContext context, Directive...directives )
-        {
-            Dom dom = BindML.compile( author() ); 
-            return Compose.asString( dom, context, directives );
-        }
-        
+    {                
         private _code body; 
         private boolean start = false;
         

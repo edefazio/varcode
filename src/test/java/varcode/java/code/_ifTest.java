@@ -136,13 +136,13 @@ public class _ifTest
         
         System.out.println( i );
         
-        String bind = i.bind(VarContext.of(
+        String bind = i.bindIn(VarContext.of(
             "doThis", "A", 
             "doThat", "B", 
             "innerDo","AA", 
-            "innerDoThat", "BB") );
+            "innerDoThat", "BB") ).toString();
         
-        System.out.println(bind );
+        //System.out.println(bind );
                        
         assertEquals(
             "if( i > 0 )" + N +
@@ -168,11 +168,11 @@ public class _ifTest
                     "{+$>(innerDoThat)+}" ) );
         
         //this illustrates the priblem
-        String bind = i.bind( VarContext.of(
+        String bind = i.bindIn( VarContext.of(
             "doThis", "A", 
             "doThat", "B", 
             "innerDo", "A1\r\n A2\r\n A3\r\n", 
-            "innerDoThat", _code.of("B1", "B2", "B3")) );
+            "innerDoThat", _code.of("B1", "B2", "B3") ) ).author();
         
         /*
         //this illustrates the priblem

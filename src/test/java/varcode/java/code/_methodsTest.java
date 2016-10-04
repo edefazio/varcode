@@ -36,19 +36,19 @@ public class _methodsTest
                 "}",
                 "{+reduce*+}" ) );
          
-        System.out.println( m );
-        System.out.println 
-            ( m.bind(VarContext.of("returnType", int.class, "match", "1 == 1", "reduce", "return 1;") ) );
+        //System.out.println( m );
+        //System.out.println 
+        //    ( m.bindIn(VarContext.of("returnType", int.class, "match", "1 == 1", "reduce", "return 1;") ) );
          
         _class c = _class.of("Something")
            .method( m );
         
-        System.out.println( c );
+        //System.out.println( c );
         
-        String s = c.bind( VarContext.of( "returnType", int.class, "match", "1 == 1", "reduce", "return 1;" ) );
-        System.out.println( s );
+        //String s = c.bindIn( VarContext.of( "returnType", int.class, "match", "1 == 1", "reduce", "return 1;" ) ).author( );
+        //System.out.println( s );
         
-        s = c.bind( VarContext.of( "returnType", int.class, "match", _code.of("if( i< 100 )", "x++;"), "reduce", "return 1;" ) );
+        String s = c.bindIn( VarContext.of( "returnType", int.class, "match", _code.of("if( i< 100 )", "x++;"), "reduce", "return 1;" ) ).author();
         System.out.println( s );
     }
     
@@ -141,7 +141,7 @@ public class _methodsTest
     {        
         _methods m = new _methods();
         m.addMethod( "public String {+methodName+}()" );
-        String res = m.bind( VarContext.of("methodName", "M") );
+        String res = m.bindIn( VarContext.of("methodName", "M") ).author();
         System.out.println( res );
         assertEquals( "public String M(  )" + N + "{"+ N + N + "}", res.trim() );        
     }
@@ -150,7 +150,7 @@ public class _methodsTest
     {        
         _methods m = new _methods();
         m.addMethod( "public {+returnType+} method()" );
-        String res = m.bind( VarContext.of( "returnType", "Gizmo") );
+        String res = m.bindIn( VarContext.of( "returnType", "Gizmo") ).author();
         System.out.println( res );
         assertEquals( "public Gizmo method(  )" + N + "{"+ N + N + "}", res.trim() );        
     }

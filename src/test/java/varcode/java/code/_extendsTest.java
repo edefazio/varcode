@@ -22,7 +22,7 @@ public class _extendsTest
         assertEquals( "", e.toString() );
         
         e = _extends.of( "{+Yada+}" );        
-        System.out.println ( e ); 
+        
         
         assertEquals("{+Yada+}", e.get( 0 ) );
         
@@ -30,13 +30,14 @@ public class _extendsTest
         
         assertEquals(
             "extends A",
-            e.bind( VarContext.of("Yada", "A") ).trim() );    
+            e.bindIn( VarContext.of("Yada", "A") ).author().trim() );    
         
+        e = _extends.of( "{+Yada+}" );        
         e.addExtends( Map.class );
         
         assertEquals(
             "extends A, java.util.Map",
-            e.bind( VarContext.of("Yada", "A") ).trim() );    
+            e.bindIn( VarContext.of("Yada", "A") ).author().trim() );    
         
     }
     

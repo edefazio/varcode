@@ -102,15 +102,15 @@ public class _codeTest
     {
         _code c = _code.of( "int {+vari*+} = 100;" );
         
-        String b = c.bind( VarContext.of("vari", "TheVariable") );
+        String b = c.bindIn( VarContext.of("vari", "TheVariable") ).author();
         assertEquals( "int TheVariable = 100;", b );
         
         _try t = _try.catchAndHandle(c, 
             IOException.class, 
             "System.out.println(\"{+message|failure+}\");" );
         
-        b = t.bind(
-            VarContext.of("vari", "TheVariable") );
+        b = t.bindIn(
+            VarContext.of("vari", "TheVariable") ).author();
         
         assertEquals( 
             "try" + N +

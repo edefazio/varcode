@@ -62,13 +62,6 @@ public class _constructors
 	public _constructors()
 	{
 	}
-
-    @Override
-    public String bind( VarContext context, Directive... directives )
-    {
-        Dom dom = BindML.compile( author() );
-        return Compose.asString( dom, context, directives );
-    }
     
     @Override
     public _constructors bindIn( VarContext context )
@@ -186,13 +179,6 @@ public class _constructors
 			this.constructorSig = sig;
             this.annotations = new _annotate();
 		}
-        
-        @Override
-        public String bind( VarContext context, Directive... directives )
-        {
-            Dom dom = BindML.compile( author() );
-            return Compose.asString( dom, context, directives );
-        }
     
         @Override
         public _constructor bindIn( VarContext context )
@@ -294,8 +280,8 @@ public class _constructors
 				{				
 					for( int i = 0; i < sig.params.count(); i++ )
 					{						
-						if(! sig.params.get( i ).getType().equals
-							( this.constructorSig.params.get( i ).getType() ) )
+						if(! sig.params.getAt( i ).getType().equals
+							( this.constructorSig.params.getAt( i ).getType() ) )
 						{							
 							return false;
 						}
@@ -355,13 +341,6 @@ public class _constructors
 				this.params = params;
 				this.throwsExceptions = throwsExceptions;
 			}
-
-            @Override
-            public String bind( VarContext context, Directive... directives )
-            {
-                Dom dom = BindML.compile( author() );
-                return Compose.asString( dom, context, directives );
-            }
             
             @Override
             public _signature bindIn( VarContext context )

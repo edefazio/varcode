@@ -63,10 +63,12 @@ public interface Model
     public static final String STRING_LITERAL_PREFIX = "$$";
     
     /** 
-     * Authors the code for an entity
+     * Authors the document for the model directives
+     * and returns the bound document as a String
+     * 
      * @param directives optional directives to apply when 
-     * authoring the representation
-     * @return a textual code representation of the entity
+     * authoring the document
+     * @return document representation of the model
      */ 
 	String author( Directive... directives );
     
@@ -82,12 +84,12 @@ public interface Model
      * @param directives directives applied to the 
      * @return the bound element
      */
-    String bind( VarContext context, Directive...directives );
+    //String bind( VarContext context, Directive...directives );
  
     /**
-     * 
-     * @param context
-     * @return 
+     * Binds values from the context into BindML marks within the model
+     * @param context providing bindings to be bound within the model
+     * @return the mutated model
      */
     Model bindIn( VarContext context );
         

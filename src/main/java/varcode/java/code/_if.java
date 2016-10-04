@@ -100,25 +100,7 @@ public class _if
         this.elseBody = this.elseBody.bindIn( context );
         this.body.bindIn( context );
         return this;
-    }
-    
-    @Override
-    public String bind( VarContext context, Directive...directives )
-    {
-        String elseIfs = "";
-        for( int i = 0; i < elseIfs.length(); i++ )
-        {
-            elseIfs += this.elseIfs.get( i ).bind( context, directives );
-        }
-        VarContext vc = VarContext.of(
-            "condition", this.condition.bind( context, directives ), 
-            "body", this.body.bind( context, directives ), 
-            "elseIfs", elseIfs,
-            "elseBody", this.elseBody.bind( context, directives )                        
-        );        
-        return Compose.asString( IF_BLOCK, vc, directives );
-    }
-
+    }   
     
     @Override
     public String toString()
@@ -154,21 +136,7 @@ public class _if
     /** Model of an else if statement */
     public static class _elseIf
         implements Model
-    {        
-        /**
-         * 
-         * @param context contains bound variables and scripts to bind data into
-         * the template
-         * @param directives pre-and post document directives 
-         * @return the populated Template bound with Data from the context
-         */
-        @Override
-        public String bind( VarContext context, Directive...directives )
-        {
-            Dom dom = BindML.compile( author() ); 
-            return Compose.asString( dom, context, directives );
-        }
-        
+    {                
         public static final Dom ELSEIF = BindML.compile( 
             "else if( {+condition*+} )" + N +  
             "{" + N + 

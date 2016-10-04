@@ -39,7 +39,7 @@ public class _throwsTest
     {
         _throws t = _throws.of();
         assertEquals( "", t.author( ) );
-        assertEquals( "", t.bind( VarContext.of() ) );
+        assertEquals( "", t.bindIn( VarContext.of() ).author() );
         
         assertEquals(0, t.count());
          
@@ -57,7 +57,7 @@ public class _throwsTest
         assertEquals( N 
             + "    throws java.io.IOException", t.author() );
         assertEquals( N 
-            + "    throws java.io.IOException", t.bind( VarContext.of( )) );
+            + "    throws java.io.IOException", t.bindIn( VarContext.of( )).author() );
         
         assertEquals( 1, t.count() );
         assertFalse( t.isEmpty() );
@@ -70,7 +70,7 @@ public class _throwsTest
         assertEquals( N 
             + "    throws java.io.FileNotFoundException", t.author() );
         assertEquals( N 
-            + "    throws java.io.FileNotFoundException", t.bind( VarContext.of( )) );
+            + "    throws java.io.FileNotFoundException", t.bindIn( VarContext.of( )).author() );
     }
             
     public void testMultiThrows()
@@ -83,16 +83,18 @@ public class _throwsTest
         
         try
         {
-            t.bind( VarContext.of() );
+            t.bindIn( VarContext.of() );
             fail( "expected exception for missing required" );
         }
         catch( VarException ve )
         {
             //expected
         }
+        t = _throws.of( IOException.class );
+        t.addThrows( "{+throwThis*+}" );
         
-        String res = t.bind( 
-            VarContext.of("throwThis", FileNotFoundException.class ) );
+        String res = t.bindIn( 
+            VarContext.of("throwThis", FileNotFoundException.class ) ).author( );
         
         assertEquals( N 
             + "    throws java.io.IOException, java.io.FileNotFoundException", 
@@ -108,10 +110,10 @@ public class _throwsTest
     {
         _throws t =  _throws.of( "{+throwThese*+}" );
         
-        String res = t.bind( 
+        String res = t.bindIn( 
             VarContext.of(
             "throwThese", 
-                new Class[]{ FileNotFoundException.class, RuntimeException.class} ) );
+                new Class[]{ FileNotFoundException.class, RuntimeException.class} ) ).author();
         
         assertEquals( N 
             + "    throws java.io.FileNotFoundException, RuntimeException",

@@ -35,8 +35,8 @@ public class _autoSetterTest
         assertEquals( "setCount", m.getName() );
         assertTrue( m.getSignature().getModifiers().contains( "public" ) );
         assertEquals( 1, m.getSignature().getParameters().count() );
-        assertEquals( "count" , m.getSignature().getParameters().get( 0 ).getName() );
-        assertEquals( "int" , m.getSignature().getParameters().get( 0 ).getType() );
+        assertEquals( "count" , m.getSignature().getParameters().getAt( 0 ).getName() );
+        assertEquals( "int" , m.getSignature().getParameters().getAt( 0 ).getType() );
         assertEquals( "void", m.getSignature().getReturnType() );
         
         assertEquals(
@@ -52,8 +52,8 @@ public class _autoSetterTest
         assertEquals( "setName", m.getName() );
         assertTrue( m.getSignature().getModifiers().contains( "public" ) );
         assertEquals( "MyBean", m.getSignature().getReturnType() );
-        assertEquals( "name" , m.getSignature().getParameters().get( 0 ).getName() );
-        assertEquals( "String" , m.getSignature().getParameters().get( 0 ).getType() );
+        assertEquals( "name" , m.getSignature().getParameters().getAt( 0 ).getName() );
+        assertEquals( "String" , m.getSignature().getParameters().getAt( 0 ).getType() );
         assertEquals(1, m.getSignature().getParameters().count() );
         
         assertEquals(

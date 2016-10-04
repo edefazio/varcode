@@ -270,25 +270,6 @@ public class _class
     }
         
     @Override
-    public final String bind( VarContext context, Directive...directives )
-    {
-         VarContext vc = VarContext.of(
-            "pckge", this.classPackage.bind(context, directives),
-            "imports", this.imports.bind( context, directives ), 
-            "classJavaDoc", this.javadoc.bind( context, directives ),
-            "classAnnotation", this.annotations.bind( context, directives ),
-            "classSignature", this.signature.bind( context, directives ),
-            "members", this.fields.bind(context, directives),
-            "methods", this.methods.bind(context, directives),
-            "staticBlock", this.staticBlock.bind(context, directives),
-            "constructors", this.constructors.bind(context, directives),
-            "nests", this.nests.bind(context, directives ) );
-            //"body", this.body.bind( context, directives ) );
-        
-        return Compose.asString( CLASS, vc, directives );
-    }
-        
-    @Override
 	public Dom getDom()
 	{
 		return CLASS;
@@ -690,19 +671,6 @@ public class _class
 	public static class _signature
         implements Model
     {        
-        /**
-         * 
-         * @param context contains bound variables and scripts to bind data into
-         * the template
-         * @param directives pre-and post document directives 
-         * @return the populated Template bound with Data from the context
-         */
-        @Override
-        public String bind( VarContext context, Directive...directives )
-        {
-            Dom dom = BindML.compile( author() ); 
-            return Compose.asString( dom, context, directives );
-        }
         
    		private _modifiers modifiers;
 		private String className;

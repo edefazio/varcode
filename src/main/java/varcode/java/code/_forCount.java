@@ -18,7 +18,6 @@ package varcode.java.code;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
-import varcode.doc.translate.JavaTranslate;
 import varcode.dom.Dom;
 import varcode.markup.bindml.BindML;
 import varcode.Model;
@@ -157,29 +156,6 @@ public class _forCount
         this.endValue = doBindIn( this.endValue, context );
         this.body.bindIn( context );
         return this;
-    }
-        
-    /**
-     * 
-     * @param context contains bound variables and scripts to bind data into
-     * the template
-     * @param directives pre-and post document directives 
-     * @return the populated Template bound with Data from the context
-     */
-    @Override
-    public String bind( VarContext context, Directive...directives )
-    {
-        VarContext vc = VarContext.of("varType", this.varType,
-            "varName", Compose.asString( BindML.compile( this.varName ), context, directives ),
-            "init",  Compose.asString( BindML.compile( JavaTranslate.INSTANCE.translate( this.initialValue ) ), context, directives ),
-            "operator", Compose.asString( BindML.compile( JavaTranslate.INSTANCE.translate( this.operator ) ), context, directives ),
-            "endValue", Compose.asString( BindML.compile( JavaTranslate.INSTANCE.translate( this.endValue ) ), context, directives ),
-            "delta", Compose.asString( BindML.compile( JavaTranslate.INSTANCE.translate( this.initialValue ) ), context, directives ),
-            "body", this.body.bind( context, directives )
-        );
-                
-        //Dom dom = BindML.compile( author() ); 
-        return Compose.asString( FOR_COUNT, vc, directives );
     }
         
     @Override

@@ -22,21 +22,7 @@ import varcode.Model;
  */
 public class _fields
     implements Model
-{        
-    /**
-     * 
-     * @param context contains bound variables and scripts to bind data into
-     * the template
-     * @param directives pre-and post document directives 
-     * @return the populated Template bound with Data from the context
-     */
-    @Override
-    public String bind( VarContext context, Directive...directives )
-    {
-        Dom dom = BindML.compile( author() ); 
-        return Compose.asString( dom, context, directives );
-    }
-    
+{            
     public static final Dom FIELDS = 
         BindML.compile( 
             "{{+?staticFields:{+staticFields+}" + N +
@@ -68,7 +54,7 @@ public class _fields
     {
         for( int i = 0; i < fields.size(); i++ )
         {
-            this.fields.get( i ).bindIn( context );
+            this.fields.set( i, this.fields.get( i ).bindIn( context ) );
         }
         return this;
     }
@@ -274,20 +260,6 @@ public class _fields
             type = type.replace( target, replacement );
             return this;
         }        
-            
-        /**
-         * 
-         * @param context contains bound variables and scripts to bind data into
-         * the template
-         * @param directives pre-and post document directives 
-         * @return the populated Template bound with Data from the context
-         */
-        @Override
-        public String bind( VarContext context, Directive...directives )
-        {
-            Dom dom = BindML.compile( author() ); 
-            return Compose.asString( dom, context, directives );
-        }
         
         @Override
         public _field bindIn( VarContext context )
@@ -296,8 +268,8 @@ public class _fields
             this.init.bindIn( context );
             this.fieldAnnotations.bindIn(context);
             this.mods.bindIn( context );
-            this.name = Compose.asString( BindML.compile(this.name), context );
-            this.type = Compose.asString( BindML.compile(this.type), context );
+            this.name = Compose.asString( BindML.compile( this.name ), context );
+            this.type = Compose.asString( BindML.compile( this.type ), context );
             return this;
         }
         
@@ -538,20 +510,6 @@ public class _fields
 		}
 
 		public static final Dom INIT = BindML.compile( " ={+initCode*+}" );
-	
-        /**
-         * 
-         * @param context contains bound variables and scripts to bind data into
-         * the template
-         * @param directives pre-and post document directives 
-         * @return the populated Template bound with Data from the context
-         */
-        @Override
-        public String bind( VarContext context, Directive...directives )
-        {
-            Dom dom = BindML.compile( author() ); 
-            return Compose.asString( dom, context, directives );
-        }
         
         @Override
         public _init bindIn( VarContext context )
