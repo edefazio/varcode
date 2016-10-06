@@ -1,5 +1,6 @@
 package varcode.java.code;
 
+import java.util.Arrays;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -151,6 +152,10 @@ public class _imports
         return this.importClasses;
     }	
     
+    // we dont need to import these Strings */
+    public static final String[] PRIMITIVES = new String[]
+        {"boolean", "byte", "char", "double", "float", "int", "long", "short"};
+    
 	private _imports addImport( Set<String>imports, Object importClass, boolean isStatic )
 	{
 		if( importClass instanceof Class )
@@ -176,24 +181,10 @@ public class _imports
 		else if( importClass instanceof String )
 		{
 			String s = (String)importClass;
-			//String[] packageAndClassName = JavaNaming.ClassName.extractPackageAndClassName( s );
-		//	String packageName = packageAndClassName[ 0 ];
-		//	String className = packageAndClassName[ 1 ];
-	
-			imports.add( s );
-        /*
-			if( className.equals( "*" ) )
-			{   //wildcard import				 
-				//JavaNaming.ClassName.validateFullClassName( packageName );
-				imports.add( s );				
-			}
-			else
-			{
-				//JavaNaming.PackageName.validate( packageName );
-				//JavaNaming.ClassName.validateSimpleName( className );
-				imports.add( s );
-			}
-        */    
+            if( Arrays.binarySearch( PRIMITIVES, s ) < 0 )
+            {
+                imports.add( s );
+            }			
 		}
 		else if( importClass.getClass().isArray() )
 		{
