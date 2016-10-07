@@ -1,8 +1,6 @@
 package varcode.java.adhoc;
 
 import java.util.ArrayList;
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.fail;
 import junit.framework.TestCase;
 import varcode.VarException;
 import varcode.java.Java;
@@ -190,11 +188,11 @@ public class WorkspaceTest
 			"    " + N +
 			"    public A_ReliesOn_B a;" + N + 
 			N +
-			"    public B_ReliesOn_A( A_ReliesOn_B a) {" + N +
+			"    public B_ReliesOn_A( A_ReliesOn_B a ) {" + N +
 			"        this.a = a;" + N +
 			"    }" + N +
 			N +
-			"    public void setA(A_ReliesOn_B a) {" + N +
+			"    public void setA( A_ReliesOn_B a ) {" + N +
 			"        this.a = a;" + N +
 			"    }" + N + 			
 			"}");
@@ -231,7 +229,7 @@ public class WorkspaceTest
 		}
 		catch( JavacException ce )
 		{
-			ce.printStackTrace();
+			//ce.printStackTrace();
 			//System.out.println( ce );
 		}
 	}
