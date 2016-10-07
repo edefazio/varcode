@@ -232,7 +232,7 @@ public class _methodsTest
 		}
 		
 	}
-	
+	/* Let the compiler handle this
 	public void testMethodMatches()
 	{
 		_methods m = new _methods();
@@ -248,6 +248,7 @@ public class _methodsTest
 		}
 		
 	}
+*/
 	public void testSignature()
 	{
 		assertEquals("void method(  )", 
