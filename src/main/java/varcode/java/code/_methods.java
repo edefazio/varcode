@@ -149,18 +149,9 @@ public class _methods
 			methodsByName.put( m.signature.methodName, methods );
 		}
 		else
-		{//verify there is no conflict
-			for( int i = 0; i < methodsWithTheSameName.size(); i++ )
-			{
-				if( m.signature.matchesSignature(methodsWithTheSameName.get( i ).signature ) )
-				{
-					throw new VarException( 
-                        "Could not add method; another method "+ N +
-						methodsWithTheSameName.get( i ) + N +	
-						"with same parameter signature as "+ N + 
-						m );
-				}			
-			}
+		{   //removed check for method of the same name... it's actually
+            // a little involved, and it was generating false positives (ouch)
+            // this seems to be a job the Javac compiler will help with anyways
 			methodsWithTheSameName.add( m );
 		}
 	}
@@ -619,8 +610,10 @@ public class _methods
 					{
 						for( int i = 0; i < sig.params.count(); i++ )
 						{
-							if( !sig.params.getAt( i ).getType().equals( 
-								this.params.getAt( i ).getType() ) )
+                            //System.out.println( "TYPE 1:"+sig.params.getAt( i ).toString() );
+                            //System.out.println( "TYPE 2:"+this.params.getAt( i ).toString() );
+							if( !sig.params.getAt( i ).getType().toString().equals( 
+								this.params.getAt( i ).getType().toString() ) )
 							{
 								return false;
 							}
