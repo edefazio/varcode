@@ -13,7 +13,7 @@ import varcode.markup.bindml.BindML;
 import varcode.Model;
 
 /**
- * 
+ * Handles imports
  * 
  * "*" imports?
  * static imports?
@@ -165,7 +165,7 @@ public class _imports
 			{
 				return addImport( imports, clazz.getComponentType(), isStatic );
 			}
-			if(! clazz.isPrimitive() 
+			if( !clazz.isPrimitive() 
 				&& !clazz.getPackage().getName().equals( "java.lang" ) )
 			{   //dont need to add primitives or java.lang classes
 				if( isStatic )
@@ -181,7 +181,9 @@ public class _imports
 		else if( importClass instanceof String )
 		{
 			String s = (String)importClass;
-            if( Arrays.binarySearch( PRIMITIVES, s ) < 0 )
+            if( Arrays.binarySearch( PRIMITIVES, s ) < 0 
+                && !s.startsWith( "java.lang" ) 
+                && !s.equals( "class" ) )
             {
                 imports.add( s );
             }			
@@ -201,6 +203,7 @@ public class _imports
 		return this;
 	}
 
+    @Override
 	public String toString()
 	{
 		return author();
