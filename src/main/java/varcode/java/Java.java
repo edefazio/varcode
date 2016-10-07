@@ -233,9 +233,21 @@ public enum Java
        		}            
             //
         }
-        catch( Exception e )
+        catch( InstantiationException e )
         {
-            throw new VarException( e );
+            throw new VarException( "Instantiation Exception to construct", e );
+        }
+        catch( IllegalAccessException e ) 
+        {
+            throw new VarException( "Illegal Access to construct", e );
+        }
+        catch( IllegalArgumentException e ) 
+        {
+            throw new VarException( "Illegal Argument to construct", e );
+        }
+        catch( InvocationTargetException e ) 
+        {
+            throw new VarException( "Invocation Target Exception for construct", e.getCause() );
         }         
     }        
     
@@ -293,26 +305,42 @@ public enum Java
     public static Object invoke( 
     	Object target, String methodName, Object... params )
     {         	 
-    	 try
-         {
-    		 if( target instanceof Class )
-    		 {
-    			 return invokeStatic( (Class<?>)target, methodName, params );
-    		 }     		 
-    		 Method method = getMethod( target.getClass().getMethods(), methodName, params );
+    	try
+        {
+    		if( target instanceof Class )
+    		{
+    		    return invokeStatic( (Class<?>)target, methodName, params );
+    		}
+             
+    		Method method = getMethod( target.getClass().getMethods(), methodName, params );
     		 
-             if( method == null )
-              {
-                  throw new VarException(
-                      "Could not find method \"" + methodName + "\" on \"" + target + "\"" );
-              }
-              return method.invoke( target, params );
-         }
-         catch( Exception iae )
-         { 
+            if( method == null )
+            {
+                throw new VarException(
+                    "Could not find method \"" + methodName + "\" on \"" + target + "\"" );
+            }
+            return method.invoke( target, params );
+        }
+        catch( SecurityException iae )
+        { 
               throw new VarException( 
-                  "Could not call \"" + target + "." + methodName + "();", iae );
-         }
+                  "Security Exception not call \"" + target + "." + methodName + "();", iae );
+        }        
+        catch( IllegalAccessException iae ) 
+        {
+            throw new VarException(
+                 "Illegal Access Could not call \"" + target + "." + methodName + "();", iae );
+        }
+        catch( IllegalArgumentException iae ) 
+        {
+            throw new VarException(
+                "Illegal Argument Could not call \"" + target + "." + methodName + "();", iae );
+        }
+        catch( InvocationTargetException iae ) 
+        {
+            throw new VarException(
+                "Invocation Target Excaption Could not call \"" + target + "." + methodName + "();", iae.getCause() );
+        }
      }
     
     public static Object getStaticField( Class<?> clazz, String fieldName )
@@ -320,13 +348,26 @@ public enum Java
     	try
 		{    		
 			Field f = clazz.getField( fieldName );
-			if( LOG.isDebugEnabled() ) { LOG.debug( "Getting field \"" + f ); }			
+			if( LOG.isDebugEnabled() ) 
+            { 
+                LOG.debug( "Getting field \"" + f ); 
+            }			
 			return f.get( null );
 		}
-		catch( Exception e )
+		catch( NoSuchFieldException e )
 		{
-			throw new VarException( e );
+			throw new VarException( "No Such Field \"" + fieldName + "\"", e );
 		}
+        catch (SecurityException e) 
+        {
+            throw new VarException( "Security Exception on Field \""+fieldName+"\"", e );
+        }
+        catch (IllegalArgumentException e) {
+            throw new VarException( e );
+        }
+        catch (IllegalAccessException e) {
+            throw new VarException( e );
+        }
     }
     
     public static void setFieldValue( Object instance, String fieldName, Object value )
@@ -336,10 +377,25 @@ public enum Java
 			Field f = instance.getClass().getField( fieldName );			
 			f.set( instance, value );
 		}
-        catch( Exception e )
+        catch( NoSuchFieldException e )
         {
             throw new VarException(
-                "Unable to set \"" + fieldName + "\" as "+ value );
+                "No Such Field \"" + fieldName + "\" as "+ value, e );
+        }
+        catch( SecurityException e ) 
+        {
+            throw new VarException(
+                "Security Exception for \"" + fieldName + "\" as "+ value, e );
+        }
+        catch( IllegalArgumentException e ) 
+        {
+            throw new VarException(
+               "IllegalArgument for \"" + fieldName + "\" as "+ value, e );
+        }
+        catch( IllegalAccessException e )  
+        {
+            throw new VarException(
+                "Illegal Access to set \"" + fieldName + "\" as "+ value, e );
         }
     }
     /**
@@ -362,13 +418,20 @@ public enum Java
 		}
     	catch( IllegalAccessException iae )
     	{
-    		iae.printStackTrace();
-    		throw new VarException( iae );
+    		throw new VarException( "Illegal Access for \""+fieldName+"\"", iae );
     	}
-    	catch( Exception e ) 
+    	catch( NoSuchFieldException e ) 
 		{
-			throw new VarException( e );
+			throw new VarException( "No such Field exception for \""+fieldName+"\"", e );
 		} 		    	
+        catch( SecurityException e ) 
+        {
+            throw new VarException( "SecurityException for field \""+fieldName+"\"", e );
+        }
+        catch( IllegalArgumentException e ) 
+        {
+            throw new VarException( "Illegal Argument for field \""+fieldName+"\"", e );
+        } 		    	
     }
     
     public static Object invokeStatic( 
@@ -455,19 +518,31 @@ public enum Java
         
     /**
      * is this arg assignable to the target class?
-     * @param target
+     * @param targetArg the target method class
      * @param arg
      * @return 
      */
-    protected static boolean isArgAssignable( Class<?> target, Object arg )
+    protected static boolean isArgAssignable( Class<?> targetArg, Object arg )
     {
-        return arg == null || arg.getClass().isInstance( target ) 
-              || ( arg.getClass().isPrimitive() 
-                  && ( translatesTo(arg, target ) ) );
+        if( arg == null )
+        {
+            return true;
+        }
+        if( arg.getClass().isInstance( targetArg ) )
+        {
+            return true;
+        }
+        if( targetArg.isPrimitive() )
+        {
+            return translatesTo( arg, targetArg );
+        }
+        return false;        
     }
 
     /**
      * Try and "match" the arguments of a method with the arguments provided
+     * 
+     * TODO I NEED TO HANDLE VARARGS
      * 
      * @param target the target arguments
      * @param arg the actual arguments
@@ -475,19 +550,23 @@ public enum Java
      */
     protected static boolean allArgsAssignable( Class<?>[] target, Object... arg )
     {
+        if( arg == null || arg.length == 0 )
+        {
+            return target.length == 0;             
+        }
         if( target == null )
         {
-            return arg == null || arg.length == 0; 
+            return arg.length == 0; 
         }
         if( target.length == 0 )
         {
-            return arg == null || arg.length == 0;
+            return arg.length == 0;
         }        
         if( target.length == arg.length )
         {   //they have the same number of arguments, but are they type compatible?
             for( int pt = 0; pt < target.length; pt++ )
             {
-                if( !isArgAssignable(arg[ pt ].getClass(), target[ pt ] ) )
+                if( !isArgAssignable( arg[ pt ].getClass(), target[ pt ] ) )
                 {
                     return false;
                 }
@@ -522,7 +601,7 @@ public enum Java
         {
             if( methods[ i ].getName().equals( methodName ) )
             {
-                if( allArgsAssignable(methods[ i ].getParameterTypes(), args ) )
+                if( allArgsAssignable( methods[ i ].getParameterTypes(), args ) )
                 {
                     return methods[ i ];
                 }
@@ -536,12 +615,20 @@ public enum Java
 		try 
 		{
 			Field f = clazz.getField( fieldName );
-			return f.get( clazz );
+            return getStaticFieldValue( f );
 		} 
-		catch( Exception e ) 
+		catch( NoSuchFieldException e ) 
 		{
-			throw new VarException( e );
+			throw new VarException( "No Such field \"" + fieldName + "\"", e );
 		} 		
+        catch( SecurityException e ) 
+        {
+            throw new VarException( "Security Exception for field \"" + fieldName + "\"", e );
+        }
+        catch( IllegalArgumentException e ) 
+        {
+            throw new VarException( "Illegal Argument for field \"" + fieldName + "\"", e );
+        }        	
 	}
 	
     public static Object getStaticFieldValue( Field field )
@@ -550,10 +637,13 @@ public enum Java
 	    {
 	    	return field.get( null );
 	    } 
-	    catch( Exception e ) 
+	    catch( IllegalArgumentException e ) 
 	    {
-	    	LOG.debug( "Unable to get Field \"" + field + "\"" );
-	    	return null;
+            throw new VarException( "Illegal Argument for field "+ field, e );
 	    } 	    
+        catch (IllegalAccessException e) 
+        {
+            throw new VarException( "Illegal Acccess for field "+ field, e );
+        } 	    
     }
 }
