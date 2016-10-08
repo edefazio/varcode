@@ -15,12 +15,10 @@
  */
 package varcode.markup.$ml;
 
-import varcode.Model;
-import varcode.context.VarContext;
-import varcode.doc.Directive;
 import varcode.java.JavaMarkupRepo;
 import varcode.java.code._code;
 import varcode.java.code._methods;
+import varcode.java.code._methods._method;
 import varcode.markup.repo.MarkupRepo;
 
 /**
@@ -33,9 +31,9 @@ import varcode.markup.repo.MarkupRepo;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class $Method
-    implements Model
 {
-    public _methods._method method;
+    /** Make this private and final, you can get an instance by calling method() */
+    private final _methods._method method;
     
     public static final String PARSE_OPEN ="/*{$";
     public static final String PARSE_CLOSE ="$}*/";
@@ -69,22 +67,9 @@ public class $Method
             _code.of( $Parse.parseTemplate( methodBody.trim() ) ) );       
     }
 
-    @Override
-    public Model bindIn( VarContext context )
+    public _method method()
     {
-        return this.method.bindIn( context );
+        return _method.cloneOf( this.method );
     }
-
-    @Override
-    public Model replace( String target, String replacement )
-    {
-        return this.method.replace( target, replacement );
-    }
-
-    @Override
-    public String author( Directive... directives )
-    {
-        return this.method.author( directives );
-    }  
 }
 

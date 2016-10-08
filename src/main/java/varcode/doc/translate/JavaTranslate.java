@@ -48,9 +48,10 @@ public class JavaTranslate
 
     private final Translator[] translators = new Translator[] 
     {
+        TypeTranslate.INSTANCE,
         ClassToStringTranslate.INSTANCE,
         CollectionToArrayTranslate.INSTANCE,
-        JSArrayToArrayTranslate.INSTANCE
+        JSArrayToArrayTranslate.INSTANCE        
     };
     
     /**
@@ -68,7 +69,12 @@ public class JavaTranslate
     	}
     	if( input instanceof CharSequence )
     	{
-    		return ((CharSequence)input).toString();    		
+            String str = ((CharSequence)input).toString();
+    		if( str.startsWith( "java.lang." ) )
+            {
+                return str.substring( "java.lang.".length() );
+            }
+            return str;
     	}    	
     	if( input.getClass().isArray() )
         {
@@ -85,7 +91,7 @@ public class JavaTranslate
                 Object translated = o;
              	for( int j = 0; j < this.translators.length; j++ )
              	{
-                    //TODO I could have a Map between Classes and translators
+                    //TODO: I could have a Map between Classes and translators
              		translated = this.translators[ j ].translate( translated );
              	}
          		sb.append( translated ); 
@@ -104,9 +110,11 @@ public class JavaTranslate
     		return translate( translated );
     	}
     	//if there was no translation, just append
-    	
-        return translated.toString();
-        //sb.append( translated );
-        //return sb.toString();
+    	String str = translated.toString();
+        if( str.startsWith( "java.lang." ) )
+        {
+            return str.substring( "java.lang.".length() );
+        }
+        return str;
     }   
 }

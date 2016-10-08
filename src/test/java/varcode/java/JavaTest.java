@@ -1,8 +1,6 @@
 package varcode.java;
 
 import java.lang.reflect.Method;
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
 import junit.framework.TestCase;
 import varcode.context.VarContext;
 import varcode.dom.Dom;
@@ -52,6 +50,16 @@ public class JavaTest
 		return arg + 10;
 	}
 	
+    public String instanceMethodWithVarArgs(String...args)
+    {
+        StringBuilder sb = new StringBuilder();
+        for(int i=0; i< args.length; i++ )
+        {
+            sb.append( args[ 0 ] );
+        }
+        return sb.toString();
+    }
+    
 	public void testGetMethod()
 	{
 		Method m = Java.getMethod( 
@@ -60,10 +68,18 @@ public class JavaTest
 		assertNotNull( m );
 		
 		m = Java.getMethod( 
-			this.getClass().getMethods(), "instanceMethodWithArg", int.class );
+			this.getClass().getMethods(), "instanceMethodWithArg", 10 );
 		
 		assertNotNull( m );
 	}
+    
+    /*
+    public void testInvokeVarArgs()
+    {
+        assertEquals( "A", Java.invoke(  this, "instanceMethodWithVarArgs", "A" ) );
+    }
+    */
+    
 	public void testInvokeMethod()
 	{
 		assertNotNull( Java.describeEnvironment() );

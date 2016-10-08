@@ -511,6 +511,11 @@ public class _class
 	{
 		return method( _method.of( null, methodSignature, bodyLines ) );
 	}
+    
+    public _class method( String comment, String methodSignature, _code body )
+    {
+        return method( _method.of( comment, methodSignature, body ) );
+    }
 
 	public boolean isAbstract()
 	{

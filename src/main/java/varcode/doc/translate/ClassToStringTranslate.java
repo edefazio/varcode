@@ -5,10 +5,10 @@ package varcode.doc.translate;
  * 
  * For Example:
  * <UL>
- *   <LI> JavaSimpleClassTranslator.INSTANCE.translate( int.class ); // = int
- *   <LI> JavaSimpleClassTranslator.INSTANCE.translate( String.class ); // = String
- *   <LI> JavaSimpleClassTranslator.INSTANCE.translate( java.util.HashMap.class ); // = java.util.HashMap
- *   <LI> JavaSimpleClassTranslator.INSTANCE.translate( io.varcode.Lang.class ); // = Lang
+ *   <LI> ClassToStringTranslator.INSTANCE.translate( int.class ); // = int
+ *   <LI> ClassToStringTranslator.INSTANCE.translate( String.class ); // = String
+ *   <LI> ClasstoStringTranslator.INSTANCE.translate( java.util.HashMap.class ); // = java.util.HashMap
+ *   <LI> ClassToStringTranslator.INSTANCE.translate( io.varcode.Lang.class ); // = io.varcode.Lang
  * </UL>  
  */
 public enum ClassToStringTranslate
