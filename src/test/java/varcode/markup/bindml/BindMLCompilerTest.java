@@ -49,6 +49,18 @@ public class BindMLCompilerTest
 	    assertEquals( "capture", mr.getScriptName() );	    
 	}
 	
+    public void testAddForm()
+    {
+        String form = "{{+:{+type+} {+value+}, +}}";
+        Mark m = BindML.parseMark( form );
+        assertTrue( m instanceof AddForm );
+        AddForm af = (AddForm)m;
+        assertEquals( "", af.derive(VarContext.of() ) );
+        assertEquals( "int 3", af.derive(VarContext.of("type", int.class, "value", 3) ) );
+        assertEquals( "int 3, String 4", af.derive(
+            VarContext.of( "type", new Class[]{int.class, String.class}, "value", new Object[]{3, 4}) ) );        
+    }
+    
 	public void testAddFormIfExpression()
 	{
 		String mark = "{{+?(( logLevel > debug )):LOG.debug({+a+} + {+b+});+}}";

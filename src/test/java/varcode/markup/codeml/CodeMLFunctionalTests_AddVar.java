@@ -2,7 +2,10 @@ package varcode.markup.codeml;
 
 import varcode.context.VarBindException;
 import varcode.context.VarBindException.NullVar;
+import varcode.context.VarContext;
 import varcode.markup.MarkupException;
+import varcode.markup.mark.AddForm;
+import varcode.markup.mark.Mark;
 
 public class CodeMLFunctionalTests_AddVar 
 	extends CodeMLFunctionalTest
@@ -57,6 +60,17 @@ public class CodeMLFunctionalTests_AddVar
 		}
 	}
 	
+    public void testAddForm()
+    {
+        String form = "/*{{+:{+type+} {+value+}, +}}*/";
+        Mark m = CodeML.parseMark( form );
+        assertTrue( m instanceof AddForm );
+        AddForm af = (AddForm)m;
+        assertEquals( "", af.derive( VarContext.of() ) );
+        assertEquals( "int 3", af.derive(VarContext.of("type", int.class, "value", 3) ) );
+        assertEquals( "int 3, String 4", af.derive(
+            VarContext.of( "type", new Class[]{int.class, String.class}, "value", new Object[]{3, 4}) ) );        
+    }
 	//test one of where the types are mixed (int and String)
 	public void testAddVarOneOfMixed()
 	{
