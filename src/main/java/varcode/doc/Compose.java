@@ -209,7 +209,7 @@ public enum Compose
      * @param fills the 
      * @return the DocState containing the Document 
      */
-    public static DocState fillToState( Dom dom, Object...fills )
+    public static DocState inlineToState( Dom dom, Object...fills )
 	{		
 		DocState docState = new DocState( 
 	        dom, 
@@ -258,9 +258,9 @@ public enum Compose
      * @param fills the fills lazily-bound to the document
      * @return the DocState containing the Document 
      */
-    public static String fillToString( Dom dom, Object...fills )
+    public static String inlineToString( Dom dom, Object...fills )
 	{		
-		DocState docState = fillToState( dom, fills );
+		DocState docState = inlineToState( dom, fills );
 	    return docState.getTranslateBuffer().toString();
 	}
 }
