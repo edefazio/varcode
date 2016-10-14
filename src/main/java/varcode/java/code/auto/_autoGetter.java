@@ -19,7 +19,7 @@ import java.util.List;
 import varcode.VarException;
 import varcode.java.code._fields._field;
 import varcode.java.code._methods._method;
-import varcode.markup.codeml.code.CmlMethod;
+import varcode.markup.codeml.code._Method;
 
 /**
  *
@@ -29,14 +29,14 @@ public class _autoGetter
 {    
     /** "template" for the "getXXX()" method */
     private static class _Get
-        extends CmlMethod
+        extends _Method
     {
         public class $type$ {}
         public $type$ $fieldName$;
         
-        public _method composeWith( Object $type$, String fieldName )
+        public _method composeWith( Object $type$, String $fieldName$ )
         {
-            return compose( "type", $type$, "fieldName", fieldName );
+            return compose( "type", $type$, "fieldName", $fieldName$ );
         }
         
         /*$*/
@@ -49,7 +49,7 @@ public class _autoGetter
 
     /** "template" for the "getXXX()At( int index )" method (for arrays)*/
     private static class _GetAtArrayIndex
-        extends CmlMethod
+        extends _Method
     {
         class $elementType$ { }
         $elementType$[] $fieldName$;
@@ -77,7 +77,7 @@ public class _autoGetter
     
     /** "template" for the "getXXX()At( int index )" method (for arrays)*/
     private static class _GetAtListIndex
-        extends CmlMethod
+        extends _Method
     {
         class $elementType$ 
         { 
@@ -106,7 +106,6 @@ public class _autoGetter
         }
         /*$*/
     }        
-    
     
     /** _Get is immutable, creates / returns methods via compose(...) */
     public static final _Get _GET = new _Get();
@@ -147,15 +146,13 @@ public class _autoGetter
                 "Field Type \"" + field.getType() + "\" not array ( must end with [])" );
         }
         //probably wont work for 2d arrays
-        String elementType =  type.substring( 0, type.indexOf( "[" ) );            
+        String $type$ =  type.substring( 0, type.indexOf( "[" ) );            
         
-        return ofArrayIndex( elementType, field.getName() );
+        return ofArrayIndex( $type$, field.getName() );
     }
     
-    public static _method ofArrayIndex( String elementType, String fieldName )
+    public static _method ofArrayIndex( String $type$, String $fieldName$ )
     {
-        return _GET_AT_ARRAY_INDEX.composeWith( elementType, fieldName );
-            //"elementType", elementType,
-            //"fieldName", fieldName );
+        return _GET_AT_ARRAY_INDEX.composeWith( $type$, $fieldName$ );
     }
 }
