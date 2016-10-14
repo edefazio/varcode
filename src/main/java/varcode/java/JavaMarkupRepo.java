@@ -1,5 +1,6 @@
 package varcode.java;
 
+import varcode.markup.repo.ClassPathScannerRepo;
 import varcode.markup.repo.DirectoryRepo;
 import varcode.markup.repo.MarkupPath;
 import varcode.markup.repo.MarkupRepo;
@@ -33,8 +34,10 @@ public enum JavaMarkupRepo
         new DirectoryRepo( System.getProperty( "user.dir" ) + "/test/" );
     
     public static final DirectoryRepo SRC_TEST_JAVA_DIRECTORY = 
-       new DirectoryRepo( System.getProperty( "user.dir" ) + "/src/test/java/" );
+        new DirectoryRepo( System.getProperty( "user.dir" ) + "/src/test/java/" );
     
+    public static final ClassPathScannerRepo CLASSPATH_REPO = 
+        new ClassPathScannerRepo();    
     /**
      * Where to look for Java Source that Corresponds to a specific class 
      */
@@ -44,8 +47,31 @@ public enum JavaMarkupRepo
            SRC_DIRECTORY, 
            SRC_MAIN_JAVA_DIRECTORY, 
            TEST_DIRECTORY,
-           SRC_TEST_JAVA_DIRECTORY );
+           SRC_TEST_JAVA_DIRECTORY,
+           CLASSPATH_REPO    
+       );
 
+    private static MarkupStream fromSystemProperty( 
+        String systemProperty, String markupId )
+    {
+        
+        String markupDir = System.getProperty( systemProperty );
+        if( markupDir != null )
+        {
+            //Here I need to be able to parse with ";" separators
+            // so I can test each path 
+            // (I can set something like... Also i need to be able to
+            // load from .jar files or .zip files that are directly
+            // in the path (if the thing is not a directory)
+            DirectoryRepo dr = new DirectoryRepo( markupDir );
+            MarkupStream ms = dr.markupStream( markupId );
+            if( ms != null )
+            {
+                return ms;
+            }        
+        }
+        return null;
+    }
     /**
      * 
      * @param markupId the Id of the Markup source to load
@@ -54,6 +80,17 @@ public enum JavaMarkupRepo
     @Override
     public MarkupStream markupStream( String markupId )
     {
+        MarkupStream ms = fromSystemProperty( "markup.dir", markupId );
+        if( ms != null )
+        {
+            return ms;
+        }
+        ms = fromSystemProperty( "java.source.path", markupId );
+        if( ms != null )
+        {
+            return ms;
+        }
+        /*
         String markupDir = System.getProperty( "markup.dir" );
         if( markupDir != null )
         {
@@ -64,6 +101,7 @@ public enum JavaMarkupRepo
                 return ms;
             }
         }
+        */
         return SOURCE_PATH.markupStream( markupId );
     }
 
