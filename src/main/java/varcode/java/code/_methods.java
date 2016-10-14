@@ -262,6 +262,11 @@ public class _methods
             return this.annotations;
         }
         
+        public _javadoc getJavadoc()
+        {
+            return this.javadoc;
+        }
+        
 		public static _method cloneOf( _method prototype ) 
 		{
 			_method m = 
