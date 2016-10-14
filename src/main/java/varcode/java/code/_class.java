@@ -82,6 +82,12 @@ public class _class
 		return new _class( packageName, classSignature ); 
 	}
 	
+    
+    public String getName()
+    {
+        return this.signature.getName();
+    }
+    
     /** Create and the model for a new class<PRE> 
      * i.e. _class.of( 
      * "A Sample Ad Hoc Class", 

@@ -13,6 +13,7 @@ import varcode.doc.Directive;
 import varcode.dom.Dom;
 import varcode.markup.bindml.BindML;
 import varcode.Model;
+import varcode.doc.translate.JavaTranslate;
 
 /**
  * Grouping of methods belonging to an entity (class, enum, interface)
@@ -430,6 +431,43 @@ public class _methods
 				this.throwsExceptions = throwsExceptions;
 			}
 	
+            public _signature setName( String name )
+            {
+                this.methodName = name;
+                return this;
+            }
+            
+            public _signature setReturnType( Object returnType )
+            {
+                if( returnType == null )
+                {
+                    this.returnType = "void";
+                }
+                else
+                {
+                    this.returnType = JavaTranslate.INSTANCE.translate( returnType );
+                }
+                return this;
+            }
+            
+            public _signature setModifiers( _modifiers mods )
+            {
+                this.modifiers = mods;
+                return this;
+            }
+            
+            public _signature setThrows( Object throwsException )
+            {
+                this.throwsExceptions = _throws.of( throwsException );
+                return this;
+            }
+            
+            public _signature setThrows( _throws throwsExceptions )
+            {
+                this.throwsExceptions = throwsExceptions;
+                return this;
+            }
+            
 			public _modifiers getModifiers()
 			{
 				return this.modifiers;
