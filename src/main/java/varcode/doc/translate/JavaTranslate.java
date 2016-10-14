@@ -48,8 +48,8 @@ public class JavaTranslate
 
     private final Translator[] translators = new Translator[] 
     {
-        TypeTranslate.INSTANCE,
         ClassToStringTranslate.INSTANCE,
+        TypeTranslate.INSTANCE,        
         CollectionToArrayTranslate.INSTANCE,
         JSArrayToArrayTranslate.INSTANCE        
     };
