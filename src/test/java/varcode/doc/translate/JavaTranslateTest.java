@@ -77,7 +77,7 @@ public class JavaTranslateTest
             "java.util.Map<java.lang.String, java.util.List<java.lang.Integer>>, java.lang.String, int", annParam );
         
         assertEquals( 
-            "java.util.Map, java.lang.String, int", param );
+            "java.util.Map, String, int", param );
         
         
         assertEquals( "int", 
