@@ -59,6 +59,7 @@ public interface MarkupRepo
         /** describe the nature of the Stream (a File, a (remote Server, etc.) */
         String describe();        
        
+        /** Return the contents of the InputStream as a String */
         String asString();
     }
 }

@@ -1,6 +1,7 @@
 package varcode.markup.repo;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -25,6 +26,11 @@ public class FileMarkupStream
 
     protected final String fileName;
 
+    public FileMarkupStream( String markupId, File file )
+    {
+        this( markupId, file.getAbsolutePath() );
+    }
+    
     public FileMarkupStream( String markupId, String fileName )
     {
         this.markupId = markupId;
