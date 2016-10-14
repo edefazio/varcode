@@ -13,24 +13,24 @@ import java.io.File;
  */
 public enum Lang
 {
-    JAVA("Java", ".java", DotPathResolver.INSTANCE),
-    JAVASCRIPT("JavaScript", ".js", DotPathResolver.INSTANCE),
-    C("C", ".c", FlatPathResolver.INSTANCE),
-    CPP("C++", ".cpp", FlatPathResolver.INSTANCE),
-    CSHARP("C#", ".cs", DotPathResolver.INSTANCE),
-    D("D", ".d", DotPathResolver.INSTANCE),
-    DART("Dart", ".dart", DotPathResolver.INSTANCE),
-    FSHARP("F#", ".fs", DotPathResolver.INSTANCE),
-    GO("Go", ".go", FlatPathResolver.INSTANCE),
-    GROOVY("Groovy", ".groovy", DotPathResolver.INSTANCE),
-    KOTLIN("Kotlin", ".kt", DotPathResolver.INSTANCE),
+    JAVA( "Java", ".java", DotPathResolver.INSTANCE ),
+    JAVASCRIPT( "JavaScript", ".js", DotPathResolver.INSTANCE ),
+    C( "C", ".c", FlatPathResolver.INSTANCE ),
+    CPP( "C++", ".cpp", FlatPathResolver.INSTANCE ),
+    CSHARP( "C#", ".cs", DotPathResolver.INSTANCE ),
+    D( "D", ".d", DotPathResolver.INSTANCE ),
+    DART( "Dart", ".dart", DotPathResolver.INSTANCE ),
+    FSHARP( "F#", ".fs", DotPathResolver.INSTANCE ),
+    GO( "Go", ".go", FlatPathResolver.INSTANCE ),
+    GROOVY( "Groovy", ".groovy", DotPathResolver.INSTANCE ),
+    KOTLIN( "Kotlin", ".kt", DotPathResolver.INSTANCE ),
     //LUA       ( "Lua",         ".lua" ), //need a custom parser we'll get to these later...
-    OBJECTIVEC("Objective-C", ".m", FlatPathResolver.INSTANCE),
+    OBJECTIVEC( "Objective-C", ".m", FlatPathResolver.INSTANCE ),
     //PASCAL    ( "Pascal",      ".pas" ), //need a custom parser we'll get to these later...
-    PHP("PHP", ".php", FlatPathResolver.INSTANCE),
-    RUST("Rust", ".rs", FlatPathResolver.INSTANCE),
-    SWIFT("Swift", ".swift", FlatPathResolver.INSTANCE),
-    VERILOG("Verilog", ".v", FlatPathResolver.INSTANCE);
+    PHP( "PHP", ".php", FlatPathResolver.INSTANCE ),
+    RUST( "Rust", ".rs", FlatPathResolver.INSTANCE ),
+    SWIFT( "Swift", ".swift", FlatPathResolver.INSTANCE ),
+    VERILOG( "Verilog", ".v", FlatPathResolver.INSTANCE );
 
     /**
      * the common name of the language
@@ -44,7 +44,8 @@ public enum Lang
 
     private final PathResolver pathResolver;
 
-    private Lang(String name, String sourceFileExtension, PathResolver pathResolver)
+    private Lang( 
+        String name, String sourceFileExtension, PathResolver pathResolver )
     {
         this.name = name;
         this.sourceFileExtension = sourceFileExtension;
@@ -57,15 +58,18 @@ public enum Lang
      * @param fileExtension (i.e. ".java", ".rs", , ".js")
      * @return the Lang
      */
-    public static Lang fromFileExtension(String fileExtension)
+    public static Lang fromFileExtension( String fileExtension )
     {
-        for (int i = 0; i < Lang.values().length; i++) {
-            if (Lang.values()[i].getSourceFileExtension().equals(fileExtension)) {
+        for( int i = 0; i < Lang.values().length; i++ ) 
+        {
+            if( Lang.values()[ i ].getSourceFileExtension().equals( fileExtension) ) 
+            {
                 return Lang.values()[i];
             }
             //they MAY have passed in "js" instead of ".js" (that works too)
-            if (Lang.values()[i].getSourceFileExtension().endsWith(fileExtension)) {
-                return Lang.values()[i];
+            if( Lang.values()[ i ].getSourceFileExtension().endsWith( fileExtension ) ) 
+            {
+                return Lang.values()[ i ];
             }
         }
         return null;
@@ -83,15 +87,16 @@ public enum Lang
      * @param markupId identifies the Markup file to be loaded from the repo
      * @return the relative path to the markup file resource
      */
-    public String resolvePath(String markupId)
+    public String resolvePath( String markupId )
     {
-        int lastDot = markupId.lastIndexOf('.');
-        String fileExtension = markupId.substring(lastDot);
-        Lang theLang = Lang.fromFileExtension(fileExtension);
-        if (theLang == null) {
+        int lastDot = markupId.lastIndexOf( '.' );
+        String fileExtension = markupId.substring( lastDot );
+        Lang theLang = Lang.fromFileExtension( fileExtension );
+        if( theLang == null ) 
+        {
             throw new VarException(
-                    "Could not determine Lang from markupId with extension \""
-                    + fileExtension + "\"");
+                "Could not determine Lang from markupId with extension \""
+                + fileExtension + "\"" );
         }
 
         //PathResolver pathResolver = LANG_RESOLVER_MAP.get( theLang );
@@ -101,8 +106,8 @@ public enum Lang
         //       "No PathResolver registered for Lang \"" + theLang +"\"" );
         // }
         String path = pathResolver.pathTo(
-                markupId.substring(0, markupId.length() - fileExtension.length()))
-                + fileExtension;
+            markupId.substring( 0, markupId.length() - fileExtension.length() ) )
+            + fileExtension;
         return path;
     }
 
@@ -113,10 +118,12 @@ public enum Lang
      * @param codeId (i.e. "io.typeframe.field.BitField32.java")
      * @return the Lang (or null if not recognized)
      */
-    public static Lang fromCodeId(String codeId)
+    public static Lang fromCodeId( String codeId )
     {
-        for (Lang value : Lang.values()) {
-            if (codeId.endsWith(value.getSourceFileExtension())) {
+        for( Lang value : Lang.values() ) 
+        {
+            if( codeId.endsWith( value.getSourceFileExtension() ) ) 
+            {
                 return value;
             }
         }
@@ -135,7 +142,7 @@ public enum Lang
 
     public interface PathResolver
     {
-        public String pathTo(String markupId);
+        public String pathTo( String markupId );
     }
 
     public enum DotPathResolver
@@ -143,11 +150,10 @@ public enum Lang
     {
         INSTANCE;
 
-        public String pathTo(String markupId)
+        @Override
+        public String pathTo( String markupId )
         {
-            return markupId.replace(
-                    '.',
-                    File.separatorChar);
+            return markupId.replace( '.', File.separatorChar );
         }
     }
 
@@ -156,7 +162,8 @@ public enum Lang
     {
         INSTANCE;
 
-        public String pathTo(String markupId)
+        @Override
+        public String pathTo( String markupId )
         {
             return markupId;
         }
