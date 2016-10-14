@@ -15,35 +15,108 @@
  */
 package varcode.java.code.auto;
 
-import varcode.doc.Compose;
-import varcode.dom.Dom;
-import varcode.java.Java;
-import varcode.java.code._class;
-import varcode.java.code._code;
+import java.util.List;
+import varcode.VarException;
 import varcode.java.code._fields._field;
-import varcode.java.code._if;
 import varcode.java.code._methods._method;
-import varcode.markup.bindml.BindML;
+import varcode.markup.codeml.code.CmlMethod;
 
 /**
  *
- * @author eric
+ * @author M. Eric DeFazio eric@varcode.io
  */
 public class _autoGetter
-{
-    private static final String firstUpper( String s )
+{    
+    /** "template" for the "getXXX()" method */
+    private static class _Get
+        extends CmlMethod
     {
-        return Character.toUpperCase( s.charAt(0) ) + s.substring( 1 );
-    }
+        public class $type$ {}
+        public $type$ $fieldName$;
         
-    public static final Dom SIGNATURE = BindML.compile( 
-        "public {+type+} get{+$^(fieldName)+}( )"
-    );
+        public _method composeWith( Object $type$, String fieldName )
+        {
+            return compose( "type", $type$, "fieldName", fieldName );
+        }
+        
+        /*$*/
+        public $type$ get$FieldName$( )
+        {
+            return this.$fieldName$;
+        }
+        /*$*/
+    }        
+
+    /** "template" for the "getXXX()At( int index )" method (for arrays)*/
+    private static class _GetAtArrayIndex
+        extends CmlMethod
+    {
+        class $elementType$ { }
+        $elementType$[] $fieldName$;
+        
+        public _method composeWith( Object $elementType$, String $fieldName$ )
+        {
+            return compose( "elementType", $elementType$, "fieldName", $fieldName$ );
+        }
+        /*$*/
+        public $elementType$ get$FieldName$At( int index )
+        {
+            if( this.$fieldName$ == null )
+            {
+                throw new IndexOutOfBoundsException( "$fieldName$ is null" );
+            }
+            if( index < 0 || index > this.$fieldName$.length  )
+            {
+                throw new IndexOutOfBoundsException(
+                    "index [" + index + "] is not in range [0..." + $fieldName$.length + "]" );
+            }
+            return this.$fieldName$[ index ];
+        }
+        /*$*/
+    }        
     
-    public static final Dom BODY = BindML.compile( 
-        "return this.{+fieldName+};"
-    );
-          
+    /** "template" for the "getXXX()At( int index )" method (for arrays)*/
+    private static class _GetAtListIndex
+        extends CmlMethod
+    {
+        class $elementType$ 
+        { 
+            public int size() { return 0;} 
+        }
+        List<$elementType$> $fieldName$;
+        
+        public _method composeWith( Object $elementType$, String $fieldName$ )
+        {
+            return compose( "elementType", $elementType$, "fieldName", $fieldName$ );
+        }
+        
+        /*$*/
+        public $elementType$ get$FieldName$At( int index )
+        {
+            if( this.$fieldName$ == null )
+            {
+                throw new IndexOutOfBoundsException( "$fieldName$ is null" );
+            }
+            if( index < 0 || index > this.$fieldName$.size()  )
+            {
+                throw new IndexOutOfBoundsException(
+                    "index [" + index + "] is not in range [0..." + $fieldName$.size() + "]" );
+            }
+            return this.$fieldName$.get( index );
+        }
+        /*$*/
+    }        
+    
+    
+    /** _Get is immutable, creates / returns methods via compose(...) */
+    public static final _Get _GET = new _Get();
+    
+    /** _GetAtArrayIndex is immutable, creates/ returns methods via compose(...) */
+    public static _GetAtArrayIndex _GET_AT_ARRAY_INDEX = new _GetAtArrayIndex();
+    
+    /** _GetAtArrayIndex is immutable, creates/ returns methods via compose(...) */
+    public static _GetAtListIndex _GET_AT_LIST_INDEX = new _GetAtListIndex();
+    
     /**
      * Creates and returns a _method based on a _field
      * @param field
@@ -51,120 +124,38 @@ public class _autoGetter
      */
     public static _method of( _field field )
     {
-        return of( field.getName(), field.getType() );
+        return of( field.getType(), field.getName() );
     }
     
-    public static _method of( String fieldName, Object type )
+    public static _method of( Object type, String fieldName )
     {
-        return _method.of(Compose.asString( SIGNATURE, "type", type, "fieldName", fieldName ),
-            _code.of(Compose.asString( BODY, "fieldName", fieldName ) ) );     
-             
-            //"public " + field.getType() + " get" + firstUpper( field.getName() )+"()",
-            //    "return this." + field.getName() +";" );    
+        return _GET.compose( "fieldName", fieldName, "type", type );        
     }
     
     /**
-     * Creates a getAtIndex method for a field that is a array or collection
+     * Creates "getXXXXAt()" _method for an element of a member field array
      * 
-     * int[]
-     * Set<String>[]
-     * 
-     * @param field
+     * @param field the field to 
      * @return 
      */
-    public static _method getAtArrayIndex( _field field )
+    public static _method ofArrayIndex( _field field )
     {
         String type = field.getType();
         if(! type.endsWith( "]" )  )   
         {
-            
+            throw new VarException( 
+                "Field Type \"" + field.getType() + "\" not array ( must end with [])" );
         }
         //probably wont work for 2d arrays
-        String elementType =  type.substring( 0,  type.indexOf( "[" ));            
+        String elementType =  type.substring( 0, type.indexOf( "[" ) );            
         
-        
-        //OK THIS IS EXACTLY WHY we Have BindML, because (its a mess)
-        // OR EVEN BETTER, we use $ML
-        //Exception e = IndexOutOfBoundsException.class;               
-        /*
-        return _method.of(
-            "public " + elementType + " get" + firstUpper( field.getName() )+"At( int index )",
-            _if.is( "this." + field.getName() + " == null", 
-                "throw new IndexOutOfBoundsException( \"" + field.getName() + " is null\");" ),
-            _if.is("this." + field.getName() + ".length <= index || index < 0",
-                "throw new IndexOutOfBoundsException( \" index \"+ index + \" is not in range [0...\" + this." + field.getName() + ".length+\"]\");" ),
-            "return this." + field.getName() + "[ index ];" );         
-        */
-        return _method.of(
-            "public {+elementType+} get{+$^(fieldName)+}At( int index )",
-            ARRAY_BODY );
+        return ofArrayIndex( elementType, field.getName() );
     }
     
-    public static final Dom ARRAY_SIGNATURE = BindML.compile( 
-        "public {+elementType+} get{+$^(fieldName)+}At( int index )" );
-            
-    public static final $GetArrayAtIndex ARRAY_BODY = new $GetArrayAtIndex();
-    
-    private static class $GetArrayAtIndex
-        extends varcode.markup.$ml.$CodeForm
+    public static _method ofArrayIndex( String elementType, String fieldName )
     {
-        class $elementType$ { }
-        $elementType$[] $fieldName$;
-        
-        public $elementType$ get$FieldName$At( int index )
-        {
-            /*{$*/
-            if( this.$fieldName$ == null )
-            {
-                throw new IndexOutOfBoundsException( "$fieldName$ is null " );   
-            }
-            if( index < 0 || index > this.$fieldName$.length  )
-            {
-                throw new IndexOutOfBoundsException( 
-                    "index [" + index + "] is not in range [0..." + $fieldName$.length + "]" );
-            }
-            return this.$fieldName$[ index ];
-            /*$}*/
-        }
-    }        
-    
-    final static String N = "\r\n";
-    
-    //write a method
-    //<wrap it in tags>
-    // parameterize fieldName, elementType
-    //</wrap it in tags>
-    
-    public static Dom ARRAY_AT_SIGNATURE = BindML.compile(
-        "public {+elementType+} get{+$^(fieldName)+}At( int index )"
-    );
-    
-    public static Dom ARRAY_AT_BODY = BindML.compile(
-        "if( this.{+fieldName+} == null )" + N +
-        "{" + N +
-        "    throw new IndexOutOfBoundsException( \"{+fieldName+} is null\" );" + N +
-        "}" + N +
-        "if( index < 0 || index > this.{+fieldName+}.length )" + N +
-        "{" + N +    
-        "    throw new IndexOutOfBoundsException( " + N + 
-        "        \"index \"+ index + \" is not in range [0...\" + this.{+fieldName+}.length+\"]\");" + N +
-        "}" + N +
-        "return this.{+fieldName+}[ index ];" );        
-    
-    public static void main(String[] args)
-    {
-        _class c = _autoDto.of("ex.varcode.dto.ArrDto")
-            .property("public int[] arr = new int[] {1,2,3,4,5};")
-            .toClassModel();
-        
-        _method m = getAtArrayIndex( c.getFields().getAt( 0 ) );
-        c.method( m );
-        
-        System.out.println( c );
-        Object instance = c.instance( );
-        System.out.println ( Java.invoke(instance, "getArrAt", 0 ) );
-        
-        
+        return _GET_AT_ARRAY_INDEX.composeWith( elementType, fieldName );
+            //"elementType", elementType,
+            //"fieldName", fieldName );
     }
-    
 }
