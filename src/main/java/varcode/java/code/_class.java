@@ -534,6 +534,13 @@ public class _class
 		return this;
 	}
 	
+    public _class method( String javadoc, _method method )
+    {
+        method.javadoc( javadoc );
+        method( method );
+        return this;
+    }
+    
 	public _class method( _method m )
 	{
 		if( m.isAbstract() && !this.isAbstract() )

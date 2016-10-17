@@ -33,6 +33,9 @@ public interface _nest
 	public interface component 
 	    extends Model
 	{
+        /** returns the common name of this component */
+        public String getName();
+        
         /** Retrieve the Dom used to structure the text/code
          * @return the Dom of the component
          */
@@ -65,6 +68,18 @@ public interface _nest
 		{			
 		}
 		
+        public component getByName( String name )
+        {
+            for( int i = 0; i < components.size(); i++ )
+            {
+                if( components.get( i ).getName().equals( name ) )
+                {
+                    return components.get( i );
+                }
+            }
+            return null;
+        }
+        
 		public _nestGroup add( component component )
 		{
 			this.components.add( component );

@@ -197,6 +197,11 @@ public class _interface
 		return this.interfacePackage.getName();
 	}
 	
+    public String getName()
+    {
+        return this.interfaceSignature.getName();
+    }
+    
 	public _signature getSignature()
 	{
 		return this.interfaceSignature;

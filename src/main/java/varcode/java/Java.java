@@ -81,6 +81,22 @@ public enum Java
 		}		
 	}
 	
+    /**
+     * Given a Type return the classes (as Strings) 
+     * that compose this Type
+     * for 
+     * @param type
+     * @return 
+     */
+    public static String[] classesFromType( Type type )
+    {
+        String s = type.toString();
+        s = s.replace( "<", " ");
+        s = s.replace( ">", " ");
+        s = s.replace( ",", " ");
+        return s.split( " " );              
+    }
+    
 	/**
 	 * Describes the Current Java Environment (at Runtime)
 	 * 

@@ -104,6 +104,7 @@ public class _enum
         return this;
     }
     
+    @Override
     public String getName()
     {
         return this.enumSignature.getName();
