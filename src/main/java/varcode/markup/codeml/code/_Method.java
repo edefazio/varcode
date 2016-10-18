@@ -107,8 +107,7 @@ public abstract class _Method
             }
             String commentText = inner.substring( openCommentIndex, endCommentIndex + 2 );
             
-            System.out.println( 
-                "Skipping comment " + commentText );
+            //System.out.println( "Skipping comment " + commentText );
             
             String commentContent = 
                 _Javadoc.parseJavadocCommentContent( commentText );
