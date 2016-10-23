@@ -355,44 +355,44 @@ public class _interface
     {
         _fields._field m = _fields._field.of( fieldSignature );
         
-		if( !m.hasInit() )
-		{
-			throw new VarException("Field : " + N + m +  N 
-				+ " has not been initialized for interface ");
-		}
+	if( !m.hasInit() )
+	{
+            throw new VarException("Field : " + N + m +  N 
+		+ " has not been initialized for interface ");
+	}
         m.javadoc( comment );
-		fields.addFields( m );		
-		return this;    
+	fields.addFields( m );		
+	return this;    
     }
     
-	public _interface field( String fieldSignature )
-	{
-		_fields._field m = _fields._field.of( fieldSignature );
-		if( m.getInit() == null || m.getInit().getCode().trim().length() == 0 )
-		{
-			throw new VarException("Field : " + N + m +  N 
-				+ " has not been initialized for interface ");
-		}
-		fields.addFields( m );		
-		return this;
+    public _interface field( String fieldSignature )
+    {
+        _fields._field m = _fields._field.of( fieldSignature );
+        if( m.getInit() == null || m.getInit().getCode().trim().length() == 0 )
+        {
+            throw new VarException( "Field : " + N + m +  N 
+                + " has not been initialized for interface ");
 	}
+	fields.addFields( m );		
+        return this;
+    }
 
-	public _interface nest( _nest.component component )
-	{
-		this.nests.add( component );
-		return this;
-	}
+    public _interface nest( _nest.component component )
+    {
+        this.nests.add( component );
+	return this;
+    }
 	
     /** interface signature */
-	public static class _signature
+    public static class _signature
         implements Model
     {                
-		private _modifiers modifiers = new _modifiers();
-		private String interfaceName;		
-		private _extends extendsFrom = new _extends();
+	private _modifiers modifiers = new _modifiers();
+	private String interfaceName;		
+	private _extends extendsFrom = new _extends();
 		
-		public static final Dom INTERFACE_SIGNATURE = 
-			BindML.compile("{+modifiers+}interface {+interfaceName*+}{+extendsFrom+}" );
+	public static final Dom INTERFACE_SIGNATURE = 
+	    BindML.compile("{+modifiers+}interface {+interfaceName*+}{+extendsFrom+}" );
 
         @Override
 		public String author( Directive... directives ) 
