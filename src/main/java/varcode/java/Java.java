@@ -160,6 +160,11 @@ public enum Java
     
     public static final String JAVA_PACKAGE_NAME = "packageName";
     
+    
+    public static AdHocJavaFile author( String className, Dom dom, Object...keyValuePairs )
+    {
+        return author( className, dom, VarContext.of( keyValuePairs ) );
+    }
 	/**
      * Authors and returns an {@code AdHocJavaFile} with name {@code className} 
      * using a {@code Dom} and based on the specialization provided in the
