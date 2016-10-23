@@ -20,73 +20,73 @@ import varcode.Model;
 
 //allow default methods
 public class _interface 
-	implements JavaCaseAuthor, _nest.component
+    implements JavaCaseAuthor, _nest.component
 {    
-	public static final Dom INTERFACE = 
-		BindML.compile( 
-			"{+pckage+}" +
-			"{{+?imports:{+imports+}" + N +"+}}" +
-			"{+javaDoc+}" +
-			"{+signature*+}" + N +
-			"{" + N +			
-			"{{+?members:{+$>(members)+}" + N +
-			"+}}" +
-			"{{+?methods:{+$>(methods)+}" + N + 
-			"+}}" +
-			"{{+?nests:{+$>(nests)+}" + N +
-			"+}}" +
-			"}" );
+    public static final Dom INTERFACE = 
+	BindML.compile( 
+	    "{+pckage+}" +
+	    "{{+?imports:{+imports+}" + N +"+}}" +
+	    "{+javaDoc+}" +
+	    "{+signature*+}" + N +
+	    "{" + N +			
+	    "{{+?members:{+$>(members)+}" + N +
+	    "+}}" +
+	    "{{+?methods:{+$>(methods)+}" + N + 
+	    "+}}" +
+	    "{{+?nests:{+$>(nests)+}" + N +
+	    "+}}" +
+	    "}" );
 	
     @Override
-	public VarContext getContext() 
+    public VarContext getContext() 
+    {
+        String[] n = null;
+	if( nests.count() > 0 )
 	{
-		String[] n = null;
-		if( nests.count() > 0 )
-		{
-			//I need to go to each of the nested classes/ interfaces/ etc.
-			// and read what thier imports are, then add these imports to my imports
-			String[] nested = new String[ nests.count() ];
-			for( int i = 0; i < nests.count(); i++ )
-			{
-				component comp = nests.components.get( i );
-				VarContext vc = comp.getContext();
-				vc.getScopeBindings().remove("pckage");
-				vc.getScopeBindings().remove("imports");
-				nested[ i ] = Compose.asString( comp.getDom(), vc );				
-			}
-			n = nested;			
-		}
+	    //I need to go to each of the nested classes/ interfaces/ etc.
+	    // and read what thier imports are, then add these imports to my imports
+	    String[] nested = new String[ nests.count() ];
+	    for( int i = 0; i < nests.count(); i++ )
+	    {
+		component comp = nests.components.get( i );
+		VarContext vc = comp.getContext();
+		vc.getScopeBindings().remove("pckage");
+		vc.getScopeBindings().remove("imports");
+		nested[ i ] = Compose.asString( comp.getDom(), vc );				
+	    }
+	    n = nested;			
+	}
 		
-		//_nesteds n = null;
+	//_nesteds n = null;
 		
-		//if( this.nests.count() > 0 )
-		//{
-		//	n = this.nests;
-		//}
-		_imports imp = null;
-		if( this.getImports().count() > 0 )
-		{
-			imp = this.getImports();
-		}
-		_fields mem = null;
-		if( this.fields.count() > 0 )
-		{
-			mem = this.fields;
-		}
-		_methods meth = null;
-		if( this.methods.count() > 0 )
-		{
-			meth = this.methods;
-		}
+	//if( this.nests.count() > 0 )
+	//{
+	//	n = this.nests;
+	//}
+	_imports imp = null;
+	if( this.getImports().count() > 0 )
+	{
+	    imp = this.getImports();
+	}
+	_fields mem = null;
+	if( this.fields.count() > 0 )
+	{
+	    mem = this.fields;
+	}
+	_methods meth = null;
+	if( this.methods.count() > 0 )
+	{
+	    meth = this.methods;
+	}
 		
-		return VarContext.of( 
-			"pckage", interfacePackage,
-			"imports", imp,
-			"javaDoc", javadoc,
-			"signature", interfaceSignature,
-			"members", mem,
-			"methods", meth, 
-			"nests", n );		
+	return VarContext.of( 
+	    "pckage", interfacePackage,
+	    "imports", imp,
+	    "javaDoc", javadoc,
+	    "signature", interfaceSignature,
+	    "members", mem,
+	    "methods", meth, 
+	    "nests", n );		
 	}
 	
 	/**
@@ -99,12 +99,12 @@ public class _interface
 	 */
 	public static _interface of( String interfaceSignature )
 	{
-		return of( "", interfaceSignature );
+	    return of( "", interfaceSignature );
 	}
 	
 	public static _interface cloneOf( _interface prototype )
 	{
-		return new _interface( prototype );
+	    return new _interface( prototype );
 	}
 	
 	/**
@@ -120,16 +120,16 @@ public class _interface
 	 */
 	public static _interface of( String packageName, String interfaceSignature )
 	{
-		return new _interface( packageName, interfaceSignature );
+	    return new _interface( packageName, interfaceSignature );
 	}
-	
-	private _package interfacePackage;
-	private _javadoc javadoc;
-	private _signature interfaceSignature;
-	private _fields fields;
-	private _methods methods;
-	private _imports imports;
-	private _nestGroup nests;
+
+    private _package interfacePackage;
+    private _javadoc javadoc;
+    private _signature interfaceSignature;
+    private _fields fields;
+    private _methods methods;
+    private _imports imports;
+    private _nestGroup nests;
 	
     @Override
     public _interface bindIn( VarContext context )
@@ -162,86 +162,86 @@ public class _interface
 	 * Create and return a mutable clone given the prototype
 	 * @param prototype the prototype
 	 */
-	public _interface( _interface prototype )
-	{
-		this.interfacePackage = _package.cloneOf( prototype.interfacePackage );
-		this.javadoc = _javadoc.cloneOf( prototype.javadoc );
-		this.interfaceSignature = _signature.cloneOf( prototype.interfaceSignature  );
-		this.fields = _fields.cloneOf( prototype.fields );
-		this.methods = _methods.cloneOf( prototype.methods );
-		this.imports = _imports.cloneOf( prototype.imports );
+    public _interface( _interface prototype )
+    {
+        this.interfacePackage = _package.cloneOf( prototype.interfacePackage );
+        this.javadoc = _javadoc.cloneOf( prototype.javadoc );
+        this.interfaceSignature = _signature.cloneOf( prototype.interfaceSignature  );
+        this.fields = _fields.cloneOf( prototype.fields );
+        this.methods = _methods.cloneOf( prototype.methods );
+        this.imports = _imports.cloneOf( prototype.imports );
 		
 		//NESTEDS
-		this.nests = _nestGroup.cloneOf( prototype.nests );
-	}
+        this.nests = _nestGroup.cloneOf( prototype.nests );
+    }
 	
-	public _interface( String packageName, String interfaceSignature )
-	{
-		this.interfacePackage = _package.of( packageName );
-		this.interfaceSignature = _signature.of( interfaceSignature );
-		this.javadoc = new _javadoc();
-		this.methods = new _methods();
-		this.fields = new _fields();
-		this.imports = new _imports();
-		this.nests = new _nestGroup();
-	}
+    public _interface( String packageName, String interfaceSignature )
+    {
+        this.interfacePackage = _package.of( packageName );
+        this.interfaceSignature = _signature.of( interfaceSignature );
+        this.javadoc = new _javadoc();
+        this.methods = new _methods();
+        this.fields = new _fields();
+        this.imports = new _imports();
+        this.nests = new _nestGroup();
+    }
 
-	public _interface packageName( String packageName )
-	{
-		this.interfacePackage = _package.of( packageName );
-		return this;
-	}
+    public _interface packageName( String packageName )
+    {
+        this.interfacePackage = _package.of( packageName );
+        return this;
+    }
 	
-	public String getPackageName()
-	{
-		return this.interfacePackage.getName();
-	}
+    public String getPackageName()
+    {
+        return this.interfacePackage.getName();
+    }
 	
     public String getName()
     {
         return this.interfaceSignature.getName();
     }
     
-	public _signature getSignature()
-	{
-		return this.interfaceSignature;
-	}
+    public _signature getSignature()
+    {
+        return this.interfaceSignature;
+    }
 	
-	public String getJavadoc()
-	{
-		return this.javadoc.getComment();
-	}
+    public String getJavadoc()
+    {
+        return this.javadoc.getComment();
+    }
 	
-	public _fields getFields()
-	{
-		return this.fields;
-	}
+    public _fields getFields()
+    {
+        return this.fields;
+    }
 	
-	public _methods getMethods()
-	{
-		return this.methods;
-	}
+    public _methods getMethods()
+    {
+        return this.methods;
+    }
 	
-	public _nestGroup getNests()
-	{
-		return this.nests;
-	}
+    public _nestGroup getNests()
+    {
+        return this.nests;
+    }
     
-	public _interface imports( Object... imports )
-	{
-		this.imports.addImports( imports );
-		return this;
-	}
+    public _interface imports( Object... imports )
+    {
+        this.imports.addImports( imports );
+	return this;
+    }
 	
     @Override
-	public _imports getImports()
-	{
-		for( int i = 0; i < nests.count(); i++ )
-		{
-			this.imports.merge( nests.components.get( i ).getImports() );
-		}
-		return this.imports;
-	}
+    public _imports getImports()
+    {
+        for( int i = 0; i < nests.count(); i++ )
+        {
+            this.imports.merge( nests.components.get( i ).getImports() );
+        }
+        return this.imports;
+    }
 	
     public _interface method( String javadoc, String signature )
     {
@@ -251,92 +251,105 @@ public class _interface
         {
             method.javadoc( javadoc );
         }
-		_methods._method._signature sig = method.getSignature();
-		
-		//Default Method
-		if( sig.getModifiers().contains( Modifier.PRIVATE ) )
-		{
-			throw new VarException( "Cannot add a private method " + N + sig + N +" to an interface ");
-		}
-		if( sig.getModifiers().contains( Modifier.FINAL ) )
-		{
-			throw new VarException( "Cannot add a final method " + N + sig + N +" to an interface ");
-		}
-		if( sig.getModifiers().contains( Modifier.PROTECTED ) )
-		{
-			throw new VarException( "Cannot add a protected method " + N + sig + N +" to an interface ");
-		}
-		if( sig.getModifiers().containsAny(Modifier.NATIVE, Modifier.STRICT, Modifier.SYNCHRONIZED, Modifier.TRANSIENT, Modifier.VOLATILE))
-		{
-			throw new VarException( "Invalid Modifiers for interface method "+ N + sig );
-		}
-		method.getSignature().getModifiers().set( "abstract" );
-		this.methods.addMethod( method );
-		return this;		
+        _methods._method._signature sig = method.getSignature();
+	//Default Method
+        if( sig.getModifiers().contains( Modifier.PRIVATE ) )
+        {
+            throw new VarException( 
+                "Cannot add a private method " + N + sig + N +" to an interface ");
+        }
+	if( sig.getModifiers().contains( Modifier.FINAL ) )
+	{
+            throw new VarException( 
+                "Cannot add a final method " + N + sig + N +" to an interface ");
+        }
+        if( sig.getModifiers().contains( Modifier.PROTECTED ) )
+        {
+	    throw new VarException( 
+                "Cannot add a protected method " + N + sig + N +" to an interface ");
+	}
+        if( sig.getModifiers().containsAny(
+            Modifier.NATIVE, Modifier.STRICT, Modifier.SYNCHRONIZED, 
+            Modifier.TRANSIENT, Modifier.VOLATILE ) )
+	{
+	    throw new VarException( "Invalid Modifiers for interface method "+ N + sig );
+	}
+	method.getSignature().getModifiers().set( "abstract" );
+	this.methods.addMethod( method );
+	return this;		
     }
     
-	public _interface method( String signature )
-	{
-		return method( null, signature );
-	}
+    public _interface method( String signature )
+    {
+        return method( null, signature );
+    }
 	
-	public _interface staticMethod( String signature, Object...linesOfCode )
-	{
-		_method method = _method.of( null, signature, linesOfCode);
-		
-		_methods._method._signature sig = method.getSignature();
-		if( !sig.getModifiers().contains( Modifier.STATIC ) )
-		{			
-			sig.getModifiers().set( "static" );
-		}
-		if( sig.getModifiers().contains( Modifier.PRIVATE ) )
-		{
-			throw new VarException( "Cannot add a private method " +N + sig + N +" to an interface ");
-		}
-		if( sig.getModifiers().contains( Modifier.FINAL ) )
-		{
-			throw new VarException( "Cannot add a final method " +N + sig + N +" to an interface ");
-		}
-		if( sig.getModifiers().contains( Modifier.PROTECTED ) )
-		{
-			throw new VarException( "Cannot add a protected method " +N + sig + N +" to an interface ");
-		}
-		if( sig.getModifiers().containsAny( 
-			Modifier.NATIVE, Modifier.SYNCHRONIZED, Modifier.TRANSIENT, Modifier.VOLATILE))
-		{
-			throw new VarException( "Invalid Modifiers for interface method "+ N + sig );
-		}
-		this.methods.addMethod( method );
-		return this;
+    public _interface staticMethod( String signature, Object...linesOfCode )
+    {
+        _method method = _method.of( null, signature, linesOfCode);
+	_methods._method._signature sig = method.getSignature();
+        if( !sig.getModifiers().contains( Modifier.STATIC ) )
+        {
+            sig.getModifiers().set( "static" );
 	}
-	public _interface defaultMethod( String signature, Object...linesOfCode )
+	if( sig.getModifiers().contains( Modifier.PRIVATE ) )
 	{
-		_method method = _method.of( null, signature, linesOfCode);
-		
-		_methods._method._signature sig = method.getSignature();
-		if( !sig.getModifiers().contains( _modifiers._mod.INTERFACE_DEFAULT.getBitValue() ) )
-		{			
-			sig.getModifiers().set( "default" );
-		}
-		if( sig.getModifiers().contains( Modifier.PRIVATE ) )
-		{
-			throw new VarException( "Cannot add a private method " +N + sig + N +" to an interface ");
-		}
-		if( sig.getModifiers().contains( Modifier.FINAL ) )
-		{
-			throw new VarException( "Cannot add a final method " +N + sig + N +" to an interface ");
-		}
-		if( sig.getModifiers().contains( Modifier.PROTECTED ) )
-		{
-			throw new VarException( "Cannot add a protected method " +N + sig + N +" to an interface ");
-		}
-		if( sig.getModifiers().containsAny( Modifier.NATIVE, Modifier.SYNCHRONIZED, Modifier.TRANSIENT, Modifier.VOLATILE))
-		{
-			throw new VarException( "Invalid Modifiers for interface method "+ N + sig );
-		}
-		this.methods.addMethod( method );
-		return this;
+            throw new VarException( 
+                "Cannot add a private method " +N + sig + N +" to an interface ");
 	}
+        if( sig.getModifiers().contains( Modifier.FINAL ) )
+        {
+            throw new VarException( 
+                "Cannot add a final method " +N + sig + N +" to an interface ");
+	}
+	if( sig.getModifiers().contains( Modifier.PROTECTED ) )
+	{
+	    throw new VarException( 
+                "Cannot add a protected method " +N + sig + N +" to an interface ");
+	}
+	if( sig.getModifiers().containsAny( 
+	    Modifier.NATIVE, Modifier.SYNCHRONIZED, Modifier.TRANSIENT, Modifier.VOLATILE))
+	{
+            throw new VarException( "Invalid Modifiers for interface method "+ N + sig );
+	}
+	this.methods.addMethod( method );
+	return this;
+    }
+    
+    public _interface defaultMethod( String signature, Object...linesOfCode )
+    {
+        _method method = _method.of( null, signature, linesOfCode);
+		
+	_methods._method._signature sig = method.getSignature();
+	if( !sig.getModifiers().contains( 
+            _modifiers._mod.INTERFACE_DEFAULT.getBitValue() ) )
+	{			
+            sig.getModifiers().set( "default" );
+        }
+	if( sig.getModifiers().contains( Modifier.PRIVATE ) )
+	{
+	    throw new VarException( 
+                "Cannot add a private method " +N + sig + N +" to an interface ");
+	}
+	if( sig.getModifiers().contains( Modifier.FINAL ) )
+	{
+            throw new VarException( 
+                "Cannot add a final method " +N + sig + N +" to an interface ");
+	}
+	if( sig.getModifiers().contains( Modifier.PROTECTED ) )
+	{
+            throw new VarException( 
+                "Cannot add a protected method " +N + sig + N +" to an interface ");
+	}
+	if( sig.getModifiers().containsAny( 
+            Modifier.NATIVE, Modifier.SYNCHRONIZED, Modifier.TRANSIENT, Modifier.VOLATILE))
+	{
+	    throw new VarException( 
+                "Invalid Modifiers for interface method "+ N + sig );
+	}
+        this.methods.addMethod( method );
+	return this;
+    }
 	
     public _interface field( String comment, String fieldSignature )
     {
