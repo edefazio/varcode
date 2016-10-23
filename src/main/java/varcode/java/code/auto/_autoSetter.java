@@ -15,9 +15,13 @@
  */
 package varcode.java.code.auto;
 
+import java.util.ArrayList;
+import java.util.List;
 import varcode.doc.Compose;
 import varcode.dom.Dom;
+import varcode.java.code._class;
 import varcode.java.code._code;
+import varcode.java.code._fields;
 import varcode.java.code._fields._field;
 import varcode.java.code._methods._method;
 import varcode.markup.bindml.BindML;
@@ -122,7 +126,25 @@ public class _autoSetter
         {
             return _method.of(Compose.asString( 
                     SIGNATURE, "className", className, "fieldName", fieldName, "type", type ),
-                _code.of(Compose.asString( BODY, "fieldName", fieldName ) ) );
+                _code.of( Compose.asString( BODY, "fieldName", fieldName ) ) );
+        }
+        
+        //creates fluent Setter methods for all non-final fields on theClass
+        public static _class of( _class theClass )
+        {
+            _class withSetters = _class.cloneOf( theClass ); 
+            _fields fields = theClass.getFields();
+            for( int i = 0; i < fields.count(); i++ )
+            {
+                if( fields.getAt( i ).getModifiers().contains( "final" ) )
+                {
+                    continue;
+                }
+                withSetters.method( 
+                    of( theClass.getName(), fields.getAt(i).getName(), fields.getAt(i).getType() ));
+            }
+            
+            return withSetters;
         }
     }
 }
