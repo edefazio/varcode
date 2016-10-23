@@ -25,17 +25,17 @@ public enum Compose
 {
     ; //singleton enum idiom
     
-	private static final Logger LOG = LoggerFactory.getLogger( Compose.class );
+    private static final Logger LOG = LoggerFactory.getLogger( Compose.class );
 	
-	/** 
+    /** 
      * Composes the Document to a String 
      * @param dom the dom model for the document
      * @param keyValuePairs data as Key Value Pairs for filling in the document
      * @return the composed document as a String
      */
-	public static String asString( Dom dom, Object...keyValuePairs )
+    public static String asString( Dom dom, Object...keyValuePairs )
     {
-		return asString( dom, VarContext.of( keyValuePairs ) );
+        return asString( dom, VarContext.of( keyValuePairs ) );
     }
 
     /** 
@@ -50,9 +50,9 @@ public enum Compose
         Dom dom, VarContext context, Directive...directives )
     {
     	DocState docState = new DocState( 
-    		dom, 
-    		context, 
-    		directives );
+            dom, 
+    	    context, 
+    	    directives );
     	
     	toState( docState );
         
@@ -71,12 +71,13 @@ public enum Compose
         Dom dom, VarContext context, Directive...directives )
     {
     	DocState initialDocState = new DocState( 
-    		dom, context, directives );
+    	    dom, context, directives );
         
     	return toState( initialDocState );
     }
     
     private static final JavaTranslate translate = JavaTranslate.INSTANCE;
+    
     /**
      * Composes the Document and returns the {@code DocState}
      * 
@@ -92,14 +93,14 @@ public enum Compose
         
         if( preProcess.length > 0 )
         {
-        	for( int i = 0; i < preProcess.length; i++ )
-        	{        		
-        		if( LOG.isTraceEnabled() ) 
+            for( int i = 0; i < preProcess.length; i++ )
+            {        		
+                if( LOG.isTraceEnabled() ) 
                 { 
                     LOG.trace("   pre-process [" + i + "]: " + preProcess[ i ] ); 
                 }
-        		preProcess[ i ].preProcess( initState );
-        	}
+                preProcess[ i ].preProcess( initState );
+            }
         }        
         LOG.trace( "2) Derive / Bind instance vars" );
         Mark[] marks = initState.getDom().getMarks();
@@ -112,10 +113,10 @@ public enum Compose
                 dynamicBound.bind(initState.getContext() ); //this will derive the var, then update the context
                 if( LOG.isTraceEnabled() ) 
                 { 
-                	String name = dynamicBound.getVarName();
-                	Object varValue = initState.getContext().resolveVar( name );
+                    String name = dynamicBound.getVarName();
+                    Object varValue = initState.getContext().resolveVar( name );
                 	//logValueBuffer.append( varValue );
-                	LOG.trace( "  bound: " + marks[ i ] +" as : \"" + name 
+                    LOG.trace( "  bound: " + marks[ i ] +" as : \"" + name 
                             + "\"->" + translate.translate( varValue ) );
                 }
             }
@@ -129,7 +130,7 @@ public enum Compose
                 
                 if( LOG.isTraceEnabled() ) 
                 {
-                	LOG.trace( "  derived: " + marks[ i ] + 
+                    LOG.trace( "  derived: " + marks[ i ] + 
                         " as \"" + translate.translate( derived ) + "\"" );
                 }
             }
@@ -140,14 +141,14 @@ public enum Compose
         Object[] fillSequence = new Object[ blankFillers.length ];
         for( int i = 0; i < blankFillers.length; i++ )
         {
-        	Object derived = blankFillers[ i ].derive( initState.getContext() );
-        	fillSequence[ i ] = derived;
-        	if( LOG.isTraceEnabled() ) 
-        	{        		
-        		LOG.trace( "   filled[" + i + "]: " 
+            Object derived = blankFillers[ i ].derive( initState.getContext() );
+            fillSequence[ i ] = derived;
+            if( LOG.isTraceEnabled() ) 
+            {
+                LOG.trace( "   filled[" + i + "]: " 
                     + blankFillers[ i ].toString() + " with \"" 
                     + translate.translate( derived ) + "\"");
-        	}            
+            }            
         }
         initState.getDom().getFillTemplate().fill(
             initState.getTranslateBuffer(), fillSequence );
@@ -157,14 +158,14 @@ public enum Compose
         LOG.trace( "4) Post-process (" + postProcessors.length + ") directives" );
         if( postProcessors.length > 0 )
         {
-        	for( int i = 0; i < postProcessors.length; i++ )
-        	{
-        		if( LOG.isTraceEnabled() ) 
+            for( int i = 0; i < postProcessors.length; i++ )
+            {
+                if( LOG.isTraceEnabled() ) 
                 { 
                     LOG.trace( "   post-process[" + i + "]: " + postProcessors[ i ] ); 
                 }
-        		postProcessors[ i ].postProcess(initState );
-        	}
+                postProcessors[ i ].postProcess(initState );
+            }
         }             
         return initState;
     }
@@ -210,13 +211,13 @@ public enum Compose
      * @return the DocState containing the Document 
      */
     public static DocState inlineToState( Dom dom, Object...fills )
-	{		
-		DocState docState = new DocState( 
-	        dom, 
-	    	new LazyBindQueueContext( fills ) );
+    {
+        DocState docState = new DocState( 
+            dom, 
+	    new LazyBindQueueContext( fills ) );
 		
-	    return toState( docState );
-	}
+	return toState( docState );
+    }
     
     /**
      * Composes the Document by lazily in-order fills the {@code Mark}s
@@ -259,8 +260,8 @@ public enum Compose
      * @return the DocState containing the Document 
      */
     public static String inlineToString( Dom dom, Object...fills )
-	{		
-		DocState docState = inlineToState( dom, fills );
-	    return docState.getTranslateBuffer().toString();
-	}
+    {		
+        DocState docState = inlineToState( dom, fills );    
+        return docState.getTranslateBuffer().toString();
+    }
 }
