@@ -18,6 +18,7 @@ package varcode.java.code.auto;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import varcode.java.JavaCase;
 import varcode.java.code._code;
 import varcode.java.code._fields;
 import varcode.java.code._fields._field;
@@ -75,16 +76,18 @@ public class _autoDelegate
         return this;
     }
     
+    
     public static void main( String[] args )
     {
         _autoDelegate ad = new _autoDelegate( MySimpleClass.class );
         //add some imports
-        //ad.imports( org.slf4j.Logger.class, org.slf4j.LoggerFactory.class );
+        ad.imports( org.slf4j.Logger.class, org.slf4j.LoggerFactory.class );
         //create a static logger instance
-        //ad.field( "public static final Log DLOG = LoggerFactory.getLog(\"DLOG\");" );
+        ad.field( "public static final Log DLOG = LoggerFactory.getLog(\"DLOG\");" );
         
         ad.before( "callThis", "System.out.println(\"BEFORE\");" );
         ad.after( "callThis", "System.out.println(\"AFTER\");" );
+        
         //ad.trycatch( "callThis", IOException.class, "System.out.println(\"AFTER\");");
         //ad.replaceDelegate( );
     }

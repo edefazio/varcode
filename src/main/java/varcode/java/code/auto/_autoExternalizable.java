@@ -30,6 +30,9 @@ import varcode.java.code._methods._method;
  * Generates the appropriate Externalizable methods (readExternal, writeExternal)
  * for a class
  * 
+ * issue with final fields : (either you manually set accessible or use Unsafe)
+ * http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6379948
+ * 
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _autoExternalizable
@@ -122,7 +125,7 @@ public class _autoExternalizable
                 writeExternal.addToBody( "out.writeChar(" + field.getName() + ");" );
                 readExternal.addToBody( "this." + field.getName() + " = in.readChar( );" );       
             }
-            else if( type.equals( "long" ) || ( type.equals( "java.lang.long" ) ) )
+            else if( type.equalsIgnoreCase( "long" ) || ( type.equalsIgnoreCase( "java.lang.long" ) ) )
             {
                 writeExternal.addToBody( "out.writeLong(" + field.getName() + ");" ); 
                 readExternal.addToBody( "this." + field.getName() + " = in.readLong( );" );
