@@ -17,6 +17,7 @@ package varcode.java.adhoc;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import varcode.VarException;
@@ -28,7 +29,7 @@ import varcode.VarException;
  * NOTE the underlying class MUST BE SERIALIZABLE
  * 
  * @see _auto_externalizable
- * @author eric
+ * @author M. Eric DeFazio  eric@varcode.io
  */
 public class Cloner
 {
@@ -55,9 +56,13 @@ public class Cloner
             return ois.readObject();
             
         }
-        catch( Exception ex ) 
+        catch( IOException ex ) 
         {
-            throw new VarException( "Unable to clone object", ex );
+            throw new VarException( "IOException Unable to clone object", ex );
+        }
+        catch( ClassNotFoundException ex )
+        {
+            throw new VarException( "ClassNotFoundException Unable to clone object", ex );
         }
     }
     
@@ -89,7 +94,7 @@ public class Cloner
             return ois.readObject();
             
         }
-        catch( Exception ex ) 
+        catch( IOException | ClassNotFoundException ex ) 
         {
             throw new VarException( "Unable to clone object", ex );
         }
