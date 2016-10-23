@@ -6,8 +6,11 @@ import varcode.dom.Dom;
 import varcode.markup.bindml.BindML;
 
 /**
- *
- * @author Eric DeFazio
+ * BindML is capable of modeling any structured text (not just Java files)
+ * Here is an example of creating a Class / Model {@code MavenPomDependency}
+ * to represent an XML dependency within a Maven POM file.
+ * 
+ * @author Eric DeFazio eric@varcode.io
  */
 public class _2_BindML_PomDependency
     extends TestCase
@@ -30,10 +33,6 @@ public class _2_BindML_PomDependency
                 "+}}" + N +  
                 "</dependency>"           
             );
-        
-        public MavenPomDependency()
-        {        
-        }
         
         private String groupId;
         private String artifactId;
@@ -122,8 +121,15 @@ public class _2_BindML_PomDependency
         dep.setType( "jar" );
         System.out.println( dep );
         dep.setScope( "test" );
-        System.out.println( dep );
-        
+        System.out.println( dep );        
     }
     
-}
+    //concepts
+    // 1) BindML allows binding variables into any structured text Documents
+    //    (not just Java files)
+    // 2) The {{+?<name>:...+}} Mark represents a conditional pattern... if there
+    //    is a non-null value for <name> then the pattern (inside the ...) is 
+    //    evaluated
+    // 3) Compose.asString(...) takes a (Compiled) Dom and key Value Pairs
+    //    and Composes / Binds a target document. 
+} 
