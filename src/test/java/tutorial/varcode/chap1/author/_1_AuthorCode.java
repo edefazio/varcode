@@ -6,6 +6,17 @@ import junit.framework.TestCase;
 import varcode.java.JavaCase;
 import varcode.java.code._class;
 
+/**
+ * "Authoring" means "generating" .java source code from scratch.  
+ * varcode has "models" for java entities (_class, _interface, _enum )
+ * These models are in the "varcode.java.code" package.
+ * 
+ * _class, _enum, _interface objects model entities at the source code level.  
+ * They provide APIs for manipulating and building source code (Instead
+ * of maintaining a large in memory String to represent the source code).  
+ * 
+ * @author Eric DeFazio eric@varcode.io
+ */
 public class _1_AuthorCode
     extends TestCase
 {
