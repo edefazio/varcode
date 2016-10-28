@@ -1,7 +1,7 @@
 package varcode.markup.forml;
 
 import varcode.context.VarContext;
-import varcode.form.VarForm;
+import varcode.doc.form.VarForm;
 import varcode.markup.forml.ForML;
 import varcode.markup.forml.ForMLCompiler;
 import junit.framework.TestCase;

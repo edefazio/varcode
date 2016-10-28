@@ -5,8 +5,8 @@ import java.util.Collection;
 import java.util.Set;
 
 import varcode.context.VarContext;
-import varcode.eval.Eval_JavaScript;
-import varcode.script.VarScript;
+import varcode.context.eval.Eval_JavaScript;
+import varcode.context.eval.VarScript;
 
 /**
  * Adds a prefix and Postfix to Elements

@@ -3,7 +3,7 @@ package varcode.markup.mark;
 import varcode.context.VarBindException;
 import varcode.context.VarContext;
 import varcode.context.VarBindException.NullVar;
-import varcode.eval.Eval_JavaScript;
+import varcode.context.eval.Eval_JavaScript;
 import varcode.markup.MarkupException;
 import junit.framework.TestCase;
 

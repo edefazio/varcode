@@ -3,7 +3,7 @@ package varcode.doc.lib.text;
 import junit.framework.TestCase;
 import varcode.VarException;
 import varcode.doc.Compose;
-import varcode.dom.Dom;
+import varcode.doc.Dom;
 import varcode.markup.bindml.BindML;
 
 public class SameCountTest

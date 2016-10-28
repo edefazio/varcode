@@ -3,7 +3,7 @@ package varcode.markup.codeml;
 import junit.framework.TestCase;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
-import varcode.dom.Dom;
+import varcode.doc.Dom;
 
 public class CodeMLStateTest
     extends TestCase

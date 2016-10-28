@@ -8,7 +8,7 @@ import varcode.context.VarBindings;
 import varcode.context.VarBindings.SelfBinding;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
-import varcode.dom.Dom;
+import varcode.doc.Dom;
 import varcode.markup.bindml.BindML;
 
 public class _var

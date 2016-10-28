@@ -11,7 +11,7 @@ import varcode.VarException;
 import varcode.context.VarContext;
 import varcode.doc.Directive;
 import varcode.doc.DocState;
-import varcode.script.VarScript;
+import varcode.context.eval.VarScript;
 
 /**
  * Given a String, indents each line a number of spaces

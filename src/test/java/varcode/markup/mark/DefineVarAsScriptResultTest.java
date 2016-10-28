@@ -12,7 +12,7 @@ import varcode.markup.VarNameAudit;
 import varcode.markup.codeml.CodeMLParser;
 import varcode.markup.mark.DefineVarAsScriptResult;
 import varcode.markup.mark.DefineVarAsScriptResult.InstanceVar;
-import varcode.script.VarScript;
+import varcode.context.eval.VarScript;
 import junit.framework.TestCase;
 
 public class DefineVarAsScriptResultTest

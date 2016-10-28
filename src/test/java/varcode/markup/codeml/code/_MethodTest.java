@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.util.Map;
 import junit.framework.TestCase;
 import varcode.context.VarContext;
-import varcode.dom.Dom;
+import varcode.doc.Dom;
 import varcode.java.code._methods._method;
 import varcode.java.code._modifiers;
 import varcode.java.code._throws;

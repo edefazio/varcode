@@ -3,7 +3,7 @@ package varcode.markup.mark;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.lib.text.RemoveEmptyLines;
-import varcode.dom.Dom;
+import varcode.doc.Dom;
 import varcode.markup.codeml.CodeMLCompiler;
 import junit.framework.TestCase;
 

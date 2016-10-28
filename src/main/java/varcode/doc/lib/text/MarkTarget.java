@@ -3,7 +3,7 @@ package varcode.doc.lib.text;
 import varcode.VarException;
 import varcode.doc.Directive;
 import varcode.doc.DocState;
-import varcode.dom.Dom;
+import varcode.doc.Dom;
 import varcode.markup.codeml.CodeML;
 import varcode.markup.codeml.CodeMLParser.ReplaceWithVarMark;
 

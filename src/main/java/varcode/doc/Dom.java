@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package varcode.dom;
+package varcode.doc;
 
 import java.util.ArrayList;
 import java.util.BitSet;
@@ -24,7 +24,7 @@ import java.util.Set;
 import varcode.context.VarContext;
 import varcode.doc.FillInTheBlanks;
 import varcode.doc.FillInTheBlanks.FillTemplate;
-import varcode.form.Form;
+import varcode.doc.form.Form;
 import varcode.markup.MarkupTemplate;
 import varcode.markup.mark.Mark;
 import varcode.markup.mark.Mark.BlankFiller;

@@ -5,7 +5,7 @@ import java.util.Set;
 import varcode.VarException;
 import varcode.context.VarContext;
 import varcode.context.VarScope;
-import varcode.form.Form;
+import varcode.doc.form.Form;
 import varcode.markup.MarkupParseState;
 import varcode.markup.mark.Mark.Derived;
 import varcode.markup.mark.Mark.HasForm;

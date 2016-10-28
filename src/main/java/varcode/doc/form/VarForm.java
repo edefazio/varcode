@@ -1,4 +1,4 @@
-package varcode.form;
+package varcode.doc.form;
 
 import java.lang.reflect.Array;
 import java.util.Collection;

@@ -4,8 +4,8 @@ import java.util.HashSet;
 
 import varcode.context.VarContext;
 import varcode.context.VarScope;
-import varcode.form.Form;
-import varcode.form.VarForm;
+import varcode.doc.form.Form;
+import varcode.doc.form.VarForm;
 import varcode.markup.codeml.CodeMLParser;
 import varcode.markup.forml.ForMLCompiler;
 import varcode.markup.mark.ReplaceWithForm;

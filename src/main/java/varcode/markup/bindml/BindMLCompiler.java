@@ -10,7 +10,7 @@ import varcode.VarException;
 import varcode.context.VarBindings;
 import varcode.context.VarContext;
 import varcode.context.VarScope;
-import varcode.dom.Dom;
+import varcode.doc.Dom;
 import varcode.markup.MarkupException;
 import varcode.markup.repo.MarkupRepo.MarkupStream;
 

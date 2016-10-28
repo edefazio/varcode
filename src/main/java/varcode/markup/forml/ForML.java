@@ -1,7 +1,7 @@
 package varcode.markup.forml;
 
 import varcode.context.VarContext;
-import varcode.form.Form;
+import varcode.doc.form.Form;
 import varcode.markup.mark.Mark;
 
 public enum ForML 

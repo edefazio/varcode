@@ -7,7 +7,7 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 import varcode.context.VarContext;
-import varcode.dom.Dom;
+import varcode.doc.Dom;
 import varcode.java.JavaCase;
 import varcode.markup.codeml.CodeMLCompiler;
 import varcode.markup.repo.MarkupRepo.MarkupStream;

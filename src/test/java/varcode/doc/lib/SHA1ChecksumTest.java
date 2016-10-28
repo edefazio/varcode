@@ -7,7 +7,7 @@ import varcode.context.VarContext;
 import varcode.doc.DocState;
 import varcode.doc.Compose;
 import varcode.doc.lib.SHA1Checksum;
-import varcode.dom.Dom;
+import varcode.doc.Dom;
 import varcode.markup.bindml.BindML;
 
 public class SHA1ChecksumTest

@@ -9,7 +9,6 @@ import varcode.context.VarContext;
 import varcode.doc.Directive.PostProcessor;
 import varcode.doc.Directive.PreProcessor;
 import varcode.doc.translate.JavaTranslate;
-import varcode.dom.Dom;
 import varcode.markup.mark.Mark;
 import varcode.markup.mark.Mark.BlankFiller;
 import varcode.markup.mark.Mark.BoundDynamically;

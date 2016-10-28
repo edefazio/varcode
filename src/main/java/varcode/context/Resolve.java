@@ -11,9 +11,9 @@ import org.slf4j.LoggerFactory;
 
 import varcode.VarException;
 import varcode.doc.Directive;
-import varcode.eval.EvalException;
-import varcode.eval.Evaluator;
-import varcode.script.VarScript;
+import varcode.context.eval.EvalException;
+import varcode.context.eval.Evaluator;
+import varcode.context.eval.VarScript;
 
 /**
  * Algorithms for resolving values for named 

@@ -6,10 +6,10 @@ import java.util.List;
 
 import varcode.VarException;
 import varcode.context.VarContext;
-import varcode.form.Form;
-import varcode.form.SeriesFormatter;
-import varcode.form.VarForm;
-import varcode.form.SeriesFormatter.BetweenTwo;
+import varcode.doc.form.Form;
+import varcode.doc.form.SeriesFormatter;
+import varcode.doc.form.VarForm;
+import varcode.doc.form.SeriesFormatter.BetweenTwo;
 import varcode.markup.forml.ForMLCompiler;
 import varcode.markup.mark.AddScriptResult;
 import varcode.markup.mark.AddVar;

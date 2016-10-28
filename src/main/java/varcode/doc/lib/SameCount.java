@@ -5,8 +5,8 @@ import java.util.Set;
 
 import varcode.VarException;
 import varcode.context.VarContext;
-import varcode.eval.Eval_JavaScript;
-import varcode.script.VarScript;
+import varcode.context.eval.Eval_JavaScript;
+import varcode.context.eval.VarScript;
 
 /**
  * Count of the number of Elements of a bound variable 

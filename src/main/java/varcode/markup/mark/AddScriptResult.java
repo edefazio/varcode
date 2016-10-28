@@ -27,7 +27,7 @@ import varcode.markup.mark.Mark.BlankFiller;
 import varcode.markup.mark.Mark.HasScript;
 import varcode.markup.mark.Mark.HasVars;
 import varcode.markup.mark.Mark.MayBeRequired;
-import varcode.script.VarScript;
+import varcode.context.eval.VarScript;
 
 /**
  * Mark to Add Code within the varcode (given a name) 

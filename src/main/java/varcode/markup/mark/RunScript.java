@@ -7,7 +7,7 @@ import varcode.context.VarContext;
 import varcode.markup.mark.Mark.Derived;
 import varcode.markup.mark.Mark.HasScript;
 import varcode.markup.mark.Mark.MayBeRequired;
-import varcode.script.VarScript;
+import varcode.context.eval.VarScript;
 
 /**
  * Calls a script with some input

@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 
 import varcode.VarException;
 import varcode.context.VarContext;
-import varcode.eval.EvalException;
+import varcode.context.eval.EvalException;
 
 /**
  * LifeCycle Code run: 

@@ -15,7 +15,7 @@
  */
 package varcode.markup;
 
-import varcode.eval.Eval_JavaScript;
+import varcode.context.eval.Eval_JavaScript;
 
 /**
  * Audits Var names that occur in {@code Markup}. 

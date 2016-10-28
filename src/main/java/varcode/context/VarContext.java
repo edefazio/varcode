@@ -9,9 +9,9 @@ import varcode.context.Resolve.VarResolver;
 import varcode.context.VarBindings.SelfBinding;
 import varcode.doc.Directive;
 import varcode.doc.lib.Library;
-import varcode.eval.Evaluator;
+import varcode.context.eval.Evaluator;
 import varcode.markup.VarNameAudit;
-import varcode.script.VarScript;
+import varcode.context.eval.VarScript;
 
 /**
  * Container for (vars, scripts) for applying "specializations" 

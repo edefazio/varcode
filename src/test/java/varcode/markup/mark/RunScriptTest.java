@@ -4,7 +4,7 @@ import varcode.VarException;
 import varcode.context.VarContext;
 import varcode.markup.codeml.CodeMLParser;
 import varcode.markup.mark.RunScript;
-import varcode.script.VarScript;
+import varcode.context.eval.VarScript;
 
 import java.util.Set;
 

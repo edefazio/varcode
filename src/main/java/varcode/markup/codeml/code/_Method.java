@@ -18,7 +18,7 @@ package varcode.markup.codeml.code;
 import varcode.VarException;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
-import varcode.dom.Dom;
+import varcode.doc.Dom;
 import varcode.java.JavaMarkupRepo;
 import varcode.java.code._code;
 import varcode.java.code._methods._method;

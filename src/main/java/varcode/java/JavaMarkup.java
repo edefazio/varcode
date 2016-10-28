@@ -16,7 +16,7 @@ import varcode.context.VarScope;
 import varcode.doc.Directive;
 import varcode.doc.lib.java.JavaLib;
 import varcode.markup.Markup;
-import varcode.script.VarScript;
+import varcode.context.eval.VarScript;
 
 /** Maybe this class is (ITSELF) a Directive? */
 public enum JavaMarkup 

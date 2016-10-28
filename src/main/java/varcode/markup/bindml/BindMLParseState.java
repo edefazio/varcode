@@ -11,7 +11,7 @@ import varcode.context.VarContext;
 import varcode.context.VarScope;
 import varcode.doc.FillInTheBlanks;
 import varcode.doc.FillInTheBlanks.Builder;
-import varcode.dom.Dom;
+import varcode.doc.Dom;
 import varcode.markup.MarkupParseState;
 import varcode.markup.MarkupException;
 import varcode.markup.mark.Mark;

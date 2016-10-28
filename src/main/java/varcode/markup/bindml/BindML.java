@@ -3,7 +3,7 @@ package varcode.markup.bindml;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.DocState;
-import varcode.dom.Dom;
+import varcode.doc.Dom;
 import varcode.markup.bindml.BindMLParser.AddVarExpressionMark;
 import varcode.markup.forml.ForML;
 import varcode.markup.mark.Mark;

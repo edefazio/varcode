@@ -21,7 +21,7 @@ import varcode.VarException;
 import varcode.doc.translate.TranslateBuffer;
 import varcode.context.VarBindException.NullResult;
 import varcode.context.VarContext;
-import varcode.form.Form;
+import varcode.doc.form.Form;
 import varcode.markup.mark.Mark.BlankFiller;
 import varcode.markup.mark.Mark.HasForm;
 import varcode.markup.mark.Mark.HasVars;

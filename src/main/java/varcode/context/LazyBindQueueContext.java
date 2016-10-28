@@ -8,9 +8,9 @@ import varcode.context.Resolve.ScriptResolver;
 import varcode.context.Resolve.VarResolver;
 import varcode.context.VarBindings.SelfBinding;
 import varcode.doc.Directive;
-import varcode.eval.Evaluator;
+import varcode.context.eval.Evaluator;
 import varcode.markup.VarNameAudit;
-import varcode.script.VarScript;
+import varcode.context.eval.VarScript;
 
 /**
  * A VarContext implementation that has a Lazy "Named Queue" 

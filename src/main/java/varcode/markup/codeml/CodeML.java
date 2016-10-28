@@ -6,7 +6,7 @@ import varcode.context.VarContext;
 import varcode.doc.Directive;
 import varcode.doc.Compose;
 import varcode.doc.DocState;
-import varcode.dom.Dom;
+import varcode.doc.Dom;
 import varcode.markup.MarkupException;
 import varcode.markup.mark.Mark;
 import varcode.markup.repo.MarkupRepo.MarkupStream;

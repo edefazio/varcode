@@ -5,7 +5,7 @@ import java.util.Set;
 import varcode.VarException;
 import varcode.doc.translate.TranslateBuffer;
 import varcode.context.VarContext;
-import varcode.form.Form;
+import varcode.doc.form.Form;
 import varcode.markup.MarkupParseState;
 
 /** 

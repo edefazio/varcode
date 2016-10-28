@@ -8,9 +8,9 @@ import java.util.TreeSet;
 import junit.framework.TestCase;
 import varcode.context.Resolve.SmartScriptResolver;
 import varcode.doc.Compose;
-import varcode.dom.Dom;
+import varcode.doc.Dom;
 import varcode.markup.bindml.BindML;
-import varcode.script.VarScript;
+import varcode.context.eval.VarScript;
 
 public class ResolveTest
 	extends TestCase

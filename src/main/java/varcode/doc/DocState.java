@@ -9,7 +9,6 @@ import varcode.doc.translate.TranslateBuffer;
 import varcode.context.VarContext;
 import varcode.doc.Directive.PostProcessor;
 import varcode.doc.Directive.PreProcessor;
-import varcode.dom.Dom;
 import varcode.markup.mark.DocDirective;
 import varcode.markup.mark.Mark;
 

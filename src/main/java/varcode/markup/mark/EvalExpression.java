@@ -2,7 +2,7 @@ package varcode.markup.mark;
 
 import varcode.VarException;
 import varcode.context.VarContext;
-import varcode.eval.EvalException;
+import varcode.context.eval.EvalException;
 import varcode.markup.mark.Mark.Derived;
 import varcode.markup.mark.Mark.HasExpression;
 

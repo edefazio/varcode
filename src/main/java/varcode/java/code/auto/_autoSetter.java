@@ -18,7 +18,7 @@ package varcode.java.code.auto;
 import java.util.ArrayList;
 import java.util.List;
 import varcode.doc.Compose;
-import varcode.dom.Dom;
+import varcode.doc.Dom;
 import varcode.java.code._class;
 import varcode.java.code._code;
 import varcode.java.code._fields;

@@ -8,7 +8,7 @@ import varcode.java.adhoc.Cloner;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
-import varcode.dom.Dom;
+import varcode.doc.Dom;
 import varcode.markup.bindml.BindML;
 import varcode.Model;
 

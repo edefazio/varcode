@@ -2,7 +2,7 @@ package varcode.markup.codeml;
 
 import varcode.context.VarContext;
 import varcode.doc.Compose;
-import varcode.dom.Dom;
+import varcode.doc.Dom;
 import varcode.markup.MarkupException;
 import varcode.markup.mark.AddExpressionResult;
 import varcode.markup.mark.AddFormIfExpression;

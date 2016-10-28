@@ -3,7 +3,7 @@ package varcode.doc.lib;
 import java.util.Collection;
 
 import varcode.context.VarContext;
-import varcode.eval.Eval_JavaScript;
+import varcode.context.eval.Eval_JavaScript;
 
 /**
  * Normalize the value of a var to be a Java Object[]

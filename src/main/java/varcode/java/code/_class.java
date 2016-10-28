@@ -9,7 +9,7 @@ import varcode.VarException;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
-import varcode.dom.Dom;
+import varcode.doc.Dom;
 import varcode.java.JavaCase;
 import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.code._fields._field;

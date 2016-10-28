@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import varcode.doc.lib.text.StripMarks;
-import varcode.dom.Dom;
+import varcode.doc.Dom;
 import varcode.markup.codeml.CodeMLCompiler;
 import junit.framework.TestCase;
 

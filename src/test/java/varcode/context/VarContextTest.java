@@ -7,8 +7,8 @@ import java.util.UUID;
 
 import junit.framework.TestCase;
 import varcode.context.Var.Define;
-import varcode.eval.Eval_JavaScript;
-import varcode.script.VarScript;
+import varcode.context.eval.Eval_JavaScript;
+import varcode.context.eval.VarScript;
 
 public class VarContextTest
     extends TestCase

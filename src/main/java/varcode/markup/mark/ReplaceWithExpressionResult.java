@@ -2,7 +2,7 @@ package varcode.markup.mark;
 
 import varcode.doc.translate.TranslateBuffer;
 import varcode.context.VarContext;
-import varcode.eval.EvalException;
+import varcode.context.eval.EvalException;
 import varcode.markup.mark.Mark.BlankFiller;
 import varcode.markup.mark.Mark.HasExpression;
 import varcode.markup.mark.Mark.WrapsText;

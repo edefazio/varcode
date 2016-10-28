@@ -4,7 +4,7 @@ import java.util.BitSet;
 
 import varcode.context.VarContext;
 import varcode.doc.FillInTheBlanks.FillTemplate;
-import varcode.form.VarForm;
+import varcode.doc.form.VarForm;
 import varcode.markup.mark.Mark;
 import varcode.markup.mark.Mark.BlankFiller;
 

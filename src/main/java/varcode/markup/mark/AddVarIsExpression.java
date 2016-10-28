@@ -21,7 +21,7 @@ import varcode.doc.translate.TranslateBuffer;
 import varcode.context.VarBindException;
 import varcode.context.VarContext;
 import varcode.context.VarBindException.NullVar;
-import varcode.eval.EvalException;
+import varcode.context.eval.EvalException;
 import varcode.markup.MarkupException;
 import varcode.markup.mark.Mark.BlankFiller;
 import varcode.markup.mark.Mark.HasVars;

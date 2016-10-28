@@ -24,7 +24,7 @@ import varcode.context.VarScope;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.DocState;
-import varcode.dom.Dom;
+import varcode.doc.Dom;
 import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.adhoc.AdHocJavaFile;
 import varcode.java.adhoc.JavacOptions;

@@ -19,9 +19,9 @@ import varcode.doc.lib.text.Quote;
 import varcode.doc.lib.text.RemoveEmptyLines;
 import varcode.doc.lib.text.StripMarks;
 import varcode.doc.lib.text.Trim;
-import varcode.eval.Eval_JavaScript;
+import varcode.context.eval.Eval_JavaScript;
 import varcode.markup.VarNameAudit;
-import varcode.script.VarScript;
+import varcode.context.eval.VarScript;
 
 /**
  * Bootstrap "binds" the standard library to EVERY new {@code VarContext}

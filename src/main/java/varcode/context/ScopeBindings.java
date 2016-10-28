@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 import varcode.VarException;
 import varcode.doc.Directive;
 import varcode.doc.lib.Library;
-import varcode.script.VarScript;
+import varcode.context.eval.VarScript;
 
 /** 
  * Maintains a set of Hierarchial / Named  Scopes associated with Bindings: 

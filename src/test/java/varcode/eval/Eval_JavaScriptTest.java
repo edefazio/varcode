@@ -1,11 +1,14 @@
 package varcode.eval;
 
+import varcode.context.eval.Eval_JavaScript;
+import varcode.context.eval.Evaluator;
+import varcode.context.eval.EvalException;
 import javax.script.SimpleBindings;
 
 import junit.framework.TestCase;
 import varcode.context.ScopeBindings;
 import varcode.context.VarBindings;
-import varcode.dom.Dom;
+import varcode.doc.Dom;
 import varcode.java.Java;
 
 /*{$init(

@@ -1,7 +1,6 @@
 package varcode.doc;
 
 import junit.framework.TestCase;
-import varcode.dom.Dom;
 import varcode.markup.bindml.BindML;
 
 public class AuthorTest

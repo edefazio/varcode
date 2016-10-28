@@ -2,7 +2,7 @@ package tutorial.varcode.chap2.markup;
 
 import junit.framework.TestCase;
 import varcode.doc.Compose;
-import varcode.dom.Dom;
+import varcode.doc.Dom;
 import varcode.markup.bindml.BindML;
 
 /**

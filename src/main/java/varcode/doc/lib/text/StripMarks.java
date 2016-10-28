@@ -7,7 +7,7 @@ import varcode.doc.Directive;
 import varcode.doc.DocState;
 import varcode.doc.FillInTheBlanks;
 import varcode.doc.FillInTheBlanks.FillTemplate;
-import varcode.dom.Dom;
+import varcode.doc.Dom;
 import varcode.markup.mark.Mark;
 import varcode.markup.mark.Mark.WrapsText;
 

@@ -3,7 +3,7 @@ package varcode.markup.mark;
 import varcode.context.VarContext;
 import varcode.markup.forml.ForMLParser;
 import varcode.markup.mark.AddScriptResult;
-import varcode.script.VarScript;
+import varcode.context.eval.VarScript;
 
 import java.util.Set;
 

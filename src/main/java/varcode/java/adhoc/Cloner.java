@@ -91,12 +91,15 @@ public class Cloner
             AdHocObjectInputStream ois = 
                 new AdHocObjectInputStream( adHocClassLoader, bais );
             
-            return ois.readObject();
-            
+            return ois.readObject();            
         }
-        catch( IOException | ClassNotFoundException ex ) 
+        catch( IOException ex ) 
         {
-            throw new VarException( "Unable to clone object", ex );
+            throw new VarException( "IOException cloning object", ex );
+        }
+        catch( ClassNotFoundException cnfe )
+        {
+            throw new VarException( "ClassNotFoundException cloning object", cnfe );
         }
     }    
 }

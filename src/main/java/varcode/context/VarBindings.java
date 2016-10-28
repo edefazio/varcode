@@ -16,7 +16,7 @@ import javax.script.Bindings;
 
 import varcode.VarException;
 import varcode.doc.Directive;
-import varcode.script.VarScript;
+import varcode.context.eval.VarScript;
 
 /**
  * Simple implementation of JSR-223 {@code Bindings} 

@@ -1,4 +1,4 @@
-package varcode.form;
+package varcode.doc.form;
 
 /**
  * When multiple Form instances are put together as a Series, 

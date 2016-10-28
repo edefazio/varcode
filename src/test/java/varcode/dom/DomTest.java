@@ -1,5 +1,6 @@
 package varcode.dom;
 
+import varcode.doc.Dom;
 import junit.framework.TestCase;
 import varcode.VarException;
 import varcode.doc.translate.TranslateBuffer;

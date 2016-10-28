@@ -6,7 +6,7 @@ import java.util.List;
 
 import varcode.context.VarContext;
 import varcode.doc.FillInTheBlanks;
-import varcode.form.FormTemplate;
+import varcode.doc.form.FormTemplate;
 import varcode.markup.MarkupException;
 import varcode.markup.ParseState;
 import varcode.markup.mark.Mark;

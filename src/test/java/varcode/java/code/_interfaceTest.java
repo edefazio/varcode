@@ -11,7 +11,7 @@ import java.lang.reflect.Field;
 import java.util.UUID;
 import junit.framework.TestCase;
 import varcode.context.VarContext;
-import varcode.dom.Dom;
+import varcode.doc.Dom;
 import varcode.java.Java;
 import varcode.java.JavaCase;
 import varcode.java.code._interface._signature;

@@ -2,7 +2,7 @@ package varcode.markup.mark;
 
 import varcode.VarException;
 import varcode.context.VarContext;
-import varcode.form.Form;
+import varcode.doc.form.Form;
 import varcode.markup.forml.ForMLCompiler;
 import varcode.markup.mark.AddForm;
 import junit.framework.TestCase;

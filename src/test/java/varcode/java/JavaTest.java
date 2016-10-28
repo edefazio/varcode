@@ -3,7 +3,7 @@ package varcode.java;
 import java.lang.reflect.Method;
 import junit.framework.TestCase;
 import varcode.context.VarContext;
-import varcode.dom.Dom;
+import varcode.doc.Dom;
 import varcode.java.adhoc.AdHocJavaFile;
 import varcode.java.adhoc.JavacOptions;
 import varcode.markup.bindml.BindML;

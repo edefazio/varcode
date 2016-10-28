@@ -1,7 +1,7 @@
 package varcode.markup.mark;
 
 import varcode.context.VarContext;
-import varcode.eval.EvalException;
+import varcode.context.eval.EvalException;
 import junit.framework.TestCase;
 
 /**

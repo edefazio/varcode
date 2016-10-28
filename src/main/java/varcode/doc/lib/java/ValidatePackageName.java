@@ -7,7 +7,7 @@ import java.util.Set;
 import varcode.VarException;
 import varcode.context.VarContext;
 import varcode.java.JavaNaming;
-import varcode.script.VarScript;
+import varcode.context.eval.VarScript;
 
 /**
  * Creates an index count (an array of sequential indexes) for all

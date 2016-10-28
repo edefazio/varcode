@@ -9,7 +9,7 @@ import varcode.VarException;
 import varcode.doc.Compose;
 import varcode.doc.lib.java.ValidateIdentifierName;
 import varcode.doc.lib.java.ValidateTypeName;
-import varcode.dom.Dom;
+import varcode.doc.Dom;
 /*-}*/
 import varcode.markup.bindml.BindML;
 

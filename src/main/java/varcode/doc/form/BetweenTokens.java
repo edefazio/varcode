@@ -1,4 +1,4 @@
-package varcode.form;
+package varcode.doc.form;
 
 import java.util.HashSet;
 

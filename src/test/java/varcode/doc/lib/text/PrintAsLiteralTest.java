@@ -6,7 +6,7 @@ import java.util.TreeSet;
 
 import junit.framework.TestCase;
 import varcode.context.VarContext;
-import varcode.dom.Dom;
+import varcode.doc.Dom;
 import varcode.java.Java;
 import varcode.java.JavaCase;
 import varcode.markup.codeml.CodeML;

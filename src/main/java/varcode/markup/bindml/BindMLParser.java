@@ -5,8 +5,8 @@ import java.util.Map;
 
 import varcode.VarException;
 import varcode.context.VarContext;
-import varcode.eval.Eval_JavaScript;
-import varcode.form.Form;
+import varcode.context.eval.Eval_JavaScript;
+import varcode.doc.form.Form;
 import varcode.markup.MarkupException;
 import varcode.markup.MarkupParser;
 import varcode.markup.VarNameAudit;

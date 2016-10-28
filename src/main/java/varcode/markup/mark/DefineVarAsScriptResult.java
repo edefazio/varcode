@@ -7,13 +7,13 @@ import varcode.VarException;
 import varcode.context.VarBindException.NullResult;
 import varcode.context.VarContext;
 import varcode.context.VarScope;
-import varcode.eval.EvalException;
+import varcode.context.eval.EvalException;
 import varcode.markup.MarkupException;
 import varcode.markup.MarkupParseState;
 import varcode.markup.mark.Mark.Derived;
 import varcode.markup.mark.Mark.HasScript;
 import varcode.markup.mark.Mark.IsNamed;
-import varcode.script.VarScript;
+import varcode.context.eval.VarScript;
 
 //TODO I should ALLOW both : and = for assignment
 //these is a STATIC DEFINE Marks 

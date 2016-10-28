@@ -9,7 +9,7 @@ import junit.framework.TestCase;
 import varcode.doc.translate.TranslateBuffer;
 import varcode.doc.translate.Translator;
 import varcode.context.VarBindings;
-import varcode.eval.Eval_JavaScript;
+import varcode.context.eval.Eval_JavaScript;
 
 public class TranslateBufferTest
 	extends TestCase

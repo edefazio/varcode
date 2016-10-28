@@ -6,7 +6,7 @@ import junit.framework.TestCase;
 import varcode.context.VarContext;
 import varcode.markup.VarNameAudit;
 import varcode.markup.codeml.CodeMLParser;
-import varcode.script.VarScript;
+import varcode.context.eval.VarScript;
 
 public class ReplaceWithScriptResultTest
     extends TestCase

@@ -1,7 +1,7 @@
 package varcode.markup.mark;
 
 import varcode.context.VarContext;
-import varcode.form.Form;
+import varcode.doc.form.Form;
 import varcode.markup.codeml.CodeMLParser;
 import varcode.markup.forml.ForMLCompiler;
 import varcode.markup.mark.AddFormIfVar;

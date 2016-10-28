@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.Set;
 
 import varcode.context.VarContext;
-import varcode.script.VarScript;
+import varcode.context.eval.VarScript;
 
 /**
  * Current Date time (with optional format)

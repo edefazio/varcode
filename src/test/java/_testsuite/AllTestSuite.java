@@ -15,7 +15,7 @@ import varcode.context.VarScopeBindingsTest;
 import varcode.doc.AuthorTest;
 import varcode.doc.FillInTheBlanksTest;
 import varcode.doc.lib.CountIndexTest;
-import varcode.doc.lib.CountTest;
+import varcode.doc.lib.CountTest; 
 import varcode.doc.lib.RowifyTest;
 import varcode.doc.lib.SHA1ChecksumTest;
 import varcode.doc.lib.text.CondenseMultipleBlankLinesTest;

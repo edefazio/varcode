@@ -1,8 +1,8 @@
 package varcode.form;
 
 import junit.framework.TestCase;
-import varcode.form.BetweenTokens;
-import varcode.form.BetweenTokens.BaseBetweenTokens;
+import varcode.doc.form.BetweenTokens;
+import varcode.doc.form.BetweenTokens.BaseBetweenTokens;
 
 public class BetweenTokensTest
     extends TestCase

@@ -1,6 +1,6 @@
 package varcode.markup.codeml;
 
-import varcode.dom.Dom;
+import varcode.doc.Dom;
 import varcode.markup.codeml.CodeMLCompiler;
 import junit.framework.TestCase;
 

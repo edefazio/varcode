@@ -5,7 +5,7 @@ import java.util.UUID;
 import varcode.context.Resolve.SmartScriptResolver;
 import varcode.doc.lib.text.FirstCap;
 import varcode.markup.VarNameAudit;
-import varcode.script.VarScript;
+import varcode.context.eval.VarScript;
 import junit.framework.TestCase;
 
 public class SmartScriptResolverTest

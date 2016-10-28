@@ -6,7 +6,7 @@ import varcode.context.VarContext;
 import varcode.doc.Directive;
 import varcode.doc.DocState;
 import varcode.markup.ParseState.Lines;
-import varcode.script.VarScript;
+import varcode.context.eval.VarScript;
 
 /**
  * Accepts String (code) as input, removes any empty lines 

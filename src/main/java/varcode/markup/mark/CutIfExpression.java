@@ -2,8 +2,8 @@ package varcode.markup.mark;
 
 import varcode.doc.translate.TranslateBuffer;
 import varcode.context.VarContext;
-import varcode.eval.EvalException;
-import varcode.eval.Evaluator;
+import varcode.context.eval.EvalException;
+import varcode.context.eval.Evaluator;
 import varcode.markup.mark.Mark.BlankFiller;
 
 /**

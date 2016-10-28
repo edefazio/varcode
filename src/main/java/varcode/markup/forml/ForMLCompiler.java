@@ -4,11 +4,11 @@ import java.io.*;
 
 import varcode.VarException;
 import varcode.context.VarContext;
-import varcode.form.BetweenTokens;
-import varcode.form.Form;
-import varcode.form.FormTemplate;
-import varcode.form.SeriesFormatter;
-import varcode.form.VarForm;
+import varcode.doc.form.BetweenTokens;
+import varcode.doc.form.Form;
+import varcode.doc.form.FormTemplate;
+import varcode.doc.form.SeriesFormatter;
+import varcode.doc.form.VarForm;
 import varcode.markup.MarkupException;
 
 /**

@@ -2,7 +2,7 @@ package varcode.markup.mark;
 
 import varcode.context.VarContext;
 import varcode.context.VarScope;
-import varcode.eval.EvalException;
+import varcode.context.eval.EvalException;
 import varcode.markup.MarkupParseState;
 import varcode.markup.MarkupException;
 import varcode.markup.mark.Mark.Derived;

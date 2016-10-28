@@ -3,12 +3,12 @@ package varcode.markup.mark;
 import varcode.doc.translate.TranslateBuffer;
 import varcode.context.VarBindException;
 import varcode.context.VarContext;
-import varcode.eval.EvalException;
+import varcode.context.eval.EvalException;
 import varcode.markup.mark.Mark.BlankFiller;
 import varcode.markup.mark.Mark.HasScript;
 import varcode.markup.mark.Mark.MayBeRequired;
 import varcode.markup.mark.Mark.WrapsText;
-import varcode.script.VarScript;
+import varcode.context.eval.VarScript;
 
 /**
  * Replaces "Wrapped Context" with the result of calling a Script

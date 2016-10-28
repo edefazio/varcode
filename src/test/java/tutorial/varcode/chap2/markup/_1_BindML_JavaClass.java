@@ -1,7 +1,7 @@
 package tutorial.varcode.chap2.markup;
 
 import junit.framework.TestCase;
-import varcode.dom.Dom;
+import varcode.doc.Dom;
 import varcode.java.Java;
 import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.adhoc.AdHocJavaFile;

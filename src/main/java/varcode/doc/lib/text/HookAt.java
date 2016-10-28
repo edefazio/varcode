@@ -7,7 +7,7 @@ import java.util.Set;
 
 /*<imports>*/
 import varcode.context.VarContext;
-import varcode.script.VarScript;
+import varcode.context.eval.VarScript;
 
 /*<javadoc>*/
 /**
