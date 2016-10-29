@@ -73,25 +73,11 @@ public interface Model
 	String author( Directive... directives );
     
     /**
-     * <UL>
-     *  <LI>Builds the template for the entity (it may contain unbound marks like "{+name+}") 
-     *  <LI>Compiles the template (using BindML) as a Dom (compile the marks and text)
-     *  <LI>Authors the document using the Dom, context and directives
-     *  <LI>returns the bound document as a String
-     * </UL>
-     * 
-     * @param context the context containing specialization (functions/data)
-     * @param directives directives applied to the 
-     * @return the bound element
-     */
-    //String bind( VarContext context, Directive...directives );
- 
-    /**
      * Binds values from the context into BindML marks within the model
      * @param context providing bindings to be bound within the model
      * @return the mutated model
      */
-    Model bindIn( VarContext context );
+    Model bind( VarContext context );
         
     /**
      * A "Brute Force" replace for the content within the template
