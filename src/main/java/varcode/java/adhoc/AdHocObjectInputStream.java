@@ -30,7 +30,7 @@ public class AdHocObjectInputStream
     extends ObjectInputStream
 {
     /** The Class Loader used for Resolving the Class */
-    private final AdHocClassLoader classLoader;
+    private final ClassLoader classLoader;
     
     public AdHocObjectInputStream( 
         AdHocClassLoader classLoader, InputStream is ) 
@@ -38,6 +38,14 @@ public class AdHocObjectInputStream
     {
         super( is );
         this.classLoader = classLoader;
+    }
+    
+    public AdHocObjectInputStream(
+        Class clazz, InputStream is )
+        throws IOException
+    {
+        super( is );
+        this.classLoader = clazz.getClassLoader();
     }
     
     /**
@@ -81,6 +89,7 @@ public class AdHocObjectInputStream
      * @throws  ClassNotFoundException if class of a serialized object cannot
      *          be found.
      */
+    @Override
     protected Class<?> resolveClass( ObjectStreamClass desc )
         throws IOException, ClassNotFoundException
     {
