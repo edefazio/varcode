@@ -71,7 +71,10 @@ public class _package
     @Override
     public _package replace( String target, String replacement )
     {
-        this.name = this.name.replace( target, replacement );
+        if( this.name != null )
+        {
+            this.name = this.name.replace( target, replacement );
+        }
         return this;
     }
     
