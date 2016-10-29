@@ -72,25 +72,33 @@ public class AdHocClassLoader
         throws ClassNotFoundException 
     {
         if( LOG.isTraceEnabled() )
-    	{    LOG.trace( "finding \"" + className + "\"" ); }
+    	{    
+            LOG.trace( "finding \"" + className + "\"" ); 
+        }
             
         //Why am I checking this first??? --
         Class loadedClass = this.findLoadedClass( className );
         if( loadedClass != null )
         {
             if( LOG.isTraceEnabled() )
-        	{    LOG.trace( "found loaded \"" + className + "\"" ); }    
+        	{    
+                LOG.trace( "found loaded \"" + className + "\"" ); 
+            }    
             return loadedClass;
         }
     	AdHocClassFile adHocClass = classNameToAdHocClass.get( className );
     	if( adHocClass == null ) 
     	{
     		if( LOG.isTraceEnabled() )
-        	{    LOG.trace( className + " Not an AdHoc class, checking parent ClassLoader"); }
+        	{    
+                LOG.trace( className + " Not an AdHoc class, checking parent ClassLoader"); 
+            }
     		return super.findClass(className );
     	}
     	if( LOG.isTraceEnabled() )
-    	{    LOG.trace( "Defining unloaded AdHocClass \"" + className + "\" " ); }
+    	{    
+            LOG.trace( "Defining unloaded AdHocClass \"" + className + "\" " ); 
+        }
     	byte[] byteCode = adHocClass.toByteArray();
     	return defineClass( className, byteCode, 0, byteCode.length );    	
     }

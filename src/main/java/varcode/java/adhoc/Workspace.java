@@ -91,7 +91,7 @@ public class Workspace
     public static AdHocClassLoader compileNow( JavaCaseAuthor...caseAuthors )
     {
         JavaCase[] cases = new JavaCase[ caseAuthors.length ];
-        for(int i=0; i<caseAuthors.length; i++)
+        for( int i = 0; i < caseAuthors.length; i++ )
         {
             cases[ i ] = caseAuthors[ i ].toJavaCase( );
         }
