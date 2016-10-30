@@ -13,8 +13,8 @@ import varcode.markup.mark.DocDirective;
 import varcode.markup.mark.Mark;
 
 /**
- * The State maintained when tailoring the {@code Dom} via {@code Mark}s
- * and {@code VarContext})  
+ * The State maintained when "tailoring" the document from the 
+ * {@code Dom} via {@code Mark}s and {@code VarContext})  
  * 
  *  @author M. Eric DeFazio eric@varcode.io
  */
@@ -45,10 +45,10 @@ public class DocState
     /**
      * Directives CAN be specified within the {@code Dom} AND/OR
      * in this fashion, (directives in the Dom and these in the 
-     * TailorState will be evaluated.
+     * DocState will be evaluated.
      * 
-     * We store Pre Processors and POst Procesors in a single Array, since SOME
-     * Directives may have a PreProcess and Post Process Component
+     * We store Pre Processors and Post Processors in a single Array, 
+     * since SOME Directives may be both Pre-Process and Post-Process
      */
     private Directive[] directives; 
     
@@ -68,7 +68,11 @@ public class DocState
         this.directives = collectDirectives( dom, this.docContext, directives );
     }
 
-    /** convenience Method to get markup class if it has been set*/
+    /** 
+     * If the DocState contains a reference to a Markup Class
+     * this convenience method to get markup class if it has been set
+     * @return the markup class or null
+     */
     public Class<?> getMarkupClass()
     {
     	Object markupClass = this.docContext.get( "markup.class" );
