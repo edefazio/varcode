@@ -17,17 +17,29 @@ import varcode.markup.mark.Mark;
  */
 public interface Form
 {
-    /** All Var names of the Form */
-    public void collectVarNames( Set<String>varNames, VarContext context );
+    /** All Var names of the Form
+     * @param varNames
+     * @param context */
+    void collectVarNames( Set<String>varNames, VarContext context );
     
-    /** gets all Marks of the Form */
-    public Mark[] getAllMarks();
+    /** 
+     * gets all Marks of the Form
+     * @return  all Marks in the form
+     */
+    Mark[] getAllMarks();
     
-    /** gets the text used to make the {@code Form} */ 
-    public String getText();
+    /** 
+     * gets the text used to make the {@code Form}
+     * @return the Text of the Form
+     */ 
+    String getText();
     
-    /** tailor the content and return it as a String */
-    public String derive( VarContext context );
+    /** 
+     * tailor the content and return it as a String
+     * @param context the context to derive the form
+     * @return the filled in form 
+     */
+    String derive( VarContext context );
     
     /** A Static Form (No variables/variability) */
     public static class StaticForm
@@ -43,17 +55,20 @@ public interface Form
             this.text = text;
         }
 
+        @Override
         public void collectVarNames( Set<String> varNames, VarContext context )
         {
             //do nothing... static forms have no var names
         }
 
+        @Override
         public String toString()
         {
             return "STATIC FORM :" + "\r\n" + text;
         }
 
         /** Gets the form in textual form */
+        @Override
         public String getText()
         {
             return text;
@@ -64,11 +79,13 @@ public interface Form
             return null;
         }
 
+        @Override
         public String derive( VarContext context )
         {
             return text;
         }
 
+        @Override
         public Mark[] getAllMarks()
         {
            return new Mark[ 0 ];
