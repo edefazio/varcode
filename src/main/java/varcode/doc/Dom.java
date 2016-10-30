@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Set;
 
 import varcode.context.VarContext;
-import varcode.doc.FillInTheBlanks;
 import varcode.doc.FillInTheBlanks.FillTemplate;
 import varcode.doc.form.Form;
 import varcode.markup.MarkupTemplate;
@@ -53,6 +52,7 @@ import varcode.markup.mark.Mark.HasVars;
  *       (This allows the CodeMLCompiler/CodeMLParser to be used to parse 
  *       code in many languages while also does not interfere with the "target"
  *       language compiler ( Javac, GCC, etc.) 
+ *       </UL>
  * </UL>  
  * <A HREF="https://en.wikipedia.org/wiki/Markup_language">Markup Language</A>.
  * <BR><BR>
@@ -77,8 +77,7 @@ import varcode.markup.mark.Mark.HasVars;
  */
 public class Dom 
     implements MarkupTemplate
-{		
-    
+{		    
     /**
      * Builds and returns a Dom implementation that is "only" text... 
      * (no Marks)
@@ -212,25 +211,6 @@ public class Dom
 	    return blankFillMarksTemplate.getBlanksCount();
 	}
 	
-	/**
-	 * Contains any statically defined values for the Markup:
-	 * <UL>
-	 *   <LI>/ *{##name:value##}* /
-	 *   <LI>/ *{{##dateFormat:{+year+}-{+month+}-{+day+}##}}* /
-	 * </UL>     
-	 * @return
-	 
-	public VarBindings getStaticBindings()
-	{
-		return this.staticBindings;
-	}
-
-	public VarBindings getMetadataBindings()
-	{
-		return this.metadataBindings;
-	}
-	*/
-	
 	public VarContext getDomContext()
 	{
 		return this.domContext;
@@ -251,7 +231,8 @@ public class Dom
         return theForms.toArray( new Form[ 0 ] );
 	}
 	
-	/* (non-Javadoc)
+	/**
+     * @return bitset that represents the character indexes of Marks
      * @see io.varcode.VarCodeMark#getAllMarkIndexes()
      */
     @Override
@@ -276,6 +257,7 @@ public class Dom
 	}
 	    
 	/**
+     * @return the document fill in template
      * @see io.varcode.VarCodeMark#getFillBlanks()
      */
     @Override
@@ -293,7 +275,7 @@ public class Dom
      * Gets the "Original" Markup Text (including the {@code Mark}s).
      * That was parsed to create the {@code Dom}
      * 
-     * @return A Markup
+     * @return the Markup Text
      */
     public String getMarkupText()
     {
