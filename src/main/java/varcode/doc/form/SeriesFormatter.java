@@ -57,7 +57,10 @@ package varcode.doc.form;
  */
 public interface SeriesFormatter
 {
-    /** format the Series of Form instances as a single String */ 
+    /** format the Series of Form instances as a single String
+     * @param seriesOfFormInstances realized forms
+     * @return how the forms are "stitched together"
+     */ 
     public String format( String[] seriesOfFormInstances );
     
     public String getText();
@@ -71,6 +74,7 @@ public interface SeriesFormatter
         private Inline()
         { }
         
+        @Override
         public String format( String[] forms )
         {
             if( forms == null )
@@ -85,11 +89,13 @@ public interface SeriesFormatter
             return sb.toString();  
         }
         
+        @Override
         public String toString()
         {
             return "INLINE";
         }
         
+        @Override
         public String getText()
         {
             return "";
@@ -129,6 +135,7 @@ public interface SeriesFormatter
             this.afterAllForms = afterAllForms;
         }
         
+        @Override
         public String format( String[] forms )
         {
             if( forms == null )
@@ -144,11 +151,13 @@ public interface SeriesFormatter
             return sb.toString();  
         }
         
+        @Override
         public String toString()
         {
             return "After Each (\"" + afterAllForms + "\")";
         }
 
+        @Override
         public String getText()
         {
             return afterAllForms;
@@ -190,6 +199,7 @@ public interface SeriesFormatter
             this.betweenForms = betweenForms;
         }
         
+        @Override
         public String format( String[] forms )
         {
             if( forms == null )
@@ -208,6 +218,7 @@ public interface SeriesFormatter
             return sb.toString();
         }
 
+        @Override
         public String getText()
         {
             return betweenForms;
