@@ -21,7 +21,11 @@ public interface Directive
 	public interface PreProcessor
 		extends Directive
 	{
-		/** manipulate the DocState BEFORE the vars are derived and bound/filled into the document */
+		/**
+         * manipulate the DocState BEFORE the vars are derived and bound/filled 
+         * into the document 
+         * @param docState the state of the document
+         */
 		void preProcess( DocState docState);
 	}
 	
@@ -29,15 +33,17 @@ public interface Directive
 	public interface PostProcessor
 		extends Directive
 	{
-		/** Perform some actions AFTER the vars are bound to the document */
-		void postProcess( DocState tailorState );
+		/** 
+         * Perform some actions AFTER the vars are bound to the document 
+         * @param docState the state of the document
+         */
+		void postProcess( DocState docState );
 	}
 		
 	/**
 	 * Adapts a Static Method call to the {@code Directive.PreProcessor} interface
 	 * so that we might call static methods as if they implemented
 	 * {@code VarScript}  
-	 *  
 	 */
 	public static class StaticMethodPreProcessAdapter
 		implements Directive.PreProcessor
@@ -83,14 +89,16 @@ public interface Directive
 			}
 		}
 		
+        @Override
 		public String toString()
 		{
 			return "Pre Processor to " + method.toString();
 		}
 
-		public void preProcess( DocState tailorState ) 
+        @Override
+		public void preProcess( DocState docState ) 
 		{
-			 eval( tailorState.getContext() );
+			 eval( docState.getContext() );
 		}		
 	}
 	
@@ -98,7 +106,6 @@ public interface Directive
 	 * Adapts a Static Method call to the {@code VarScript} interface
 	 * so that we might call static methods as if they implemented
 	 * {@code VarScript}  
-	 *  
 	 */
 	public static class StaticMethodPostProcessAdapter
 		implements Directive.PostProcessor
@@ -144,15 +151,16 @@ public interface Directive
 			}
 		}
 		
+        @Override
 		public String toString()
 		{
 			return "Post Processor to " + method.toString();
 		}
 
-		public void postProcess( DocState tailorState ) 
+        @Override
+		public void postProcess( DocState docState ) 
 		{
-			eval( tailorState.getContext() );			
+			eval( docState.getContext() );			
 		}		
 	}
 }
-
