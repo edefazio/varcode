@@ -11,6 +11,7 @@ public interface Var
 	
 	public Object getValue();
 	
+    /** Simple Var implementation */
 	public static class Define 
 		implements Var
 	{
@@ -19,9 +20,9 @@ public interface Var
 			return new Define( name, value );
 		}
 		
-		private String name;
+		private final String name;
 	
-		private Object value;
+		private final Object value;
 	
 		public Define( String name, Object value )
 		{
@@ -29,11 +30,13 @@ public interface Var
 			this.value = value;
 		}
 
+        @Override
 		public String getName() 
 		{
 			return name;
 		}
 
+        @Override
 		public Object getValue() 
 		{
 			return value;
