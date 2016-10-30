@@ -174,6 +174,16 @@ public class _constructors
 		
 		private _code body;
 	
+        public _constructor( _modifiers modifiers,
+            String name,
+			_parameters params,
+			_throws throwsExceptions )
+        {
+            this( new _signature( 
+                modifiers, name, params, throwsExceptions ) );
+            
+        }
+        
 		public _constructor( _signature sig )
 		{
 			this.constructorSig = sig;

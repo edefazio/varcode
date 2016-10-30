@@ -485,8 +485,14 @@ public class _fields
 	public static class _init 
 		implements Model
 	{
+        public static _init of( String code )
+        {
+            return new _init( code );
+        }
+        
 		private String initCode;
 	
+        
 		public _init()
 		{
 			this.initCode = null;
