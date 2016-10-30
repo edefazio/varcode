@@ -4,8 +4,10 @@ import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -44,7 +46,10 @@ public class VarBindings
 	 */
 	public interface SelfBinding 
 	{
-		/** binds all of an objects properties to the context*/
+		/** 
+         * binds all of an objects properties to the context
+         * @param bindings 
+         */
 		public void bindTo( VarBindings bindings );
 	}
 	
@@ -90,46 +95,55 @@ public class VarBindings
         this.kvMap.putAll( keyValuePairMap );
     }
     
+    @Override
     public boolean containsKey( Object key )
     {
         return kvMap.containsKey( key );         
     }
     
+    @Override
     public Object get( Object key )
     {
         return kvMap.get( key );       
     }
     
+    @Override
     public int size()
     {
         return kvMap.size();
     }
 
+    @Override
     public boolean isEmpty()
     {
         return kvMap.isEmpty();
     }
 
+    @Override
     public boolean containsValue( Object value )
     {
         return kvMap.containsValue( value );
     }
 
+    @Override
     public void clear()
     {
         kvMap.clear();
     }
 
+    @Override
     public Set<String> keySet()
     {
         return kvMap.keySet();
     }
 
+    @Override
     public Collection<Object> values()
     {
         return kvMap.values();
     }
 
+    @Override
     public Set<java.util.Map.Entry<String, Object>> entrySet()
     {
         return kvMap.entrySet();
@@ -153,12 +167,21 @@ public class VarBindings
         	}
         	return this;
         }
-        catch( Exception e )
+        catch( SecurityException e )
         {
         	throw new VarException(
                 "Unable to populate all public fields of \""+ bean );
         }
+        catch (IllegalArgumentException e) {
+            throw new VarException(
+                    "Unable to populate all public fields of \""+ bean );
+        }
+        catch (IllegalAccessException e) {
+            throw new VarException(
+                    "Unable to populate all public fields of \""+ bean );
+        }
     }
+    
     /** 
      * Convenience Method
      * 
@@ -189,7 +212,6 @@ public class VarBindings
                 Method m = pds[ i ].getReadMethod();                
                 Object value = m.invoke( bean );
                 Object replaced = put( propName, value );
-                /*{-?(removeLog==true):*/
                 if( replaced != null )
                 {
                 	//if( LOG.isDebugEnabled() )
@@ -198,7 +220,6 @@ public class VarBindings
                 	//		+ replaced + "\" with bean property \""+ value + "\"" );
                 	//}
                 }
-                /*-}*/                
             }
             return this;
         } 
@@ -206,13 +227,25 @@ public class VarBindings
         {
             throw new VarException(
                 "Unable to populate bean properties for " 
-               + bean + " into context ", e );
+                + bean + " into context ", e );
         }
-        catch( Exception e )
+        catch( IllegalAccessException e )
         {
             throw new VarException(
                 "Unable to populate bean properties for " 
-               + bean + " into context ", e );
+                + bean + " into context ", e );
+        }
+        catch (IllegalArgumentException e) 
+        {
+            throw new VarException(
+                "Unable to populate bean properties for "
+                + bean + " into context ", e );
+        }
+        catch (InvocationTargetException e) 
+        {
+            throw new VarException(
+                "Unable to populate bean properties for "
+                + bean + " into context ", e );
         }
     }
     
@@ -226,20 +259,7 @@ public class VarBindings
         
         for( int i = 0; i < keys.length; i++ )
         {
-        	 
-            //Object replaced = 
-            	put( keys[ i ], mapProperties.get( keys[ i ] ) );
-            /*{-?(removeLog==true):*/
-//            if( replaced != null )
-//            {
-//            	if( LOG.isDebugEnabled() )
-//            	{
-//            		LOG.debug( "overwriting \"" + keys[ i ] +"\" with value \""
-//            			+ replaced + "\" with Map property \"" 
-//            			+ mapProperties.get( keys[ i ] ) + "\"" );
-//            	}
-//            }
-            /*-}*/
+            put( keys[ i ], mapProperties.get( keys[ i ] ) );
         }        
     }
     
@@ -286,30 +306,30 @@ public class VarBindings
             }
             for( int i = 0; i < propertyNames.length; i++ )
             {
-                //Object replaced = 
-                	put( propertyNames[ i ], soa[ i ] );
-                
-//                /*{-?(removeLog==true):*/
-//                if( replaced != null && LOG.isDebugEnabled() )
-//                {
-//                	LOG.debug( "overwriting \"" + propertyNames[ i ] +"\" with value \""
-//                	    + replaced + "\" with Map property \"" 
-//                		+ soa[ i ] + "\"" );
-//                }
-//                /*-}*/
+                put( propertyNames[ i ], soa[ i ] );
             }
         }
         catch( java.beans.IntrospectionException e )
         {
             throw new VarException(
                 "Unable to populate bean properties for " 
-                 + beans + " into context ", e );
+                 + Arrays.toString(beans) + " into context ", e );
         }
-        catch( Exception e )
+        catch( IllegalAccessException e )
         {
             throw new VarException(
                 "Unable to populate bean properties for " 
-                + beans + " into context ", e );
+                + Arrays.toString(beans) + " into context ", e );
+        }
+        catch (IllegalArgumentException e) {
+            throw new VarException(
+                "Unable to populate bean properties for "
+                + Arrays.toString(beans) + " into context ", e );
+        }
+        catch (InvocationTargetException e) {
+            throw new VarException(
+                "Unable to populate bean properties for "
+                + Arrays.toString(beans) + " into context ", e );
         }        
     }
     
@@ -344,6 +364,7 @@ public class VarBindings
     	return put( var.getName(), var.getValue() );
     }
     
+    @Override
     public Object put( String name, Object value )
     {
     	if( value instanceof VarScript || value instanceof Directive )
@@ -352,27 +373,17 @@ public class VarBindings
     		{
     			Object rep =  
     				kvMap.put( name, value );
-    			//if( rep != null )
-    			//{
-    			//	LOG.info( "Bound \"" + name + "\" -> "+  value +" replacing \" " + name + "\"->"+ rep );
-    			//}
+
     			return rep;
     		}
     		Object rep = kvMap.put( "$" + name, value );
-    		//if( rep != null )
-    		//{
-    		//	LOG.info( "Bound \"$" + name + "\" -> "+  value +" replacing \"$" + name + "\"->"+ rep );
-    		//}
     		return rep;
     	}
         Object rep = kvMap.put( name, value );
-        //if( rep != null )
-        //{
-        //	LOG.info( "Bound \"" + name + "\" -> "+  value +" replacing \" " + name + "\"->"+ rep );
-        //}
         return rep;
     }
 
+    @Override
     public void putAll( Map<? extends String, ? extends Object> toMerge )
     {
     	Iterator<?> it = toMerge.keySet().iterator();
@@ -384,11 +395,13 @@ public class VarBindings
     	}
     }
 
+    @Override
     public Object remove( Object key )
     {
         return kvMap.remove( key );
     }
     
+    @Override
     public String toString()
     {
         return kvMap.toString();
