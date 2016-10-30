@@ -89,11 +89,13 @@ public interface BetweenTokens
         public static final BaseBetweenTokens INSTANCE 
             = new BaseBetweenTokens();
         
+        @Override
         public int getMaxTokenLength()
         {
             return 3;
         }
 
+        @Override
         public String endsWithToken( String token )
         {
             if( token == null )
