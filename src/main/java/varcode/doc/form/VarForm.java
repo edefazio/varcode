@@ -70,17 +70,21 @@ public class VarForm
         this.seriesFormatter = seriesFormatter; 
     }
 
+    @Override
     public String toString()
     {
         return this.formTemplate.toString();
     }
 
-    /** Gets the form in textual form */
+    /** Gets the form in textual form
+     * @return the FormTemplate
+     */
     public FormTemplate getFormMarkup()
     {
         return formTemplate;
     }
     
+    @Override
     public void collectVarNames( Set<String> varNames, VarContext context )
     {
         formTemplate.collectVarNames( varNames, context );
@@ -133,7 +137,7 @@ public class VarForm
         Set<String> varNames = new HashSet<String>();
         collectVarNames( varNames, context );
         
-        if( varNames.size() == 0 ) //some VarForms dont have need of vars
+        if( varNames.isEmpty() ) //some VarForms dont have need of vars
         {
         	return 1;
         }
@@ -284,6 +288,7 @@ public class VarForm
         return tailoredAt;
     }
 
+    @Override
     public String derive( VarContext context )
     {   
     	TranslateBuffer textBuffer = 
@@ -292,11 +297,13 @@ public class VarForm
         return textBuffer.toString();
     }
     
+    @Override
     public String getText()
     {
         return formTemplate.getMarkup() + seriesFormatter.getText();
     }
 
+    @Override
     public Mark[] getAllMarks()
     {
         return formTemplate.getMarks();
