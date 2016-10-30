@@ -13,6 +13,7 @@ public enum CollectionToArrayTranslate
 {
     INSTANCE;
     	
+    @Override
     public Object translate( Object source ) 
 	{
     	if( source instanceof Collection )

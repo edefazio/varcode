@@ -20,6 +20,7 @@ public enum JSArrayToArrayTranslate
     	
 	public static final Class<?> JSARRAY_CLASS = ScriptObjectMirror.class;
 	
+    @Override
     public Object translate( Object source ) 
 	{    	
 		if( source instanceof ScriptObjectMirror )

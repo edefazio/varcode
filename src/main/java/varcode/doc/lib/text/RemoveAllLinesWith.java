@@ -45,6 +45,7 @@ public class RemoveAllLinesWith
 		this.strings = strings;
 	}
 	
+    @Override
 	public void postProcess( DocState tailorState ) 
 	{			
 		String allTheSource = tailorState.getTranslateBuffer().toString();
@@ -91,6 +92,7 @@ public class RemoveAllLinesWith
 		}			
 	}
 	
+    @Override
 	public String toString()
 	{
 		return getClass().getName();
