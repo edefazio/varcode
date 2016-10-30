@@ -21,11 +21,13 @@ public enum JavaLib
 {
 	INSTANCE;
 
+    @Override
 	public void load( VarContext context ) 
 	{
 		loadAtScope( context, VarScope.LIBRARY );
 	}
 	
+    @Override
 	public void loadAtScope( VarContext varContext, VarScope varScope ) 
 	{
 		VarBindings bindings = varContext.getOrCreateBindings( varScope );
@@ -49,21 +51,25 @@ public enum JavaLib
 	}
 
 	
+    @Override
 	public String getName() 
 	{
 		return "JavaLib";
 	}
 
+    @Override
 	public String toString()
 	{
 		return "Load Java Library Directive";
 	}
 	
+    @Override
 	public String getVersion() 
 	{
 		return "0.1";
 	}
 
+    @Override
 	public void preProcess( DocState tailorState ) 
 	{
 		tailorState.getContext().set( "lang", Lang.JAVA, VarScope.STATIC );

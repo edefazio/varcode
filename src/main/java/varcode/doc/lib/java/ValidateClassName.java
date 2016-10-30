@@ -17,8 +17,8 @@ public enum ValidateClassName
     implements VarScript
 {
     INSTANCE;
-        
     
+    @Override
     public Object eval( VarContext context, String input )
     {
         return validate( context, input );
@@ -81,11 +81,13 @@ public enum ValidateClassName
             "invalid, null class name for var \"" + varName + "\"" );
     }     
     
+    @Override
 	public void collectAllVarNames( Set<String> collection, String input ) 
 	{
 		collection.add( input );
 	}  
 	
+    @Override
 	public String toString()
 	{
 		return this.getClass().getName();  

@@ -103,6 +103,7 @@ public class MarkTarget
 	 * @param varName
 	 * @param toBeReplaced
 	 * @param useDefault
+     * @param isRequired
 	 * @return
 	 */
 	public static String replaceWithVarMark( 
@@ -132,6 +133,7 @@ public class MarkTarget
 			+ ReplaceWithVarMark.CLOSE_TAG;
 	}
 	
+    @Override
 	public void preProcess( DocState tailorState ) 
 	{
 		//put the Dom back into Text form
@@ -146,6 +148,7 @@ public class MarkTarget
 		tailorState.setDom( modifiedDom );
 	}
 	
+    @Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder();

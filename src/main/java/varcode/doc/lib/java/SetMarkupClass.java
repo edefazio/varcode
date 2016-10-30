@@ -27,6 +27,7 @@ public class SetMarkupClass
 		this.scope = scope;
 	}
 	
+    @Override
 	public void preProcess( DocState docState ) 
 	{
 		docState.getContext().set( "markup.class", clazz, this.scope );		

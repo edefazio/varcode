@@ -83,17 +83,20 @@ public enum AllCap
 		 return var.toString().toUpperCase();    		
 	 }
 
+    @Override
 	public String toString()
 	{
 		return this.getClass().getName();
 	}
 	
+    @Override
 	public Object eval( VarContext context, String input )
 	{
 		return doAllCaps( context.resolveVar( input ) );
 			//getInputParser().parse( context, input ) );
 	}
 	
+    @Override
 	public void collectAllVarNames( Set<String> collection, String input ) 
 	{
 		collection.add( input );

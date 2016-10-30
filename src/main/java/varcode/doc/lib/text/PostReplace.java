@@ -35,6 +35,7 @@ public class PostReplace
     	}
     }
     
+    @Override
 	public void postProcess( DocState tailorState ) 
 	{
 		String s = tailorState.getTranslateBuffer().toString();
@@ -46,6 +47,7 @@ public class PostReplace
 		tailorState.getTranslateBuffer().clear().append( s );
 	}    	
 	
+    @Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder();

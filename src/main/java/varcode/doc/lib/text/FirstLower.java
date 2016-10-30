@@ -36,7 +36,6 @@ public enum FirstLower
         return string.substring( 0, 1 ).toLowerCase() + string.substring( 1 );      
     }
     
-    
     public static Object doFirstLower( Object var )
     {
     	if( var == null )
@@ -108,7 +107,7 @@ public enum FirstLower
         return lowercaseFirstChar( var.toString() );        
     }
 
-    
+    @Override
     public Object eval( VarContext context, String input)
     {
         return doFirstLower(
@@ -116,11 +115,13 @@ public enum FirstLower
         	//this.getInputParser().parse( context, input ) );
     }
     
+    @Override
 	public String toString()
 	{
 		return this.getClass().getName();
 	}
 	
+    @Override
 	public void collectAllVarNames( Set<String> collection, String input ) 
 	{
 		collection.add( input );

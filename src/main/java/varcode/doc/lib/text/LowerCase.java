@@ -81,8 +81,8 @@ public enum LowerCase
 		}
 		return var.toString().toLowerCase();        
 	}
-
 	
+    @Override
 	public Object eval( 
 		VarContext context, String input )
 	{
@@ -91,11 +91,13 @@ public enum LowerCase
     		//this.getInputParser().parse( context, input ) );
 	}
 
+    @Override
 	public void collectAllVarNames( Set<String> collection, String input ) 
 	{
 		collection.add( input );
 	}
 	
+    @Override
 	public String toString()
 	{
 		return this.getClass().getName();

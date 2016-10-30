@@ -22,6 +22,7 @@ public class PrefixWithLineNumber
 	public PrefixWithLineNumber(  )
 	{ }
 
+    @Override
 	public void postProcess( DocState tailorState ) 
 	{
 		String original = tailorState.getTranslateBuffer().toString();
@@ -73,6 +74,7 @@ public class PrefixWithLineNumber
 		return INSTANCE.doPrefixLineNumber( string ).toString();
 	}
 	
+    @Override
 	public String toString()
 	{
 		return this.getClass().getName();

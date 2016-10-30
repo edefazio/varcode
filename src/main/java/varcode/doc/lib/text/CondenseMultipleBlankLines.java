@@ -18,6 +18,7 @@ public enum CondenseMultipleBlankLines
 {	
 	INSTANCE;
 		
+    @Override
 	public void postProcess( DocState docState ) 
 	{
 		String original = docState.getTranslateBuffer().toString();
@@ -81,6 +82,7 @@ public enum CondenseMultipleBlankLines
 		return INSTANCE.condenseEmptyLines( string ).toString();
 	}
 	
+    @Override
 	public String toString()
 	{
 		return this.getClass().getName();

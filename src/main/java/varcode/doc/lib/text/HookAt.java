@@ -57,17 +57,20 @@ public enum HookAt
 	/*</method>*/
 
 	
+    @Override
 	public Object eval( VarContext context, String input ) 
 	{
 		return "/*{@hook=" + input + "}*/";
 	}
 	
 	/*<method name="toString" access="public" returnType="String">*/
+    @Override
 	public String toString()
 	{
 		return this.getClass().getName() + "." + super.toString();
 	}
 	
+    @Override
 	public void collectAllVarNames( Set<String> collection, String input ) 
 	{
 		collection.add( input );

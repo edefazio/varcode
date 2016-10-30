@@ -29,6 +29,7 @@ public enum ValidateTypeName
 {
     INSTANCE;
         
+    @Override
     public Object eval( VarContext context, String input )
     {
         return validate( context, input );
@@ -103,11 +104,13 @@ public enum ValidateTypeName
             "type name for \"" + varName + "\" cannot be null" );
     }     
     
+    @Override
 	public void collectAllVarNames( Set<String> collection, String input ) 
 	{
 		collection.add( input );
 	}
 	
+    @Override
 	public String toString()
 	{
 		return this.getClass().getName();  

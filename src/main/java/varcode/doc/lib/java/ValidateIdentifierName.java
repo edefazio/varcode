@@ -19,6 +19,7 @@ public enum ValidateIdentifierName
 {
     INSTANCE;
     
+    @Override
     public Object eval( VarContext context, String input )
     {
         return validate( context, input );
@@ -82,11 +83,13 @@ public enum ValidateIdentifierName
             "invalid, null identifier name for var \"" + varName + "\"" );
     }     
     
+    @Override
 	public void collectAllVarNames( Set<String> collection, String input ) 
 	{
 		collection.add( input );
 	}
 	
+    @Override
 	public String toString()
 	{
 		return this.getClass().getName();  

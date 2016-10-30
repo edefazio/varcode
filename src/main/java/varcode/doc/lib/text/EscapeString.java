@@ -172,6 +172,7 @@ public enum EscapeString
 	}
 
 	
+    @Override
 	public Object eval( VarContext context, String input)
 	{
 		Object resolved = 
@@ -180,11 +181,13 @@ public enum EscapeString
 	    return doEscapeString( resolved );
 	}
 	
+    @Override
 	public String toString()
 	{
 		return this.getClass().getName();
 	}
 	
+    @Override
 	public void collectAllVarNames( Set<String> collection, String input ) 
 	{
 		collection.add( input );

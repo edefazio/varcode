@@ -38,6 +38,7 @@ public class Prefix
 		this.prefix = prefix;
 	}
 	
+    @Override
 	public void postProcess( DocState tailorState ) 
 	{
 		String original = tailorState.getTranslateBuffer().toString();
@@ -112,6 +113,7 @@ public class Prefix
 		}	
 	}
 	
+    @Override
 	public void collectAllVarNames( Set<String> collection, String input ) 
 	{
 		collection.add( input );
@@ -144,6 +146,7 @@ public class Prefix
 		return doPrefixObject( val.toString() );
 	}
 	
+    @Override
 	public Object eval( VarContext context, String input ) 
 	{
 		Object val = context.resolveVar( input );
@@ -154,6 +157,7 @@ public class Prefix
 		return null;		
 	}
 	
+    @Override
 	public String toString()
 	{
 		return this.getClass().getName() + " with \"" + prefix + "\"";
