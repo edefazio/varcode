@@ -20,6 +20,7 @@ public enum SameCount
 {
     INSTANCE;
     
+    @Override
     public Object eval( VarContext context, String input )
     {
         return sameCount( context, input );
@@ -65,11 +66,13 @@ public enum SameCount
     	return true;
     }
 
+    @Override
 	public String toString()
 	{
 		return this.getClass().getName() + "." + super.toString();
 	}
 
+    @Override
 	public void collectAllVarNames( Set<String> collection, String input ) 
 	{
 		String[] varNames = getAllVarNames( input );

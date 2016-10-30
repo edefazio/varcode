@@ -52,6 +52,7 @@ public enum SHA1Checksum
 	public static final String DOM_CHECKSUM_SHA1_NAME = 
 		"dom.checksum.sha1";
 
+    @Override
 	public void preProcess( DocState tailorState )
 	{
 		//LOG.trace( "    In Checksum Pre Process" );		
@@ -67,6 +68,7 @@ public enum SHA1Checksum
 		//tailorState.getContext().getMetadata().put( DOM_CHECKSUM_SHA1_NAME, domChecksum );	    	
 	}
 	
+    @Override
 	public void postProcess( DocState tailorState ) 
 	{
 		//LOG.debug( "    In Checksum Post Process" );
@@ -120,6 +122,7 @@ public enum SHA1Checksum
 	    return sb.toString();
 	}
 	
+    @Override
 	public String toString()
 	{
 		return this.getClass().getName() + "." + super.toString();

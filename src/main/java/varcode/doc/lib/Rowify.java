@@ -68,7 +68,12 @@ public class Rowify
     	return rowify( context, new Object[] { varNames } );
     }
     	
-    /** Makes this VarScript callable */
+    /** 
+     * Makes this VarScript callable
+     * @param context 
+     * @param columnVarNames
+     * @return rowify  
+     */
     public static String[] rowify( VarContext context, Object...columnVarNames )
     {
     	//First collect all of the values for these vars
@@ -97,7 +102,8 @@ public class Rowify
     			{
     				rows[ i ] += ", ";
     			}
-    			rows[ i ] += PrintAsLiteral.printAsLiteral( Array.get( columns[ c ], i ) );
+    			rows[ i ] += PrintAsLiteral.printAsLiteral( 
+                    Array.get( columns[ c ], i ) );
     		}
     	}	    	
     	return rows;

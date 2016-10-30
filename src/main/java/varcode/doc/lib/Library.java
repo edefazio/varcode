@@ -46,10 +46,14 @@ public interface Library
 	 * 
 	 * It's nice to have the OPTION of knowing and querying (AT RUNTIME)
 	 * which modules and versions are loaded in a {@code VarContext}. 
+     * @return the name
 	 */
 	public String getName();
 	
-	/** Each module MAY have versions */
+	/** 
+     * Each module MAY have versions
+     * @return  the library version
+     */
 	public String getVersion();
 	
 	/**

@@ -30,6 +30,7 @@ public enum DateTime
         private FormatDate() 
         { }
         
+        @Override
         public Object eval( VarContext context, String input )
         {            
             if( input != null && input.trim().length() > 0 )
@@ -40,11 +41,13 @@ public enum DateTime
             return new Date();            
         }
 
+        @Override
 		public String toString()
 		{
 			return this.getClass().getName() + "." + super.toString();
 		}
 		
+        @Override
 		public void collectAllVarNames( Set<String> collection, String input ) 
 		{
 			
@@ -57,16 +60,19 @@ public enum DateTime
         private TimeMillis()
     	{ }
     	
+        @Override
     	public Object eval( VarContext context, String input )
         {
     		return System.currentTimeMillis();            
         }
 
+        @Override
  		public String toString()
  		{
  			return this.getClass().getName() + "." + super.toString();
  		}
  		
+        @Override
  		public void collectAllVarNames( Set<String> collection, String input ) 
  		{
  		}
@@ -78,16 +84,19 @@ public enum DateTime
     	private TimeNanos()
     	{ }
 	
+        @Override
     	public Object eval( VarContext context, String input )
     	{
     		return System.nanoTime();            
     	}        	
 		
+        @Override
 		public String toString()
 		{
 			return this.getClass().getName() + "." + super.toString();
 		}
 
+        @Override
 		public void collectAllVarNames( Set<String> collection, String input ) 
 		{ 
 		}
