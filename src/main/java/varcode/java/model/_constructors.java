@@ -223,6 +223,11 @@ public class _constructors
             return this.annotations;
         }
         
+        public _code getBody()
+        {
+            return this.body;
+        }
+        
         @Override
         public _constructor replace( String target, String replacement )
         {
