@@ -26,6 +26,7 @@ public enum CountIndex
 {
 	INSTANCE;
 
+    @Override
     public Object eval( 
         VarContext context, String input )
     {
@@ -85,11 +86,13 @@ public enum CountIndex
         return null;
     }
 	
+    @Override
 	public String toString()
 	{
 		return this.getClass().getName() + "." + super.toString();
 	}
 	
+    @Override
 	public void collectAllVarNames( Set<String> collection, String input ) 
 	{
 		collection.add( input );
