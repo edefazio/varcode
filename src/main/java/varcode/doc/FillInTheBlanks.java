@@ -109,9 +109,7 @@ public enum FillInTheBlanks
 	 * To add a double-blank (or multiple blanks in a row) use a null
 	 * <PRE>
 	 * 
-	 * </PRE>
-	 * 
-	 * <PRE>FillTemplate  
+	 * </PRE> 
 	 * @param data
 	 * @return
 	 */
@@ -196,6 +194,8 @@ public enum FillInTheBlanks
 		
 		/** 
 		 * ADDS text to the varcode and returns the updated builder 
+         * @param staticText text to add
+         * @return return the builder
 		 */
 		public Builder text( String staticText )
 		{			
@@ -336,13 +336,20 @@ public enum FillInTheBlanks
 			this.blankIndexes = blankIndexes;
 		}
 		
-		/** the number of blanks in the FillTemplate */
+		/** 
+         * the number of blanks in the FillTemplate
+         * @return count of blanks in the Template 
+         */
 		public int getBlanksCount()
 		{
 			return blankIndexes.cardinality();
 		}
 		
-		/** fills and returns the filled document as a String */
+		/** 
+         * fills and returns the filled document as a String
+         * @param fillsInOrder the files to be put into the Template in order
+         * @return  the Filled in template
+         */
         public String fill( Object...fillsInOrder )
 		{
 			TranslateBuffer buff = 
@@ -421,7 +428,9 @@ public enum FillInTheBlanks
 		/**
 		 * Returns the Static Text and the blanks annotated as 
 		 * {<1>, <2>, <3>, ...}
+         * @return the String representation of the Template
 		 */
+        @Override
 		public String toString()
 		{
 		    Object[] fillMarkers = new String[ blankIndexes.cardinality() ];
