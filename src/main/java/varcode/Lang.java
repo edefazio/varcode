@@ -84,20 +84,27 @@ public enum Lang
      * be in a file
      * <PRE>"someCProgram.c"</PRE>
      *
-     * @param markupId identifies the Markup file to be loaded from the repo
+     * @param sourceId identifies the Markup file to be loaded from the repo
      * @return the relative path to the markup file resource
      */
-    public String resolvePath( String markupId )
+    public static String resolvePath( String sourceId )
     {
-        int lastDot = markupId.lastIndexOf( '.' );
-        String fileExtension = markupId.substring( lastDot );
+        int lastDot = sourceId.lastIndexOf( '.' );
+        String fileExtension = sourceId.substring( lastDot );
         Lang theLang = Lang.fromFileExtension( fileExtension );
+        String path = null;
         if( theLang == null ) 
         {
+            //assume '.'s just are part of file Name
+            path = sourceId;
+            /*
             throw new VarException(
                 "Could not determine Lang from markupId with extension \""
                 + fileExtension + "\"" );
+            */
         }
+        else
+        {
 
         //PathResolver pathResolver = LANG_RESOLVER_MAP.get( theLang );
         //if( pathResolver == null )
@@ -105,9 +112,11 @@ public enum Lang
         //    throw new VarException(
         //       "No PathResolver registered for Lang \"" + theLang +"\"" );
         // }
-        String path = pathResolver.pathTo(
-            markupId.substring( 0, markupId.length() - fileExtension.length() ) )
-            + fileExtension;
+            
+            path = theLang.pathResolver.pathTo( 
+                sourceId.substring( 0, sourceId.length() - fileExtension.length() ) )
+                + fileExtension;
+        }
         return path;
     }
 

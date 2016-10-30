@@ -9,10 +9,25 @@ import varcode.context.VarContext;
 import varcode.doc.Directive;
 
 /**
- * Hierarchal Model of structured text 
- * NOT specific or limited to Java or any particular
- * language (C, C++, Javascript) or format, but any
- * type of structured text:
+ * An IR (Intermediate Representation) of a Hierarchal 
+ * Model of an entity that is represented in structured text
+ * (in short, textual code, File formats, configuration files,
+ * HTML, CSS, SQL, SVG, etc.)
+ * 
+ * The purpose for the model is to provide an intuitive API
+ * for querying, and mutating an entity and ultimately the 
+ * model (i.e. Java code, an HTML Table, a CSS styleSheet, 
+ * a Maven POM file ) can "author" the code 
+ * 
+ * a good analogy for a Model is a HTML DOM (document object model):
+ * from <A HREF="https://www.w3.org/DOM/">w3c.org</A><BR>
+ * <BLOCKQUOTE>
+ * "The Document Object Model is a platform- and language-neutral 
+ * interface that will allow programs and scripts to dynamically 
+ * access and update the content, structure and style of documents." 
+ * </BLOCKQUOTE>
+ * 
+ * which models entities 
  * <UL>
  *  <LI>SQL
  *  <LI>IDL Data Format
@@ -86,4 +101,27 @@ public interface Model
      * @return the modified variant, (if it is mutable) or a modified clone
      */
     Model replace( String target, String replacement );     
+    
+    /**
+     * An exception in modeling an entity
+     */
+    public static class ModelException
+        extends VarException
+    {
+        
+        public ModelException( String message, Throwable throwable )
+        {
+            super( message, throwable );
+        }
+        
+        public ModelException( String message )
+        {
+            super( message );
+        }
+        
+        public ModelException( Throwable throwable )
+        {
+            super( throwable );
+        }
+    }
 }
