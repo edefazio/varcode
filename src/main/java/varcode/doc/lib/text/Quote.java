@@ -87,6 +87,7 @@ public enum Quote
     }
 
     
+    @Override
     public Object eval( VarContext context, String input )
     {
         return doQuote( 
@@ -94,11 +95,13 @@ public enum Quote
         	//this.getInputParser().parse( context, input) );
     }
     
+    @Override
 	public void collectAllVarNames( Set<String> collection, String input ) 
 	{
 		collection.add( input );
 	}
 	
+    @Override
 	public String toString()
 	{
 		return this.getClass().getName();

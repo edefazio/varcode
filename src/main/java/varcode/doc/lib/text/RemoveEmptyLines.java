@@ -78,11 +78,13 @@ public enum RemoveEmptyLines
         return res;
     }
     
+    @Override
     public Object eval( VarContext context, String input )
     {
         return from( input );        
     }
 	
+    @Override
 	public void postProcess( DocState tailorState ) 
 	{		
 		String theResult = RemoveEmptyLines.from( 
@@ -91,11 +93,13 @@ public enum RemoveEmptyLines
 		tailorState.getTranslateBuffer().append( theResult );
 	}
 	
+    @Override
 	public void collectAllVarNames( Set<String> collection, String input ) 
 	{
 		collection.add( input );
 	}
 	
+    @Override
 	public String toString()
 	{
 		return this.getClass().getName() ;

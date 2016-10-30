@@ -98,17 +98,20 @@ public class WrapText
         return prefix + target.toString() + postfix;        
     }
 
+    @Override
     public Object eval( VarContext context, String input )
     {
         return doWrap( 
         	context.resolveVar( input ) , prefix, postfix );
     }
     
+    @Override
 	public String toString()
 	{
 		return this.getClass().getName();
 	}
 
+    @Override
 	public void collectAllVarNames( Set<String> varNames, String input ) 
 	{
 		varNames.add( input );

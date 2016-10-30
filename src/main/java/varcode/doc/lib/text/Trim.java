@@ -88,7 +88,7 @@ public enum Trim
 		return var.toString().trim();    		
 	}
 
-	
+    @Override
 	public Object eval( VarContext context, String input )
 	{
 		return doTrim(
@@ -96,11 +96,13 @@ public enum Trim
 			//getInputParser().parse( context, input ) );
 	}
 
+    @Override
 	public void collectAllVarNames( Set<String> collection, String input ) 
 	{
 		collection.add( input );
 	}
 	
+    @Override
 	public String toString()
 	{
 		return this.getClass().getName() ;

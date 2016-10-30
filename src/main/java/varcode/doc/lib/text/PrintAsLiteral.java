@@ -30,6 +30,7 @@ public enum PrintAsLiteral
 		this.useArrayNotation = useArrayNotation;
 	}
 	
+    @Override
 	public String eval( VarContext varContext, String varName )
 	{
 		return printAsLiteral( varContext.resolveVar( varName ), this.useArrayNotation ); 
@@ -46,6 +47,7 @@ public enum PrintAsLiteral
      * This includes:
      * 
      * @param object
+     * @param useArrayNotation
      * @return
      */
     public static String printAsLiteral( Object object , boolean useArrayNotation )
@@ -128,11 +130,13 @@ public enum PrintAsLiteral
     	return "\"" + object.toString() + "\"";
     }
 
+    @Override
 	public void collectAllVarNames( Set<String> varNames, String input )
 	{
 		varNames.add( input );
 	}
 	
+    @Override
 	public String toString()
 	{
 		return this.getClass().getName();

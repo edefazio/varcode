@@ -51,6 +51,7 @@ public class TranslateBuffer
     	return this;
     }
         
+    @Override
     public String toString()
     {
     	return buffer.toString();
@@ -70,6 +71,8 @@ public class TranslateBuffer
     
     /** replaces the entire contents of the buffer 
      * (NOTE: DOES NOT ATTEMPT TO TRANSLATE the str)
+     * @param str
+     * @return the updated translateBuffer
      */
     public TranslateBuffer replaceBuffer( String str )
     {

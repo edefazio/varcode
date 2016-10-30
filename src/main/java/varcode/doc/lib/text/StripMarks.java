@@ -62,6 +62,7 @@ public enum StripMarks
 		return sb.toString();
 	}
 
+    @Override
 	public void preProcess( DocState docState ) 
 	{
 		String markupWithoutMarks = 
@@ -80,8 +81,10 @@ public enum StripMarks
 		docState.setDom( markupSansMarks );
 	}
 	
+    @Override
 	public String toString()
 	{
-		return this.getClass().getName() +": (removes ALL marks from the Dom)";
+		return this.getClass().getName() +
+            ": (removes ALL marks from the Dom)";
 	}
 }

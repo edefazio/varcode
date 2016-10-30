@@ -23,6 +23,9 @@ package varcode.doc.translate;
 
 public interface Translator
 {
-    /** given the source, translate and return the translation*/
+    /** given the source, translate and return the translation
+     * @param source
+     * @return the translated version of the object 
+     */
     Object translate( Object source );
 }
