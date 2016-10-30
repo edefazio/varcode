@@ -15,11 +15,11 @@
  */
 package varcode.java.model;
 
-import varcode.java.model._annotate;
+import varcode.java.model._annotations;
 import junit.framework.TestCase;
 import varcode.context.VarContext;
-import varcode.java.model._annotate._annotation;
-import varcode.java.model._annotate._attributes;
+import varcode.java.model._annotations._annotation;
+import varcode.java.model._annotations._attributes;
 
 /**
  *
@@ -107,7 +107,7 @@ public class _annotationTest
     
     public void testEmpty()
     {
-        _annotate al = new _annotate();
+        _annotations al = new _annotations();
         assertEquals( "", al.author( ) );                
         assertEquals( 0, al.count() );
         assertTrue( al.isEmpty() );
@@ -116,7 +116,7 @@ public class _annotationTest
     
     public void testOne()
     {
-        _annotate al = new _annotate();
+        _annotations al = new _annotations();
         al.add( "@Path(\"book\")" );
         assertEquals("@Path(\"book\")" + "\r\n", al.author( ) );        
         
@@ -127,7 +127,7 @@ public class _annotationTest
     
     public void testMany()
     {
-        _annotate al = new _annotate();
+        _annotations al = new _annotations();
         al.add( "@Path(\"/{id}\")", "@GET");
         assertEquals(
             "@Path(\"/{id}\")" + "\r\n" +

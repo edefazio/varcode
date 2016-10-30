@@ -12,7 +12,7 @@ import varcode.context.VarContext;
 import varcode.context.VarScope;
 import varcode.doc.Dom;
 import varcode.markup.MarkupException;
-import varcode.markup.repo.MarkupRepo.MarkupStream;
+import varcode.source.SourceLoader.SourceStream;
 
 /**
  * BindML Markup Compiler 
@@ -71,7 +71,7 @@ public class BindMLCompiler
 		}
     }
     
-    public static Dom fromMarkupStream( MarkupStream ms )
+    public static Dom fromMarkupStream( SourceStream ms )
     {
     	BufferedReader br = 
             new BufferedReader( 
@@ -94,7 +94,7 @@ public class BindMLCompiler
         return INSTANCE.from( br );
     }
     
-    private BindMLParseState initializeParseState( MarkupStream markupStream )
+    private BindMLParseState initializeParseState( SourceStream markupStream )
     {   
     	LOG.trace( "1) Initializing Dom Parse State" ); 
         if( markupStream == null )
@@ -107,8 +107,8 @@ public class BindMLCompiler
         
         vb.put( Dom.MARKUP_STREAM_NAME, markupStream.describe() );
         vb.put( Dom.MARKUP_LANGUAGE_NAME, "BindML" );
-        vb.put( Dom.MARKUP_ID_NAME, markupStream.getMarkupId() );
-        vb.put( Dom.LANG_NAME, Lang.fromCodeId( markupStream.getMarkupId() ) );
+        vb.put( Dom.MARKUP_ID_NAME, markupStream.getSourceId() );
+        vb.put( Dom.LANG_NAME, Lang.fromCodeId( markupStream.getSourceId() ) );
         vb.put( Dom.DOM_COMPILE_TIMESTAMP_NAME, System.currentTimeMillis() );
         
         if( LOG.isTraceEnabled() )
@@ -118,7 +118,7 @@ public class BindMLCompiler
         return parseState;
     }
     
-    public Dom from( MarkupStream markupStream )
+    public Dom from( SourceStream markupStream )
         throws MarkupException
     {
     	if( markupStream == null )

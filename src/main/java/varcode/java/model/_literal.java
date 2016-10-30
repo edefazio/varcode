@@ -5,6 +5,10 @@ import java.util.List;
 import varcode.VarException;
 import varcode.doc.lib.text.EscapeString;
 
+/**
+ * 
+ * @author M. Eric DeFazio eric@varcode.io
+ */
 public class _literal	
 {
 	private final String rep;
@@ -166,13 +170,5 @@ public class _literal
             }
             return sb.toString();
         }
-    }
-	
-    public static void main( String[] args )
-    {
-        _array a = 
-            _array.of( "3", 3, true, Math.PI, 'c' );
-        
-        System.out.println( a );
-    }
+    }	
 }

@@ -7,7 +7,7 @@ import varcode.doc.Dom;
 import varcode.markup.bindml.BindMLParser.AddVarExpressionMark;
 import varcode.markup.forml.ForML;
 import varcode.markup.mark.Mark;
-import varcode.markup.repo.MarkupRepo.MarkupStream;
+import varcode.source.SourceLoader.SourceStream;
 /** 
  *  <A HREF="https://en.wikipedia.org/wiki/Markup_language">Markup Language</A> for 
  *  logically binding data into text to produce "tailored documents". 
@@ -75,7 +75,7 @@ public enum BindML
 		return BindMLCompiler.fromString( bindMLMarkup );
 	}
 	
-	public static Dom compile( MarkupStream markupStream )
+	public static Dom compile( SourceStream markupStream )
 	{
 		return BindMLCompiler.fromMarkupStream( markupStream );
 	}

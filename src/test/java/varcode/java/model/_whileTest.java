@@ -15,7 +15,7 @@
  */
 package varcode.java.model;
 
-import varcode.java.model._while;
+import varcode.java.model.cs._while;
 import junit.framework.TestCase;
 
 /**

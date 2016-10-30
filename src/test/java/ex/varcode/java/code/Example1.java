@@ -27,9 +27,9 @@ import junit.framework.TestCase;
 import varcode.java.Java;
 import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.adhoc.AdHocObjectInputStream;
-import varcode.java.code._class;
-import varcode.java.code._fields;
-import varcode.java.code._fields._field;
+import varcode.java.model._class;
+import varcode.java.model._fields;
+import varcode.java.model._fields._field;
 
 /**
  *
@@ -57,8 +57,6 @@ public class Example1
     {
         _class myTuple = _class.cloneOf( Tuple );
         myTuple.replace( "tupleName", "MyTuple" );
-        
-        
     }
     
     public static _class MyBean = 

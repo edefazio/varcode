@@ -166,7 +166,7 @@ public class _constructors
 			return ctor;			
 		}
 		
-        private _annotate annotations;
+        private _annotations annotations;
         
         private _javadoc javadoc;
         
@@ -177,7 +177,7 @@ public class _constructors
 		public _constructor( _signature sig )
 		{
 			this.constructorSig = sig;
-            this.annotations = new _annotate();
+            this.annotations = new _annotations();
 		}
     
         @Override
@@ -199,7 +199,7 @@ public class _constructors
 		public _constructor( String constructorSignature )
 		{
 			this.constructorSig = _signature.of( constructorSignature );
-            this.annotations = new _annotate();
+            this.annotations = new _annotations();
 		}
 	
         public _constructor annotate( Object...annotations )
@@ -218,7 +218,7 @@ public class _constructors
             return this.javadoc;
         }
         
-        public _annotate getAnnotations()
+        public _annotations getAnnotations()
         {
             return this.annotations;
         }

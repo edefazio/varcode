@@ -9,7 +9,7 @@ import varcode.doc.DocState;
 import varcode.doc.Dom;
 import varcode.markup.MarkupException;
 import varcode.markup.mark.Mark;
-import varcode.markup.repo.MarkupRepo.MarkupStream;
+import varcode.source.SourceLoader.SourceStream;
 
 /**
  * CodeML is a Markup Language that "hides" Marks within comments of
@@ -52,7 +52,7 @@ public enum CodeML
 	 * @throws MarkupException if there is a problem converting the Textual Markup
 	 * to a {@code Dom}
 	 */
-	public static Dom compile( MarkupStream codeMLMarkupStream )
+	public static Dom compile( SourceStream codeMLMarkupStream )
 		throws MarkupException	
 	{
 		return CodeMLCompiler.fromMarkupStream( codeMLMarkupStream );

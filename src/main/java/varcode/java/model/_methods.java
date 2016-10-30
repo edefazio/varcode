@@ -272,7 +272,7 @@ public class _methods
             return this.signature.getName();
         }
         
-        public _annotate getAnnotations()
+        public _annotations getAnnotations()
         {
             return this.annotations;
         }
@@ -288,7 +288,7 @@ public class _methods
 				new _method( _signature.cloneOf(prototype.signature ) );
 			m.javadoc = _javadoc.cloneOf(prototype.javadoc );
 			m.methodBody = prototype.getBody();			
-            m.annotations = new _annotate( prototype.annotations.getAnnotations() );
+            m.annotations = new _annotations( prototype.annotations.getAnnotations() );
 			return m;
 		}
 
@@ -312,7 +312,7 @@ public class _methods
 		}
 
 		private _javadoc javadoc;
-        private _annotate annotations;
+        private _annotations annotations;
 		private _signature signature;
 		private _code methodBody;
 	
@@ -335,7 +335,7 @@ public class _methods
 		public _method( _signature sig )
 		{
 			this.signature = sig;
-            this.annotations = new _annotate();
+            this.annotations = new _annotations();
             this.methodBody = new _code();
             this.javadoc = new _javadoc();
 		}

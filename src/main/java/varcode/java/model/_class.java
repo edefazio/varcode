@@ -38,7 +38,7 @@ public class _class
 	private _imports imports;
 	private _javadoc javadoc;
 	private _signature signature;
-	private _annotate annotations;
+	private _annotations annotations;
     
 	private _constructors constructors;
 	private _fields fields;
@@ -83,6 +83,7 @@ public class _class
 	}
 	
     
+    @Override
     public String getName()
     {
         return this.signature.getName();
@@ -125,7 +126,7 @@ public class _class
 	
 	public _class( String packageName, String classSignature )
 	{
-        this.annotations = new _annotate();
+        this.annotations = new _annotations();
 		this.classPackage = _package.of( packageName );
 		this.javadoc = new _javadoc();
 		this.signature = _signature.of( classSignature );
@@ -143,7 +144,7 @@ public class _class
 	 */
 	public _class( _class prototype )
 	{
-        this.annotations = _annotate.cloneOf( prototype.annotations );
+        this.annotations = _annotations.cloneOf( prototype.annotations );
 		this.classPackage = _package.cloneOf( prototype.classPackage );
 		this.imports = _imports.cloneOf( prototype.imports );
 		this.signature = _signature.cloneOf(prototype.signature  );
@@ -191,7 +192,7 @@ public class _class
         return Compose.asString( CLASS, getContext(), directives );			
 	}
 	
-    public _annotate getAnnotations()
+    public _annotations getAnnotations()
     {
         return this.annotations;
     }
@@ -752,6 +753,12 @@ public class _class
             return this.extendsFrom;
         }
         
+        public _signature extend( Class clazz )
+        {
+            this.extendsFrom.addExtends( clazz );
+            return this;
+        }                
+        
         public _implements getImplements()
         {
             return this.implementsFrom;
@@ -762,6 +769,12 @@ public class _class
             return this.modifiers;
         }
 		
+        public _signature setModifiers( _modifiers modifiers )
+        {
+            this.modifiers = modifiers;
+            return this;
+        }
+        
         public _signature setModifiers( String...modifiers )
         {
             this.modifiers = _modifiers.of( modifiers );

@@ -235,7 +235,7 @@ public class _fields
             return this;
         }
         
-        public _annotate getAnnotations()
+        public _annotations getAnnotations()
         {
             return this.fieldAnnotations;
         }
@@ -383,7 +383,7 @@ public class _fields
 			return author();
 		}
 		
-        private _annotate fieldAnnotations;
+        private _annotations fieldAnnotations;
 		private _javadoc javadoc;
 		private _modifiers mods;
 		private String type; 
@@ -397,7 +397,7 @@ public class _fields
 			this.name = name;
             this.javadoc = new _javadoc();
             this.init = new _init();
-            this.fieldAnnotations = new _annotate();
+            this.fieldAnnotations = new _annotations();
 		}
 		
 		public _field( _modifiers modifiers, String type, String varName, _init init )
@@ -407,7 +407,7 @@ public class _fields
 			this.name = varName;
 			this.init = init;			
             this.javadoc = new _javadoc();
-            this.fieldAnnotations = new _annotate();
+            this.fieldAnnotations = new _annotations();
 		}
 		
 		public _field setInit( String init )

@@ -5,10 +5,10 @@
  */
 package varcode.java.model;
 
-import varcode.java.model._if;
-import varcode.java.model._try;
+import varcode.java.model.cs._if;
+import varcode.java.model.cs._try;
 import varcode.java.model._code;
-import varcode.java.model._for;
+import varcode.java.model.cs._for;
 import java.io.IOException;
 import junit.framework.TestCase;
 import varcode.context.VarContext;

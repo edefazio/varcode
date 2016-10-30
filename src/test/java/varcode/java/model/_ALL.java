@@ -5,7 +5,7 @@
  */
 package varcode.java.model;
 
-import varcode.java.code.auto._autoDtoTest;
+import varcode.java.model.auto._autoDtoTest;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 

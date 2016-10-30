@@ -1,5 +1,6 @@
 package varcode.java;
 
+import varcode.source.BaseSourceLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -17,8 +18,8 @@ import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.adhoc.AdHocJavaFile;
 import varcode.java.adhoc.JavacException;
 import varcode.markup.codeml.CodeML;
-import varcode.markup.repo.MarkupRepo;
-import varcode.markup.repo.MarkupRepo.MarkupStream;
+import varcode.source.SourceLoader.SourceStream;
+import varcode.source.SourceLoader;
 
 /**
  * Represents the combination of {@code Dom} and {@code VarContext} to 
@@ -52,7 +53,7 @@ public class JavaCase
     public static JavaCase of(
     	Class<?> markupClass, String adHocClassName, Object... keyValuePairs )
     {
-        return of( JavaMarkupRepo.INSTANCE, 
+        return of( BaseSourceLoader.INSTANCE, 
             markupClass, 
             adHocClassName, 
             VarContext.of( keyValuePairs ) );
@@ -69,7 +70,7 @@ public class JavaCase
         VarContext context, 
         Directive...directives )
     {
-        return of( JavaMarkupRepo.INSTANCE, 
+        return of( BaseSourceLoader.INSTANCE, 
             markupClass, 
             adHocClassName, 
             context, 
@@ -88,21 +89,21 @@ public class JavaCase
      * @return the JavaCase
      */
     public static JavaCase of(
-    	MarkupRepo markupRepo, 
+    	SourceLoader markupRepo, 
         String markupClassName, 
         String adHocClassName, 
         VarContext context, 
         Directive...directives )
     {       
-        MarkupStream markupStream = null;
+        SourceStream markupStream = null;
         
         if( markupClassName.endsWith( ".java" ) ) 
         {
-    	    markupStream = markupRepo.markupStream( markupClassName );
+    	    markupStream = markupRepo.sourceStream( markupClassName );
         }
         else
         {
-            markupStream = markupRepo.markupStream( markupClassName + ".java" );
+            markupStream = markupRepo.sourceStream( markupClassName + ".java" );
         } 
         if( markupStream == null )
         {
@@ -128,13 +129,13 @@ public class JavaCase
      * @return
      */
     public static JavaCase of(
-        MarkupRepo markupRepo, 
+        SourceLoader markupRepo, 
         Class<?> markupClass, 
         String adHocClassName,
         VarContext context, 
         Directive...directives )
     {
-        MarkupStream markupStream = markupRepo.markupStream( 
+        SourceStream markupStream = markupRepo.sourceStream( 
             markupClass.getCanonicalName() + ".java" );
 
         Dom dom = CodeML.compile( markupStream ); 

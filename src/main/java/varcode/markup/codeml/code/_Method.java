@@ -19,12 +19,12 @@ import varcode.VarException;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Dom;
-import varcode.java.JavaMarkupRepo;
-import varcode.java.code._code;
-import varcode.java.code._methods._method;
+import varcode.source.BaseSourceLoader;
+import varcode.java.model._code;
+import varcode.java.model._methods._method;
 import varcode.markup.codeml.CodeML;
-import varcode.markup.repo.MarkupRepo;
-import varcode.markup.repo.MarkupRepo.MarkupStream;
+import varcode.source.SourceLoader.SourceStream;
+import varcode.source.SourceLoader;
 
 /**
  * Extend this class, then provide a method and wrap the method in $ Marks $
@@ -45,18 +45,15 @@ public abstract class _Method
     
     /** Dom compiled CodeML from the comment contents of the method */
     private final Dom javadocDom;
-    
 
-    
-    
     protected _Method(  )
     {
-        this( JavaMarkupRepo.INSTANCE );
+        this(BaseSourceLoader.INSTANCE );
     }
   
     /** Load ".java" Source Code for the class from the MarkupRepo */
-    private static MarkupStream loadSourceForClass( 
-        Class markupClass, MarkupRepo markupRepo )
+    private static SourceStream loadSourceForClass( 
+        Class markupClass, SourceLoader markupRepo )
     {
         Class fileClass = markupClass;
         
@@ -65,8 +62,8 @@ public abstract class _Method
             fileClass = fileClass.getDeclaringClass();
         }
         
-        MarkupStream sourceCodeStream = 
-            markupRepo.markupStream( fileClass.getCanonicalName()+ ".java" );    
+        SourceStream sourceCodeStream = 
+            markupRepo.sourceStream( fileClass.getCanonicalName()+ ".java" );    
         
         if( sourceCodeStream == null )
         {
@@ -79,9 +76,9 @@ public abstract class _Method
     
 
 
-    protected _Method( MarkupRepo markupRepo )
+    protected _Method( SourceLoader markupRepo )
     {        
-        MarkupStream sourceCodeStream = 
+        SourceStream sourceCodeStream = 
             loadSourceForClass( getClass(), markupRepo );
         
         String allSourceCode = sourceCodeStream.asString();

@@ -68,7 +68,7 @@ public class _arguments
         {
             return arguments.get( index );
         }
-        throw new VarException( "Invalid argument index ["+ index + "]" );
+        throw new ModelException( "Invalid argument index ["+ index + "]" );
     }
     
     /** 

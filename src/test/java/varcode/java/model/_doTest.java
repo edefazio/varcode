@@ -15,7 +15,7 @@
  */
 package varcode.java.model;
 
-import varcode.java.model._do;
+import varcode.java.model.cs._do;
 import varcode.java.model._code;
 import junit.framework.TestCase;
 

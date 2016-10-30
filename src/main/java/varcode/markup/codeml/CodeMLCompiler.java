@@ -12,7 +12,7 @@ import varcode.context.VarContext;
 import varcode.context.VarScope;
 import varcode.doc.Dom;
 import varcode.markup.MarkupException;
-import varcode.markup.repo.MarkupRepo.MarkupStream;
+import varcode.source.SourceLoader.SourceStream;
 
 /**
  * Compiles CodeML (Code Markup Language) a DSML 
@@ -81,7 +81,7 @@ public class CodeMLCompiler
 
     }
     
-    public static Dom fromMarkupStream( MarkupStream codeMLStream )
+    public static Dom fromMarkupStream( SourceStream codeMLStream )
     {
     	BufferedReader br = 
             new BufferedReader( 
@@ -104,7 +104,7 @@ public class CodeMLCompiler
         return INSTANCE.compile( codeMLBufferedReader );
     }
     
-    private CodeMLParseState initializeParseState( MarkupStream markupStream )
+    private CodeMLParseState initializeParseState( SourceStream markupStream )
     {
     	LOG.trace( "1) Initializing Dom Parse State" ); 
         if( markupStream == null )
@@ -117,8 +117,8 @@ public class CodeMLCompiler
         VarBindings vb = vc.getOrCreateBindings( VarScope.METADATA );
         vb.put( Dom.MARKUP_STREAM_NAME, markupStream.describe() );
         vb.put( Dom.MARKUP_LANGUAGE_NAME, "CodeML" );
-        vb.put( Dom.MARKUP_ID_NAME, markupStream.getMarkupId() );
-        vb.put( Dom.LANG_NAME, Lang.fromCodeId( markupStream.getMarkupId() ) );
+        vb.put( Dom.MARKUP_ID_NAME, markupStream.getSourceId() );
+        vb.put( Dom.LANG_NAME, Lang.fromCodeId( markupStream.getSourceId() ) );
         vb.put( Dom.DOM_COMPILE_TIMESTAMP_NAME, System.currentTimeMillis() );
         
         if( LOG.isTraceEnabled() )
@@ -143,7 +143,7 @@ public class CodeMLCompiler
         return parseState;
     }
     
-    public Dom compile( MarkupStream markupStream )
+    public Dom compile( SourceStream markupStream )
         throws MarkupException
     {
     	CodeMLParseState parseState = initializeParseState( markupStream );

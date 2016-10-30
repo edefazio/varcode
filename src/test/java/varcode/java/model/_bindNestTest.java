@@ -15,7 +15,7 @@
  */
 package varcode.java.model;
 
-import varcode.java.model._if;
+import varcode.java.model.cs._if;
 import junit.framework.TestCase;
 import varcode.context.VarContext;
 

@@ -18,7 +18,7 @@ package ex.varcode.java.code;
 import java.util.UUID;
 import junit.framework.TestCase;
 import varcode.java.Java;
-import varcode.java.code._class;
+import varcode.java.model._class;
 
 public class Varcode_AdHoc
     extends TestCase
@@ -33,7 +33,7 @@ public class Varcode_AdHoc
         System.out.println( c );        
         
         String id = (String) Java.invoke(
-                c.instance(), 
+            c.instance(), 
             "createId" ); 
         
         System.out.println( id );

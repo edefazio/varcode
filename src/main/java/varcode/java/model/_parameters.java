@@ -8,7 +8,7 @@ import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.Dom;
-import varcode.java.model._annotate._annotation;
+import varcode.java.model._annotations._annotation;
 import varcode.markup.bindml.BindML;
 import varcode.Model;
 

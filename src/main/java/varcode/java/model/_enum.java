@@ -30,7 +30,7 @@ public class _enum
 	private _package enumPackage = new _package( "" ); 
 	private _imports imports = new _imports();
 	private _javadoc javadoc = new _javadoc();
-    private _annotate annotations;
+    private _annotations annotations;
 	private _signature enumSignature;
 	private _constructors constructors = new _constructors();
 	private _staticBlock staticBlock = new _staticBlock( (Object[])null );
@@ -70,7 +70,7 @@ public class _enum
 		this.enumPackage = _package.cloneOf( prototype.enumPackage );
 		this.imports = _imports.cloneOf( prototype.imports );
 		this.javadoc = _javadoc.cloneOf( prototype.javadoc );
-        this.annotations = _annotate.cloneOf( prototype.annotations );
+        this.annotations = _annotations.cloneOf( prototype.annotations );
 		this.enumSignature = _signature.cloneOf( prototype.enumSignature  );
 		this.constructors = _constructors.cloneOf( prototype.constructors );
 		if( prototype.staticBlock!= null && !prototype.staticBlock.isEmpty() )
@@ -119,7 +119,7 @@ public class _enum
         return this.enumPackage.getName();
     }
     
-    public _annotate getAnnotations()
+    public _annotations getAnnotations()
     {
         return this.annotations;
     }

@@ -1,6 +1,6 @@
 package varcode.java;
 
-import java.lang.reflect.AnnotatedType;
+import varcode.source.BaseSourceLoader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -31,8 +31,8 @@ import varcode.java.adhoc.JavacOptions;
 import varcode.java.adhoc.Workspace;
 import varcode.markup.MarkupException;
 import varcode.markup.codeml.CodeML;
-import varcode.markup.repo.MarkupRepo;
-import varcode.markup.repo.MarkupRepo.MarkupStream;
+import varcode.source.SourceLoader.SourceStream;
+import varcode.source.SourceLoader;
 
 /**
  * ***********************************************************
@@ -130,7 +130,7 @@ public enum Java
     public static Dom compileCodeML( Class<?> markupClass )
     	throws MarkupException
     {
-         return compileCodeML( JavaMarkupRepo.INSTANCE, markupClass );
+         return compileCodeML( BaseSourceLoader.INSTANCE, markupClass );
     }
     
     /**
@@ -144,9 +144,9 @@ public enum Java
      * @return the dom the Dom representation of the Java source document
      */
     public static Dom compileCodeML(
-        MarkupRepo markupRepo, Class<?> markupClazz )
+        SourceLoader markupRepo, Class<?> markupClazz )
     { 
-    	MarkupStream markupStream = markupRepo.markupStream( 
+    	SourceStream markupStream = markupRepo.sourceStream( 
             markupClazz.getCanonicalName() + ".java" );
                 
         Dom dom = CodeML.compile( markupStream );
