@@ -175,6 +175,7 @@ public enum VarScope
         return scope;
     }
     
+    @Override
     public String toString()
     {
         return name;
