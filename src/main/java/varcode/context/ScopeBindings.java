@@ -22,7 +22,7 @@ import varcode.doc.lib.Library;
 import varcode.context.eval.VarScript;
 
 /** 
- * Maintains a set of Hierarchial / Named  Scopes associated with Bindings: 
+ * Maintains a set of hierarchal / Named  Scopes associated with Bindings: 
  * 
  * GLOBAL -> {name=value,a=b}  
  * ENGINE -> {engine=javascript}
@@ -88,7 +88,9 @@ public class ScopeBindings
         VarBindings last = scopeToBindings.put( scope, bindings ); 
 
         if( last != null && LOG.isInfoEnabled() )
-        {   LOG.info( "Replaced existing Bindings at scope " + scope + " " + last ); }             
+        {   
+            LOG.info( "Replaced existing Bindings at scope " + scope + " " + last ); 
+        }             
     }
 
     public VarBindings getOrCreateBindings( VarScope scope )    
@@ -137,7 +139,9 @@ public class ScopeBindings
         {   //bindings for this scope doesn't exist yet, create one and add 
             // it to the internal scopeBindings
             if( getBindings( scope ) != null && LOG.isDebugEnabled() )
-            {   LOG.debug( "Created Bindings at scope " + scope );   }
+            {   
+                LOG.debug( "Created Bindings at scope " + scope );   
+            }
             
             bindings = new VarBindings();
             scopeToBindings.put( scope, bindings );
@@ -181,6 +185,7 @@ public class ScopeBindings
         return -1;        
     }
 
+    @Override
     public int size()
     {
         Integer[] scopes = 
@@ -196,11 +201,13 @@ public class ScopeBindings
     }
     
 
+    @Override
     public boolean isEmpty()
     {
         return size() == 0;
     }
 
+    @Override
     public boolean containsValue( Object value )
     {
         Iterator<Integer> scopeIterator 
@@ -220,6 +227,7 @@ public class ScopeBindings
         return false;        
     }
 
+    @Override
     public void clear()
     {
         Iterator<Integer> scopeIterator 
@@ -234,6 +242,7 @@ public class ScopeBindings
         }
     }
 
+    @Override
     public Set<String> keySet()
     {
         Set<String> superSet = new HashSet<String>();
@@ -247,6 +256,7 @@ public class ScopeBindings
         return superSet;
     }
 
+    @Override
     public Collection<Object> values()
     {
         List<Object> superList = new ArrayList<Object>();
@@ -260,6 +270,7 @@ public class ScopeBindings
         return superList;
     }
 
+    @Override
     public Set<java.util.Map.Entry<String, Object>> entrySet()
     {
         Set<java.util.Map.Entry<String, Object>>entrySet = 
@@ -274,17 +285,20 @@ public class ScopeBindings
         return entrySet;
     }
 
+    @Override
     public Object put( String name, Object value )
     {
         //by default put on INSTANCE scope
         return getOrCreateBindings( VarScope.INSTANCE ).put( name, value );
     }
 
+    @Override
     public void putAll( Map<? extends String, ? extends Object> toMerge )
     {
         getOrCreateBindings( VarScope.INSTANCE ).putAll( toMerge );
     }
 
+    @Override
     public boolean containsKey( Object key )
     {
         Iterator<Integer> scopeIterator 
@@ -315,6 +329,7 @@ public class ScopeBindings
         return bindings.get( name );
     }
 
+    @Override
     public Object get( Object key )
     {
         return get( (String)key );
@@ -346,6 +361,7 @@ public class ScopeBindings
         return null;        
     }
     
+    @Override
     public Object remove( Object key )
     {
         Object lastRemoved = null;
@@ -370,13 +386,20 @@ public class ScopeBindings
         {
             if( o instanceof Directive )
             {
-            	if( LOG.isTraceEnabled() ) { LOG.trace( "   found Directive: \"" + o.toString()  + "\"" ); }
+            	if( LOG.isTraceEnabled() ) 
+                { 
+                    LOG.trace( "   found Directive: \"" + o.toString()  + "\"" ); 
+                }
+                
                 return (Directive) o;
             }       
             throw new VarException(
             	"Expected Directive for \"" + name + "\"; but was \"" + o + "" );
         }
-        if( LOG.isDebugEnabled() ) { LOG.warn( "couldn't find Directive for \"" + name  + "\"" ); }
+        if( LOG.isDebugEnabled() ) 
+        { 
+            LOG.warn( "couldn't find Directive for \"" + name  + "\"" ); 
+        }
         return null;
     }
     
@@ -476,6 +499,7 @@ public class ScopeBindings
     	}    	
     }
     
+    @Override
     public String toString()
     {
     	StringBuilder sb = new StringBuilder();
@@ -492,6 +516,7 @@ public class ScopeBindings
     		new Comparator<Integer>()
     	{
 
+            @Override
 			public int compare( Integer o1, Integer o2 ) 
 			{
 				return -1 * o1.compareTo( o2 );

@@ -105,19 +105,35 @@ public enum Resolve
 				}
 				return null;
 			}
-			catch( Exception e )
+			catch( NoSuchFieldException e )
 			{							
 				return null;
 			}	
+            catch (SecurityException e) {
+                return null;
+            }
+            catch (IllegalArgumentException e) {
+                return null;
+            }
+            catch (IllegalAccessException e) {
+                return null;
+            }	
 		}
 		
+        @Override
 	public Directive resolveDirective( 
 		VarContext context, String directiveName ) //, String scriptInput ) 
 	{
-		if( LOG.isTraceEnabled() ) { LOG.trace( "   resolving directive \"" + directiveName + "\""  ); }
+		if( LOG.isTraceEnabled() ) 
+        { 
+            LOG.trace( "   resolving directive \"" + directiveName + "\""  ); 
+        }
 		// 1) see if the script is loaded in the context
 		String directiveLookupName = "$" + directiveName ;
-		if( LOG.isTraceEnabled() ) { LOG.trace( "   1) checking context for \"" + directiveLookupName + "\""  ); }
+		if( LOG.isTraceEnabled() ) 
+        { 
+            LOG.trace( "   1) checking context for \"" + directiveLookupName + "\""  ); 
+        }
 		Object directive = context.get( directiveLookupName );
 		if( directive != null )
 		{
@@ -168,24 +184,30 @@ public enum Resolve
 				directiveName.length() );
 			
 			String theClassName = directiveName.substring( 0, indexOfLastDot );
-			if( LOG.isTraceEnabled() ) { LOG.trace( "   3) checking for class \"" + theClassName + "\" for static method \"" + theMethodName + "\""  ); }
+			if( LOG.isTraceEnabled() ) 
+            { 
+                LOG.trace( "   3) checking for class \"" + theClassName + "\" for static method \"" + theMethodName + "\""  ); 
+            }
 			
 			Class<?> clazz = getClassForName( theClassName );
 			
 			if( clazz != null )
 			{	
-				if( LOG.isTraceEnabled() ) {
+				if( LOG.isTraceEnabled() ) 
+                {
 					LOG.trace( "  resolved class \"" + clazz  + "\"" );
 				}
 				//does the class implement Directive?
 				if( Directive.class.isAssignableFrom( clazz  ) )
 				{
-					if( LOG.isTraceEnabled() ) {
+					if( LOG.isTraceEnabled() ) 
+                    {
 						LOG.trace( "  class \"" + clazz  + "\" is a VarScript" );
 					}
 					if( clazz.isEnum() )
 					{
-						if( LOG.isTraceEnabled() ) {
+						if( LOG.isTraceEnabled() ) 
+                        {
 							LOG.trace( "  class \"" + clazz  + "\" is a VarScript & an enum " );
 						}
 						return (Directive)clazz.getEnumConstants()[ 0 ];
@@ -199,11 +221,15 @@ public enum Resolve
 					{   LOG.trace( "  trying to create (no-arg) instance of \"" + clazz  + "\" as VarScript" );
 						return (Directive )clazz.newInstance();
 					}
-					catch( Exception e )
+					catch( InstantiationException e )
 					{
 						LOG.trace( "  failed creating a (no-arg) instance of \"" + clazz  + "\" as VarScript" );
 						return null;
 					}
+                    catch (IllegalAccessException e) {
+                        LOG.trace( "  failed creating a (no-arg) instance of \"" + clazz  + "\" as VarScript" );
+                        return null;
+                    }
 				}
 				else
 				{   //found a class, now find the method, (just chooses the first one by this name)
@@ -274,6 +300,7 @@ public enum Resolve
 			}			
 		}
 
+        @Override
 		public Object eval( VarContext context, String input ) 
 		{
 			try 
@@ -298,12 +325,14 @@ public enum Resolve
 			}
 		}
 		
+        @Override
 		public void collectAllVarNames( Set<String> collection, String input ) 
 		{
 			//do nothing
 			//return collection;
 		}
 		
+        @Override
 		public String toString()
 		{
 			return "Wrapper to " + method.toString();
@@ -375,19 +404,38 @@ public enum Resolve
 				}
 				return null;
 			}
-			catch( Exception e )
+			catch( NoSuchFieldException e )
 			{							
 				return null;
 			}	
+            catch (SecurityException e) 
+            {
+                return null;
+            }
+            catch (IllegalArgumentException e) 
+            {
+                return null;
+            }
+            catch (IllegalAccessException e) 
+            {
+                return null;
+            }	
 		}
 		
+        @Override
 		public VarScript resolveScript( 
 			VarContext context, String scriptName, String scriptInput ) 
 		{
-			if( LOG.isTraceEnabled() ) { LOG.trace( "   resolving script \"" + scriptName + "\""  ); }
+			if( LOG.isTraceEnabled() ) 
+            { 
+                LOG.trace( "   resolving script \"" + scriptName + "\""  ); 
+            }
 			// 1) see if the script is loaded in the context
 			String scriptLookupName = "$" + scriptName ;
-			if( LOG.isTraceEnabled() ) { LOG.trace( "   1) checking context for \"" + scriptLookupName + "\""  ); }
+			if( LOG.isTraceEnabled() ) 
+            { 
+                LOG.trace( "   1) checking context for \"" + scriptLookupName + "\""  ); 
+            }
 			Object vs = context.get( scriptLookupName );
 			if( vs != null )
 			{
@@ -404,7 +452,10 @@ public enum Resolve
 			
 			if( markupClass != null )
 			{
-				if( LOG.isTraceEnabled() ) { LOG.trace( "   2) checking \"" + markupClass + "\" for static method \"" + scriptName + "\""  ); }
+				if( LOG.isTraceEnabled() ) 
+                { 
+                    LOG.trace( "   2) checking \"" + markupClass + "\" for static method \"" + scriptName + "\""  ); 
+                }
 				VarScript markupClassScript = findStaticMethod( 
 					context,  
 					(Class<?>) markupClass, 
@@ -413,8 +464,11 @@ public enum Resolve
 				
 				if( markupClassScript != null )
 				{
-					if( LOG.isTraceEnabled() ) { 
-						LOG.trace( "   Found VarScript as method \"" + scriptName + "\" from MarkupClass \"" + markupClass + "\""  ); }
+					if( LOG.isTraceEnabled() ) 
+                    { 
+						LOG.trace( "   Found VarScript as method \"" 
+                            + scriptName + "\" from MarkupClass \"" + markupClass + "\""  ); 
+                    }
 					return markupClassScript;
 				}				
 			}
@@ -433,7 +487,10 @@ public enum Resolve
 			
 			if( indexOfLastDot > 0 )
 			{
-				if( LOG.isTraceEnabled() ) { LOG.trace( "   3) checking for class \"" + scriptName + ".class\"" ); }
+				if( LOG.isTraceEnabled() ) 
+                { 
+                    LOG.trace( "   3) checking for class \"" + scriptName + ".class\"" ); 
+                }
 				Class<?> clazz = getClassForName( scriptName );				
 				if( clazz != null && VarScript.class.isAssignableFrom( clazz ) )
 				{	
@@ -459,24 +516,31 @@ public enum Resolve
 					scriptName.length() );
 				
 				String theClassName = scriptName.substring( 0, indexOfLastDot );
-				if( LOG.isTraceEnabled() ) { LOG.trace( "   4) checking for class \"" + theClassName + "\" for static method \"" + theMethodName + "\""  ); }
+				if( LOG.isTraceEnabled() ) 
+                { 
+                    LOG.trace( "   4) checking for class \"" + theClassName 
+                        + "\" for static method \"" + theMethodName + "\""  ); 
+                }
 				
 				clazz = getClassForName( theClassName );
 				
 				if( clazz != null )
 				{	
-					if( LOG.isTraceEnabled() ) {
+					if( LOG.isTraceEnabled() ) 
+                    {
 						LOG.trace( "  resolved class \"" + clazz  + "\"" );
 					}
 					//does the class implement VarScript?
 					if( VarScript.class.isAssignableFrom( clazz  ) )
 					{
-						if( LOG.isTraceEnabled() ) {
+						if( LOG.isTraceEnabled() ) 
+                        {
 							LOG.trace( "  class \"" + clazz  + "\" is a VarScript" );
 						}
 						if( clazz.isEnum() )
 						{
-							if( LOG.isTraceEnabled() ) {
+							if( LOG.isTraceEnabled() ) 
+                            {
 								LOG.trace( "  class \"" + clazz  + "\" is a VarScript & an enum " );
 							}
 							return (VarScript)clazz.getEnumConstants()[ 0 ];
@@ -490,15 +554,20 @@ public enum Resolve
 						{   LOG.trace( "  trying to create (no-arg) instance of \"" + clazz  + "\" as VarScript" );
 							return (VarScript)clazz.newInstance();
 						}
-						catch( Exception e )
+						catch( InstantiationException e )
 						{
 							LOG.trace( "  failed creating a (no-arg) instance of \"" + clazz  + "\" as VarScript" );
 							return null;
 						}
+                        catch (IllegalAccessException e) {
+                            LOG.trace( "  failed creating a (no-arg) instance of \"" + clazz  + "\" as VarScript" );
+                            return null;
+                        }
 					}
 					else
 					{   //found a class, now find the method, (just chooses the first one by this name)
-						if( LOG.isTraceEnabled() ) {
+						if( LOG.isTraceEnabled() ) 
+                        {
 							LOG.trace( "  resolving static Method \"" + theMethodName 
 								+ "\" on class \"" + clazz + "\"" );
 						}
@@ -530,6 +599,7 @@ public enum Resolve
 		 *   <LI>a value within the {@code ScopeBindings}
 		 * </UL>   
 		 */
+        @Override
 		public Object resolveVar( VarContext context, String varName ) 
 		{
 			if( varName == null || varName.trim().length() == 0 )
