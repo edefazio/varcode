@@ -22,6 +22,7 @@ import varcode.doc.DocState;
 public abstract class ContextValidator
 	implements Directive.PreProcessor
 {	
+    @Override
 	public void preProcess( DocState tailorState ) 
 	{
 		validateContext( tailorState.getContext() );
