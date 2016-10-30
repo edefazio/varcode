@@ -99,6 +99,15 @@ public class _parameters
 		this.params.add( param );
 		return this;
 	}
+    
+    public _parameters add( _parameters params )
+    {
+        for( int i = 0; i < params.count(); i++ )
+        {
+            this.params.add( params.getAt( i ) );
+        }
+        return this;
+    }
 	
 	public int count()
 	{
