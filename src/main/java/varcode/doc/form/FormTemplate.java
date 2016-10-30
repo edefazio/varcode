@@ -139,19 +139,21 @@ public class FormTemplate
         this.blankFillerMarks = embeddedMarkSequence
             .toArray( new Mark.BlankFiller[ embeddedMarkSequence.size() ] );
     }
-
     
+    @Override
     public Mark[] getMarks()
     {
         return marks;
     }
 
     
+    @Override
     public BlankFiller[] getBlankFillers()
     {
         return blankFillerMarks;
     }
 
+    @Override
     public int getBlanksCount()
     {
         return blankFillerMarksTemplate.getBlanksCount();
@@ -172,6 +174,7 @@ public class FormTemplate
         return theForms.toArray( new Form[ 0 ] );
     }
 
+    @Override
     public BitSet getMarkIndicies()
     {
         return this.markIndicies;
@@ -180,6 +183,7 @@ public class FormTemplate
     /* (non-Javadoc)
      * @see varcode.VarCodeMark#getFillBlanks()
      */
+    @Override
     public FillTemplate getFillTemplate()
     {
         return blankFillerMarksTemplate;
@@ -199,6 +203,7 @@ public class FormTemplate
         return this.markTemplate.fill( (Object[])markFills );
     }
 
+    @Override
     public String toString()
     {
         return getMarkup() + "\r\n"
