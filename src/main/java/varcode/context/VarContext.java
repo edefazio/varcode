@@ -57,8 +57,7 @@ public class VarContext
     
     public static VarContext ofScope( VarScope scope, Object... nameValuePairs )
     {    	
-        return ofScope( scope.getValue(), nameValuePairs );
-        
+        return ofScope( scope.getValue(), nameValuePairs );        
     }
 
     public static VarContext ofScope( int scope, Object... nameValuePairs )
@@ -99,8 +98,7 @@ public class VarContext
 
     protected VarContext( ScopeBindings scopeBindings )
     {
-        this.scopeBindings = scopeBindings;
-         
+        this.scopeBindings = scopeBindings;         
     }  
     
     public ScopeBindings getScopeBindings()
@@ -192,7 +190,11 @@ public class VarContext
         return ScopeBindings.ALL_SCOPES;
     }
     
-    /** The scope of the var with name, -1 if not found */
+    /** 
+     * The scope of the var with name, -1 if not found
+     * @param name the name of the variable
+     * @return the scope
+     */
     public int getScopeOf( String name )
     {
         return scopeBindings.getScopeOf( name );
@@ -208,6 +210,7 @@ public class VarContext
         return null;
     }
     
+    @Override
     public String toString()
     {
     	return "_____________________________________________________" 
@@ -286,5 +289,4 @@ public class VarContext
 	{
 		return getExpressionEvaluator().evaluate( this, expression );
 	}
-
 }
