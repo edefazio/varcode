@@ -16,7 +16,7 @@ import varcode.java.model._constructors._constructor;
 import varcode.java.model._enum._valueConstructs._valueConstruct;
 import varcode.java.model._methods._method;
 import varcode.java.model._nest._nestGroup;
-import varcode.java.model._nest.component;
+import varcode.java.model._component;
 import varcode.markup.bindml.BindML;
 import varcode.Model;
 
@@ -25,7 +25,7 @@ import varcode.Model;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _enum
-	implements JavaCaseAuthor, _nest.component
+	implements JavaCaseAuthor, _component
 {
 	private _package enumPackage = new _package( "" ); 
 	private _imports imports = new _imports();
@@ -91,19 +91,31 @@ public class _enum
     public _enum bind( VarContext context )
     {
         this.enumPackage.bind( context);
-        this.imports.bind(context);
-        this.javadoc.bind(context);
-        this.annotations.bind(context);
-        this.enumSignature.bind(context);
-        this.constructors.bind(context);
-        this.staticBlock.bind(context);
-        this.fields.bind(context);
-        this.values.bind(context);
-        this.methods.bind(context);
-        this.nests.bind(context);
+        this.imports.bind( context );
+        this.javadoc.bind( context );
+        this.annotations.bind( context );
+        this.enumSignature.bind( context );
+        this.constructors.bind( context );
+        this.staticBlock.bind( context );
+        this.fields.bind( context );
+        this.values.bind( context );
+        this.methods.bind( context );
+        this.nests.bind( context );
         return this;
     }
     
+    /** sets the name of the class, (and the constructors) and return */
+    public _enum setName( String name )
+    {
+        this.getSignature().enumName = name;
+        _constructors cs = this.getConstructors();
+        for(int i=0; i< cs.count(); i++ )
+        {
+            cs.getAt( i ).setName( name );
+        }
+        return this;
+    }
+        
     @Override
     public String getName()
     {
@@ -135,7 +147,7 @@ public class _enum
 			String[] nested = new String[nests.count()];
 			for( int i = 0; i < nests.count(); i++ )
 			{
-				component comp = nests.components.get( i );
+				_component comp = nests.components.get( i );
 				VarContext vc = comp.getContext();
 				vc.getScopeBindings().remove("pckage");
 				vc.getScopeBindings().remove("imports");
@@ -392,7 +404,7 @@ public class _enum
 		return this;
 	}
 	
-	public _enum nest( _nest.component component )
+	public _enum nest( _component component )
 	{
 		this.nests.add( component );
 		return this;

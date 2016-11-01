@@ -125,8 +125,8 @@ public class _interfaceTest
 		sig = _signature.of(
 		    "public static final interface MyInterface extends Something, AndSomethingElse");
 		//assertEquals( 2, sig.extendsFrom.extendsFrom.size() );
-		assertEquals( "Something", sig.getExtends().get(0).toString() );
-		assertEquals( "AndSomethingElse", sig.getExtends().get(1).toString() );
+		assertEquals( "Something", sig.getExtends().getAt(0).toString() );
+		assertEquals( "AndSomethingElse", sig.getExtends().getAt(1).toString() );
 		
 	}
 	

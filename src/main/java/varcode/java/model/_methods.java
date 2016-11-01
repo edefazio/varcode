@@ -418,6 +418,25 @@ public class _methods
 				directives );
 		}
 		
+        public String getReturnType()
+        {
+            return this.signature.getReturnType();
+        }
+                
+        public _modifiers getModifiers()
+        {
+            return this.signature.getModifiers();
+        }
+        
+        public _parameters getParameters()
+        {
+            return this.signature.getParameters();
+        }
+        public _throws getThrownExceptions()
+        {
+            return this.signature.getThrownExceptions();
+        }
+        
 		public static class _signature
             implements Model
         {                    

@@ -21,7 +21,6 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeWithModifiers;
-import com.github.javaparser.ast.TypeParameter;
 import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
@@ -43,12 +42,14 @@ import varcode.java.model._code;
 import varcode.java.model._constructors._constructor;
 import varcode.java.model._fields._field;
 import varcode.java.model._fields._init;
+import varcode.java.model._interface;
 import varcode.java.model._javadoc;
 import varcode.java.model._methods;
+import varcode.java.model._methods._method;
 import varcode.java.model._modifiers;
 import varcode.java.model._parameters;
 import varcode.java.model._throws;
-import varcode.java.model.load.JavaModelLoader.ModelLoadException;
+import varcode.java.model.load._JavaLoader.ModelLoadException;
 
 /**
  * Uses the JavaParser to Parse the input text file (.java file) into an AST
@@ -57,22 +58,22 @@ import varcode.java.model.load.JavaModelLoader.ModelLoadException;
  * 
  * @author M. Eric DeFazio eric@varcode.io
  */
-public enum JavaModelParser
+public enum _JavaParser
 {
     ;
             
-    public static CompilationUnit fromInputStream( InputStream is )            
+    public static CompilationUnit from( InputStream is )            
         throws ParseException
     {
         return JavaParser.parse( is );           
     }
         
-    public static CompilationUnit fromString( String string )
+    public static CompilationUnit from( String string )
         throws ParseException
     {
         ByteArrayInputStream bais = 
             new ByteArrayInputStream( string.getBytes() );
-        return fromInputStream( bais );
+        return _JavaParser.from( bais );
     }
     
     public static ClassOrInterfaceDeclaration findMemberNode( 
@@ -106,30 +107,13 @@ public enum JavaModelParser
                     }
                 }
             }
-        }
-        
-        List<Node> nodes = cu.getChildrenNodes();
-        //List<Node>nextLevel = new ArrayList<Node>();
-        /*
-        System.out.println( "LOOKING FOR "+ clazz.getSimpleName() +" IN CHILD NODES");
-        for( int i = 0; i < nodes.size(); i++ )
-        {
-            if( nodes.get( i ) instanceof ClassOrInterfaceDeclaration )
-            {
-                //System.out.println( "FOUND " + td.getName() );
-                
-                ClassOrInterfaceDeclaration ci = 
-                    (ClassOrInterfaceDeclaration)nodes.get( i );
-                if( clazz.getName().endsWith( ci.getName() ) )
-                {
-                    return ci;
-                }
-            }
-        }
-        */
+        }        
+        //List<Node> nodes = cu.getChildrenNodes();
         throw new ModelLoadException( 
-            "Could not find class declaration for \""+clazz.getCanonicalName()+"\"" );
+            "Could not find class declaration for \""
+            + clazz.getCanonicalName() + "\"" );
     }
+    
     
     public static ClassOrInterfaceDeclaration getClassNode( CompilationUnit cu )
     {
@@ -140,10 +124,7 @@ public enum JavaModelParser
             {
                 ClassOrInterfaceDeclaration ci = 
                     (ClassOrInterfaceDeclaration)nodes.get( i );
-                if( !ci.isInterface() )
-                {
-                    return ci;
-                }
+                return ci;                
             }
         }
         throw new VarException( "Could not find class declaration" );
@@ -161,10 +142,140 @@ public enum JavaModelParser
         }
     }
     
-    /**
-     * 
-     */
-    public enum ClassModel
+    public enum _Interface
+    {
+        ;
+            
+        public static _interface from( 
+            CompilationUnit cu, ClassOrInterfaceDeclaration _interfaceDecl )
+        {   
+            if( !_interfaceDecl.isInterface() )
+            {
+                throw new ModelLoadException( 
+                    _interfaceDecl.getName() + " NOT an interface" );
+            }
+            _interface _int = null;
+            if( cu.getPackage() != null )
+            {
+                _int = _interface.of( cu.getPackage().getPackageName(), "interface " +_interfaceDecl.getName() );
+            }
+            else
+            {
+                _int = _interface.of( "interface "+ _interfaceDecl.getName() );
+            }
+            _int.getSignature().setModifiers( _modifiers.of( _interfaceDecl.getModifiers() ) );
+            
+            if( _interfaceDecl.getJavaDoc() != null )
+            {
+                _int.javadoc( _interfaceDecl.getJavaDoc().getContent() );
+            }
+            List<AnnotationExpr>annots = _interfaceDecl.getAnnotations();
+            for( int i = 0; i < annots.size(); i++ )
+            {
+                _int.annotate( annots.get( i ).toString() );
+            }
+            List<ClassOrInterfaceType>ext = _interfaceDecl.getExtends();
+            if( ext != null && ext.size() == 1 )
+            {
+                _int.getSignature().getExtends().addExtends( ext.get( 0 ).getName() );
+            }
+        
+            List<ImportDeclaration>imports = cu.getImports();
+        
+            for( int i = 0; i < imports.size(); i++ )
+            {
+                if( imports.get(i).isStatic() )
+                {
+                    _int.importsStatic( 
+                        imports.get( i ).getName().toStringWithoutComments()+ ".*" );
+                }
+                else
+                {
+                    _int.imports(  imports.get( i ).getName().toStringWithoutComments() );
+                }
+            }
+            List<BodyDeclaration> members = _interfaceDecl.getMembers();
+        
+            for( int i = 0; i < members.size(); i++ )
+            {
+                BodyDeclaration member = members.get( i );
+                if( member instanceof MethodDeclaration )
+                {
+                    MethodDeclaration md = (MethodDeclaration) member;
+                    
+                    String methd  = md.getDeclarationAsString( true, true, true );
+                    //System.out.println( "MethodDeclaration" + methd);
+                    
+                    List<AnnotationExpr> ann = md.getAnnotations();
+                    _method meth = null;
+                    if( md.getBody() != null )
+                    {
+                        String body = md.getBody().toString();
+                        body = body.substring( body.indexOf('{')+1, body.lastIndexOf( "}") ).trim();
+                        meth = _method.of( methd, _code.of( body ) );  
+                    }
+                    else
+                    {
+                        meth = _method.of( methd );  
+                    }
+                    if( md.getJavaDoc() == null )
+                    {                       
+                        meth.javadoc( md.getJavaDoc().getContent() );
+                    }
+                    
+                    for( int k = 0; k < ann.size(); k++ )
+                    {
+                        meth.annotate( ann.get( k ).toString() );
+                    }
+                    _int.method( meth );
+                }
+                else if( member instanceof FieldDeclaration ) 
+                {
+                    FieldDeclaration fd = (FieldDeclaration) member;
+
+                    //they could be doing this:
+                    //int a,b,c;
+                    JavadocComment jd = fd.getJavaDoc();
+                    List<VariableDeclarator>vars = fd.getVariables();
+                    List<AnnotationExpr>ann = fd.getAnnotations();
+                    for( int j = 0; j < vars.size(); j++ )
+                    {
+                        String name = vars.get( j ).getId().getName();
+                        String init = null;
+                        if( vars.get( j ).getInit() != null )
+                        {
+                            init = vars.get( j ).getInit().toString();
+                        }
+                        String type = fd.getType().toString();
+                        _modifiers mods = _modifiers.of( fd.getModifiers() );
+                        
+                        _field f = null;
+                        if( init == null || init.trim().length() == 0 )
+                        {
+                            f = new _field( mods, type, name );
+                        }
+                        else
+                        {
+                            f = new _field( mods, type, name, _init.of( init ) ); 
+                        }
+                        for( int k = 0; k < ann.size(); k++ )
+                        {
+                            f.annotate( ann.get( k ).toString() );
+                        }
+                        //todo I need to clean this up
+                        if( jd != null)
+                        {
+                            f.javadoc( jd.getContent() );
+                        }
+                        _int.field( f );
+                    }                                   
+                }
+            }            
+            return _int;
+        }    
+    }
+    
+    public enum _Class
     {
         ;
             
@@ -182,6 +293,12 @@ public enum JavaModelParser
             {
                 c = _class.of( classDecl.getName() );
             }
+            JavadocComment jd = classDecl.getJavaDoc();
+            if( jd != null )
+            {
+                c.javadoc( jd.getContent() );
+            }
+            
             c.getSignature().setModifiers( _modifiers.of( classDecl.getModifiers()) );
             for( int i = 0; i < annots.size(); i++ )
             {
@@ -277,7 +394,8 @@ public enum JavaModelParser
                     body = body.substring( body.indexOf('{')+1, body.lastIndexOf( "}") ).trim();
                     if( md.getJavaDoc() == null )
                     {
-                        _methods._method meth = _methods._method.of( methd, _code.of( body ) );      
+                        _methods._method meth = _methods._method.of( methd, _code.of( body ) );     
+                        
                         for( int k = 0; k < ann.size(); k++ )
                         {
                             meth.annotate( ann.get( k ).toString() );
@@ -287,7 +405,7 @@ public enum JavaModelParser
                     else
                     {
                         _methods._method meth = _methods._method.of( 
-                            md.getJavaDoc().getContent().toString(), methd, body );      
+                            md.getJavaDoc().getContent(), methd, body );      
                         for( int k = 0; k < ann.size(); k++ )
                         {
                             meth.annotate( ann.get( k ).toString() );
@@ -309,7 +427,7 @@ public enum JavaModelParser
                     
                     //they could be doing this:
                     //int a,b,c;
-                    JavadocComment jd = fd.getJavaDoc();
+                    JavadocComment fjd = fd.getJavaDoc();
                     List<VariableDeclarator>vars = fd.getVariables();
                     List<AnnotationExpr>ann = fd.getAnnotations();
                     for( int j = 0; j < vars.size(); j++ )
@@ -337,7 +455,10 @@ public enum JavaModelParser
                             f.annotate( ann.get( k ).toString() );
                         }
                         //todo I need to clean this up
-                        f.javadoc( jd.getContent() );
+                        if( fjd != null)
+                        {
+                            f.javadoc( fjd.getContent() );
+                        }
                         c.field( f );
                     }
                     

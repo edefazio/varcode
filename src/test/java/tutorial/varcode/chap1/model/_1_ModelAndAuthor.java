@@ -6,6 +6,8 @@ import java.lang.reflect.Modifier;
 import java.util.Random;
 import java.util.UUID;
 import junit.framework.TestCase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import varcode.java.model._class;
 import varcode.java.model._enum;
 import varcode.java.model._interface;
@@ -23,6 +25,9 @@ import varcode.java.model._interface;
 public class _1_ModelAndAuthor
     extends TestCase
 {    
+    private static final Logger LOG = 
+        LoggerFactory.getLogger( _1_ModelAndAuthor.class );
+    
     static _interface _idInterface = _interface.of(
         "tutorial.varcode.chap1.model",
         "public interface CreatesId extends Serializable" )
@@ -31,7 +36,7 @@ public class _1_ModelAndAuthor
     
     public void testAuthorInterface()
     {
-        System.out.println( _idInterface.author( ) );        
+        LOG.debug( _idInterface.author( ) );        
     }
     
     static _class _prefixIdClass = _class.of( 
@@ -47,7 +52,7 @@ public class _1_ModelAndAuthor
         
     public void testAuthorClass()
     {
-        System.out.println( _prefixIdClass.author( ) );
+        LOG.debug( _prefixIdClass.author( ) );
     }
     
     static _enum _idEnum = _enum.of( 
@@ -63,7 +68,7 @@ public class _1_ModelAndAuthor
     
     public void testAuthorEnum()
     {
-        System.out.println( _idEnum.author( ) );        
+        LOG.debug( _idEnum.author( ) );        
     }
     
     
@@ -78,7 +83,7 @@ public class _1_ModelAndAuthor
         //set the nested class to be public static
         _nestedClass.getSignature().setModifiers( Modifier.PUBLIC, Modifier.STATIC );
         _topInterface.nest( _nestedClass );
-        System.out.println(  _topInterface );
+        LOG.debug( _topInterface.author( ) );
     }
     
     //concepts:

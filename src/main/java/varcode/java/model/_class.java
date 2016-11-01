@@ -15,7 +15,6 @@ import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.model._fields._field;
 import varcode.java.model._methods._method;
 import varcode.java.model._nest._nestGroup;
-import varcode.java.model._nest.component;
 import varcode.markup.bindml.BindML;
 import varcode.Model;
 import varcode.java.model._constructors._constructor;
@@ -32,7 +31,7 @@ import varcode.java.model._constructors._constructor;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _class    
-	implements JavaCaseAuthor, _nest.component
+	implements JavaCaseAuthor, _component
 {	
 	private _package classPackage;
 	private _imports imports;
@@ -192,6 +191,21 @@ public class _class
         return Compose.asString( CLASS, getContext(), directives );			
 	}
 	
+    public _modifiers getModifiers()
+    {
+        return this.signature.getModifiers();
+    }
+    
+    public _extends getExtends()
+    {
+        return this.signature.getExtends();                
+    }
+    
+    public _implements getImplements()
+    {
+        return this.signature.getImplements();
+    }
+    
     public _annotations getAnnotations()
     {
         return this.annotations;
@@ -208,7 +222,7 @@ public class _class
 			String[] nested = new String[ nests.count() ];
 			for( int i = 0; i < nests.count(); i++ )
 			{
-				component comp = nests.components.get( i );
+				_component comp = nests.components.get( i );
 				VarContext vc = comp.getContext();
 				
 				//inner classes inherit package, so remove the package
@@ -357,8 +371,6 @@ public class _class
         return toJavaCase().instance( classLoader, constructorArgs );
     }
     
-   
-
     /**
      * <UL>
      *  <LI>Binds in the context into the _class and (optional) directives
@@ -613,7 +625,7 @@ public class _class
 		return this;
 	}
 	
-	public _class nest( _nest.component component )
+	public _class nest( _component component )
 	{
 		this.nests.add( component );
 		return this;
@@ -660,6 +672,31 @@ public class _class
         return this.methods;
     }
     
+    /** 
+     * For <B>NON-Overloaded methods</B>, returns if there is 
+     * <B>only ONE method</B> with this <B>exact name
+     * @param name the name of the method to find
+     * @return the ONLY method that has this name, 
+     * - or - null if there are no methods with this name
+     * - or - VarException if there are more than one method with this name
+     * @throws ModelException if more than one method has this name
+     */ 
+    public _method getMethodNamed( String name )
+        throws ModelException
+    {
+        List<_method>methods = getMethodsByName( name );
+        if( methods == null || methods.isEmpty() )
+        {
+            return null;
+        }
+        if( methods.size() > 1 )
+        {
+            throw new ModelException(
+                "Multiple Methods have name \"" + name + "\"; ambiguous query" );
+        }
+        return methods.get( 0 );        
+    }
+    
     public List<_method> getMethodsByName( String name )
     {
         return this.methods.getByName( name );
@@ -668,6 +705,17 @@ public class _class
     public _nestGroup getNests()
     {
         return this.nests;
+    }
+    
+    public _class setName( String name )
+    {
+        this.getSignature().className = name;
+        _constructors cs = this.getConstructors();
+        for(int i=0; i< cs.count(); i++ )
+        {
+            cs.getAt( i ).setName( name );
+        }
+        return this;
     }
     
     public _staticBlock getStaticBlock()
@@ -962,11 +1010,6 @@ public class _class
 			}
 			return sig;		
 		}	
-
-        public void setModifiers(String apublic)
-        {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
 	}
 
 	//move this to enum and interface

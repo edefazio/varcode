@@ -23,10 +23,10 @@ import java.io.InputStream;
 import varcode.Model.ModelException;
 
 import varcode.java.model._class;
+import varcode.java.model._interface;
 import varcode.source.BaseSourceLoader;
 import varcode.source.SourceLoader;
 import varcode.source.SourceLoader.SourceStream;
-
 
 /**
  * Similar to a Class loader, but instead loads "Models"
@@ -55,7 +55,7 @@ import varcode.source.SourceLoader.SourceStream;
  * 
  * @author Eric DeFazio eric@varcode.io
  */
-public class JavaModelLoader
+public class _JavaLoader
 {    
     /**
      * 
@@ -79,14 +79,84 @@ public class JavaModelLoader
         }
     }
     
-    public static class ClassModel
-    {   
-        public static _class fromClass( Class clazz )
+    public static class _Interface
+    {        
+        public static _interface from( Class clazz )
         {
-            return fromClass( BaseSourceLoader.INSTANCE, clazz );
+            return from( BaseSourceLoader.INSTANCE, clazz );
         }
         
-        public static _class fromClass( SourceLoader sourceLoader, Class clazz )
+        public static _interface from( SourceLoader sourceLoader, Class clazz )
+        {
+            if( !clazz.isInterface() )
+            {
+                throw new ModelLoadException( 
+                    clazz.getCanonicalName() +" is NOT an Interface " );
+            }
+            if( clazz.isMemberClass() )
+            {
+                //need to extract the Nodes from within the declared class
+                SourceStream ss = null;
+                try
+                {
+                    System.out.println( "IS MEMBER INTERFACE ");
+                    // we have to find the source of the Member class WITHIN the 
+                    // source of the declaring class
+                    Class declaringClass = clazz.getDeclaringClass();
+                    ss = sourceLoader.sourceStream( 
+                        declaringClass.getCanonicalName() + ".java" );    
+                    
+                    if( ss == null )
+                    {
+                        throw new ModelLoadException(
+                            "Unable to find source for \"" + declaringClass + 
+                            "\" with " + sourceLoader.describe() );
+                    }
+                    //Parse the Declaring Class into an AST
+                    CompilationUnit cu = 
+                        _JavaParser.from( ss.getInputStream() );
+                    
+                    ClassOrInterfaceDeclaration interfaceDecl = 
+                        _JavaParser.findMemberNode( cu, clazz );
+                    
+                    return _JavaParser._Interface.from( cu, interfaceDecl );
+                }
+                catch( ParseException pe )
+                {
+                    throw new ModelLoadException(
+                        "Error Parsing Source "+ ss.describe(), pe );
+                }                
+            }
+            //top Level Interface
+            SourceStream ss = 
+                BaseSourceLoader.INSTANCE.sourceStream( clazz );        
+            try 
+            {
+                // parse the file
+                //CompilationUnit cu = JavaParser.parse( ss.getInputStream() );
+                CompilationUnit cu = 
+                    _JavaParser.from( ss.getInputStream() );
+                
+                ClassOrInterfaceDeclaration classDecl = _JavaParser.getClassNode( cu );
+                return _JavaParser._Interface.from( cu, classDecl );
+            }    
+            catch( ParseException pe )
+            {
+                throw new ModelLoadException(
+                    "Unable to parse Interface Source for \"" + clazz + "\" from " 
+                    + sourceLoader.describe(), pe );
+            }        
+        }
+    }
+    
+    public static class _Class
+    {   
+        public static _class from( Class clazz )
+        {
+            return _Class.from( BaseSourceLoader.INSTANCE, clazz );
+        }
+        
+        public static _class from( SourceLoader sourceLoader, Class clazz )
         {
             if( clazz.isMemberClass() )
             {
@@ -103,17 +173,17 @@ public class JavaModelLoader
                     {
                         throw new ModelLoadException(
                             "Unable to find source for \"" + declaringClass + 
-                            "\" with "+sourceLoader.describe() );
+                            "\" with " + sourceLoader.describe() );
                     }
                     
                     //Parse the Declaring Class into an AST
                     CompilationUnit cu = 
-                        JavaModelParser.fromInputStream( ss.getInputStream() );
+                        _JavaParser.from( ss.getInputStream() );
                     
                     ClassOrInterfaceDeclaration classDecl = 
-                        JavaModelParser.findMemberNode( cu, clazz );
+                        _JavaParser.findMemberNode( cu, clazz );
                     
-                    return JavaModelParser.ClassModel.fromCompilationUnit( cu, classDecl );
+                    return _JavaParser._Class.fromCompilationUnit( cu, classDecl );
                 }
                 catch( ParseException pe )
                 {
@@ -128,10 +198,10 @@ public class JavaModelLoader
                 // parse the file
                 //CompilationUnit cu = JavaParser.parse( ss.getInputStream() );
                 CompilationUnit cu = 
-                    JavaModelParser.fromInputStream( ss.getInputStream() );
+                    _JavaParser.from( ss.getInputStream() );
                 
-                ClassOrInterfaceDeclaration classDecl = JavaModelParser.getClassNode( cu );
-                return JavaModelParser.ClassModel.fromCompilationUnit( cu, classDecl );
+                ClassOrInterfaceDeclaration classDecl = _JavaParser.getClassNode( cu );
+                return _JavaParser._Class.fromCompilationUnit( cu, classDecl );
             }    
             catch( ParseException pe )
             {
@@ -142,16 +212,16 @@ public class JavaModelLoader
         }
         
         
-        public static _class fromInputStream( InputStream sourceInputStream )
+        public static _class from( InputStream sourceInputStream )
         {
             try 
             {
                 // parse the file
                 CompilationUnit cu = 
-                    JavaModelParser.fromInputStream( sourceInputStream );
+                    _JavaParser.from( sourceInputStream );
                 
-                ClassOrInterfaceDeclaration classDecl = JavaModelParser.getClassNode( cu );
-                return JavaModelParser.ClassModel.fromCompilationUnit( cu, classDecl );
+                ClassOrInterfaceDeclaration classDecl = _JavaParser.getClassNode( cu );
+                return _JavaParser._Class.fromCompilationUnit( cu, classDecl );
             }    
             catch( ParseException pe )
             {
@@ -160,16 +230,16 @@ public class JavaModelLoader
             }                     
         }
         
-        public static _class fromString( String classSource )
+        public static _class from( String classSource )
         {
             try 
             {
                 // parse the file
                 CompilationUnit cu = 
-                    JavaModelParser.fromString( classSource );
+                    _JavaParser.from( classSource );
                 
-                ClassOrInterfaceDeclaration classDecl = JavaModelParser.getClassNode( cu );
-                return JavaModelParser.ClassModel.fromCompilationUnit( cu, classDecl );
+                ClassOrInterfaceDeclaration classDecl = _JavaParser.getClassNode( cu );
+                return _JavaParser._Class.fromCompilationUnit( cu, classDecl );
             }    
             catch( ParseException pe )
             {
@@ -178,5 +248,6 @@ public class JavaModelLoader
             }
         }        
     }
+    
     public static final String N = System.lineSeparator();
 }

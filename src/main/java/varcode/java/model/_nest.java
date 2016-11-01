@@ -28,45 +28,19 @@ import varcode.java.model._fields;
 public interface _nest 
 {	
     /**
-     * A Component that can be nested (_class, _enum, _interface)
-     * within a top level model (_class, _enum, _interface)
-     */
-	public interface component 
-	    extends Model
-	{
-        /** @reurn the name of this component (simple name)*/
-        String getName();
-        
-        /** @return the Dom of the component */
-		Dom getDom();
-		
-		/** @return the context for this nest component */
-		VarContext getContext();
-		
-		/** @return all imports for this component */
-		_imports getImports();
-        
-        /** @return  the fields for this component */
-        _fields getFields();
-        
-        /** @return the _methods for this component */
-        _methods getMethods();
-	}
-	
-    /**
      * a grouping of all nested (classes, enums, interfaces)
      * 
      */
 	public static class _nestGroup
         implements Model
     {        
-		public List<component>components = new ArrayList<component>();
+		public List<_component>components = new ArrayList<_component>();
 
 		public _nestGroup()
 		{			
 		}
 		
-        public component getByName( String name )
+        public _component getByName( String name )
         {
             for( int i = 0; i < components.size(); i++ )
             {
@@ -78,7 +52,7 @@ public interface _nest
             return null;
         }
         
-		public _nestGroup add( component component )
+		public _nestGroup add( _component component )
 		{
 			this.components.add( component );
 			return this;
@@ -143,12 +117,12 @@ public interface _nest
 			{
 				return new _nestGroup();
 			}
-			List<component> components = nests.components;
+			List<_component> components = nests.components;
 			_nestGroup clone = new _nestGroup();
 			
 			for( int i = 0; i < nests.count(); i++ )
 			{
-				component thisComp = components.get( i ); 
+				_component thisComp = components.get( i ); 
 				if( thisComp instanceof _class )
 				{
 					clone.add( _class.cloneOf( (_class)thisComp ) );

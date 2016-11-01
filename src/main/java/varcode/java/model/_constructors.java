@@ -218,9 +218,27 @@ public class _constructors
             return this;
         }
         
+        public _constructor setSignature( _signature sig )
+        {
+            this.constructorSig = sig;
+            return this;
+        }
+        
+        public _constructor setName( String name )
+        {
+            this.constructorSig.className = name;
+            return this;
+        }
+        
         public _signature getSignature()
         {
             return constructorSig;
+        }
+        
+        public _constructor setJavadoc( _javadoc javadoc )
+        {
+            this.javadoc = javadoc;
+            return this;
         }
         
         public _javadoc getJavadoc()
@@ -228,9 +246,21 @@ public class _constructors
             return this.javadoc;
         }
         
+        public _constructor setAnnotations( _annotations annotations )
+        {
+            this.annotations = annotations;
+            return this;
+        }
+        
         public _annotations getAnnotations()
         {
             return this.annotations;
+        }
+        
+        public _constructor setBody( _code body )
+        {
+            this.body = body;
+            return this;
         }
         
         public _code getBody()

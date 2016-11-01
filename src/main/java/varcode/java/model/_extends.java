@@ -81,7 +81,7 @@ public class _extends
         return count() == 0;
     }
     
-	public String get( int index )
+	public String getAt( int index )
 	{
 		if( index > count() -1 )
 		{

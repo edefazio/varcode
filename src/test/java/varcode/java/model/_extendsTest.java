@@ -25,7 +25,7 @@ public class _extendsTest
         e = _extends.of( "{+Yada+}" );        
         
         
-        assertEquals("{+Yada+}", e.get( 0 ) );
+        assertEquals("{+Yada+}", e.getAt( 0 ) );
         
         assertEquals( 1, e.count() );
         

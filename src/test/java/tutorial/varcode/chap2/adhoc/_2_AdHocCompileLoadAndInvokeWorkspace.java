@@ -17,7 +17,8 @@ package tutorial.varcode.chap2.adhoc;
 
 import java.util.UUID;
 import junit.framework.TestCase;
-import tutorial.varcode.chapx.appendix._4_CompileLoadAndRunAuthoredWorkspace;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import varcode.java.Java;
 import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.adhoc.Workspace;
@@ -32,10 +33,12 @@ import varcode.java.model._interface;
 public class _2_AdHocCompileLoadAndInvokeWorkspace
     extends TestCase
 {
-     static _interface _GuidInterface = _interface.of( "tutorial.varcode.chap1.author", 
+    private static final Logger LOG = 
+        LoggerFactory.getLogger( _2_AdHocCompileLoadAndInvokeWorkspace.class );
+    
+    static _interface _GuidInterface = _interface.of( "tutorial.varcode.chap1.author", 
         "public interface GuidGen" )
         .method( "public String createGuid()" );
-        //.toJavaCase();
     
     static _class _GuidClass = _class.of( "tutorial.varcode.chap1.author", 
         "public class PrefixGuid implements GuidGen" )
@@ -46,7 +49,6 @@ public class _2_AdHocCompileLoadAndInvokeWorkspace
             "this.prefix = prefix;" )
         .method( "public String createGuid()",
             "return prefix + UUID.randomUUID().toString();" );
-        //.toJavaCase();
     
     static _enum _GuidEnum = _enum.of( "tutorial.varcode.chap1.author",
         "public enum SimpleGuid implenments GuidGen" )
@@ -55,7 +57,6 @@ public class _2_AdHocCompileLoadAndInvokeWorkspace
         .method( "public String createGuid()",
             "return UUID.randomUUID().toString();" );    
     
-
     public void testWorkspace()
     {
         AdHocClassLoader adHoc = 
@@ -82,13 +83,8 @@ public class _2_AdHocCompileLoadAndInvokeWorkspace
         
         String enumGuid = (String)Java.invoke( guidEnumValue, "createGuid" );
         
-        System.out.println( enumGuid );
+        LOG.debug( enumGuid );
         
-    }
-    
-    public static void main( String[] args ) 
-    {
-        new _4_CompileLoadAndRunAuthoredWorkspace().testWorkspace();
     }
         
     // concepts

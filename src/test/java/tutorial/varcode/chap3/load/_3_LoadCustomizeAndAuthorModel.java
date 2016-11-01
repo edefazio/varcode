@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package tutorial.varcode.chap3.loader;
+package tutorial.varcode.chap3.load;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -43,15 +43,18 @@ import varcode.java.model.edit.ExpectArgument;
 import varcode.java.model.edit.ExpectInstanceField;
 import varcode.java.model.edit.ExpectStaticField;
 import varcode.java.model.edit.MethodEditor;
-import varcode.java.model.load.JavaModelLoader;
+import varcode.java.model.load._JavaLoader;
 
 /**
  *
  * @author eric
  */
-public class _2_LoadCustomizeAndAuthorModel
+public class _3_LoadCustomizeAndAuthorModel
     extends TestCase
 {
+    private static final Logger LOG = 
+        LoggerFactory.getLogger( _3_LoadCustomizeAndAuthorModel.class );
+        
     /** 
      * We want to load the _class model for this class
      * then specialize it at runtime
@@ -184,7 +187,7 @@ public class _2_LoadCustomizeAndAuthorModel
     {
         //load a model of the above class
         _class _classModel = 
-            JavaModelLoader.ClassModel.fromClass( PrefixCreateId.class );
+            _JavaLoader._Class.from( PrefixCreateId.class );
         
         //get rid of the "static" modifier (make this a top-level class)
         _classModel.getSignature().setModifiers( "public" );

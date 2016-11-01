@@ -14,19 +14,20 @@ import varcode.java.JavaCase;
 import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.model._methods._method;
 import varcode.java.model._nest._nestGroup;
-import varcode.java.model._nest.component;
 import varcode.markup.bindml.BindML;
 import varcode.Model;
+import varcode.java.model._fields._field;
 
 //allow default methods
 public class _interface 
-    implements JavaCaseAuthor, _nest.component
+    implements JavaCaseAuthor, _component
 {    
     public static final Dom INTERFACE = 
 	BindML.compile( 
 	    "{+pckage+}" +
 	    "{{+?imports:{+imports+}" + N +"+}}" +
 	    "{+javaDoc+}" +
+        "{+annotations+}" +        
 	    "{+signature*+}" + N +
 	    "{" + N +			
 	    "{{+?members:{+$>(members)+}" + N +
@@ -48,11 +49,11 @@ public class _interface
 	    String[] nested = new String[ nests.count() ];
 	    for( int i = 0; i < nests.count(); i++ )
 	    {
-		component comp = nests.components.get( i );
-		VarContext vc = comp.getContext();
-		vc.getScopeBindings().remove("pckage");
-		vc.getScopeBindings().remove("imports");
-		nested[ i ] = Compose.asString( comp.getDom(), vc );				
+            _component comp = nests.components.get( i );
+            VarContext vc = comp.getContext();
+            vc.getScopeBindings().remove( "pckage" );
+            vc.getScopeBindings().remove( "imports" );
+            nested[ i ] = Compose.asString( comp.getDom(), vc );				
 	    }
 	    n = nested;			
 	}
@@ -83,6 +84,7 @@ public class _interface
 	    "pckage", interfacePackage,
 	    "imports", imp,
 	    "javaDoc", javadoc,
+        "annotations", this.annotations,
 	    "signature", interfaceSignature,
 	    "members", mem,
 	    "methods", meth, 
@@ -125,6 +127,7 @@ public class _interface
 
     private _package interfacePackage;
     private _javadoc javadoc;
+    private _annotations annotations;
     private _signature interfaceSignature;
     private _fields fields;
     private _methods methods;
@@ -135,6 +138,7 @@ public class _interface
     public _interface bind( VarContext context )
     {
         this.interfacePackage.bind(context);
+        this.annotations.bind( context );
         this.fields.bind(context);
         this.imports.bind(context);
         this.interfaceSignature.bind( context );
@@ -148,6 +152,7 @@ public class _interface
     public _interface replace( String target, String replacement )
     {
         this.interfacePackage.replace( target, replacement );
+        this.annotations.replace( target, replacement );
         this.javadoc.replace( target , replacement );
         this.interfaceSignature.replace( target, replacement );
         this.fields.replace( target, replacement );
@@ -165,6 +170,7 @@ public class _interface
     public _interface( _interface prototype )
     {
         this.interfacePackage = _package.cloneOf( prototype.interfacePackage );
+        this.annotations = _annotations.cloneOf( prototype.annotations );
         this.javadoc = _javadoc.cloneOf( prototype.javadoc );
         this.interfaceSignature = _signature.cloneOf( prototype.interfaceSignature  );
         this.fields = _fields.cloneOf( prototype.fields );
@@ -178,6 +184,7 @@ public class _interface
     public _interface( String packageName, String interfaceSignature )
     {
         this.interfacePackage = _package.of( packageName );
+        this.annotations = new _annotations();
         this.interfaceSignature = _signature.of( interfaceSignature );
         this.javadoc = new _javadoc();
         this.methods = new _methods();
@@ -197,9 +204,15 @@ public class _interface
         return this.interfacePackage.getName();
     }
 	
+    @Override
     public String getName()
     {
         return this.interfaceSignature.getName();
+    }
+    
+    public _annotations getAnnotations()
+    {
+        return this.annotations;        
     }
     
     public _signature getSignature()
@@ -212,11 +225,13 @@ public class _interface
         return this.javadoc.getComment();
     }
 	
+    @Override
     public _fields getFields()
     {
         return this.fields;
     }
 	
+    @Override
     public _methods getMethods()
     {
         return this.methods;
@@ -227,12 +242,24 @@ public class _interface
         return this.nests;
     }
     
+    public _interface importsStatic( Object...staticImports )
+    {
+        this.imports.addStaticImports( staticImports );
+        return this;
+    }
+    
     public _interface imports( Object... imports )
     {
         this.imports.addImports( imports );
-	return this;
+        return this;
     }
 	
+    public _interface javadoc( String...javadoc )
+    {
+        this.javadoc = _javadoc.of( javadoc );
+        return this;
+    }
+    
     @Override
     public _imports getImports()
     {
@@ -258,30 +285,42 @@ public class _interface
             throw new VarException( 
                 "Cannot add a private method " + N + sig + N +" to an interface ");
         }
-	if( sig.getModifiers().contains( Modifier.FINAL ) )
-	{
+        if( sig.getModifiers().contains( Modifier.FINAL ) )
+        {
             throw new VarException( 
                 "Cannot add a final method " + N + sig + N +" to an interface ");
         }
         if( sig.getModifiers().contains( Modifier.PROTECTED ) )
         {
-	    throw new VarException( 
+            throw new VarException( 
                 "Cannot add a protected method " + N + sig + N +" to an interface ");
-	}
+        }
         if( sig.getModifiers().containsAny(
             Modifier.NATIVE, Modifier.STRICT, Modifier.SYNCHRONIZED, 
             Modifier.TRANSIENT, Modifier.VOLATILE ) )
-	{
-	    throw new VarException( "Invalid Modifiers for interface method "+ N + sig );
-	}
+        {
+            throw new VarException( "Invalid Modifiers for interface method "+ N + sig );
+        }
 	method.getSignature().getModifiers().set( "abstract" );
 	this.methods.addMethod( method );
 	return this;		
     }
     
+    public _interface method( _method method )
+    {
+        this.methods.addMethod( method );
+        return this;
+    }
+    
     public _interface method( String signature )
     {
         return method( null, signature );
+    }
+    
+    public _interface annotate( String... annotations )
+    {
+        this.annotations.add(  (Object[])annotations );
+        return this;
     }
 	
     public _interface staticMethod( String signature, Object...linesOfCode )
@@ -365,6 +404,12 @@ public class _interface
 	return this;    
     }
     
+    public _interface field( _field field )
+    {
+        this.fields.addFields( field );
+        return this;
+    }
+    
     public _interface field( String fieldSignature )
     {
         _fields._field m = _fields._field.of( fieldSignature );
@@ -372,12 +417,12 @@ public class _interface
         {
             throw new VarException( "Field : " + N + m +  N 
                 + " has not been initialized for interface ");
-	}
-	fields.addFields( m );		
+        }
+        fields.addFields( m );		
         return this;
     }
 
-    public _interface nest( _nest.component component )
+    public _interface nest( _component component )
     {
         this.nests.add( component );
 	return this;
@@ -448,6 +493,30 @@ public class _interface
 			return extendsFrom;
 		}
 
+        public _signature setModifiers( _modifiers modifiers )
+        {
+            this.modifiers = modifiers;
+            return this;
+        }
+        
+        public _signature setModifiers( int...modifiers )
+        {
+            this.modifiers = _modifiers.of( modifiers );
+            return this;
+        }
+        
+        public _signature setExtends( String...extendsFrom )
+        {
+            this.extendsFrom = _extends.of( extendsFrom );
+            return this;
+        }
+        
+        public _signature setName( String name )
+        {
+            this.interfaceName = name;
+            return this;
+        }
+        
 		public static _signature of( String interfaceSignature )
 		{
 			_signature sig = new _signature();

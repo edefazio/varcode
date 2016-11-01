@@ -17,12 +17,18 @@ package ex.varcode.java.code;
 
 import java.util.UUID;
 import junit.framework.TestCase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import tutorial.varcode.chap3.load._1_LoadSource;
 import varcode.java.Java;
 import varcode.java.model._class;
 
 public class Varcode_AdHoc
     extends TestCase
 {
+    private static final Logger LOG = 
+        LoggerFactory.getLogger( Varcode_AdHoc.class );
+    
     public static void main( String... args )
     {
         _class c = _class.of( "AdHoc" )

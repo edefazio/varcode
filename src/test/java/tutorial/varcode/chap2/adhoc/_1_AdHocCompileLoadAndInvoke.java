@@ -2,6 +2,9 @@ package tutorial.varcode.chap2.adhoc;
 
 import java.util.UUID;
 import junit.framework.TestCase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import tutorial.varcode.chap3.load._1_LoadSource;
 import varcode.java.Java;
 import varcode.java.model._class;
 
@@ -13,29 +16,32 @@ import varcode.java.model._class;
 public class _1_AdHocCompileLoadAndInvoke
     extends TestCase
 {
+    private static final Logger LOG = 
+        LoggerFactory.getLogger( _1_AdHocCompileLoadAndInvoke.class );
+    
     public static final _class _withStaticMethod =
         _class.of( "tutorial.varcode.chap1.model", 
             "public final class StaticCreateId" )
             .method( "public static String doCreateId()",
                 "return UUID.randomUUID().toString();" )
             .imports( UUID.class );
-    //MACLI 
-    // Model the _class entity 
+
     // Author the (.java) source code from the _class model
     // Compile the (.java) source code to a (.class)
     // Load the (.class) in a new AdHocClassLoader 
-    // Invoke the static method "doCreate()" on the AdHocClass 
+    // Invoke the static method "doCreateId()" on the Class 
     public void testAdHocInvokeStaticMethod()
     {
         Class adHocClass = 
-            _withStaticMethod.loadClass(); //author .java code, then compile &
+            _withStaticMethod.loadClass(); //author .java code, 
+                                           // compile & load class
         
-        String id = 
+        String id = //invoke the static method "doCreateId" on adHocClass
             (String)Java.invoke( adHocClass, "doCreateId" );
         
         assertNotNull( id );
         
-        System.out.println( id ); 
+        LOG.debug( id ); 
     }
     
     public static _class _withInstanceMethod = _class.of( "tutorial.varcode.chap1.model", 
@@ -63,7 +69,7 @@ public class _1_AdHocCompileLoadAndInvoke
             (String)Java.invoke( instance, "createId" );
         
         assertTrue( id.startsWith( "pre" ) );
-        System.out.println( id ); 
+        LOG.debug( id ); 
     }
     // concepts:
     // 1) when creating a _class you can pass in the packageName as the 

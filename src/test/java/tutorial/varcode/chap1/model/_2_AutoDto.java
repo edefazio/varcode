@@ -2,10 +2,12 @@ package tutorial.varcode.chap1.model;
 
 import java.util.Date;
 import junit.framework.TestCase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import tutorial.varcode.chap3.load._1_LoadSource;
 import varcode.java.model._class;
 import varcode.java.model.auto._autoDto;
 import varcode.java.model.auto._autoExternalizable;
-import varcode.java.model.cs._autoToString;
 
 /**
  * _auto... classes create another abstraction layer on top of existing
@@ -29,6 +31,8 @@ import varcode.java.model.cs._autoToString;
 public class _2_AutoDto
     extends TestCase
 {
+    private static final Logger LOG = 
+        LoggerFactory.getLogger( _2_AutoDto.class );
     public void testAutoDto()
     {
         _autoDto _dto = 
@@ -43,7 +47,7 @@ public class _2_AutoDto
         //create Externalizable method for the dto (readExternal, writeExternal)
         _personDto = _autoExternalizable.of( _personDto );
         
-        System.out.println( _personDto.author( ) );
+        LOG.debug( _personDto.author( ) );
     }
     
     //concepts    
