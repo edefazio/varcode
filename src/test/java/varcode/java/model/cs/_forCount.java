@@ -160,6 +160,12 @@ public class _forCount
     }
         
     @Override
+    public String author( )
+    {
+        return author( new Directive[ 0 ] );
+    }
+    
+    @Override
     public String author( Directive... directives )
     {
         return Compose.asString( FOR_COUNT, getContext(), directives ); 

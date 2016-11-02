@@ -5,7 +5,6 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-import varcode.VarException;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
@@ -19,6 +18,7 @@ import varcode.java.model._nest._nestGroup;
 import varcode.java.model._component;
 import varcode.markup.bindml.BindML;
 import varcode.Model;
+import varcode.java.model._fields._field;
 
 /**
  * 
@@ -298,6 +298,12 @@ public class _enum
 	}
 	
     @Override
+    public String author( )
+    {
+        return author( new Directive[ 0 ] );
+    }
+        
+    @Override
 	public String author( Directive... directives ) 
 	{
 		return toJavaCase( directives ).toString();
@@ -387,7 +393,7 @@ public class _enum
         if( c.getSignature().getModifiers().containsAny( 
                 Modifier.PUBLIC, Modifier.PROTECTED ) )
         {
-            throw new VarException( 
+            throw new ModelException( 
                 "Enum constructors cannot be public or protected" );
         }
 		return constructor( c );
@@ -399,7 +405,8 @@ public class _enum
         if( c.getSignature().getModifiers().containsAny( 
                 Modifier.PUBLIC, Modifier.PROTECTED ) )
         {
-            throw new VarException( "Enum constructors cannot be public or protected" );
+            throw new ModelException( 
+                "Enum constructors cannot be public or protected" );
         }
 		return this;
 	}
@@ -419,7 +426,7 @@ public class _enum
 	{
 		if( m.isAbstract() )
 		{
-			throw new VarException(
+			throw new ModelException(
 				"Cannot add an abstract method " + N + m + N + " to an enum " );
 		}
 		this.methods.addMethod( m );
@@ -473,6 +480,30 @@ public class _enum
         }
         return this;
     }
+    
+    public _enum field( _field field )
+    {
+        fields.addFields( field );
+        return this;
+    }
+     public _enum field( _modifiers mods, String type, String name )
+    {
+        _field f = new _field( mods, type, name );
+        return field( f );
+    }
+    
+    public _enum field( int mods, String type, String name )
+    {
+        _field f = new _field( mods, type, name );
+        return field( f );
+    }
+    
+    public _enum field( int modifiers, String type, String name, String init )
+    {
+        return field( new _field( modifiers, type, name, init ) );        
+    }
+    
+    
     /** 
      * adds a field to the enum<PRE> 
      * myEnum.field( "public final int value;" );
@@ -552,7 +583,7 @@ public class _enum
             {
                 if( this.valueConstructs.get( i ).name.equals( value.name ) )
                 {
-                    throw new VarException( 
+                    throw new ModelException( 
                         "Enum already contains a value for \"" + value.name +"\"" );
                 }
             }
@@ -586,7 +617,7 @@ public class _enum
             {
                 return this.valueConstructs.get( index );
             }
-            throw new VarException(
+            throw new ModelException(
                 "Invalid value construct index [" + index + "]");
         }
             
@@ -665,6 +696,12 @@ public class _enum
             }
             
             @Override
+            public String author( )
+            {
+                return author( new Directive[ 0 ] );
+            }
+            
+            @Override
 			public String author( Directive... directives ) 
 			{
 				VarContext vc = VarContext.of( "name", name );
@@ -694,6 +731,12 @@ public class _enum
 			"{{+:    {+valueConstructs+}," + N 
 		 + "+}};" + N + N );
 		
+        @Override
+        public String author( )
+        {
+            return author( new Directive[ 0 ] );
+        }
+        
         @Override
 		public String author( Directive... directives ) 
 		{
@@ -728,6 +771,13 @@ public class _enum
 		public static final Dom CLASS_SIGNATURE = 
 			BindML.compile( "{+modifiers+}enum {+enumName*+}{+implementsFrom+}" );
 
+        
+        @Override
+        public String author( )
+        {
+            return author( new Directive[ 0 ] );
+        }
+        
         @Override
 		public String author( Directive... directives ) 
 		{
@@ -824,7 +874,7 @@ public class _enum
             }
 			if( tokens.length < 2 )
 			{
-				throw new VarException( 
+				throw new ModelException( 
                     "enum signature must have at least (2) tokens \"enum enumName\" " );	
 			} 		
 			for( int i = 0; i < tokens.length; i++ )
@@ -841,7 +891,7 @@ public class _enum
 		
 			if( ( enumTokenIndex < 0 ) || ( enumTokenIndex >= tokens.length -1 ) )
 			{   //cant be 
-				throw new VarException( 
+				throw new ModelException( 
 					"enum token cant be not found or the last token for \"" 
                         + enumSignature + "\"" ); 
 			}
@@ -865,15 +915,16 @@ public class _enum
 					Modifier.VOLATILE,
                     _modifiers._mod.INTERFACE_DEFAULT.getBitValue() ) )
 				{
-					throw new VarException(
-						"Invalid Modifier(s) for enum of \"" + enumSignature + "\" only public allowed" );
+					throw new ModelException(
+						"Invalid Modifier(s) for enum of \"" + enumSignature 
+                            + "\" only public allowed" );
 				}
 			}		
 			if( implementsTokenIndex > enumTokenIndex + 1 )
 			{
 				if( implementsTokenIndex == tokens.length -1 )
 				{
-					throw new VarException( "implements token cannot be the last token" );
+					throw new ModelException( "implements token cannot be the last token" );
 				}
 				int tokensLeft = tokens.length - ( implementsTokenIndex + 1 );
 				String[] implementsTokens = new String[ tokensLeft ];

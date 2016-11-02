@@ -4,7 +4,6 @@ import java.util.UUID;
 import junit.framework.TestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import tutorial.varcode.chap3.load._1_LoadSource;
 import varcode.java.Java;
 import varcode.java.model._class;
 
@@ -33,8 +32,8 @@ public class _1_AdHocCompileLoadAndInvoke
     public void testAdHocInvokeStaticMethod()
     {
         Class adHocClass = 
-            _withStaticMethod.loadClass(); //author .java code, 
-                                           // compile & load class
+            _withStaticMethod.loadClass(); //author .java code from model 
+                                           // compile & load adHocClass
         
         String id = //invoke the static method "doCreateId" on adHocClass
             (String)Java.invoke( adHocClass, "doCreateId" );
@@ -54,7 +53,6 @@ public class _1_AdHocCompileLoadAndInvoke
         .imports( UUID.class );
     
     //MACLII
-    // Model the _class entity 
     // Author the (.java) source code from the _class model
     // Compile the (.java) source code to a (.class)
     // Load the (.class) in a new AdHocClassLoader 

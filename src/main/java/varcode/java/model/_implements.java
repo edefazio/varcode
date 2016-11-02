@@ -3,7 +3,6 @@ package varcode.java.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import varcode.VarException;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
@@ -128,6 +127,12 @@ public class _implements
 	}
 	
     @Override
+    public String author( )
+    {
+        return author( new Directive[ 0 ] );
+    }
+        
+    @Override
 	public String author( Directive... directives ) 
 	{
 		VarContext vc = VarContext.of( "impls", impls );
@@ -144,7 +149,7 @@ public class _implements
 	{
 		if( index > impls.size() -1 )
 		{
-			throw new VarException( 
+			throw new ModelException( 
 				"index [" + index + "] is outside of implements range [0..."
 			    + ( impls.size() -1 ) + "]" );
 		}

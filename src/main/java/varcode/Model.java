@@ -73,6 +73,13 @@ public interface Model
     public static final String STRING_LITERAL_PREFIX = "$$";
     
     /** 
+     * Authors the document bound document as a String
+     * 
+     * @return document representation of the model
+     */    
+    String author( );
+    
+    /** 
      * Authors the document for the model directives
      * and returns the bound document as a String
      * 

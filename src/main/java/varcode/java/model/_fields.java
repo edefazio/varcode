@@ -4,7 +4,6 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-import varcode.VarException;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
@@ -74,7 +73,7 @@ public class _fields
         {
             return fields.get( index );
         }
-        throw new VarException( "invalid field index ["+ index + "]" );
+        throw new ModelException( "invalid field index ["+ index + "]" );
     }
             
     /**
@@ -151,7 +150,7 @@ public class _fields
             }
             else
     		{
-    			throw new VarException(
+    			throw new ModelException(
                     "cannot add field with name \""
                    + fields[ i ].name 
                   + "\" a field with the same name already exists" );
@@ -288,23 +287,24 @@ public class _fields
 			return this.init;
 		}
 		
-		public static _field of( String fieldDef )
+		public static _field of( String fieldDeclaration )
 		{
-			return of( null, fieldDef );
+			return of(null, fieldDeclaration );
 		}
 		
-		public static _field of( String javadoc, String fieldDef )
+		public static _field of( String javadoc, String fieldDeclaration )
 		{
-			if( fieldDef.endsWith( ";" ) )
+			if( fieldDeclaration.endsWith( ";" ) )
 			{
-				fieldDef = fieldDef.substring( 0, fieldDef.length() -1 );			
+				fieldDeclaration = fieldDeclaration.substring( 
+                    0, fieldDeclaration.length() -1 );			
 			}
-			int indexOfEquals = fieldDef.indexOf('=');
+			int indexOfEquals = fieldDeclaration.indexOf( '=' );
 			
 			if( indexOfEquals > 0 )
 			{   //there is an init AND a member 
-				String member = fieldDef.substring( 0, indexOfEquals );
-				String init = fieldDef.substring( indexOfEquals + 1 );
+				String member = fieldDeclaration.substring( 0, indexOfEquals );
+				String init = fieldDeclaration.substring( indexOfEquals + 1 );
 				_field f = parseField( member );
 				if( javadoc != null )
 				{
@@ -312,7 +312,7 @@ public class _fields
 				}
 				return f.setInit( init );
 			}
-			_field f = parseField( fieldDef );
+			_field f = parseField(fieldDeclaration );
 			if( javadoc != null )
 			{
 				f.javadoc( javadoc );
@@ -331,7 +331,7 @@ public class _fields
 			String[] tokens = _var.normalizeTokens( fieldDef );
 			if( tokens.length < 2 )
 			{
-				throw new VarException( 
+				throw new ModelException( 
                     "Expected at least (2) tokens for field <type> <name>" );
 			}
 			String name = tokens[ tokens.length - 1 ];
@@ -346,12 +346,12 @@ public class _fields
 					Modifier.ABSTRACT, Modifier.NATIVE, Modifier.SYNCHRONIZED, 
                     Modifier.STRICT ) )
 				{
-					throw new VarException( 
+					throw new ModelException( 
                         "field contains invalid modifier " + N + mods.toString() );
 				}
 				if( mods.containsAll( Modifier.FINAL, Modifier.VOLATILE ) ) 
 				{
-					throw new VarException( 
+					throw new ModelException( 
                         "field cannot be BOTH final AND volatile" );
 				}
 				return new _field( mods, t, name );
@@ -369,6 +369,13 @@ public class _fields
 				"varName", this.name,
 				"init", this.init );
         }
+        
+        @Override
+        public String author( )
+        {
+            return author( new Directive[ 0 ] );
+        }
+        
         @Override
 		public String author( Directive... directives ) 
 		{
@@ -390,6 +397,26 @@ public class _fields
 		private String name;
 		private _init init;
 		
+        public static _field of( int modifiers, String type, String name )
+        {
+            return new _field( modifiers, type, name );
+        }
+        
+        public static _field of( int modifiers, String type, String name, String init )
+        {
+            return new _field( modifiers, type, name, init );
+        }
+        
+        public _field( int modifiers, String type, String name )
+        {
+            this( _modifiers.of( modifiers ), type, name );            
+        }
+        
+        public _field( int modifiers, String type, String name, String init )
+        {
+            this( _modifiers.of( modifiers ), type, name, _init.of( init ) );            
+        }
+        
 		public _field( _modifiers modifiers, String type, String name )
 		{
 			this.mods = modifiers;
@@ -460,7 +487,13 @@ public class _fields
     }
     
     @Override
-    public String author(  Directive...directives )
+    public String author( )
+    {
+        return author( new Directive[ 0 ] );
+    }
+        
+    @Override
+    public String author( Directive...directives )
     {             
         return Compose.asString( 
 			FIELDS, 
@@ -525,6 +558,12 @@ public class _fields
                 this.initCode = Compose.asString( BindML.compile( this.initCode ), context );
             }
             return this;
+        }
+        
+        @Override
+        public String author( )
+        {
+            return author( new Directive[ 0 ] );
         }
         
         @Override

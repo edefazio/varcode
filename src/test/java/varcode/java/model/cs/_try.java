@@ -82,6 +82,12 @@ public class _try
     }
     
     @Override
+    public String author( )
+    {
+        return author( new Directive[ 0 ] );
+    }
+    
+    @Override
     public String author( Directive... directives )
     {
         return Compose.asString( TRY_CATCH_FINALLY_BLOCK, getContext(), directives );
@@ -229,6 +235,12 @@ public class _try
             return this;
         }
 
+        @Override
+        public String author( )
+        {
+            return author( new Directive[ 0 ] );
+        }
+    
         @Override
         public String author( Directive... directives )
         {

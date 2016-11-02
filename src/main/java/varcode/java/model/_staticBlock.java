@@ -94,11 +94,18 @@ public class _staticBlock
     }
     
     @Override
+    public String author( )
+    {
+        return author( new Directive[ 0 ] );
+    }
+    
+    @Override
 	public String author( Directive... directives ) 
 	{
 		if( !body.isEmpty() )
 		{
-			return Compose.asString( STATIC_BLOCK, VarContext.of( "body", body ), directives );
+			return Compose.asString( 
+                STATIC_BLOCK, VarContext.of( "body", body ), directives );
 		}
 		return "";
 	}

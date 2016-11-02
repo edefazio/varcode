@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Set;
 import java.util.TreeSet;
 
-import varcode.VarException;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
@@ -104,6 +103,12 @@ public class _imports
 		return importClasses.contains( s ) || staticImports.contains( s );
 	}
 	
+    @Override
+    public String author( )
+    {
+        return author( new Directive[ 0 ] );
+    }
+        
     @Override
 	public String author( Directive... directives ) 
 	{
@@ -207,7 +212,8 @@ public class _imports
 		}	
 		else
 		{
-			throw new VarException( "Dont know what to do with "+ importClass );
+			throw new ModelException( 
+                "Cant handle import " + importClass );
 		}
 		return this;
 	}

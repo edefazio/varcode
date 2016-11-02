@@ -33,20 +33,22 @@ import varcode.java.model._parameters._parameter;
 import varcode.java.model.load._JavaLoader;
 
 /**
- * Loads the model from existing source code
+ * Loads the models (_class, _enum, _interface) 
+ * from existing source code
  * 
  * @author M. Eric
  */
-public class _2_LoadModelByClass
+public class _2_LoadModel
     extends TestCase
 {
     private static final Logger LOG = 
-        LoggerFactory.getLogger( _2_LoadModelByClass.class );
+        LoggerFactory.getLogger(_2_LoadModel.class );
     
     //load a "top level class" (stored in "VarException.java")
-    public void testLoadTopLevelJavaClassAsModel()
+    public void testLoadClass()
     {
         _class c = _JavaLoader._Class.from( VarException.class );        
+        LOG.debug ( c.author( ) ); 
     }
 
     private static class MemberClass
@@ -62,18 +64,25 @@ public class _2_LoadModelByClass
         }
     }
     
+    /** 
+     * load a "member" Class: 
+     * tutorial.varcode.chap3.load._2_LoadModelByClass.$MemberClass 
+     * stored in "\tutorial\varcode\chap3\load\_2_LoadModelByClass.java"
+     */
     public void testLoadMemberJavaClassAsModel()
-    {
-        //load a "member" Class: 
-        //tutorial.varcode.chap3.load._2_LoadModelByClass.$MemberClass 
-        //stored in "\tutorial\varcode\chap3\load\_2_LoadModelByClass.java"
+    {        
         _class c = _JavaLoader._Class.from( MemberClass.class );
         
         assertEquals( "MemberClass", c.getName() );
         c.getModifiers().containsAll( "private", "static" );
         assertTrue( 
-             c.getMethodNamed("someMethod")
-                .getModifiers().containsAll("public", "static", "final" ) );
+            c.getMethodNamed( "someMethod" )
+                .getModifiers().containsAll( "public", "static", "final" ) );
+    }
+    
+    public void testLoadInterface()
+    {
+        
     }
     
 }

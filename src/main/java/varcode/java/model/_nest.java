@@ -3,12 +3,9 @@ package varcode.java.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import varcode.VarException;
 import varcode.context.VarContext;
 import varcode.doc.Directive;
-import varcode.doc.Dom;
 import varcode.Model;
-import varcode.java.model._fields;
 
 /**
  * Components (classes, interfaces, enums) 
@@ -89,6 +86,12 @@ public interface _nest
         }
         
         @Override
+        public String author( )
+        {
+            return author( new Directive[ 0 ] );
+        }
+    
+        @Override
 		public String author( Directive... directives ) 
 		{
 			if( components == null || components.isEmpty() )
@@ -137,7 +140,7 @@ public interface _nest
 				}
 				else
 				{
-					throw new VarException(
+					throw new ModelException(
 						"unknown nested component type " + 
 						thisComp + 
 						"; expected _class, _enum, _interface ");

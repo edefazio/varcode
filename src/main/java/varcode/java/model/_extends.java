@@ -3,7 +3,6 @@ package varcode.java.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import varcode.VarException;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
@@ -85,7 +84,7 @@ public class _extends
 	{
 		if( index > count() -1 )
 		{
-			throw new VarException(
+			throw new ModelException(
 				"extends[" + index + "] is out of range[0..." + ( count() -1 ) + "]" );
 		}
 		return extendsFrom.get( index );
@@ -119,6 +118,12 @@ public class _extends
 		return xtends;
 	}
 	
+    @Override
+    public String author( )
+    {
+        return author( new Directive[ 0 ] );
+    }
+        
     @Override
 	public String author( Directive... directives ) 
 	{

@@ -19,7 +19,6 @@ import java.util.UUID;
 import junit.framework.TestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import tutorial.varcode.chap3.load._1_LoadSource;
 import varcode.java.Java;
 import varcode.java.model._class;
 

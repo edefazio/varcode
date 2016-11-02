@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 
-import varcode.VarException;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
@@ -13,6 +12,11 @@ import varcode.doc.Dom;
 import varcode.markup.bindml.BindML;
 import varcode.Model;
 
+/**
+ * A JavaDoc comment
+ * 
+ * @author M. Eric DeFazio eric@
+ */
 public class _javadoc
     implements Model
 {            
@@ -95,7 +99,7 @@ public class _javadoc
 		} 
 		catch( IOException e ) 
 		{
-			throw new VarException( "Error formatting Comment Lines" );
+			throw new ModelException( "Error formatting Comment Lines" );
 		}	
 	}
 	
@@ -122,6 +126,7 @@ public class _javadoc
         }
         return this;
     }
+    
 	private String comment;
 	
 	public _javadoc( )
@@ -167,6 +172,12 @@ public class _javadoc
 		return this;
 	}
 	
+    @Override
+    public String author( )
+    {
+        return author( new Directive[ 0 ] );
+    }
+        
     @Override
 	public String author( Directive... directives ) 
 	{       

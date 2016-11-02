@@ -168,6 +168,12 @@ public class _code
 	}
 	
     @Override
+    public String author( )
+    {
+        return author( new Directive[ 0 ] );
+    }
+        
+    @Override
 	public String author( Directive... directives ) 
 	{			
 		return Compose.asString(

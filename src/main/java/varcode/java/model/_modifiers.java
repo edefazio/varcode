@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import varcode.VarException;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
@@ -117,7 +116,7 @@ public class _modifiers
 		Integer bit = KEYWORD_TO_BIT_MAP.get( keyWord );
 		if( bit == null )
 		{
-			throw new VarException( "Unknown keyword \""+ keyWord+"\"" );
+			throw new ModelException( "Unknown keyword \""+ keyWord+"\"" );
 		}
 		this.mods |= bit;
 		return this;		
@@ -377,42 +376,48 @@ public class _modifiers
 	{
 		if( (modifiersBits & ( ( 1 << 13 ) -1 ) ) != modifiersBits )
 		{
-			throw new VarException( "modifiers int contains set bits outside of range" );
+			throw new ModelException( "modifiers int contains set bits outside of range" );
 		}
 		
 		if(  Integer.bitCount(modifiersBits & ( Modifier.PUBLIC | Modifier.PRIVATE | Modifier.PROTECTED ) ) > 1 )
 		{
-			throw new VarException( "cannot only be one of [public, private, protected]" );
+			throw new ModelException( "cannot only be one of [public, private, protected]" );
 		}
 		if( ( modifiersBits & Modifier.ABSTRACT ) > 0  &&
 			( modifiersBits & Modifier.FINAL ) > 0  )
 		{
-			throw new VarException( "cannot be both abstract and final" );
+			throw new ModelException( "cannot be both abstract and final" );
 		}
 		
 		if( ( modifiersBits & Modifier.ABSTRACT ) > 0  &&
 			( modifiersBits & Modifier.STATIC ) > 0  )
 		{
-			throw new VarException( "cannot be both abstract and static" );
+			throw new ModelException( "cannot be both abstract and static" );
 		}
 		
 		if( ( modifiersBits & Modifier.ABSTRACT ) > 0  &&
 			( modifiersBits & Modifier.SYNCHRONIZED ) > 0  )
 		{
-			throw new VarException( "cannot be both abstract and synchronized" );
+			throw new ModelException( "cannot be both abstract and synchronized" );
 		}		
 		if( ( modifiersBits & Modifier.ABSTRACT ) > 0  &&
 			( modifiersBits & Modifier.NATIVE ) > 0  )
 		{
-			throw new VarException( "cannot be both abstract and native" );
+			throw new ModelException( "cannot be both abstract and native" );
 		}	
 		if( Integer.bitCount( 
             modifiersBits & ( Modifier.PUBLIC | Modifier.PRIVATE | Modifier.PROTECTED ) ) > 1 )
 		{
-			throw new VarException( "can only be one of public, protected or private" );
+			throw new ModelException( "can only be one of public, protected or private" );
 		}		
 	}
 	
+    @Override
+    public String author( )
+    {
+        return author( new Directive[ 0 ] );
+    }
+    
     @Override
 	public String author( Directive... directives )  
 	{

@@ -79,6 +79,12 @@ public class _package
     }
     
     @Override
+    public String author( )
+    {
+        return author( new Directive[ 0 ] );
+    }
+    
+    @Override
 	public String author( Directive... directives ) 
 	{
 		return Compose.asString( 

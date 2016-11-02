@@ -3,7 +3,6 @@ package varcode.java.model;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import varcode.VarException;
 
 import varcode.context.VarContext;
 import varcode.doc.Compose;
@@ -110,6 +109,11 @@ public class _arguments
 			VarContext.of( "args", arguments ), 
 			directives );
 	}
+    @Override
+    public String author( )
+    {
+        return author( new Directive[ 0 ] );
+    }
 	
 	public int count()
 	{

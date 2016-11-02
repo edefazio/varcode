@@ -16,6 +16,10 @@ public class _1_LoadSource
     private static final Logger LOG = 
         LoggerFactory.getLogger( _1_LoadSource.class );
     
+    /** 
+     * You can load the textual source for .java files
+     * that are on the classpath
+     */
     public void testLoadJavaSource()
     {
         SourceStream ss = 
@@ -26,7 +30,8 @@ public class _1_LoadSource
     }
     
     /** 
-     * Load a pom.xml as text from the classpath
+     * You can also load any other resource files using the BaseSourceLoader.
+     * Here we load a pom.xml as text from the classpath
      * 
      * NOTE: fails if you dont have pom.xml in the root of your classpath 
      */
@@ -37,5 +42,5 @@ public class _1_LoadSource
         
         LOG.debug( ss.describe() );
         LOG.debug( ss.asString() );        
-    }
+    } 
 }

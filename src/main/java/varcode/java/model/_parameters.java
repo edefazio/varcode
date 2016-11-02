@@ -3,7 +3,6 @@ package varcode.java.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import varcode.VarException;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
@@ -181,7 +180,7 @@ public class _parameters
 		}
         if( temp.length() > 0 )
         {
-            throw new VarException( 
+            throw new ModelException( 
                 "unable to parse tokens, remaining temp = "+temp);
         }
 		return toksList.toArray( new String[ 0 ] );
@@ -211,6 +210,12 @@ public class _parameters
 		return this.params;
 	}
 	
+    @Override
+    public String author( )
+    {
+        return author( new Directive[ 0 ] );
+    }
+    
     @Override
 	public String author( Directive... directives ) 
 	{
@@ -347,7 +352,7 @@ public class _parameters
                 }
                 else
                 {
-                    throw new VarException(
+                    throw new ModelException(
                         "unable to parse tokens, at "+ tokens[ i ] );
                 }
             }
@@ -403,6 +408,12 @@ public class _parameters
         }
 
         @Override
+        public String author( )
+        {
+            return author( new Directive[ 0 ] );
+        }
+    
+        @Override
         public String author( Directive... directives )
         {
             return Compose.asString( 
@@ -429,7 +440,7 @@ public class _parameters
 		{
 			return params.get( index );
 		}
-		throw new VarException(
+		throw new ModelException(
 			"unable to get parameter ["+ 
 			index +"] out of range [0..."+ ( count() -1 ) +"]" );
 	}

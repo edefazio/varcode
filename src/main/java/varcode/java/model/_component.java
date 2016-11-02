@@ -24,11 +24,11 @@ import varcode.doc.Dom;
  * model (_class, _enum, _interface)
  */
 public interface _component
-        extends Model
+    extends Model
 {
 
     /**
-     * @reurn the name of this component (simple name)
+     * @return the name of this component (simple name)
      */
     String getName();
 

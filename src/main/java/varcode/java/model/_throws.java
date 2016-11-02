@@ -52,6 +52,12 @@ public class _throws
     }
     
     @Override
+    public String author( )
+    {
+        return author( new Directive[ 0 ] );
+    }
+    
+    @Override
 	public String author( Directive... directives ) 
 	{
 		VarContext vc = VarContext.of( "throwsException", throwsException );

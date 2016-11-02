@@ -4,7 +4,6 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-import varcode.VarException;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
@@ -84,12 +83,18 @@ public class _constructors
         {
             return this.constructors.get( index );
         }
-        throw new VarException( "invalid index [" + index + "]" );
+        throw new ModelException( "invalid index [" + index + "]" );
     }
     
 	public static final Dom CONSTRUCTORS = BindML.compile(
 		"{{+?constructors:{+constructors+}" + N + "+}}" );
 
+    @Override
+    public String author( )
+    {
+        return author( new Directive[ 0 ] );
+    }
+        
     @Override
 	public String author( Directive... directives ) 
 	{
@@ -115,7 +120,7 @@ public class _constructors
 		{
 			if( constructors.get( i ).matchesExisting( constructor ) )
 			{
-				throw new VarException( 
+				throw new ModelException( 
 					"Error, adding constructor " + N + constructor.toString() + N + 
 					"a constructor with the same signature found " + N +
 					constructors.get( i ).toString() );
@@ -348,6 +353,12 @@ public class _constructors
 				"}" );
 	        
         @Override
+        public String author( )
+        {
+            return author( new Directive[ 0 ] );
+        }
+        
+        @Override
 		public String author( Directive... directives ) 
 		{
 			return Compose.asString(
@@ -478,7 +489,7 @@ public class _constructors
 				{							
 					if( closeParenIndex < 0 )
 					{
-						throw new VarException( 
+						throw new ModelException( 
 							"cannot find matching ')' for constructor signature contain \")\" " );
 					}
 	
@@ -507,7 +518,7 @@ public class _constructors
 				{
 					if( ! throwsTokens.startsWith( "throws" ) )
 					{
-						throw new VarException( 
+						throw new ModelException( 
 							"Tokens found after (parameters); expected throws ...; "
 							+ "got \"" + throwsTokens + "\"");
 					}
@@ -536,7 +547,7 @@ public class _constructors
 					Modifier.ABSTRACT, Modifier.FINAL, Modifier.NATIVE, Modifier.STATIC, 
 					Modifier.STRICT, Modifier.SYNCHRONIZED, Modifier.TRANSIENT, Modifier.VOLATILE ) )
 				{
-					throw new VarException(
+					throw new ModelException(
 						"Invalid Modifier(s) Constructors may only be private" );
 				}
 				return new _signature( mods, className, params, throwsExceptions );			
@@ -566,6 +577,12 @@ public class _constructors
 					directives );
 			}
 
+            @Override
+            public String author( )
+            {
+                return author( new Directive[ 0 ] );
+            }
+        
             @Override
 			public String toString()
 			{

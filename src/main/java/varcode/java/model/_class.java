@@ -5,7 +5,6 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-import varcode.VarException;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
@@ -18,6 +17,7 @@ import varcode.java.model._nest._nestGroup;
 import varcode.markup.bindml.BindML;
 import varcode.Model;
 import varcode.java.model._constructors._constructor;
+import varcode.java.model._fields._init;
 
 /**
  * "parametric code" using a fluent builder pattern for 
@@ -185,6 +185,12 @@ public class _class
 			"+}}" +
 			"}" );
 			
+    
+    public String author( )
+    {
+        return Compose.asString( CLASS, getContext() );			
+    }
+    
     @Override
 	public String author( Directive... directives ) 
 	{
@@ -558,18 +564,19 @@ public class _class
 	{
 		if( m.isAbstract() && !this.isAbstract() )
 		{
-			throw new VarException(
+			throw new ModelException(
 				"Cannot add an abstract method " + N + m + N + " to a non-abstract class " );
 		}
 		if( m.isAbstract() && !m.getBody().isEmpty() )
 		{
-			throw new VarException( 
+			throw new ModelException( 
 				"abstract method :" + N + m + N + "cannot have a method body:" + N + m.getBody() );
 		}
 		this.methods.addMethod( m );
 		return this;
 	}
 	
+    /** Adds a field to the class and returns the _class */
     public _class field( _field field )
     {
         fields.addFields( field );		
@@ -578,23 +585,79 @@ public class _class
     
     /** 
      * adds a single field with a javadoc comment i.e.
-     * field("comment", "public int a");
+     * <PRE>
+     * .field("comment", "public int a = 100;");
      * 
      * is:
      * /**
      *  * comment
      *  * /
-     * public int a;
-     * 
-     * @param comment
-     * @param field
+     * public int a = 100;
+     * </PRE>
+     * @param comment javadoc comment for the field
+     * @param fieldDeclaration the entire declaration of the field
+     * (including modifiers, Type, name, and init )
      * @return 
      */
-    public _class field( String comment, String field )
+    public _class field( String comment, String fieldDeclaration )
 	{
-		fields.addFields( _fields._field.of( field ).javadoc( comment ) );		
+		fields.addFields( _field.of( fieldDeclaration ).javadoc( comment ) );		
 		return this;
 	}
+    
+    /**
+     * i.e. 
+     * <PRE>
+     * .field( _modifiers.of("public", "final"), "String", "name");
+     * 
+     * creates the field:
+     * 
+     * public final String name;
+     * 
+     * </PRE>
+     * @param mods the modifiers for the field
+     * @param type the type of the field
+     * @param name the name of the field
+     * @return the class (after adding the field)
+     */
+    public _class field( _modifiers mods, String type, String name )
+    {
+        _field f = new _field( mods, type, name );
+        return field( f );
+    }
+    
+    public _class field( int mods, String type, String name )
+    {
+        _field f = new _field( mods, type, name );
+        return field( f );
+    }
+    
+    public _class field( int modifiers, String type, String name, String init )
+    {
+        return field( new _field( modifiers, type, name, init ) );        
+    }
+    
+    /**
+     * i.e. 
+     * <PRE>
+     * .field( _modifiers.of("public", "final"), "String", "name", " = \"Eric\";" );
+     * 
+     * creates the field:
+     * 
+     * public final String name = "Eric";
+     * 
+     * </PRE>
+     * @param mods the modifiers for the field
+     * @param type the type of the field
+     * @param name the name of the field
+     * @param init initialization for the field
+     * @return the class (after updating the field)
+     */
+    public _class field( _modifiers mods, String type, String name, String init )
+    {
+        _field f = new _field( mods, type, name, _init.of( init) );
+        return field( f );
+    }
     
 	public _class field( String field )
 	{
@@ -753,6 +816,12 @@ public class _class
                 "{+extendsFrom+}" +
                 "{+implementsFrom+}" );
 
+        @Override
+        public String author( )
+        {
+            return author( new Directive[ 0 ] );
+        }
+        
         @Override
 		public String author( Directive... directives ) 
 		{
@@ -932,7 +1001,7 @@ public class _class
 		
 			if( ( classTokenIndex < 0 ) || ( classTokenIndex > tokens.length -1 ) )
 			{   //cant be 
-				throw new VarException(
+				throw new ModelException(
 					"class token cant be not found or the last token" ); 
 			}
 			sig.className = tokens[ classTokenIndex + 1 ];
@@ -946,28 +1015,28 @@ public class _class
 					Modifier.NATIVE, Modifier.SYNCHRONIZED, Modifier.NATIVE,
 					Modifier.TRANSIENT, Modifier.VOLATILE, Modifier.STRICT ) )
 				{
-					throw new VarException( 
+					throw new ModelException( 
                         "classSignature \"" + classSignature + "\" contains invalid modifiers" );
 				}
 				
 				if( sig.modifiers.containsAll(
 					Modifier.ABSTRACT, Modifier.FINAL ) )
 				{
-					throw new VarException( "class cannot be both abstract and final" );
+					throw new ModelException( "class cannot be both abstract and final" );
 				}
 			}
 			if( extendsTokenIndex > classTokenIndex + 1 )
 			{
 				if( extendsTokenIndex == tokens.length -1 )
 				{
-					throw new VarException( 
+					throw new ModelException( 
 						"\"extends\" token cannot be the last token" );
 				}                
 				sig.extendsFrom = new _extends( tokens[ extendsTokenIndex + 1 ] );						
                 if(( implementsTokenIndex < 0 ) && 
                    ( tokens.length - 2 > extendsTokenIndex ) )
                 {
-                    throw new VarException(
+                    throw new ModelException(
                         "class can only use single extension inheritance ");
                 }
 			}
@@ -975,7 +1044,7 @@ public class _class
 			{
 				if( implementsTokenIndex == tokens.length -1 )
 				{
-					throw new VarException( 
+					throw new ModelException( 
 						"implements token cannot be the last token" );
 				}
 				int tokensLeft = tokens.length - ( implementsTokenIndex + 1 );

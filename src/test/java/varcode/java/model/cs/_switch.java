@@ -120,6 +120,12 @@ public class _switch
     }
 
     @Override
+    public String author( )
+    {
+        return author( new Directive[ 0 ] );
+    }
+    
+    @Override
     public String author( Directive... directives )
     {
         return Compose.asString( SWITCH, getContext(), directives );
@@ -212,6 +218,12 @@ public class _switch
         }
         
         @Override
+        public String author( )
+        {
+            return author( new Directive[ 0 ] );
+        }
+    
+        @Override
         public String author( Directive... directives )
         {
             return Compose.asString( DEFAULT_CASE, getContext(), directives );
@@ -270,6 +282,12 @@ public class _switch
             return vc;
         }
         
+        @Override
+        public String author( )
+        {
+            return author( new Directive[ 0 ] );
+        }
+    
         @Override
         public String author( Directive... directives )
         {
@@ -344,6 +362,13 @@ public class _switch
                 "breakAfter", this.breakAfter
             );
         }
+        
+        @Override
+        public String author( )
+        {
+            return author( new Directive[ 0 ] );
+        }
+    
         @Override
         public String author( Directive... directives )
         {

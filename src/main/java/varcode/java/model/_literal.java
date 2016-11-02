@@ -2,7 +2,7 @@ package varcode.java.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import varcode.VarException;
+import varcode.Model.ModelException;
 import varcode.doc.lib.text.EscapeString;
 
 /**
@@ -61,7 +61,7 @@ public class _literal
 			return new _literal( (String)o );
 		}
 		//}
-		throw new VarException( "cannot convert Object " + o + " to literal" );
+		throw new ModelException( "cannot convert Object " + o + " to literal" );
 	}
 	
 	public _literal( int i )

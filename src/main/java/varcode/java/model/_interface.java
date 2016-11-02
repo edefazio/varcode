@@ -5,7 +5,6 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-import varcode.VarException;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
@@ -282,24 +281,24 @@ public class _interface
 	//Default Method
         if( sig.getModifiers().contains( Modifier.PRIVATE ) )
         {
-            throw new VarException( 
+            throw new ModelException( 
                 "Cannot add a private method " + N + sig + N +" to an interface ");
         }
         if( sig.getModifiers().contains( Modifier.FINAL ) )
         {
-            throw new VarException( 
+            throw new ModelException( 
                 "Cannot add a final method " + N + sig + N +" to an interface ");
         }
         if( sig.getModifiers().contains( Modifier.PROTECTED ) )
         {
-            throw new VarException( 
+            throw new ModelException( 
                 "Cannot add a protected method " + N + sig + N +" to an interface ");
         }
         if( sig.getModifiers().containsAny(
             Modifier.NATIVE, Modifier.STRICT, Modifier.SYNCHRONIZED, 
             Modifier.TRANSIENT, Modifier.VOLATILE ) )
         {
-            throw new VarException( "Invalid Modifiers for interface method "+ N + sig );
+            throw new ModelException( "Invalid Modifiers for interface method "+ N + sig );
         }
 	method.getSignature().getModifiers().set( "abstract" );
 	this.methods.addMethod( method );
@@ -333,23 +332,24 @@ public class _interface
 	}
 	if( sig.getModifiers().contains( Modifier.PRIVATE ) )
 	{
-            throw new VarException( 
+            throw new ModelException( 
                 "Cannot add a private method " +N + sig + N +" to an interface ");
 	}
         if( sig.getModifiers().contains( Modifier.FINAL ) )
         {
-            throw new VarException( 
+            throw new ModelException( 
                 "Cannot add a final method " +N + sig + N +" to an interface ");
 	}
 	if( sig.getModifiers().contains( Modifier.PROTECTED ) )
 	{
-	    throw new VarException( 
-                "Cannot add a protected method " +N + sig + N +" to an interface ");
+	    throw new ModelException( 
+            "Cannot add a protected method " +N + sig + N +" to an interface ");
 	}
 	if( sig.getModifiers().containsAny( 
 	    Modifier.NATIVE, Modifier.SYNCHRONIZED, Modifier.TRANSIENT, Modifier.VOLATILE))
 	{
-            throw new VarException( "Invalid Modifiers for interface method "+ N + sig );
+            throw new ModelException( 
+                "Invalid Modifiers for interface method "+ N + sig );
 	}
 	this.methods.addMethod( method );
 	return this;
@@ -359,49 +359,49 @@ public class _interface
     {
         _method method = _method.of( null, signature, linesOfCode);
 		
-	_methods._method._signature sig = method.getSignature();
-	if( !sig.getModifiers().contains( 
+        _methods._method._signature sig = method.getSignature();
+        if( !sig.getModifiers().contains( 
             _modifiers._mod.INTERFACE_DEFAULT.getBitValue() ) )
-	{			
+        {			
             sig.getModifiers().set( "default" );
         }
-	if( sig.getModifiers().contains( Modifier.PRIVATE ) )
-	{
-	    throw new VarException( 
+        if( sig.getModifiers().contains( Modifier.PRIVATE ) )
+        {
+            throw new ModelException( 
                 "Cannot add a private method " +N + sig + N +" to an interface ");
-	}
-	if( sig.getModifiers().contains( Modifier.FINAL ) )
-	{
-            throw new VarException( 
+        }
+        if( sig.getModifiers().contains( Modifier.FINAL ) )
+        {   
+            throw new ModelException( 
                 "Cannot add a final method " +N + sig + N +" to an interface ");
-	}
-	if( sig.getModifiers().contains( Modifier.PROTECTED ) )
-	{
-            throw new VarException( 
+        }
+        if( sig.getModifiers().contains( Modifier.PROTECTED ) )
+        {
+            throw new ModelException( 
                 "Cannot add a protected method " +N + sig + N +" to an interface ");
-	}
-	if( sig.getModifiers().containsAny( 
+        }
+        if( sig.getModifiers().containsAny( 
             Modifier.NATIVE, Modifier.SYNCHRONIZED, Modifier.TRANSIENT, Modifier.VOLATILE))
-	{
-	    throw new VarException( 
+        {
+            throw new ModelException( 
                 "Invalid Modifiers for interface method "+ N + sig );
-	}
+        }
         this.methods.addMethod( method );
-	return this;
+        return this;
     }
 	
     public _interface field( String comment, String fieldSignature )
     {
         _fields._field m = _fields._field.of( fieldSignature );
         
-	if( !m.hasInit() )
-	{
-            throw new VarException("Field : " + N + m +  N 
-		+ " has not been initialized for interface ");
-	}
+        if( !m.hasInit() )
+        {
+            throw new ModelException("Field : " + N + m +  N 
+                + " has not been initialized for interface ");
+        }
         m.javadoc( comment );
-	fields.addFields( m );		
-	return this;    
+        fields.addFields( m );		
+        return this;    
     }
     
     public _interface field( _field field )
@@ -415,7 +415,7 @@ public class _interface
         _fields._field m = _fields._field.of( fieldSignature );
         if( m.getInit() == null || m.getInit().getCode().trim().length() == 0 )
         {
-            throw new VarException( "Field : " + N + m +  N 
+            throw new ModelException( "Field : " + N + m +  N 
                 + " has not been initialized for interface ");
         }
         fields.addFields( m );		
@@ -425,20 +425,27 @@ public class _interface
     public _interface nest( _component component )
     {
         this.nests.add( component );
-	return this;
+        return this;
     }
 	
     /** interface signature */
     public static class _signature
         implements Model
     {                
-	private _modifiers modifiers = new _modifiers();
-	private String interfaceName;		
-	private _extends extendsFrom = new _extends();
+        private _modifiers modifiers = new _modifiers();
+        private String interfaceName;		
+        private _extends extendsFrom = new _extends();
 		
-	public static final Dom INTERFACE_SIGNATURE = 
-	    BindML.compile("{+modifiers+}interface {+interfaceName*+}{+extendsFrom+}" );
+        public static final Dom INTERFACE_SIGNATURE = 
+            BindML.compile(
+                "{+modifiers+}interface {+interfaceName*+}{+extendsFrom+}" );
 
+        @Override
+        public String author( )
+        {
+            return author( new Directive[ 0 ] );
+        }
+        
         @Override
 		public String author( Directive... directives ) 
 		{
@@ -529,7 +536,7 @@ public class _interface
 		
 			if( tokens.length < 2 )
 			{
-				throw new VarException( 
+				throw new ModelException( 
                     "interface signature must have at least (2) tokens interface <name>" );	
 			}
 		
@@ -547,8 +554,8 @@ public class _interface
 		
 			if(( interfaceTokenIndex < 0 ) || ( interfaceTokenIndex > tokens.length -1 ) )
 			{   //cant be 
-				throw new VarException(
-						"interface token cant be not found or the last token"); 
+				throw new ModelException(
+                    "interface token cant be not found or the last token"); 
 			}
 			sig.interfaceName = 
                 tokens[ interfaceTokenIndex + 1 ];
@@ -564,8 +571,8 @@ public class _interface
 			{
 				if( extendsTokenIndex == tokens.length -1 )
 				{
-					throw new VarException( 
-						"extends token cannot be the last token" );
+					throw new ModelException( 
+                        "extends token cannot be the last token" );
 				}
 				
 				int tokensLeft = tokens.length - ( extendsTokenIndex + 1 );
@@ -649,6 +656,12 @@ public class _interface
 		}
 	}
 	
+    @Override
+    public String author( )
+    {
+        return author( new Directive[ 0 ] );
+    }
+        
     @Override
 	public String author( Directive... directives ) 
 	{

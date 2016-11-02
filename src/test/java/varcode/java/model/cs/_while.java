@@ -73,6 +73,12 @@ public class _while
         "}");
     
     @Override
+    public String author( )
+    {
+        return author( new Directive[ 0 ] );
+    }
+    
+    @Override
     public String author( Directive... directives )
     {
         return Compose.asString( WHILE_LOOP, getContext(), directives );

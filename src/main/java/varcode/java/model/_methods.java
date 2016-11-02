@@ -60,6 +60,12 @@ public class _methods
     }     
     
     @Override
+    public String author( )
+    {
+        return author( new Directive[ 0 ] );
+    }
+        
+    @Override
 	public String author( Directive... directives ) 
 	{
 		List<_method>nonStaticMethods = new ArrayList<_method>();
@@ -377,7 +383,7 @@ public class _methods
 		{
 			if( this.isAbstract() && methodBody != null && linesOfCode != null && linesOfCode.length > 0)
 			{
-				throw new VarException(
+				throw new ModelException(
 					"Abstract methods : "+ N + signature + N + "cannot have a method body" );
 			}
 			this.methodBody = _code.of( linesOfCode );
@@ -402,6 +408,12 @@ public class _methods
                 "methodAnnotations", annotations,    
                 "methodSignature", signature,                        
 				"methodBody", methodBody );
+        }
+        
+        @Override
+        public String author( )
+        {
+            return author( new Directive[ 0 ] );
         }
         
         @Override
@@ -635,37 +647,37 @@ public class _methods
 			
 				if( mods.containsAny( Modifier.TRANSIENT, Modifier.VOLATILE ) )
 				{
-					throw new VarException(
+					throw new ModelException(
 						"Invalid Modifiers for method; (cannot be transient or volatile)" );
 				}
 				if( mods.containsAll( Modifier.ABSTRACT, Modifier.FINAL ) )
 				{
-					throw new VarException( 
+					throw new ModelException( 
 						"Invalid Modifiers for method; (cannot be BOTH abstract and final )" );
 				}
 				if( mods.containsAll( Modifier.ABSTRACT, Modifier.NATIVE ) )
 				{
-					throw new VarException( 
+					throw new ModelException( 
 						"Invalid Modifiers for method; (cannot be BOTH abstract and native )" );				
 				}
 				if( mods.containsAll( Modifier.ABSTRACT, Modifier.PRIVATE ) )
 				{
-					throw new VarException( 
+					throw new ModelException( 
 						"Invalid Modifiers for method; (cannot be BOTH abstract and private )" );				
 				}
 				if( mods.containsAll( Modifier.ABSTRACT, Modifier.STATIC ) )
 				{
-					throw new VarException( 
+					throw new ModelException( 
 						"Invalid Modifiers for method; (cannot be BOTH abstract and static )" );				
 				}
 				if( mods.containsAll( Modifier.ABSTRACT, Modifier.STRICT ) )
 				{
-					throw new VarException( 
+					throw new ModelException( 
 						"Invalid Modifiers for method; (cannot be BOTH abstract and strictfp )" );				
 				}
 				if( mods.containsAll( Modifier.ABSTRACT, Modifier.SYNCHRONIZED ) )
 				{
-					throw new VarException( 
+					throw new ModelException( 
 						"Invalid Modifiers for method; (cannot be BOTH abstract and synchronized )" );				
 				}
 				return new _signature( 
@@ -689,8 +701,8 @@ public class _methods
 						{
                             //System.out.println( "TYPE 1:"+sig.params.getAt( i ).toString() );
                             //System.out.println( "TYPE 2:"+this.params.getAt( i ).toString() );
-							if( !sig.params.getAt( i ).getType().toString().equals( 
-								this.params.getAt( i ).getType().toString() ) )
+							if( !sig.params.getAt( i ).getType().equals( 
+								this.params.getAt( i ).getType() ) )
 							{
 								return false;
 							}
@@ -706,6 +718,12 @@ public class _methods
 				BindML.compile(
                     "{+modifiers+}{+returnType+} {+methodName+}{+params+}{+throwsExceptions+}");
 	
+            @Override
+            public String author( )
+            {
+                return author( new Directive[ 0 ] );
+            }
+        
             @Override
 			public String author( Directive... directives ) 
 			{

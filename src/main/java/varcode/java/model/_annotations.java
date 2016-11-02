@@ -18,7 +18,7 @@ package varcode.java.model;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import varcode.VarException;
+
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
@@ -166,6 +166,16 @@ public class _annotations
     }
     
     @Override
+    public String author( )
+    {
+        if( ! isEmpty() )
+        {
+            return Compose.asString( ANNOTATION_LIST, getContext() );
+        }
+        return "";
+    }
+    
+    @Override
     public String author( Directive... directives )
     {
         if( ! isEmpty() )
@@ -260,7 +270,7 @@ public class _annotations
             }
             return this;
         }
-        
+        /*
         public void bindTo( VarContext context )
         {
             for( int i = 0; i < names.size(); i++ )
@@ -287,6 +297,7 @@ public class _annotations
                 }
             }
         }
+        */
          
         public int count()
         {
@@ -310,7 +321,7 @@ public class _annotations
         {
             if( nameValues.length % 2 != 0 )
             {
-                throw new VarException(
+                throw new ModelException(
                     "nameValues must be passed in as pairs" );
             }
             for( int i = 0; i < (nameValues.length / 2); i++ )
@@ -389,6 +400,12 @@ public class _annotations
         }
         
         @Override
+        public String author( )
+        {
+            return author( new Directive[ 0 ] );
+        }
+        
+        @Override
         public String toString()
         {
             return author();
@@ -421,7 +438,7 @@ public class _annotations
             }
             if (this.attributes != null && !attributes.isEmpty() )
             {
-                this.attributes.bindTo( context ); 
+                this.attributes.bind( context ); 
             }
             return this;
         }
@@ -514,7 +531,13 @@ public class _annotations
                 VarContext.of( 
                     "annotation", annotation, "attributes", attributes ), 
                 directives ); 
-        }        
+        }
+        
+        @Override
+        public String author( )
+        {
+            return author( new Directive[ 0 ] );
+        }
         
         @Override
         public String toString()
