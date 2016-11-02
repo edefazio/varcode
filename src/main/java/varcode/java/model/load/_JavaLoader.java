@@ -18,11 +18,15 @@ package varcode.java.model.load;
 import com.github.javaparser.ParseException;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.EnumDeclaration;
 
 import java.io.InputStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import varcode.Model.ModelException;
 
 import varcode.java.model._class;
+import varcode.java.model._enum;
 import varcode.java.model._interface;
 import varcode.source.BaseSourceLoader;
 import varcode.source.SourceLoader;
@@ -57,6 +61,9 @@ import varcode.source.SourceLoader.SourceStream;
  */
 public class _JavaLoader
 {    
+    private static final Logger LOG = 
+        LoggerFactory.getLogger( _JavaLoader.class );
+        
     /**
      * 
      */
@@ -147,6 +154,43 @@ public class _JavaLoader
                     + sourceLoader.describe(), pe );
             }        
         }
+        
+        public static _interface from( InputStream sourceInputStream )
+        {
+            try 
+            {
+                // parse the file
+                CompilationUnit cu = 
+                    _JavaParser.from( sourceInputStream );
+                
+                ClassOrInterfaceDeclaration interfaceDecl = 
+                    _JavaParser.getInterfaceNode( cu );
+                return _JavaParser._Interface.from( cu, interfaceDecl );
+            }    
+            catch( ParseException pe )
+            {
+                throw new ModelLoadException(
+                    "Unable to parse _interface Source from InputStream", pe );
+            }                     
+        }
+        
+        public static _interface from( String interfaceSource )
+        {
+            try 
+            {
+                // parse the file
+                CompilationUnit cu = 
+                    _JavaParser.from( interfaceSource );
+                
+                ClassOrInterfaceDeclaration classDecl = _JavaParser.getInterfaceNode( cu );
+                return _JavaParser._Interface.from( cu, classDecl );
+            }    
+            catch( ParseException pe )
+            {
+                throw new ModelLoadException(
+                    "Unable to parse Source from String", pe );
+            }
+        }        
     }
     
     public static class _Class
@@ -249,5 +293,105 @@ public class _JavaLoader
         }        
     }
     
+    
+    public static class _Enum
+    {   
+        public static _enum from( Class clazz )
+        {
+            return _Enum.from( BaseSourceLoader.INSTANCE, clazz );
+        }
+        
+        public static _enum from( SourceLoader sourceLoader, Class clazz )
+        {
+            if( clazz.isMemberClass() )
+            {
+                SourceStream ss = null;
+                try
+                {
+                    System.out.println( "IS MEMBER ENUM ");
+                    // we have to find the source of the Member class WITHIN the 
+                    // source of the declaring class
+                    Class declaringClass = clazz.getDeclaringClass();
+                    ss = sourceLoader.sourceStream( 
+                        declaringClass.getCanonicalName() + ".java" );                          
+                    if( ss == null )
+                    {
+                        throw new ModelLoadException(
+                            "Unable to find source for \"" + declaringClass + 
+                            "\" with " + sourceLoader.describe() );
+                    }
+                    
+                    //Parse the Declaring Class into an AST
+                    CompilationUnit cu = 
+                        _JavaParser.from( ss.getInputStream() );
+                    
+                    EnumDeclaration classDecl = 
+                        _JavaParser.findEnumNode( cu, clazz );
+                    
+                    return _JavaParser._Enum.fromCompilationUnit( cu, classDecl );
+                }
+                catch( ParseException pe )
+                {
+                    throw new ModelLoadException(
+                        "Error Parsing Source "+ ss.describe(), pe );
+                }
+            }
+            SourceStream ss = 
+                BaseSourceLoader.INSTANCE.sourceStream( clazz );        
+            try 
+            {
+                // parse the file
+                //CompilationUnit cu = JavaParser.parse( ss.getInputStream() );
+                CompilationUnit cu = 
+                    _JavaParser.from( ss.getInputStream() );
+                
+                EnumDeclaration enumDecl = _JavaParser.getEnumNode( cu );
+                return _JavaParser._Enum.fromCompilationUnit( cu, enumDecl );
+            }    
+            catch( ParseException pe )
+            {
+                throw new ModelLoadException(
+                    "Unable to parse Source for \"" + clazz + "\" from " 
+                    + sourceLoader.describe(), pe );
+            }        
+        }
+        
+        
+        public static _enum from( InputStream sourceInputStream )
+        {
+            try 
+            {
+                // parse the file
+                CompilationUnit cu = 
+                    _JavaParser.from( sourceInputStream );
+                
+                EnumDeclaration enumDecl = _JavaParser.getEnumNode( cu );
+                return _JavaParser._Enum.fromCompilationUnit( cu, enumDecl );
+            }    
+            catch( ParseException pe )
+            {
+                throw new ModelLoadException(
+                    "Unable to parse Source from InputStream", pe );
+            }                     
+        }
+        
+        public static _enum from( String classSource )
+        {
+            try 
+            {
+                // parse the file
+                CompilationUnit cu = 
+                    _JavaParser.from( classSource );
+                
+                EnumDeclaration enumDecl = _JavaParser.getEnumNode( cu );
+                return _JavaParser._Enum.fromCompilationUnit( cu, enumDecl );
+            }    
+            catch( ParseException pe )
+            {
+                throw new ModelLoadException(
+                    "Unable to parse Source from String", pe );
+            }
+        }        
+    }
     public static final String N = System.lineSeparator();
 }

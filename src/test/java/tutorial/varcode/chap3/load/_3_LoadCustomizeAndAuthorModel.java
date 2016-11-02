@@ -37,12 +37,6 @@ import varcode.java.model._fields;
 import varcode.java.model._fields._field;
 import varcode.java.model._imports;
 import varcode.java.model._methods._method;
-import varcode.java.model.edit.AddImports;
-import varcode.java.model.edit.Expect;
-import varcode.java.model.edit.ExpectArgument;
-import varcode.java.model.edit.ExpectInstanceField;
-import varcode.java.model.edit.ExpectStaticField;
-import varcode.java.model.edit.MethodEditor;
 import varcode.java.model.load._JavaLoader;
 
 /**
@@ -86,72 +80,9 @@ public class _3_LoadCustomizeAndAuthorModel
         }
     }
     
-    public static class CodeContext
-    {
-        public Class clazz;
-        public Method method;        
-        public Map<String,Object> parameters;
-        public Map<String,Object> instanceValues;
-    }
-    
-    public interface _InstanceMethodBeforeAdvice
-    {
-        void before( Method method, Object[] args, Object target );
-    }
-    
-    public interface _StaticMethodBeforeAdvice
-    {
-        void beforeStatic( Method method, Object[] args, Class target );
-    }
-    
-    public interface _InstanceMethodAfterAdvice
-    {
-        void after( Method method, Object[] args, Object target );
-    }
-    
-    public interface _StaticMethodAfterAdvice
-    {
-        void afterStatic( Method method, Object[] args, Class target );
-    }
-    
-    public static abstract class _InstanceMethodAdvice
-        implements _InstanceMethodBeforeAdvice, _InstanceMethodAfterAdvice
-    {
-        @Override
-        public void before( Method method, Object[] args, Object target )
-        {
-            
-        }
-        
-        @Override
-        public void after( Method method, Object[] args, Object target )
-        {
-            
-        }
-
-        public static Expect expect()
-        {
-            return new Expect();
-        }
-        
-        private final Expect expectModel;
-        
-        
-        public _InstanceMethodAdvice( )
-        {
-            this( new Expect() );
-        }
-        
-        public _InstanceMethodAdvice( Expect expectModel )
-        {
-            this.expectModel = expectModel;
-        }
-        
-        
-    }
+   
     
     public static class LogMethodAdvice
-        extends _InstanceMethodAdvice
     {        
         //expect the target class to have a static Logger named "LOG"
         static Logger LOG = LoggerFactory.getLogger( LogMethodAdvice.class );
@@ -159,12 +90,17 @@ public class _3_LoadCustomizeAndAuthorModel
         
         public LogMethodAdvice( )
         {
+            /*
+            String logger = expectOrAddLogger();
+             
+            LogggetStaticFieldOfType( Logger );
             super( expect()
                 .staticField( LOG.getClass().getTypeName(), "LOG" )
                 .instanceField( String.class.getTypeName(), "x" )
                 .argument( "Map<String,Integer>", "blah") );    
                 //.addMethodByName( "printArgs" )
                 //.addImports( Logger.class, LoggerFactory.class ) );
+            */
         }
      
         public static String printArgs( Object... args )

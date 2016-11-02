@@ -21,12 +21,14 @@ import java.util.UUID;
 import junit.framework.TestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import varcode.Model;
 import varcode.VarException;
 import varcode.java.model._class;
 import varcode.java.model._constructors;
 import varcode.java.model._constructors._constructor;
 import varcode.java.model._fields;
 import varcode.java.model._fields._field;
+import varcode.java.model._interface;
 import varcode.java.model._methods;
 import varcode.java.model._methods._method;
 import varcode.java.model._parameters._parameter;
@@ -38,14 +40,14 @@ import varcode.java.model.load._JavaLoader;
  * 
  * @author M. Eric
  */
-public class _2_LoadModel
+public class _2_LoadModel_class
     extends TestCase
 {
     private static final Logger LOG = 
-        LoggerFactory.getLogger(_2_LoadModel.class );
+        LoggerFactory.getLogger(_2_LoadModel_class.class );
     
     //load a "top level class" (stored in "VarException.java")
-    public void testLoadClass()
+    public void testLoad_class()
     {
         _class c = _JavaLoader._Class.from( VarException.class );        
         LOG.debug ( c.author( ) ); 
@@ -69,7 +71,7 @@ public class _2_LoadModel
      * tutorial.varcode.chap3.load._2_LoadModelByClass.$MemberClass 
      * stored in "\tutorial\varcode\chap3\load\_2_LoadModelByClass.java"
      */
-    public void testLoadMemberJavaClassAsModel()
+    public void testLoadMember_class()
     {        
         _class c = _JavaLoader._Class.from( MemberClass.class );
         
@@ -80,9 +82,7 @@ public class _2_LoadModel
                 .getModifiers().containsAll( "public", "static", "final" ) );
     }
     
-    public void testLoadInterface()
-    {
-        
-    }
+   
+    
     
 }

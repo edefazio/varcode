@@ -433,6 +433,12 @@ public class _enum
 		return this;
 	}
 	
+    public _enum importsStatic( Object... imports )
+    {
+        this.imports.addStaticImports( imports );
+        return this;
+    }
+    
 	public _enum imports( Object...imports )
 	{
 		this.imports.addImports( imports );
@@ -542,6 +548,12 @@ public class _enum
 		this.fields.addFields( fields );
 		return this;
 	}
+
+    public _enum setModifiers( _modifiers mods )
+    {
+        this.enumSignature.modifiers = mods;
+        return this;
+    }
 	
     
 	/**
