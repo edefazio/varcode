@@ -19,12 +19,14 @@ import varcode.java.model._javadoc;
 import varcode.java.model._methods;
 import varcode.java.model._methods._method;
 import varcode.java.model._parameters;
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertTrue;
 
 /**
  * 
  * @author eric
  */
-public class JavaModelLoaderTestCase
+public class _JavaLoaderTestCase
     extends TestCase
 {
     public void testLoadTopLevelInterfaceModel()

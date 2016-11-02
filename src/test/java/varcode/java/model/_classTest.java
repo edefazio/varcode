@@ -98,7 +98,7 @@ public class _classTest
         assertEquals( 0, c.getImports().count() );
         assertTrue( c.getJavadoc().isEmpty() );
         assertEquals( 0, c.getMethods().count() );
-        assertEquals( 0, c.getNests().count() );
+        assertEquals( 0, c.getNesteds().count() );
         assertEquals( 0, c.getSignature().getExtends().count() );
         assertEquals( 0, c.getSignature().getImplements().count() );
         assertTrue( c.getSignature().getModifiers().containsAll( "public" ) );        

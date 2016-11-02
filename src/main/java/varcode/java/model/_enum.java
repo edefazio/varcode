@@ -14,7 +14,7 @@ import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.model._constructors._constructor;
 import varcode.java.model._enum._valueConstructs._valueConstruct;
 import varcode.java.model._methods._method;
-import varcode.java.model._nest._nestGroup;
+import varcode.java.model._nesteds;
 import varcode.java.model._component;
 import varcode.markup.bindml.BindML;
 import varcode.Model;
@@ -37,7 +37,7 @@ public class _enum
 	private _fields fields = new _fields();
 	private _valueConstructs values = new _valueConstructs();
 	private _methods methods = new _methods();
-	private _nest._nestGroup nests = new _nestGroup();
+	private _nesteds nests = new _nesteds();
 	
 	public static final Dom ENUM = 
 		BindML.compile( 
@@ -84,7 +84,7 @@ public class _enum
 		this.fields = _fields.cloneOf( prototype.fields );
 		this.values = _valueConstructs.cloneOf( prototype.values );
 		this.methods = _methods.cloneOf( prototype.methods );		
-		this.nests = _nestGroup.cloneOf( prototype.nests );
+		this.nests = _nesteds.cloneOf( prototype.nests );
 	}
     
     @Override
@@ -264,6 +264,7 @@ public class _enum
         return this.staticBlock;
     }
     
+    @Override
     public _fields getFields()
     {
         return this.fields;
@@ -274,12 +275,13 @@ public class _enum
         return this.values;
     }
     
+    @Override
     public _methods getMethods()
     {
         return this.methods;
     }
     
-    public _nest._nestGroup getNests()
+    public _nesteds getNests()
     {
         return this.nests;
     }
@@ -352,7 +354,7 @@ public class _enum
 		_fields members,
 		_staticBlock staticBlock,
 		_methods methods,
-		_nestGroup nested )
+		_nesteds nested )
 	{
 		this.enumPackage = enumPackage;
 		this.imports = imports;

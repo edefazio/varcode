@@ -13,7 +13,6 @@ import varcode.java.JavaCase;
 import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.model._fields._field;
 import varcode.java.model._methods._method;
-import varcode.java.model._nest._nestGroup;
 import varcode.markup.bindml.BindML;
 import varcode.Model;
 import varcode.java.model._constructors._constructor;
@@ -44,15 +43,16 @@ public class _class
 	private _methods methods;
 	private _staticBlock staticBlock;
 	
-	/** Nested inner classes, static inner classes, interfaces, enums */
-	private _nestGroup nests;
+	/** Nested inner classes, static nested classes, interfaces, enums */
+	private _nesteds nesteds;
 	
 	public static _class cloneOf( _class prototype )
 	{
 		return new _class( prototype );
 	}
 	
-    /** Create and return a builder for a new class<PRE> 
+    /** 
+     * Create and return a builder for a new class<PRE> 
      * i.e. _class.of( "public class MyClass" );</PRE>
      * 
      * creates and returns a public _class "MyClass" in package "ex.varcode"
@@ -64,7 +64,8 @@ public class _class
 		return new _class( null, classSignature ); 
 	}
 	
-    /** Create and return a builder for a new class<PRE> 
+    /** 
+     * Create and return a builder for a new class<PRE> 
      * _class.of( 
      *    "ex.varcode", "public class MyClass extends BaseClass implements Something" );</PRE>
      * 
@@ -81,7 +82,6 @@ public class _class
 		return new _class( packageName, classSignature ); 
 	}
 	
-    
     @Override
     public String getName()
     {
@@ -102,7 +102,8 @@ public class _class
      * @param classSignature the signature of the class
      * @return a new _class
      */
-	public static _class of( String javadoc, String packageName, String classSignature )
+	public static _class of( 
+        String javadoc, String packageName, String classSignature )
 	{
 		_class c = new _class( packageName, classSignature );
 		c.javadoc( javadoc );
@@ -134,7 +135,7 @@ public class _class
 		this.methods = new _methods();
 		this.staticBlock = new _staticBlock();
 		this.constructors = new _constructors();
-		this.nests = new _nestGroup();
+		this.nesteds = new _nesteds();
 	}
 	
 	/**
@@ -162,7 +163,7 @@ public class _class
 		this.constructors = _constructors.cloneOf( prototype.constructors );
 		
 		//NESTEDS
-		this.nests = _nestGroup.cloneOf( prototype.nests );
+		this.nesteds = _nesteds.cloneOf(prototype.nesteds );
 	}
 	
 	public static final Dom CLASS = 
@@ -186,6 +187,7 @@ public class _class
 			"}" );
 			
     
+    @Override
     public String author( )
     {
         return Compose.asString( CLASS, getContext() );			
@@ -221,14 +223,14 @@ public class _class
 	public VarContext getContext()
 	{
 		String[] n = null;
-		if( nests.count() > 0 )
+		if( nesteds.count() > 0 )
 		{
 			//I need to go to each of the nested classes/ interfaces/ etc.
 			// and read what thier imports are, then add these imports to my imports
-			String[] nested = new String[ nests.count() ];
-			for( int i = 0; i < nests.count(); i++ )
+			String[] nested = new String[ nesteds.count() ];
+			for( int i = 0; i < nesteds.count(); i++ )
 			{
-				_component comp = nests.components.get( i );
+				_component comp = nesteds.components.get( i );
 				VarContext vc = comp.getContext();
 				
 				//inner classes inherit package, so remove the package
@@ -292,7 +294,7 @@ public class _class
         this.staticBlock = this.staticBlock.bind( context );
         this.methods = this.methods.bind( context );
         this.constructors = this.constructors.bind( context );
-        this.nests = this.nests.bind( context );      
+        this.nesteds = this.nesteds.bind( context );      
         return this;
     }
         
@@ -576,7 +578,11 @@ public class _class
 		return this;
 	}
 	
-    /** Adds a field to the class and returns the _class */
+    /** 
+     * Adds a field to the class and returns the _class
+     * @param field the field to add
+     * @return the _class with field added
+     */
     public _class field( _field field )
     {
         fields.addFields( field );		
@@ -674,8 +680,6 @@ public class _class
 		return this;
 	}
 	
-
-    
 	public _class importsStatic( Object... imports )
 	{
 		this.imports.addStaticImports( imports );
@@ -688,18 +692,22 @@ public class _class
 		return this;
 	}
 	
+    /** nest an ( _enum, _interface, _class ) inside this _class 
+     * @param component the component to nest inside this class
+     * @return this _class containing the nested component
+     */
 	public _class nest( _component component )
 	{
-		this.nests.add( component );
+		this.nesteds.add( component );
 		return this;
 	}
 	
     @Override
 	public _imports getImports()
 	{
-		for( int i = 0; i < nests.count(); i++ )
+		for( int i = 0; i < nesteds.count(); i++ )
 		{
-			this.imports.merge( nests.components.get( i ).getImports() );
+			this.imports.merge(nesteds.components.get( i ).getImports() );
 		}
 		return this.imports;
 	}
@@ -730,6 +738,7 @@ public class _class
         return this.constructors;
     }
     
+    @Override
     public _methods getMethods()
     {
         return this.methods;
@@ -737,7 +746,7 @@ public class _class
     
     /** 
      * For <B>NON-Overloaded methods</B>, returns if there is 
-     * <B>only ONE method</B> with this <B>exact name
+     * <B>only ONE method</B> with this <B>exact name</B>
      * @param name the name of the method to find
      * @return the ONLY method that has this name, 
      * - or - null if there are no methods with this name
@@ -765,9 +774,20 @@ public class _class
         return this.methods.getByName( name );
     }
     
-    public _nestGroup getNests()
+    public _nesteds getNesteds()
     {
-        return this.nests;
+        return this.nesteds;
+    }
+    
+    
+    public _component getNestedAt( int index )
+    {
+        return this.nesteds.getAt( index );
+    }
+    
+    public _component getNestedByName( String name )
+    {
+        return this.nesteds.getByName( name );
     }
     
     public _class setName( String name )
@@ -803,8 +823,7 @@ public class _class
      */
 	public static class _signature
         implements Model
-    {        
-        
+    {   
    		private _modifiers modifiers;
 		private String className;
 		private _extends extendsFrom;
@@ -1095,7 +1114,7 @@ public class _class
 		this.methods.replace( target, replacement );
         
         this.staticBlock.replace( target, replacement );
-        this.nests.replace( target, replacement );
+        this.nesteds.replace( target, replacement );
         
 		this.fields.replace( target, replacement );
         return this;        

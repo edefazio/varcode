@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 eric.
+ * Copyright 2016 M. Eric DeFazio
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,10 +35,10 @@ import varcode.source.SourceLoader.SourceStream;
 /**
  * Similar to a Class loader, but instead loads "Models"
  * Models are more refined AST.s Parse Trees that represent the model of 
- * things like _class,_interface,_method,_annotation, _import, etc.
+ * things like (_class,_interface,_enum, _method,_annotation, _import) etc.
  * 
  * the reason for building models of source, is to make generative or 
- * metaprogramming easier.
+ * meta-programming easier.
  * for instance the code:
  * <PRE>public class MyClass extends MyBaseClass implements Serializable
  *  {
@@ -54,7 +54,7 @@ import varcode.source.SourceLoader.SourceStream;
  * 
  * System.out.println( _myClass.getName() );
  * _extends ext = myClass.getExtends();
- * _implements impls = myclass.getImplements();
+ * _implements impls = myClass.getImplements();
  * _modifiers mods = myClass.getModifiers();
  * 
  * @author Eric DeFazio eric@varcode.io
@@ -63,10 +63,7 @@ public class _JavaLoader
 {    
     private static final Logger LOG = 
         LoggerFactory.getLogger( _JavaLoader.class );
-        
-    /**
-     * 
-     */
+ 
     public static class ModelLoadException 
         extends ModelException
     {        
@@ -154,6 +151,7 @@ public class _JavaLoader
                     + sourceLoader.describe(), pe );
             }        
         }
+        
         
         public static _interface from( InputStream sourceInputStream )
         {

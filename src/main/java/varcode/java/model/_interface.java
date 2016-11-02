@@ -12,7 +12,6 @@ import varcode.doc.Dom;
 import varcode.java.JavaCase;
 import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.model._methods._method;
-import varcode.java.model._nest._nestGroup;
 import varcode.markup.bindml.BindML;
 import varcode.Model;
 import varcode.java.model._fields._field;
@@ -131,7 +130,7 @@ public class _interface
     private _fields fields;
     private _methods methods;
     private _imports imports;
-    private _nestGroup nests;
+    private _nesteds nests;
 	
     @Override
     public _interface bind( VarContext context )
@@ -177,7 +176,7 @@ public class _interface
         this.imports = _imports.cloneOf( prototype.imports );
 		
 		//NESTEDS
-        this.nests = _nestGroup.cloneOf( prototype.nests );
+        this.nests = _nesteds.cloneOf( prototype.nests );
     }
 	
     public _interface( String packageName, String interfaceSignature )
@@ -189,7 +188,7 @@ public class _interface
         this.methods = new _methods();
         this.fields = new _fields();
         this.imports = new _imports();
-        this.nests = new _nestGroup();
+        this.nests = new _nesteds();
     }
 
     public _interface packageName( String packageName )
@@ -236,7 +235,7 @@ public class _interface
         return this.methods;
     }
 	
-    public _nestGroup getNests()
+    public _nesteds getNests()
     {
         return this.nests;
     }

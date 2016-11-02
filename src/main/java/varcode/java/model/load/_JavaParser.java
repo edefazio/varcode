@@ -207,40 +207,24 @@ public enum _JavaParser
         ;
             
         public static _interface from( 
-            CompilationUnit cu, ClassOrInterfaceDeclaration _interfaceDecl )
+            CompilationUnit cu, ClassOrInterfaceDeclaration interfaceDecl )
         {   
-            if( !_interfaceDecl.isInterface() )
+            if( !interfaceDecl.isInterface() )
             {
                 throw new ModelLoadException( 
-                    _interfaceDecl.getName() + " NOT an interface" );
+                    interfaceDecl.getName() + " NOT an interface" );
             }
             _interface _int = null;
             if( cu.getPackage() != null )
             {
-                _int = _interface.of( cu.getPackage().getPackageName(), "interface " +_interfaceDecl.getName() );
+                _int = _interface.of(cu.getPackage().getPackageName(), 
+                    "interface " +interfaceDecl.getName() );
             }
             else
             {
-                _int = _interface.of( "interface "+ _interfaceDecl.getName() );
+                _int = _interface.of("interface "+ interfaceDecl.getName() );
             }
-            _int.getSignature().setModifiers( _modifiers.of( _interfaceDecl.getModifiers() ) );
-            
-            if( _interfaceDecl.getJavaDoc() != null )
-            {
-                _int.javadoc( _interfaceDecl.getJavaDoc().getContent() );
-            }
-            List<AnnotationExpr>annots = _interfaceDecl.getAnnotations();
-            for( int i = 0; i < annots.size(); i++ )
-            {
-                _int.annotate( annots.get( i ).toString() );
-            }
-            List<ClassOrInterfaceType>ext = _interfaceDecl.getExtends();
-            if( ext != null && ext.size() == 1 )
-            {
-                _int.getSignature().getExtends().addExtends( ext.get( 0 ).getName() );
-            }
-        
-            List<ImportDeclaration>imports = cu.getImports();
+             List<ImportDeclaration>imports = cu.getImports();
         
             for( int i = 0; i < imports.size(); i++ )
             {
@@ -254,7 +238,29 @@ public enum _JavaParser
                     _int.imports(  imports.get( i ).getName().toStringWithoutComments() );
                 }
             }
-            List<BodyDeclaration> members = _interfaceDecl.getMembers();
+            return fromInterfaceNode(_int, interfaceDecl );
+        }
+        
+        public static _interface fromInterfaceNode( 
+            _interface _int, ClassOrInterfaceDeclaration interfaceDecl )   
+        {
+            _int.getSignature().setModifiers( _modifiers.of( interfaceDecl.getModifiers() ) );
+            
+            if( interfaceDecl.getJavaDoc() != null )
+            {
+                _int.javadoc(interfaceDecl.getJavaDoc().getContent() );
+            }
+            List<AnnotationExpr>annots = interfaceDecl.getAnnotations();
+            for( int i = 0; i < annots.size(); i++ )
+            {
+                _int.annotate( annots.get( i ).toString() );
+            }
+            List<ClassOrInterfaceType>ext = interfaceDecl.getExtends();
+            if( ext != null && ext.size() == 1 )
+            {
+                _int.getSignature().getExtends().addExtends( ext.get( 0 ).getName() );
+            }           
+            List<BodyDeclaration> members = interfaceDecl.getMembers();
         
             for( int i = 0; i < members.size(); i++ )
             {
@@ -330,6 +336,35 @@ public enum _JavaParser
                         _int.field( f );
                     }                                   
                 }
+                else if( member instanceof ClassOrInterfaceDeclaration )
+                {
+                    ClassOrInterfaceDeclaration cidef = 
+                        (ClassOrInterfaceDeclaration)member;
+                    
+                    if( cidef.isInterface() )
+                    {
+                        _interface _i = _interface.of( "interface " + cidef.getName() );
+                        _i = _Interface.fromInterfaceNode( _i, cidef );
+                        _int.nest( _i );
+                    }
+                    else
+                    {
+                        _class _c = _class.of( cidef.getName() );
+                        _c = _Class.fromClassNode( _c, cidef );
+                        _int.nest( _c );
+                    }
+                }
+                else if( member instanceof EnumDeclaration )
+                {
+                    EnumDeclaration nestedEnum = (EnumDeclaration)member;
+                    _enum _en = _enum.of( "enum "+ nestedEnum.getName() );
+                    _en = _Enum.fromEnumNode( _en, nestedEnum );
+                    _int.nest( _en );
+                }
+                else
+                {
+                    System.out.println( "NOT HANDLED "+ member );
+                }
             }            
             return _int;
         }    
@@ -342,17 +377,42 @@ public enum _JavaParser
         public static _class fromCompilationUnit( 
             CompilationUnit cu, ClassOrInterfaceDeclaration classDecl )
         {            
-            List<AnnotationExpr>annots =  classDecl.getAnnotations();
-        
-            _class c = null;
+            _class _c = null;
+            if( cu == null )
+            {
+                _c = _class.of( classDecl.getName() );
+                return fromClassNode(_c, classDecl );
+            }
             if( cu.getPackage() != null )
             {
-                c = _class.of( cu.getPackage().getPackageName(), classDecl.getName() );
+                _c = _class.of( cu.getPackage().getPackageName(), classDecl.getName() );
             }
             else
             {
-                c = _class.of( classDecl.getName() );
+                _c = _class.of( classDecl.getName() );
             }
+            
+            List<ImportDeclaration>imports = cu.getImports();
+        
+            for( int i = 0; i < imports.size(); i++ )
+            {
+                if( imports.get(i).isStatic() )
+                {
+                    _c.importsStatic( 
+                        imports.get( i ).getName().toStringWithoutComments()+ ".*" );
+                }
+                else
+                {
+                    _c.imports(  imports.get( i ).getName().toStringWithoutComments() );
+                }
+            }
+            return fromClassNode(_c, classDecl );
+        }
+        
+        public static _class fromClassNode( _class c, ClassOrInterfaceDeclaration classDecl )
+        {
+             List<AnnotationExpr>annots =  classDecl.getAnnotations();
+             
             JavadocComment jd = classDecl.getJavaDoc();
             if( jd != null )
             {
@@ -368,29 +428,12 @@ public enum _JavaParser
             if( ext != null && ext.size() == 1 )
             {
                 c.getSignature().getExtends().addExtends( ext.get( 0 ).getName() );
-            }
-        
-        
+            }        
             List<ClassOrInterfaceType>impls = classDecl.getImplements();
             if( impls != null && impls.size() > 0 )
             {
                 c.getSignature().implement( impls.get( 0 ).getName() );
-            }
-        
-            List<ImportDeclaration>imports = cu.getImports();
-        
-            for( int i = 0; i < imports.size(); i++ )
-            {
-                if( imports.get(i).isStatic() )
-                {
-                    c.importsStatic( 
-                        imports.get( i ).getName().toStringWithoutComments()+ ".*" );
-                }
-                else
-                {
-                    c.imports(  imports.get( i ).getName().toStringWithoutComments() );
-                }
-            }
+            }       
             List<BodyDeclaration> members = classDecl.getMembers();
         
             for( int i = 0; i < members.size(); i++ )
@@ -476,13 +519,7 @@ public enum _JavaParser
                 }
                 else if( member instanceof FieldDeclaration ) 
                 {
-                    FieldDeclaration fd = (FieldDeclaration) member;
-                    //c.field( fd.toStringWithoutComments() );
-                    //fd.getComment();
-                    //fd.getType();
-                    //fd.getModifiers();
-                    //fd.getJavaDoc();
-                    //fd.getAnnotations();
+                    FieldDeclaration fd = (FieldDeclaration)member;
                     
                     
                     //they could be doing this:
@@ -522,6 +559,35 @@ public enum _JavaParser
                         c.field( f );
                     }                                 
                 }
+                else if( member instanceof ClassOrInterfaceDeclaration )
+                {
+                    ClassOrInterfaceDeclaration cidef = 
+                        (ClassOrInterfaceDeclaration)member;
+                    
+                    if( cidef.isInterface() )
+                    {   //nested interface
+                        _interface _i = _interface.of( "interface " + cidef.getName() );
+                        _i = _Interface.fromInterfaceNode( _i, cidef );
+                        c.nest( _i );
+                    }
+                    else
+                    {   //nested class
+                        _class _c = _class.of( cidef.getName() );
+                        _c = _Class.fromClassNode( _c, cidef );
+                        c.nest( _c );
+                    }
+                }
+                else if( member instanceof EnumDeclaration )
+                {   //nested enum
+                    EnumDeclaration nestedEnum = (EnumDeclaration)member;
+                    _enum _en = _enum.of( "enum " + nestedEnum.getName() );
+                    _en = _Enum.fromEnumNode( _en, nestedEnum );
+                    c.nest( _en );
+                }
+                else
+                {
+                    System.out.println( "NOT HANDLED "+ member );
+                }
             }
             return c;
         }
@@ -534,8 +600,7 @@ public enum _JavaParser
         public static _enum fromCompilationUnit( 
             CompilationUnit cu, EnumDeclaration enumDecl )
         {            
-            List<AnnotationExpr>annots =  enumDecl.getAnnotations();
-        
+            
             _enum _e = null;
             if( cu.getPackage() != null )
             {
@@ -545,6 +610,26 @@ public enum _JavaParser
             {
                 _e = _enum.of( enumDecl.getName() );
             }
+            List<ImportDeclaration>imports = cu.getImports();
+        
+            for( int i = 0; i < imports.size(); i++ )
+            {
+                if( imports.get(i).isStatic() )
+                {
+                    _e.importsStatic( 
+                        imports.get( i ).getName().toStringWithoutComments()+ ".*" );
+                }
+                else
+                {
+                    _e.imports(  imports.get( i ).getName().toStringWithoutComments() );
+                }
+            }
+            return fromEnumNode( _e, enumDecl );
+        }
+        
+        public static _enum fromEnumNode( _enum _e, EnumDeclaration enumDecl )
+        {
+            List<AnnotationExpr>annots =  enumDecl.getAnnotations();        
             JavadocComment jd = enumDecl.getJavaDoc();
             if( jd != null )
             {
@@ -563,28 +648,12 @@ public enum _JavaParser
                 _e.implement( impls.get( 0 ).getName() );
             }
         
-            List<ImportDeclaration>imports = cu.getImports();
-        
-            for( int i = 0; i < imports.size(); i++ )
-            {
-                if( imports.get(i).isStatic() )
-                {
-                    _e.importsStatic( 
-                        imports.get( i ).getName().toStringWithoutComments()+ ".*" );
-                }
-                else
-                {
-                    _e.imports(  imports.get( i ).getName().toStringWithoutComments() );
-                }
-            }
-            
             List<EnumConstantDeclaration>constDecls = enumDecl.getEntries();
             for( int i = 0; i < constDecls.size(); i++ )
             {
                 EnumConstantDeclaration cdecl = constDecls.get( i );
                 _e.value( cdecl.getName(), cdecl.getArgs().toArray() );
             }
-            
             
             List<BodyDeclaration> members = enumDecl.getMembers();
         
@@ -706,6 +775,31 @@ public enum _JavaParser
                         }
                         _e.field( f );
                     }                                
+                }
+                else if( member instanceof ClassOrInterfaceDeclaration )
+                {
+                    ClassOrInterfaceDeclaration cidef = 
+                        (ClassOrInterfaceDeclaration)member;
+                    
+                    if( cidef.isInterface() )
+                    {
+                        _interface _i = _interface.of( "interface ", cidef.getName() );
+                        _i = _Interface.fromInterfaceNode( _i, cidef );
+                        _e.nest( _i );
+                    }
+                    else
+                    {
+                        _class _c = _class.of( cidef.getName() );
+                        _c = _Class.fromClassNode( _c, cidef );
+                        _e.nest( _c );
+                    }
+                }
+                else if( member instanceof EnumDeclaration )
+                {
+                    EnumDeclaration nestedEnum = (EnumDeclaration)member;
+                    _enum _en = _enum.of( "enum "+ nestedEnum.getName() );
+                    _en = _Enum.fromEnumNode( _en, nestedEnum );
+                    _e.nest( _en );
                 }
                 else
                 {
