@@ -19,6 +19,7 @@ import com.github.javaparser.ParseException;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.EnumDeclaration;
+import com.github.javaparser.ast.body.TypeDeclaration;
 
 import java.io.InputStream;
 import org.slf4j.Logger;
@@ -120,10 +121,19 @@ public class _JavaLoader
                     CompilationUnit cu = 
                         _JavaParser.from( ss.getInputStream() );
                     
-                    ClassOrInterfaceDeclaration interfaceDecl = 
+                    TypeDeclaration interfaceDecl = 
                         _JavaParser.findMemberNode( cu, clazz );
                     
-                    return _JavaParser._Interface.from( cu, interfaceDecl );
+                    if( interfaceDecl instanceof ClassOrInterfaceDeclaration )
+                    {
+                        ClassOrInterfaceDeclaration id = 
+                            (ClassOrInterfaceDeclaration)interfaceDecl;
+                        if( id.isInterface() )
+                        {
+                            return _JavaParser._Interface.from( cu, id );
+                        }                        
+                    }
+                    throw new ModelLoadException( clazz +" source not an interface " );                    
                 }
                 catch( ParseException pe )
                 {
@@ -222,10 +232,20 @@ public class _JavaLoader
                     CompilationUnit cu = 
                         _JavaParser.from( ss.getInputStream() );
                     
-                    ClassOrInterfaceDeclaration classDecl = 
+                    TypeDeclaration classDecl = 
                         _JavaParser.findMemberNode( cu, clazz );
-                    
-                    return _JavaParser._Class.fromCompilationUnit( cu, classDecl );
+                    if( classDecl instanceof ClassOrInterfaceDeclaration )
+                    {
+                        ClassOrInterfaceDeclaration cd = (ClassOrInterfaceDeclaration) classDecl;
+                        if( !cd.isInterface() )
+                        {
+                            return _JavaParser._Class.fromCompilationUnit( cu, cd );
+                        }
+                        else
+                        {
+                            throw new ModelLoadException( clazz + " is an interface " ); 
+                        }
+                    }
                 }
                 catch( ParseException pe )
                 {

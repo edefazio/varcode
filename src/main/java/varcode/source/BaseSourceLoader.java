@@ -101,6 +101,7 @@ public enum BaseSourceLoader
         return SOURCE_PATH.sourceStream( sourceId );
     }
 
+
     /** 
      * given the Class looks in the "usual places" on the Path
      * to return the Source markup Stream 
@@ -115,8 +116,11 @@ public enum BaseSourceLoader
             // at the moment any Member class just returns the Declaring Classes
             // full source code
             
-            return sourceStream( 
+            SourceStream declaringClassStream  = sourceStream( 
                 localClass.getDeclaringClass().getCanonicalName() + ".java" ); 
+            
+            return declaringClassStream;            
+            //_JavaParser.findMemberNode(cu, localClass)
         }
         else
         {

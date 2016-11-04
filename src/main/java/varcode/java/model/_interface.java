@@ -40,54 +40,48 @@ public class _interface
     public VarContext getContext() 
     {
         String[] n = null;
-	if( nests.count() > 0 )
-	{
-	    //I need to go to each of the nested classes/ interfaces/ etc.
-	    // and read what thier imports are, then add these imports to my imports
-	    String[] nested = new String[ nests.count() ];
-	    for( int i = 0; i < nests.count(); i++ )
-	    {
-            _component comp = nests.components.get( i );
-            VarContext vc = comp.getContext();
-            vc.getScopeBindings().remove( "pckage" );
-            vc.getScopeBindings().remove( "imports" );
-            nested[ i ] = Compose.asString( comp.getDom(), vc );				
-	    }
-	    n = nested;			
-	}
+        if( nesteds.count() > 0 )
+        {
+            //I need to go to each of the nested classes/ interfaces/ etc.
+            // and read what thier imports are, then add these imports to my imports
+            String[] nested = new String[ nesteds.count() ];
+            for( int i = 0; i < nesteds.count(); i++ )
+            {
+                _component comp = nesteds.components.get( i );
+                VarContext vc = comp.getContext();
+                vc.getScopeBindings().remove( "pckage" );
+                vc.getScopeBindings().remove( "imports" );
+                nested[ i ] = Compose.asString( comp.getDom(), vc );				
+            }
+            n = nested;			
+        }
 		
-	//_nesteds n = null;
+        _imports imp = null;
+        if( this.getImports().count() > 0 )
+        {
+            imp = this.getImports();
+        }
+        _fields mem = null;
+        if( this.fields.count() > 0 )
+        {
+            mem = this.fields;
+        }
+        _methods meth = null;
+        if( this.methods.count() > 0 )
+        {
+            meth = this.methods;
+        }
 		
-	//if( this.nests.count() > 0 )
-	//{
-	//	n = this.nests;
-	//}
-	_imports imp = null;
-	if( this.getImports().count() > 0 )
-	{
-	    imp = this.getImports();
-	}
-	_fields mem = null;
-	if( this.fields.count() > 0 )
-	{
-	    mem = this.fields;
-	}
-	_methods meth = null;
-	if( this.methods.count() > 0 )
-	{
-	    meth = this.methods;
-	}
-		
-	return VarContext.of( 
-	    "pckage", interfacePackage,
-	    "imports", imp,
-	    "javaDoc", javadoc,
-        "annotations", this.annotations,
-	    "signature", interfaceSignature,
-	    "members", mem,
-	    "methods", meth, 
-	    "nests", n );		
-	}
+        return VarContext.of( 
+            "pckage", interfacePackage,
+            "imports", imp,
+            "javaDoc", javadoc,
+            "annotations", this.annotations,
+            "signature", interfaceSignature,
+            "members", mem,
+            "methods", meth, 
+            "nests", n );		
+    }
 	
 	/**
 	 * i.e.<PRE>
@@ -130,7 +124,7 @@ public class _interface
     private _fields fields;
     private _methods methods;
     private _imports imports;
-    private _nesteds nests;
+    private _nesteds nesteds;
 	
     @Override
     public _interface bind( VarContext context )
@@ -142,7 +136,7 @@ public class _interface
         this.interfaceSignature.bind( context );
         this.javadoc.bind(context);
         this.methods.bind( context );
-        this.nests.bind( context );
+        this.nesteds.bind( context );
         return this;
     }
     
@@ -156,7 +150,7 @@ public class _interface
         this.fields.replace( target, replacement );
         this.methods.replace( target, replacement );
         this.imports.replace( target, replacement );
-        this.nests.replace( target, replacement );
+        this.nesteds.replace( target, replacement );
         
         return this;
     }
@@ -176,7 +170,7 @@ public class _interface
         this.imports = _imports.cloneOf( prototype.imports );
 		
 		//NESTEDS
-        this.nests = _nesteds.cloneOf( prototype.nests );
+        this.nesteds = _nesteds.cloneOf(prototype.nesteds );
     }
 	
     public _interface( String packageName, String interfaceSignature )
@@ -188,7 +182,7 @@ public class _interface
         this.methods = new _methods();
         this.fields = new _fields();
         this.imports = new _imports();
-        this.nests = new _nesteds();
+        this.nesteds = new _nesteds();
     }
 
     public _interface packageName( String packageName )
@@ -235,9 +229,77 @@ public class _interface
         return this.methods;
     }
 	
-    public _nesteds getNests()
+    @Override
+    public _nesteds getNesteds()
     {
-        return this.nests;
+        return this.nesteds;
+    }
+    
+    /** 
+     * Returns a String[] representing all class Names (for the top level
+     * and all nested classes, enums, interfaces)
+     * 
+     * for example: 
+     * <PRE>
+     * package ex.varcode;
+     * 
+     * public class A
+     * {
+     *     public static class N
+     *     {
+     *           public class NN
+     *           {
+     *              
+     *           }   
+     *     }
+     * }
+     * </PRE>
+     * 
+     * <PRE>
+     * _class c = _JavaLoader.from( A.class );
+     * 
+     * system.out.println( c.getAllNestedClassNames() );
+     * </PRE>
+     * //prints
+     * <PRE>
+     * ["ex.varcode.A$N", "ex.varcode.A$N$NN"]
+     * </PRE>
+     * @return all Names for the 
+     */
+    @Override
+    public List<String> getAllNestedClassNames( 
+        List<String>nestedClassNames, String containerClassName )
+    {         
+        for( int i = 0; i < this.nesteds.count(); i++ )
+        {
+            _component nest = this.nesteds.getAt( i );
+            String nestedClassName = nest.getName();
+            String thisNestClassName = containerClassName + "$" + nestedClassName;
+            nestedClassNames.add(  thisNestClassName );
+            for( int j = 0; j< nest.getNestedCount(); j++ )
+            {
+                nestedClassNames = 
+                     nest.getAllNestedClassNames( 
+                        nestedClassNames, thisNestClassName );
+            }    
+        }
+        return nestedClassNames;
+    }
+    
+    @Override
+    public int getNestedCount()
+    {
+        return this.nesteds.count();
+    }
+        
+    public _component getNestedByName( String name )
+    {
+        return this.nesteds.getByName( name ); 
+    }
+    
+    public _component getNestedAt( int index )
+    {
+        return this.nesteds.getAt(  index );
     }
     
     public _interface importsStatic( Object...staticImports )
@@ -261,9 +323,9 @@ public class _interface
     @Override
     public _imports getImports()
     {
-        for( int i = 0; i < nests.count(); i++ )
+        for( int i = 0; i < nesteds.count(); i++ )
         {
-            this.imports.merge( nests.components.get( i ).getImports() );
+            this.imports.merge(nesteds.components.get( i ).getImports() );
         }
         return this.imports;
     }
@@ -423,7 +485,7 @@ public class _interface
 
     public _interface nest( _component component )
     {
-        this.nests.add( component );
+        this.nesteds.add( component );
         return this;
     }
 	

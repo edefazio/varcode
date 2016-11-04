@@ -37,7 +37,7 @@ public class _enum
 	private _fields fields = new _fields();
 	private _valueConstructs values = new _valueConstructs();
 	private _methods methods = new _methods();
-	private _nesteds nests = new _nesteds();
+	private _nesteds nesteds = new _nesteds();
 	
 	public static final Dom ENUM = 
 		BindML.compile( 
@@ -84,7 +84,7 @@ public class _enum
 		this.fields = _fields.cloneOf( prototype.fields );
 		this.values = _valueConstructs.cloneOf( prototype.values );
 		this.methods = _methods.cloneOf( prototype.methods );		
-		this.nests = _nesteds.cloneOf( prototype.nests );
+		this.nesteds = _nesteds.cloneOf(prototype.nesteds );
 	}
     
     @Override
@@ -100,7 +100,7 @@ public class _enum
         this.fields.bind( context );
         this.values.bind( context );
         this.methods.bind( context );
-        this.nests.bind( context );
+        this.nesteds.bind( context );
         return this;
     }
     
@@ -140,14 +140,14 @@ public class _enum
 	public VarContext getContext()
 	{
 		String[] n = null;
-		if( nests.count() > 0 )
+		if( nesteds.count() > 0 )
 		{
 			//I need to go to each of the nested classes/ interfaces/ etc.
 			// and read what thier imports are, then add these imports to my imports
-			String[] nested = new String[nests.count()];
-			for( int i = 0; i < nests.count(); i++ )
+			String[] nested = new String[nesteds.count()];
+			for( int i = 0; i < nesteds.count(); i++ )
 			{
-				_component comp = nests.components.get( i );
+				_component comp = nesteds.components.get( i );
 				VarContext vc = comp.getContext();
 				vc.getScopeBindings().remove("pckage");
 				vc.getScopeBindings().remove("imports");
@@ -281,9 +281,51 @@ public class _enum
         return this.methods;
     }
     
-    public _nesteds getNests()
+    @Override
+    public _nesteds getNesteds()
     {
-        return this.nests;
+        return this.nesteds;
+    }
+    
+    public int getNestedCount()
+    {
+        return this.nesteds.count();
+    }
+    
+    /** 
+     * Returns a String[] representing all class Names (for the top level
+     * and all nested classes, enums, interfaces)
+     * 
+     * @return all Names for the 
+     */
+    @Override
+    public List<String> getAllNestedClassNames( 
+        List<String>nestedClassNames, String containerClassName )
+    {         
+        for( int i = 0; i < this.nesteds.count(); i++ )
+        {
+            _component nest = this.nesteds.getAt( i );
+            String nestedClassName = nest.getName();
+            String thisNestClassName = containerClassName + ".$" + nestedClassName;
+            nestedClassNames.add(  thisNestClassName );
+            for( int j = 0; j< nest.getNestedCount(); j++ )
+            {
+                nestedClassNames = 
+                     nest.getAllNestedClassNames( 
+                        nestedClassNames, thisNestClassName );
+            }    
+        }
+        return nestedClassNames;
+    }
+    
+    public _component getNestedByName( String name )
+    {
+        return this.nesteds.getByName( name ); 
+    }
+    
+    public _component getNestedAt( int index )
+    {
+        return this.nesteds.getAt(  index );
     }
     
 	public String getFullyQualifiedClassName()
@@ -363,7 +405,7 @@ public class _enum
 		this.staticBlock = staticBlock;
 		this.fields = members;
 		this.methods = methods;
-		this.nests = nested;
+		this.nesteds = nested;
 	}
 	
 	public _enum packageName( String packageName )
@@ -415,7 +457,7 @@ public class _enum
 	
 	public _enum nest( _component component )
 	{
-		this.nests.add( component );
+		this.nesteds.add( component );
 		return this;
 	}
 	
@@ -450,9 +492,9 @@ public class _enum
     @Override
 	public _imports getImports()
 	{
-		for( int i = 0; i < nests.count(); i++ )
+		for( int i = 0; i < nesteds.count(); i++ )
 		{
-			this.imports.merge( nests.components.get( i ).getImports() );
+			this.imports.merge(nesteds.components.get( i ).getImports() );
 		}
 		return this.imports;
 	}

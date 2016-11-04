@@ -15,8 +15,11 @@
  */
 package varcode.java.model.load;
 
+import java.util.ArrayList;
+import java.util.List;
 import junit.framework.TestCase;
 import varcode.java.model._class;
+import varcode.java.model._enum;
 import varcode.java.model._interface;
 import varcode.java.model._nesteds;
 
@@ -90,8 +93,52 @@ public class _JavaLoaderNestedTestCase
     {
         _interface _i = 
             _JavaLoader._Interface.from( MemberInterface.class );
-        _i.getNests().getByName( "NestedClass" );
+        _class _c = (_class)_i.getNesteds().getByName( "NestedClass" );
+        _interface _ni = (_interface)_i.getNesteds().getByName( "NestedInterface" );
+        _enum _e = (_enum)_i.getNestedByName( "NestedEnum" );
         
+        List<String> names = new ArrayList<String>();
+        _i.getAllNestedClassNames( names, _i.getFullyQualifiedClassName() );
+        
+        //System.out.println( MemberInterface.NestedClass.class.getName().replace( "." +this.getClass().getSimpleName(), "") );
+        System.out.println( names );
+        assertTrue( names.contains( "varcode.java.model.load.MemberInterface$NestedClass" ) );
+        assertTrue( names.contains( "varcode.java.model.load.MemberInterface$NestedInterface" ) );
+        assertTrue( names.contains( "varcode.java.model.load.MemberInterface$NestedInterface$DeepNest" ) );
+        assertTrue( names.contains( "varcode.java.model.load.MemberInterface$NestedEnum" ) );
+        
+        System.out.println( MemberInterface.class );
+        System.out.println( MemberInterface.class.getName() );
+        System.out.println( MemberInterface.class.getCanonicalName() );
+               
+    }
+    
+    enum MemberEnum
+    {
+        ;
+            
+        public static class NestedClass
+        {
+            
+        }
+        
+        public interface NestedInterface
+        {
+            public static class DeepNest
+            {
+                
+            }
+        }
+        
+        public enum NestedEnum
+        {
+            ;
+        }
+    }
+    
+    public void testEnumNesteds()
+    {
+        _enum _e = _JavaLoader._Enum.from( MemberEnum.class );
         
     }
     

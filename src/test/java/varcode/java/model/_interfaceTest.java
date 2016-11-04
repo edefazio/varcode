@@ -42,7 +42,7 @@ public class _interfaceTest
         assertEquals(0, in.getImports().count());
         assertTrue( in.getJavadoc().isEmpty() );
         assertEquals(0, in.getMethods().count() );
-        assertEquals(0,in.getNests().count() );
+        assertEquals(0,in.getNesteds().count() );
         assertEquals( "", in.getPackageName() );
         assertEquals(0, in.getSignature().getExtends().count() );
         assertEquals( "MyInterface", in.getSignature().getName() );        
@@ -141,7 +141,7 @@ public class _interfaceTest
 		
 		assertEquals(0, interf.getFields().count() );
 		assertEquals(0, interf.getMethods().count() );
-		assertEquals(0, interf.getNests().count() );
+		assertEquals(0, interf.getNesteds().count() );
 		assertEquals( 
 			"interface Marker"+ N +
 			"{" + N +
@@ -194,7 +194,7 @@ public class _interfaceTest
 		assertEquals( 1, interf.getFields().count() );
 		assertNotNull( interf.getFields().getByName("name") );
 		assertEquals( 2, interf.getMethods().count() );
-		assertEquals( 1, interf.getNests().count() );
+		assertEquals( 1, interf.getNesteds().count() );
 		
 	}
 }

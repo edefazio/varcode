@@ -15,6 +15,7 @@
  */
 package varcode.java.model;
 
+import java.util.List;
 import varcode.Model;
 import varcode.context.VarContext;
 import varcode.doc.Dom;
@@ -56,4 +57,32 @@ public interface _component
      * @return the _methods for this component
      */
     _methods getMethods();
+    
+    /** 
+     * the count of nested (_classes, _interfaces, _enums) in this component)
+     * 
+     */
+    int getNestedCount();
+    
+    /** 
+     * return the nested component at index 
+     * @param index the index of the nested component to retrieve
+     * @return  the component
+     */
+    _component getNestedAt( int index );
+    
+    /** 
+     * Gets all nested subcomponents of this _component
+     * @return nested sub components
+     */
+    _nesteds getNesteds(); 
+    
+    /**
+     * 
+     * @param nestedClassNames mutable list of names of all classes
+     * @param containerClassName the name of the immediate container class
+     * @return a List of all Class names (nested within this component
+     */
+    List<String> getAllNestedClassNames( 
+        List<String>nestedClassNames, String containerClassName );
 }

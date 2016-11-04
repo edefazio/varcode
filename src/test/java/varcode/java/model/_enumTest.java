@@ -50,8 +50,8 @@ public class _enumTest
         assertEquals( 0, e.getImports().count() );
         assertTrue( e.getJavadoc().isEmpty() );
         assertTrue( e.getMethods().isEmpty() );
-        assertTrue( e.getNests().count() == 0 );
-        assertTrue( e.getNests().isEmpty() );
+        assertTrue( e.getNesteds().count() == 0 );
+        assertTrue( e.getNesteds().isEmpty() );
         assertTrue( e.getPackage().isEmpty() );
         assertEquals( "Empty", e.getSignature().getName() );
         assertEquals( 0, e.getSignature().getImplements().count() );
@@ -84,8 +84,8 @@ public class _enumTest
         assertEquals( 0, e.getImports().count() );
         assertTrue( e.getJavadoc().isEmpty() );
         assertTrue( e.getMethods().isEmpty() );
-        assertTrue( e.getNests().count() == 0 );
-        assertTrue( e.getNests().isEmpty() );
+        assertTrue( e.getNesteds().count() == 0 );
+        assertTrue( e.getNesteds().isEmpty() );
         assertTrue( e.getPackage().isEmpty() );
         assertEquals( "One", e.getSignature().getName() );
         assertEquals( 0, e.getSignature().getImplements().count() );

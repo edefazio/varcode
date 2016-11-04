@@ -304,9 +304,12 @@ public class _class
 		return CLASS;
 	}
 	
+    /**
+     * Gets the Fully Qualified Class Name for the Top Level Class
+     * @return 
+     */
 	public String getFullyQualifiedClassName()
-	{
-		
+	{		
 		if( this.classPackage != null && ! this.classPackage.isEmpty() )
 		{
 			return this.classPackage.getName() + "." + this.signature.getName();
@@ -316,6 +319,32 @@ public class _class
 			return this.signature.className;
 		}
 	}
+    
+    /** 
+     * Returns a String[] representing all class Names (for the top level
+     * and all nested classes, enums, interfaces)
+     * 
+     * @return all Names for the 
+     */
+    @Override
+    public List<String> getAllNestedClassNames( 
+        List<String>nestedClassNames, String containerClassName )
+    {         
+        for( int i = 0; i < this.nesteds.count(); i++ )
+        {
+            _component nest = this.nesteds.getAt( i );
+            String nestedClassName = nest.getName();
+            String thisNestClassName = containerClassName + ".$" + nestedClassName;
+            nestedClassNames.add(  thisNestClassName );
+            for( int j = 0; j< nest.getNestedCount(); j++ )
+            {
+                nestedClassNames = 
+                     nest.getAllNestedClassNames( 
+                        nestedClassNames, thisNestClassName );
+            }    
+        }
+        return nestedClassNames;
+    }
 	
     /**
      * <UL> 
@@ -774,11 +803,16 @@ public class _class
         return this.methods.getByName( name );
     }
     
+    public int getNestedCount()
+    {
+        return this.nesteds.count();
+    }
+        
+    @Override
     public _nesteds getNesteds()
     {
         return this.nesteds;
     }
-    
     
     public _component getNestedAt( int index )
     {

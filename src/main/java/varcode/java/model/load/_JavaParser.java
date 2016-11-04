@@ -113,9 +113,10 @@ public enum _JavaParser
             + clazz.getCanonicalName() + "\"" );
     }
     
-    public static ClassOrInterfaceDeclaration findMemberNode( 
-        CompilationUnit cu, Class clazz )
-    {                
+    
+    public static TypeDeclaration findMemberNode( 
+        CompilationUnit cu, String name )
+    {
         List<TypeDeclaration> types =  cu.getTypes();
         //System.out.println( "LOOKING FOR "+ clazz.getSimpleName() );
         for( int i = 0; i < types.size(); i++ )
@@ -123,9 +124,9 @@ public enum _JavaParser
             TypeDeclaration td = types.get( i );
             //System.out.println( "FOUND " + td.getName() );
             
-            if( td.getName().equals( clazz.getSimpleName() ) )
+            if( td.getName().equals( name ) )
             {
-                return (ClassOrInterfaceDeclaration)td;
+                return (TypeDeclaration)td;
             }
             else
             {
@@ -135,10 +136,10 @@ public enum _JavaParser
                     if( bds.get( j ) instanceof TypeDeclaration )
                     {
                         TypeDeclaration ntd = (TypeDeclaration)bds.get( j );
-                        if( ntd.getName().equals( clazz.getSimpleName() ) ) 
+                        if( ntd.getName().equals( name ) ) 
                         {
                             //System.out.println("FOUND NODE"+ ntd );
-                            return (ClassOrInterfaceDeclaration)ntd;
+                            return (TypeDeclaration)ntd;
                         }
                     }
                 }
@@ -146,8 +147,13 @@ public enum _JavaParser
         }        
         //List<Node> nodes = cu.getChildrenNodes();
         throw new ModelLoadException( 
-            "Could not find class declaration for \""
-            + clazz.getCanonicalName() + "\"" );
+            "Could not find class declaration for \""+ name + "\"" );
+    }
+    
+    public static TypeDeclaration findMemberNode( 
+        CompilationUnit cu, Class clazz )
+    {           
+        return findMemberNode( cu, clazz.getSimpleName() );
     }
 
     public static ClassOrInterfaceDeclaration getInterfaceNode( CompilationUnit cu )
@@ -783,7 +789,7 @@ public enum _JavaParser
                     
                     if( cidef.isInterface() )
                     {
-                        _interface _i = _interface.of( "interface ", cidef.getName() );
+                        _interface _i = _interface.of( "interface " + cidef.getName() );
                         _i = _Interface.fromInterfaceNode( _i, cidef );
                         _e.nest( _i );
                     }
