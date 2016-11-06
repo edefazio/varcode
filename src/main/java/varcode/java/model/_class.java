@@ -1,22 +1,21 @@
 package varcode.java.model;
 
-import varcode.java.JavaCase.JavaCaseAuthor;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
-
+import varcode.Model;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.Dom;
 import varcode.java.JavaCase;
+import varcode.java.JavaCase.JavaCaseAuthor;
 import varcode.java.adhoc.AdHocClassLoader;
+import varcode.java.model._constructors._constructor;
 import varcode.java.model._fields._field;
+import varcode.java.model._fields._init;
 import varcode.java.model._methods._method;
 import varcode.markup.bindml.BindML;
-import varcode.Model;
-import varcode.java.model._constructors._constructor;
-import varcode.java.model._fields._init;
 
 /**
  * "parametric code" using a fluent builder pattern for 
@@ -51,6 +50,14 @@ public class _class
 		return new _class( prototype );
 	}
 	
+    /** Creates and returns a clone of this component 
+     * @return a deep clone of this component
+     */
+    public _class clone()
+    {
+        return cloneOf( this );
+    }
+    
     /** 
      * Create and return a builder for a new class<PRE> 
      * i.e. _class.of( "public class MyClass" );</PRE>

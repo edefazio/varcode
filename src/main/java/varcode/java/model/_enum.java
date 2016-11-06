@@ -1,24 +1,21 @@
 package varcode.java.model;
 
-import varcode.java.JavaCase.JavaCaseAuthor;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
-
+import varcode.Model;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.Dom;
 import varcode.java.JavaCase;
+import varcode.java.JavaCase.JavaCaseAuthor;
 import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.model._constructors._constructor;
 import varcode.java.model._enum._valueConstructs._valueConstruct;
-import varcode.java.model._methods._method;
-import varcode.java.model._nesteds;
-import varcode.java.model._component;
-import varcode.markup.bindml.BindML;
-import varcode.Model;
 import varcode.java.model._fields._field;
+import varcode.java.model._methods._method;
+import varcode.markup.bindml.BindML;
 
 /**
  * 
@@ -86,6 +83,14 @@ public class _enum
 		this.methods = _methods.cloneOf( prototype.methods );		
 		this.nesteds = _nesteds.cloneOf(prototype.nesteds );
 	}
+    
+    /** Creates and returns a clone of this component 
+     * @return a deep clone of this component
+     */
+    public _enum clone()
+    {
+        return cloneOf( this );
+    }
     
     @Override
     public _enum bind( VarContext context )

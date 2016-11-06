@@ -1,20 +1,19 @@
 package varcode.java.model;
 
-import varcode.java.JavaCase.JavaCaseAuthor;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
-
+import varcode.Model;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.Dom;
 import varcode.java.JavaCase;
+import varcode.java.JavaCase.JavaCaseAuthor;
 import varcode.java.adhoc.AdHocClassLoader;
+import varcode.java.model._fields._field;
 import varcode.java.model._methods._method;
 import varcode.markup.bindml.BindML;
-import varcode.Model;
-import varcode.java.model._fields._field;
 
 //allow default methods
 public class _interface 
@@ -101,6 +100,14 @@ public class _interface
 	    return new _interface( prototype );
 	}
 	
+    /** Creates and returns a clone of this component 
+     * @return a deep clone of this component
+     */
+    public _interface clone()
+    {
+        return cloneOf( this );
+    }
+    
 	/**
 	 * i.e.<PRE>
 	 * _interface inter = 

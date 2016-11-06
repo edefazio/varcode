@@ -28,6 +28,8 @@ public interface _component
     extends Model
 {
 
+    _component clone();
+    
     /**
      * @return the name of this component (simple name)
      */
