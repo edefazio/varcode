@@ -6,6 +6,10 @@ import com.github.javaparser.ast.body.TypeDeclaration;
 import java.io.Serializable;
 import java.util.UUID;
 import junit.framework.TestCase;
+import varcode.java.model._fields._field;
+import varcode.java.model._interface;
+import varcode.java.model._methods;
+import varcode.java.model._methods._method;
 import varcode.source.SourceLoader.SourceStream;
 
 /**
@@ -53,6 +57,8 @@ public class _LoadTest
         public static final String id = UUID.randomUUID().toString();
         
         public String getName();
+        
+        int getCount();
     }
     
     public void testLoadMemberInterface()
@@ -65,6 +71,20 @@ public class _LoadTest
         TypeDeclaration dec = LOADER.astNodeOf( MemberInterface.class );
         assertTrue( dec instanceof ClassOrInterfaceDeclaration );
         assertTrue( ((ClassOrInterfaceDeclaration)dec).isInterface() );
+        
+        _interface _i = LOADER._interfaceOf( MemberInterface.class );
+        
+        assertEquals( _i.getName(), "MemberInterface" );
+        assertEquals( _i.getSignature().getExtends().getAt( 0 ), "Serializable" );
+        _field f = _i.getFields().getByName( "id" );
+        assertEquals( f.getType(),"String" );
+        _methods ms = _i.getMethods();
+        _method m = ms.getByName( "getName" ).get( 0 );
+        assertTrue( m.getBody().isEmpty() );
+        
+        System.out.println( m );
+        
+            
     }
     
     /**
@@ -86,6 +106,11 @@ public class _LoadTest
         public String getName()
         {
             return this.name;
+        }
+        
+        public int getCount()
+        {
+            return 1;
         }
     }
     

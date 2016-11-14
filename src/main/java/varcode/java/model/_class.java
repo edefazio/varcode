@@ -206,6 +206,13 @@ public class _class
         return Compose.asString( CLASS, getContext(), directives );			
 	}
 	
+    
+    public _class setModifiers( String...keywords )
+    {
+        this.signature.modifiers = _modifiers.of( keywords );
+        return this;
+    }
+    
     public _modifiers getModifiers()
     {
         return this.signature.getModifiers();
@@ -701,6 +708,52 @@ public class _class
         return field( f );
     }
     
+    /**
+    * Creates a Field, and getter/setter methods on the class
+    * and returns the class
+    * i.e.<PRE>
+    * _class _c = new _class("public class MyClass");
+    * _c.property( "private String name");
+    * 
+    * adds :
+    * public class MyClass
+    * {
+    *    <B>private String name;</B>
+    *    
+    *    <B>public String getName()
+    *    {
+    *        return this.name;
+    *    }
+    *    public void setName( String name )
+    *    {   
+    *        this.name = name;
+    *    }</B>
+    * }
+    * </PRE>
+    * @param fieldDeclaration the declaration of the field
+    * @return the modified _class
+    */
+    public _class property( String fieldDeclaration )
+    {
+        _field f = _field.of( fieldDeclaration );        
+        fields.addFields( f );
+        String name = f.getName();
+        String nameCaps = 
+            Character.toUpperCase( name.charAt( 0 ) )+ name.substring( 1 );
+        //add a get method
+        this.methods.addMethod( 
+            "public " + f.getType() + " get" + nameCaps +"()", 
+            "return this." + name + ";" );
+        
+        if( !f.getModifiers().contains( "final" ) )
+        {//ONly add a set method IF the field is NOT final
+            
+            this.methods.addMethod( 
+                "public void set" + nameCaps + "( " + f.getType() + " " + name+ " )", 
+                "this." + name + " = " + name + ";" );
+        }
+        return this;
+    }
 	public _class field( String field )
 	{
 		fields.addFields( _fields._field.of( field ) );		

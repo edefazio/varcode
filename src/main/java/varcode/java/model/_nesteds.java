@@ -2,10 +2,9 @@ package varcode.java.model;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import varcode.Model;
 import varcode.context.VarContext;
 import varcode.doc.Directive;
-import varcode.Model;
 
 /**
  * Components (classes, interfaces, enums) 
@@ -28,6 +27,7 @@ import varcode.Model;
 public class _nesteds 
     implements Model
 {	
+    //all nested components of a declaring class (_class, _enum, _interface)
     public List<_component>components = new ArrayList<_component>();
 
 	public _nesteds()
@@ -48,15 +48,26 @@ public class _nesteds
     
     public _component getAt( int index )
     {
-        if( index >=0 && index < components.size() )
+        if( index >= 0 && index < components.size() )
         {
             return components.get( index );
         }
-        throw new ModelException(" index ["+index+"] not in range [0..."+( components.size() -1 ) +"]" );
+        throw new ModelException(
+            " index [" + index + "] not in range [0..." + ( components.size() -1 ) + "]" );
     }
     
 	public _nesteds add( _component component )
 	{
+        //first verify that no other component has the same name
+        for( int i = 0; i < this.components.size(); i++ )
+        {
+            if( this.components.get( i ).getName().equals( component.getName() ) )
+            {
+                throw new ModelException(
+                    "cannot add nested with name \"" + component.getName() + 
+                    "\" a component with that name already exists" );
+            }
+        }
 		this.components.add( component );
 		return this;
     }

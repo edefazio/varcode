@@ -5,15 +5,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import varcode.Model;
 import varcode.VarException;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.Dom;
-import varcode.markup.bindml.BindML;
-import varcode.Model;
 import varcode.doc.translate.JavaTranslate;
+import varcode.markup.bindml.BindML;
 
 /**
  * Grouping of methods belonging to an entity (class, enum, interface)
@@ -26,6 +25,27 @@ public class _methods
 	private Map<String, List<_method>>methodsByName = 
 		new HashMap<String, List<_method>>();
 	
+    public _method getAt( int index )
+    {
+        if( index < count() && index >= 0 )
+        {
+            String[] names = getNames();
+            int idx = 0;
+            for( int i = 0 ; i < names.length; i++ )
+            {
+                List<_method>byName = getByName( names[ i ] );
+                if( ( byName.size() + idx ) > index )
+                {
+                    int offset = index - idx; 
+                    return byName.get( offset );
+                }
+                idx += byName.size();
+            }
+        }
+        throw new ModelException(
+            "unable to get method at ["+index+"], out of range" );
+    }
+    
 	public static _methods cloneOf( _methods prototype )
 	{
 		_methods m = new _methods();
@@ -250,9 +270,11 @@ public class _methods
 				"{+$indent4Spaces(methodBody)+}" + N +
 				"}" );
 
-		public static final Dom ABSTRACT_METHOD = 
+        //abstract, native methods with no body
+		public static final Dom NO_BODY_METHOD = 
 			BindML.compile(
-                "{+javadocComment+}" +    
+                "{+javadocComment+}" +
+                "{+methodAnnotations+}" +    
 				"{+methodSignature*+};" + N );
 	
 		public static _method of( String methodSignature )
@@ -419,9 +441,9 @@ public class _methods
         @Override
 		public String author( Directive... directives ) 
 		{            
-			if( this.isAbstract() )
+			if( this.methodBody == null || this.methodBody.isEmpty() )
 			{
-				return Compose.asString( ABSTRACT_METHOD, 
+				return Compose.asString( NO_BODY_METHOD, 
 					getContext(),
 					directives );
 			}

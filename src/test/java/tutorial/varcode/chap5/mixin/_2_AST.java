@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 eric.
+ * Copyright 2016 Eric DeFazio.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package varcode.java.model.change;
-
-import varcode.java.model._nest.component;
+package tutorial.varcode.chap5.mixin;
 
 /**
  *
- * @author eric
+ * @author Eric DeFazio
  */
-public interface ComponentChange
+public class _2_AST
 {
-    /** given a component, change it and return the modified component */
-    public component change( component component );  
+    
 }

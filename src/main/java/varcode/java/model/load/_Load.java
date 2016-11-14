@@ -47,6 +47,11 @@ public class _Load
         this.sourceLoader = sourceLoader;
     }
     
+    public static _class _classOf( Class clazz )
+    {
+        return INSTANCE._class( clazz );
+    }
+    
     public SourceStream sourceOf( Class clazz )
     {
         return JavaSource.fromClass(sourceLoader, clazz );
@@ -76,7 +81,7 @@ public class _Load
         return _Model._interfaceOf( sourceLoader, clazz );
     }
     
-    public _class _classOf( Class clazz )
+    public _class _class( Class clazz )
     {
         return _Model._classOf( sourceLoader, clazz );
     }
@@ -261,24 +266,39 @@ public class _Load
             if( td instanceof ClassOrInterfaceDeclaration )
             {
                 ClassOrInterfaceDeclaration coid = (ClassOrInterfaceDeclaration)td;
-                if( !coid.isInterface() )
+                if( coid.isInterface() )
                 {                
-                    _interface _i = _interface.of( coid.getName() );
+                    _interface _i = _interface.of( "interface " + coid.getName() );
                     return _JavaParser._Interface.fromInterfaceNode( _i, coid );
                 }
                 else
                 {
                     throw new ModelLoadException(
-                        interfaceClass + " AST modeled as an interface" );
+                        interfaceClass + " AST modeled as an class" );
                 }
             }
             throw new ModelLoadException(
                 "Type declaration is not a ClassOrInterface " );
         }
         
+        public static _class _classOf( Class<?> clazz )
+        {
+            return INSTANCE._classOf( clazz );
+        }
+        
+        public static _interface _interfaceOf( Class<?> clazz )
+        {
+            return INSTANCE._interfaceOf( clazz );
+        }
+        
+        public static _enum _enumOf( Class<?>clazz )
+        {
+            return INSTANCE._enumOf( clazz );
+        }
+        
         public static _class _classOf( SourceLoader sourceLoader, Class<?> clazz )
         {
-            TypeDeclaration td = AST.ofClass(sourceLoader, clazz );
+            TypeDeclaration td = AST.ofClass( sourceLoader, clazz );
             if( td instanceof ClassOrInterfaceDeclaration )
             {
                 ClassOrInterfaceDeclaration coid = (ClassOrInterfaceDeclaration)td;
