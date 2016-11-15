@@ -258,9 +258,8 @@ public class _methods
     
 	/** model of a method */
 	public static class _method		
-        implements Model
-    {      
-        
+        implements Model, _facet
+    {              
 		public static final Dom METHOD = 
 			BindML.compile(
 				"{+javadocComment+}" +	

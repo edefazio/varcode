@@ -3,13 +3,12 @@ package varcode.java.model;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
-
+import varcode.Model;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.Dom;
 import varcode.markup.bindml.BindML;
-import varcode.Model;
 
 /**
  * 
@@ -178,7 +177,7 @@ public class _fields
      * model for a field 
      */
 	public static class _field
-		implements Model
+		implements Model, _facet
 	{
 		public static final Dom FIELD = BindML.compile(
 			"{+javadoc+}{+fieldAnnotations+}{+modifiers+}{+type+} {+varName+}{+init+};" ); 

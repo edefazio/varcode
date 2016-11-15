@@ -429,7 +429,7 @@ public class _interface
 		
         _methods._method._signature sig = method.getSignature();
         if( !sig.getModifiers().contains( 
-            _modifiers._mod.INTERFACE_DEFAULT.getBitValue() ) )
+            _modifiers._modifier.INTERFACE_DEFAULT.getBitValue() ) )
         {			
             sig.getModifiers().set( "default" );
         }

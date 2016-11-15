@@ -61,8 +61,8 @@ public interface _component
     _methods getMethods();
     
     /** 
-     * the count of nested (_classes, _interfaces, _enums) in this component)
-     * 
+     * the count of nested (_classes, _interfaces, _enums) 
+     *in this component) 
      */
     int getNestedCount();
     

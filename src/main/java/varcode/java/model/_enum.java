@@ -328,17 +328,18 @@ public class _enum
         return this.nesteds.getByName( name ); 
     }
     
+    @Override
     public _component getNestedAt( int index )
     {
         return this.nesteds.getAt(  index );
     }
     
 	public String getFullyQualifiedClassName()
-	{
-		
+	{		
 		if( this.enumPackage != null && ! this.enumPackage.isEmpty() )
 		{
-			return this.enumPackage.getName() + "." + this.enumSignature.getName();
+			return this.enumPackage.getName() + "." 
+                + this.enumSignature.getName();
 		}
 		else
 		{
@@ -603,8 +604,7 @@ public class _enum
         this.enumSignature.modifiers = mods;
         return this;
     }
-	
-    
+	    
 	/**
 	 * When we construct enums each enum value
 	 * 
@@ -974,7 +974,7 @@ public class _enum
 					Modifier.SYNCHRONIZED, 
 					Modifier.TRANSIENT, 
 					Modifier.VOLATILE,
-                    _modifiers._mod.INTERFACE_DEFAULT.getBitValue() ) )
+                    _modifiers._modifier.INTERFACE_DEFAULT.getBitValue() ) )
 				{
 					throw new ModelException(
 						"Invalid Modifier(s) for enum of \"" + enumSignature 

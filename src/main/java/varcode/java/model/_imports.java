@@ -3,13 +3,12 @@ package varcode.java.model;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.TreeSet;
-
+import varcode.Model;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.Dom;
 import varcode.markup.bindml.BindML;
-import varcode.Model;
 
 /**
  * Handles imports

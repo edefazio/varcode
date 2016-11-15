@@ -18,13 +18,12 @@ package varcode.java.model;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
+import varcode.Model;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.Dom;
 import varcode.markup.bindml.BindML;
-import varcode.Model;
 
 /**
  * This represents the act of annotating within a Java Class File
@@ -44,7 +43,7 @@ import varcode.Model;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _annotations
-    implements Model
+    implements Model, _facet
 {    
     public static _annotations cloneOf( _annotations annotations )
     {
@@ -416,7 +415,7 @@ public class _annotations
      * A single annotation
      */
     public static class _annotation
-        implements Model
+        implements Model, _facet
     {        
         /** Create and return a clone of this annotation
          * @param prototype the prototype annotation

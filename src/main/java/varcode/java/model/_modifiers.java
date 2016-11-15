@@ -6,12 +6,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import varcode.Model;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.markup.bindml.BindML;
-import varcode.Model;
 
 /**
  * Group of modifiers applied to classes, fields, methods, etc.)
@@ -97,6 +96,17 @@ public class _modifiers
 		this.mods = mods;
 	}
 	
+    public _modifiers set( _modifier... modifiers )
+    {
+        int mutatedMods = this.mods;
+        for( int i = 0; i < modifiers.length; i++ )
+		{
+			mutatedMods |= modifiers[ i ].getBitValue();
+		}
+		validate( mutatedMods ); //verify that it is possible
+        this.mods = mutatedMods;
+		return this;
+    }
 	public _modifiers set( String...keywords )
 	{
 		for( int i = 0; i < keywords.length; i++ )
@@ -261,7 +271,8 @@ public class _modifiers
 		}
 		return true;
 	}
-	public enum _mod
+	public enum _modifier 
+        implements _facet
 	{
 		PUBLIC( "public", Modifier.PUBLIC ), 
 		//DEFAULT( "", 0 ), 
@@ -280,7 +291,7 @@ public class _modifiers
 		private final String keyword;
 		private final int bitValue;
 		
-		private _mod( String keyword, int bitValue )
+		private _modifier( String keyword, int bitValue )
 		{
 			this.keyword = keyword;
 			this.bitValue = bitValue;
@@ -352,8 +363,7 @@ public class _modifiers
 		}
 		if( Modifier.isAbstract(modifiers ) )
 		{   //if you are abstract 
-			return Integer.bitCount( 
-				modifiers & 
+			return Integer.bitCount(modifiers & 
 				( Modifier.FINAL | 
 				  Modifier.STATIC | 
 				  Modifier.SYNCHRONIZED | 
@@ -361,7 +371,7 @@ public class _modifiers
 				  Modifier.TRANSIENT |
 				  Modifier.VOLATILE |
 				  Modifier.STRICT |
-                  _mod.INTERFACE_DEFAULT.bitValue ) ) == 0 
+                  _modifier.INTERFACE_DEFAULT.bitValue ) ) == 0 
 			&&
 			Integer.bitCount( modifiers & ( Modifier.PUBLIC | Modifier.PRIVATE | Modifier.PROTECTED ) ) < 2;
 		}

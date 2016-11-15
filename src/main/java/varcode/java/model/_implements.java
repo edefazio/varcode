@@ -2,16 +2,15 @@ package varcode.java.model;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import varcode.Model;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.Dom;
 import varcode.markup.bindml.BindML;
-import varcode.Model;
 
 public class _implements
-    implements Model
+    implements Model, _facet
 {            
 	public static final _implements NONE = new _implements();
 	
