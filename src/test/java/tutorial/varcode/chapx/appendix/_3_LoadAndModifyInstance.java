@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package quickstart.varcode;
+package tutorial.varcode.chapx.appendix;
 
 import junit.framework.TestCase;
 import varcode.java.model._class;
@@ -24,7 +24,7 @@ import varcode.java.model.load._Load;
  *
  * @author Eric DeFazio
  */
-public class _2_Load_Mod_Compile_Instance_Invoke
+public class _3_LoadAndModifyInstance
     extends TestCase
 {
     public class SkeletonBean
@@ -46,7 +46,7 @@ public class _2_Load_Mod_Compile_Instance_Invoke
     {
         _class _c = _Load._classOf( SkeletonBean.class );
         _c.setName( "AuthoredBean" );
-        _c.property( "private String name;" );
+        _c.property( "private String name;" );//add field, getter setter
         _c.property( "private final int count;" );
         
         _c.constructor( "public AuthoredBean( int count )", 
@@ -56,7 +56,5 @@ public class _2_Load_Mod_Compile_Instance_Invoke
         
         Object adHocInstance = _c.instance( 100 );
         
-        
-    }
-    
+    }    
 }

@@ -62,6 +62,52 @@ public class _enum
 		return new _enum( prototype );
 	}
 	
+    public _enum add( _facet... facets )
+    {
+        for( int i = 0; i < facets.length; i++ )
+        {
+            add( facets[ i ] );
+        }
+        return this;
+    }
+    
+    public _enum add( _facet facet )
+    {
+        if( facet instanceof _annotations._annotation )
+        {
+            this.annotations.add( facet );
+            return this;
+        }
+        if( facet instanceof _constructor )
+        {
+            this.constructors.addConstructor( (_constructor)facet );
+            return this;
+        }
+        if( facet instanceof _field )
+        {
+            this.fields.addFields( (_field)facet );
+            return this;
+        }
+        if( facet instanceof _method )
+        {
+            this.methods.addMethod( (_method)facet );
+            return this;
+        }
+        if( facet instanceof _modifiers._modifier )
+        {
+            this.getModifiers().set( (_modifiers._modifier)facet );
+            return this;
+        }        
+        throw new ModelException(
+            "Unsupported facet " + facet + " for _enum" );
+        
+    }
+    
+    public _modifiers getModifiers()
+    {
+        return this.getSignature().getModifiers();
+    }
+    
 	public _enum( _enum prototype )
 	{
 		this.enumPackage = _package.cloneOf( prototype.enumPackage );

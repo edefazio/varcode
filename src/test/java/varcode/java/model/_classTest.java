@@ -5,7 +5,6 @@
  */
 package varcode.java.model;
 
-import varcode.java.model._class;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -20,6 +19,11 @@ import varcode.VarException;
 import varcode.context.VarContext;
 import varcode.java.JavaCase;
 import varcode.java.adhoc.Workspace;
+import varcode.java.model._annotations._annotation;
+import varcode.java.model._constructors._constructor;
+import varcode.java.model._fields._field;
+import varcode.java.model._methods._method;
+import varcode.java.model._modifiers._modifier;
 
 /**
  *
@@ -29,6 +33,76 @@ public class _classTest
     extends TestCase
 {
  
+    //I should be able to call Add(...) with all facets
+    public void testAddFacet()
+    {
+        _class _c = _class.of("public class A");
+        _c.add( _field.of( "public int count" ) );
+        
+        _c.add( _constructor.of( "public A()", "" ) );
+        assertEquals(1, _c.getConstructors().count() );
+        
+        
+        assertEquals( _c.getFields().count(), 1 );
+        _field f = _c.getFields().getByName( "count" );
+        assertNotNull( f );
+        assertEquals( "int", f.getType() );
+        assertEquals( "count", f.getName() );
+        
+        //set the class to be abstract
+        _c.add( _modifier.ABSTRACT );
+        
+        assertTrue( _c.getModifiers().containsAll( "public", "abstract" ) );
+        
+        //add an abstract method
+        _c.add( _method.of( "public abstract String getName()" ) );
+        
+        _method m = _c.getMethodNamed( "getName" );
+        
+        assertTrue( m.getModifiers().containsAll( "public", "abstract" ) );
+        assertEquals( "String", m.getReturnType() );
+        
+        
+        //add a class annotation
+        _c.add( _annotation.of( "@Deprecated" ) );
+        
+        _annotations ann = _c.getAnnotations();
+        assertEquals( 1, ann.count());
+        Object a = ann.getAt( 0 );
+        assertEquals("@Deprecated ", a.toString());
+    }
+    
+    public void testAddMulitpleFacets()
+    {
+        _class _c = _class.of( "public class A" );
+        _c.add(
+            _constructor.of( "public A", "" ),
+            _field.of( "public int count" ), 
+            _modifier.ABSTRACT, 
+            _method.of( "public abstract String getName()" ),
+            _annotation.of( "@Deprecated" ) );
+        
+        assertEquals( _c.getConstructors().count(), 1 );
+        
+        assertEquals( _c.getFields().count(), 1 );
+        _field f = _c.getFields().getByName( "count" );
+        assertNotNull( f );
+        assertEquals( "int", f.getType() );
+        assertEquals( "count", f.getName() );
+        
+        assertTrue( _c.getModifiers().containsAll( "public", "abstract" ) );
+        
+        _method m = _c.getMethodNamed( "getName" );
+        
+        assertTrue( m.getModifiers().containsAll( "public", "abstract" ) );
+        assertEquals( "String", m.getReturnType() );
+        
+        _annotations ann = _c.getAnnotations();
+        assertEquals( 1, ann.count());
+        Object a = ann.getAt( 0 );
+        assertEquals("@Deprecated ", a.toString());
+    }
+    
     public void testClassFields()
     {
         _class c = _class.of("A").field("A comment", "public int a");

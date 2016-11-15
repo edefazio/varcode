@@ -46,7 +46,7 @@ public class _modifiersTest
             Modifier.TRANSIENT, 
             Modifier.VOLATILE, 
             Modifier.STRICT, 
-            _modifiers._mod.INTERFACE_DEFAULT.getBitValue() ) );
+            _modifiers._modifier.INTERFACE_DEFAULT.getBitValue() ) );
         
         
         m = _modifiers.of(
@@ -63,7 +63,7 @@ public class _modifiersTest
             Modifier.TRANSIENT, 
             Modifier.VOLATILE, 
             Modifier.STRICT, 
-            _modifiers._mod.INTERFACE_DEFAULT.getBitValue() ) );
+            _modifiers._modifier.INTERFACE_DEFAULT.getBitValue() ) );
                 
         m = _modifiers.of(
            "protected",

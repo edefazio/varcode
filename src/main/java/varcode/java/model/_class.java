@@ -93,9 +93,11 @@ public class _class
         }
         if( facet instanceof _modifier )
         {
-            this.getModifiers().set( (_modifier)facet );
+            this.getModifiers().set( (_modifier)facet );            
+            return this;
         }        
-        return this;
+        throw new ModelException(
+            "Unsupported facet " + facet + " for _class" );
     }
     
     /** 
