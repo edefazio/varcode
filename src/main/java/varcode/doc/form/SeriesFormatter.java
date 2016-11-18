@@ -5,7 +5,7 @@ package varcode.doc.form;
  * a strategy for strings to separate each of the forms.
  * 
  * For instance, with a {@code Form} like: <PRE>
- * "?{{+:{+type+} {+name+};
+ * "{{+:{+type+} {+name+};
  * +}}"</PRE>
  * 
  * where :<PRE>
@@ -23,7 +23,8 @@ package varcode.doc.form;
  * VarContext vc = VarContext.of(
  *     "type", new Class[]{ int.class, int.class},
  *     "name", new String[] {"x", "y"} ); </PRE>
- * ...we want
+ * 
+ * ...we want the series to be formattted as:
  * <PRE>"int x, int y"</PRE>
  * NOTE: the "," separator ONLY appears after the first Form in the Series.
  *   

@@ -1,6 +1,6 @@
 package varcode.java;
 
-import varcode.source.BaseSourceLoader;
+import varcode.load.BaseSourceLoader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -31,8 +31,8 @@ import varcode.java.adhoc.JavacOptions;
 import varcode.java.adhoc.Workspace;
 import varcode.markup.MarkupException;
 import varcode.markup.codeml.CodeML;
-import varcode.source.SourceLoader.SourceStream;
-import varcode.source.SourceLoader;
+import varcode.load.SourceLoader.SourceStream;
+import varcode.load.SourceLoader;
 
 /**
  * ***********************************************************

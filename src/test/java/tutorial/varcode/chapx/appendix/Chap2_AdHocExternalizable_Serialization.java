@@ -23,9 +23,9 @@ import java.util.Date;
 import java.util.Map;
 import junit.framework.TestCase;
 import varcode.java.adhoc.AdHocObjectInputStream;
-import varcode.java.model._class;
-import varcode.java.model.auto._autoDto;
-import varcode.java.model.auto._autoExternalizable;
+import varcode.java.lang._class;
+import varcode.java.lang.auto._autoDto;
+import varcode.java.lang.auto._autoExternalizable;
 import varcode.java.model.cs._autoToString;
 
 /**

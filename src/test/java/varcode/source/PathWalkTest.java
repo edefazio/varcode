@@ -4,7 +4,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 
-import varcode.source.PathWalk;
+import varcode.load.PathWalk;
 import junit.framework.TestCase;
 
 public class PathWalkTest

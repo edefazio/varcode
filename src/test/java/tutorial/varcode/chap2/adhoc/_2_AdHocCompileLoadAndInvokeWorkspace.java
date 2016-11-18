@@ -22,9 +22,9 @@ import org.slf4j.LoggerFactory;
 import varcode.java.Java;
 import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.adhoc.Workspace;
-import varcode.java.model._class;
-import varcode.java.model._enum;
-import varcode.java.model._interface;
+import varcode.java.lang._class;
+import varcode.java.lang._enum;
+import varcode.java.lang._interface;
 
 /**
  *

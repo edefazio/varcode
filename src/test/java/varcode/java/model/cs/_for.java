@@ -6,7 +6,7 @@ import varcode.doc.Directive;
 import varcode.doc.Dom;
 import varcode.markup.bindml.BindML;
 import varcode.Model;
-import varcode.java.model._code;
+import varcode.java.lang._code;
 
 /**
  * Construct Simple for... loops with a _code body

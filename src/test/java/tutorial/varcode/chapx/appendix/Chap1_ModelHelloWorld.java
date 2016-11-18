@@ -17,7 +17,7 @@ package tutorial.varcode.chapx.appendix;
 
 import junit.framework.TestCase;
 import varcode.java.Java;
-import varcode.java.model._class;
+import varcode.java.lang._class;
 
 /**
  *

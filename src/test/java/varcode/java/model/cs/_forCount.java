@@ -21,7 +21,7 @@ import varcode.doc.Directive;
 import varcode.doc.Dom;
 import varcode.markup.bindml.BindML;
 import varcode.Model;
-import varcode.java.model._code;
+import varcode.java.lang._code;
 
 /**
  * This will be a static inner class inside _for

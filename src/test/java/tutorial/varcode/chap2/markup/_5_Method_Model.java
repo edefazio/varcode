@@ -1,7 +1,7 @@
 package tutorial.varcode.chap2.markup;
 
 import junit.framework.TestCase;
-import varcode.java.model._methods._method;
+import varcode.java.lang._methods._method;
 import varcode.markup.codeml.code._Method;
 
 public class _5_Method_Model

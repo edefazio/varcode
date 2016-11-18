@@ -9,7 +9,7 @@ import varcode.doc.DocState;
 import varcode.doc.Dom;
 import varcode.markup.MarkupException;
 import varcode.markup.mark.Mark;
-import varcode.source.SourceLoader.SourceStream;
+import varcode.load.SourceLoader.SourceStream;
 
 /**
  * CodeML is a Markup Language that "hides" Marks within comments of

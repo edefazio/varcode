@@ -15,8 +15,9 @@ import varcode.context.VarContext;
 import varcode.context.VarScope;
 import varcode.doc.Directive;
 import varcode.doc.lib.java.JavaLib;
-import varcode.markup.Markup;
 import varcode.context.eval.VarScript;
+import varcode.doc.lib.text.CondenseMultipleBlankLines;
+import varcode.doc.lib.text.RemoveAllLinesWith;
 
 /** Maybe this class is (ITSELF) a Directive? */
 public enum JavaMarkup 
@@ -40,8 +41,8 @@ public enum JavaMarkup
 	 */
 	public static Directive[] MARKUP_DIRECTIVES = new Directive[] {
 		JavaLib.INSTANCE,   //load java library (for validation, etc.)	
-		Markup.condenseMultipleBlankLines(), //
-		Markup.removeAllLinesWith( 
+		CondenseMultipleBlankLines.INSTANCE, //
+		new RemoveAllLinesWith(  
 			"import varcode", 
 			"import junit" )	
 	};

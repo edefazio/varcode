@@ -31,13 +31,13 @@ import org.slf4j.LoggerFactory;
 import varcode.Model;
 import varcode.VarException;
 import varcode.java.Java;
-import varcode.java.model._class;
-import varcode.java.model._code;
-import varcode.java.model._fields;
-import varcode.java.model._fields._field;
-import varcode.java.model._imports;
-import varcode.java.model._methods._method;
-import varcode.java.model.load._JavaLoader;
+import varcode.java.lang._class;
+import varcode.java.lang._code;
+import varcode.java.lang._fields;
+import varcode.java.lang._fields._field;
+import varcode.java.lang._imports;
+import varcode.java.lang._methods._method;
+import varcode.java.load._JavaLoader;
 
 /**
  *

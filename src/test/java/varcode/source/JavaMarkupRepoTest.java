@@ -1,9 +1,9 @@
 package varcode.source;
 
-import varcode.source.BaseSourceLoader;
+import varcode.load.BaseSourceLoader;
 import junit.framework.TestCase;
 import varcode.java.JavaNaming;
-import varcode.source.SourceLoader.SourceStream;
+import varcode.load.SourceLoader.SourceStream;
 
 public class JavaMarkupRepoTest
 	extends TestCase

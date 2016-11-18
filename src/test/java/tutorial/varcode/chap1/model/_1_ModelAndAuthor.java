@@ -8,9 +8,9 @@ import java.util.UUID;
 import junit.framework.TestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import varcode.java.model._class;
-import varcode.java.model._enum;
-import varcode.java.model._interface;
+import varcode.java.lang._class;
+import varcode.java.lang._enum;
+import varcode.java.lang._interface;
 
 /**
  * Create a "_class, _enum, _interface" Model and have the model "author" 

@@ -16,10 +16,10 @@
 package varcode.java.model.cs;
 
 import java.lang.reflect.Array;
-import varcode.java.model._class;
-import varcode.java.model._fields;
-import varcode.java.model._fields._field;
-import varcode.java.model._methods._method;
+import varcode.java.lang._class;
+import varcode.java.lang._fields;
+import varcode.java.lang._fields._field;
+import varcode.java.lang._methods._method;
 import varcode.markup.codeml.code._Method;
 
 /**

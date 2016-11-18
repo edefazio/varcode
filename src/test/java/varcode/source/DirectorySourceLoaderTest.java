@@ -15,9 +15,9 @@
  */
 package varcode.source;
 
-import varcode.source.DirectorySourceLoader;
+import varcode.load.DirectorySourceLoader;
 import junit.framework.TestCase;
-import varcode.source.SourceLoader.SourceStream;
+import varcode.load.SourceLoader.SourceStream;
 
 /**
  *

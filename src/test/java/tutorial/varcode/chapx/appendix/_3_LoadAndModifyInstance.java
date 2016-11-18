@@ -16,8 +16,8 @@
 package tutorial.varcode.chapx.appendix;
 
 import junit.framework.TestCase;
-import varcode.java.model._class;
-import varcode.java.model.load._Load;
+import varcode.java.lang._class;
+import varcode.java.load._Load;
 
 /**
  * varcode can create ad hoc Object instances

@@ -7,7 +7,7 @@ import varcode.doc.Dom;
 import varcode.markup.bindml.BindMLParser.AddVarExpressionMark;
 import varcode.markup.forml.ForML;
 import varcode.markup.mark.Mark;
-import varcode.source.SourceLoader.SourceStream;
+import varcode.load.SourceLoader.SourceStream;
 /** 
  *  <A HREF="https://en.wikipedia.org/wiki/Markup_language">Markup Language</A> for 
  *  logically binding data into text to produce "tailored documents". 

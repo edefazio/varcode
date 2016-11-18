@@ -16,7 +16,7 @@
 package indepth.varcode._classes;
 
 import junit.framework.TestCase;
-import varcode.java.model._methods._method;
+import varcode.java.lang._methods._method;
 
 /**
  *

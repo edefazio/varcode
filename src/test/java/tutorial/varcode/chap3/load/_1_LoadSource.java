@@ -4,8 +4,8 @@ import junit.framework.TestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import varcode.VarException;
-import varcode.source.BaseSourceLoader;
-import varcode.source.SourceLoader.SourceStream;
+import varcode.load.BaseSourceLoader;
+import varcode.load.SourceLoader.SourceStream;
 
 /**
  * Loading the source 

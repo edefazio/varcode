@@ -1,7 +1,7 @@
 package tutorial.varcode.chapx.appendix;
 
-import varcode.java.model._enum;
-import varcode.java.model.auto._autoEnum;
+import varcode.java.lang._enum;
+import varcode.java.lang.auto._autoEnum;
 
 /**
  *

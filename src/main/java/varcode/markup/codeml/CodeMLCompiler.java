@@ -12,7 +12,7 @@ import varcode.context.VarContext;
 import varcode.context.VarScope;
 import varcode.doc.Dom;
 import varcode.markup.MarkupException;
-import varcode.source.SourceLoader.SourceStream;
+import varcode.load.SourceLoader.SourceStream;
 
 /**
  * Compiles CodeML (Code Markup Language) a DSML 

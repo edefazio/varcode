@@ -15,10 +15,10 @@
  */
 package varcode.source;
 
-import varcode.source.ClassPathSourceLoader;
+import varcode.load.ClassPathSourceLoader;
 import junit.framework.TestCase;
 import varcode.VarException;
-import varcode.source.SourceLoader.SourceStream;
+import varcode.load.SourceLoader.SourceStream;
 
 /**
  *

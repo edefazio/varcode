@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import varcode.context.VarContext;
 import varcode.java.Java;
-import varcode.java.model._class;
+import varcode.java.lang._class;
 import varcode.java.model.cs._for;
 import varcode.java.model.cs._thread;
 import varcode.java.model.cs._while;

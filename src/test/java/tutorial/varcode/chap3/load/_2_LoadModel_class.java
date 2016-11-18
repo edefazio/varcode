@@ -23,16 +23,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import varcode.Model;
 import varcode.VarException;
-import varcode.java.model._class;
-import varcode.java.model._constructors;
-import varcode.java.model._constructors._constructor;
-import varcode.java.model._fields;
-import varcode.java.model._fields._field;
-import varcode.java.model._interface;
-import varcode.java.model._methods;
-import varcode.java.model._methods._method;
-import varcode.java.model._parameters._parameter;
-import varcode.java.model.load._JavaLoader;
+import varcode.java.lang._class;
+import varcode.java.lang._constructors;
+import varcode.java.lang._constructors._constructor;
+import varcode.java.lang._fields;
+import varcode.java.lang._fields._field;
+import varcode.java.lang._interface;
+import varcode.java.lang._methods;
+import varcode.java.lang._methods._method;
+import varcode.java.lang._parameters._parameter;
+import varcode.java.load._JavaLoader;
 
 /**
  * Loads the models (_class, _enum, _interface) 

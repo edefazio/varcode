@@ -19,12 +19,12 @@ import varcode.VarException;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Dom;
-import varcode.source.BaseSourceLoader;
-import varcode.java.model._code;
-import varcode.java.model._methods._method;
+import varcode.load.BaseSourceLoader;
+import varcode.java.lang._code;
+import varcode.java.lang._methods._method;
 import varcode.markup.codeml.CodeML;
-import varcode.source.SourceLoader.SourceStream;
-import varcode.source.SourceLoader;
+import varcode.load.SourceLoader.SourceStream;
+import varcode.load.SourceLoader;
 
 /**
  * Extend this class, then provide a method and wrap the method in $ Marks $

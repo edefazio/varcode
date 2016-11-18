@@ -1,6 +1,6 @@
 package varcode.java;
 
-import varcode.source.BaseSourceLoader;
+import varcode.load.BaseSourceLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -18,8 +18,8 @@ import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.adhoc.AdHocJavaFile;
 import varcode.java.adhoc.JavacException;
 import varcode.markup.codeml.CodeML;
-import varcode.source.SourceLoader.SourceStream;
-import varcode.source.SourceLoader;
+import varcode.load.SourceLoader.SourceStream;
+import varcode.load.SourceLoader;
 
 /**
  * Represents the combination of {@code Dom} and {@code VarContext} to 

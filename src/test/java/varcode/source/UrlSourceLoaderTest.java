@@ -1,6 +1,6 @@
 package varcode.source;
 
-import varcode.source.UrlSourceLoader;
+import varcode.load.UrlSourceLoader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -11,7 +11,7 @@ import varcode.context.VarContext;
 import varcode.doc.Dom;
 import varcode.java.JavaCase;
 import varcode.markup.codeml.CodeMLCompiler;
-import varcode.source.SourceLoader.SourceStream;
+import varcode.load.SourceLoader.SourceStream;
 
 /**
  * Verify that I can use a group of Urls as a Repo

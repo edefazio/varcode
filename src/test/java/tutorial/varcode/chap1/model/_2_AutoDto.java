@@ -5,9 +5,9 @@ import junit.framework.TestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tutorial.varcode.chap3.load._1_LoadSource;
-import varcode.java.model._class;
-import varcode.java.model.auto._autoDto;
-import varcode.java.model.auto._autoExternalizable;
+import varcode.java.lang._class;
+import varcode.java.lang.auto._autoDto;
+import varcode.java.lang.auto._autoExternalizable;
 
 /**
  * _auto... classes create another abstraction layer on top of existing
