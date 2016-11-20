@@ -4,9 +4,9 @@ import tutorial.varcode.chapx.appendix.CodeMLMarkupModelTest;
 import tutorial.varcode.chapx.appendix.Chap1_ModelDefaultMethods;
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import tutorial.varcode.chap1.model._1_ModelAndAuthor;
-import tutorial.varcode.chap1.model._2_AutoDto;
-import tutorial.varcode.chap2.adhoc._1_AdHocCompileLoadAndInvoke;
+import tutorial.chap1.java_lang._1_AuthorCode;
+import tutorial.chap1.java_lang._2_AutoDto;
+import tutorial.chap2.java_adhoc._1_AdHocInvoke;
 import varcode.LangTest;
 import varcode.doc.translate.ClassToStringTranslatorTest;
 import varcode.doc.translate.TranslateBufferTest;
@@ -122,10 +122,10 @@ public class AllTestSuite
         TestSuite suite = new TestSuite( AllTestSuite.class.getName() );
         // $JUnit-BEGIN$
         
-        suite.addTestSuite( _1_ModelAndAuthor.class );
+        suite.addTestSuite(_1_AuthorCode.class );
         suite.addTestSuite( _2_AutoDto.class );
         
-        suite.addTestSuite( _1_AdHocCompileLoadAndInvoke.class );
+        suite.addTestSuite(_1_AdHocInvoke.class );
         
         suite.addTestSuite( LangTest.class );
         suite.addTestSuite( ClassToStringTranslatorTest.class );

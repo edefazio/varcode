@@ -136,7 +136,7 @@ public class ReplaceWithFormTest
             "        // {+description+}" + N  
           + "        public Object {+name+};" + N + N );
        
-       String s = rf.getForm().derive( 
+       String s = rf.getForm().compose( 
            VarContext.of( 
                "description", "theDescription", 
                "name", "a" ) );
@@ -150,14 +150,14 @@ public class ReplaceWithFormTest
        
        //System.out.println( s );
        
-       s = f.derive( 
+       s = f.compose( 
            VarContext.of( 
                    "name", "a", 
                    "description", "describe a" ) 
                ); 
        
        
-       f.derive( 
+       f.compose( 
            VarContext.of( 
                "name", new String[]{"a","b","c"}, 
                "description", new String[]{"describe a","describe b", "describe c"} )           
@@ -169,7 +169,7 @@ public class ReplaceWithFormTest
            "        /** {+description+} */" + N  
          + "        public Object {+name+};" + N );
       
-       s = f.derive( 
+       s = f.compose( 
            VarContext.of( 
               "description", "theDescription", 
               "name", "a" ) );
@@ -179,7 +179,7 @@ public class ReplaceWithFormTest
            "        /** theDescription */" + N
           +"        public Object a;" + N ) );
        
-       f.derive( 
+       f.compose( 
            VarContext.of( 
                "name", new String[]{"a","b","c"}, 
                "description", new String[]{"describe a","describe b", "describe c"} )           
@@ -218,7 +218,7 @@ public class ReplaceWithFormTest
         //assertTrue( names.length == 2 );
         
         String tailored = //we can fill the blanks by a "bind" by key value 
-            form.derive( VarContext.of(  
+form.compose( VarContext.of(  
                 "type", int.class,
                 "name", "a" ) );
         
@@ -278,7 +278,7 @@ public class ReplaceWithFormTest
         //assertTrue( names.length == 3 );
         
         String tailored = //we can fill the blanks by a "bind" by key value 
-            form.derive( VarContext.of( 
+form.compose( VarContext.of( 
                 "type", int.class,
                 "name", "param",
                 "initialValue", 12345 ) );
@@ -309,7 +309,7 @@ public class ReplaceWithFormTest
 		
         
         String tailored = //we can fill the blanks by a "bind" by key value 
-            form.derive(  
+form.compose(  
                 VarContext.of( 
                     "type", new Class[]{ int.class, int.class}, 
                     "name", new String[]{"a", "b"} ) );
@@ -342,7 +342,7 @@ public class ReplaceWithFormTest
         //assertTrue( names.length == 2 );
         
         String tailored = //we can fill the blanks by a "bind" by key value 
-            form.derive( VarContext.of(  
+form.compose( VarContext.of(  
                 "type", int.class,
                 "name", "a" ) );
         
@@ -351,13 +351,13 @@ public class ReplaceWithFormTest
         assertTrue( tailored.equals( "int a" ) );     
         
         tailored = //we can fill the blanks by a "bind" by key value 
-            form.derive(  
+form.compose(  
                 VarContext.of( "type", int.class, "name", "a" )
             );
         assertTrue( tailored.equals( "int a" ) );
         
         tailored = //we can fill the blanks by a "bind" by key value 
-            form.derive(  
+form.compose(  
                 VarContext.of( 
                     "type", new Class[]{ int.class, int.class}, 
                     "name", new String[]{"a", "b"} ) );

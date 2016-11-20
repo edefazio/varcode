@@ -2,13 +2,12 @@ package varcode.java.lang;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import varcode.Model;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.Dom;
 import varcode.markup.bindml.BindML;
-import varcode.Model;
 
 /**
  * extends Keyword used on Classes and interfaces
@@ -118,6 +117,12 @@ public class _extends
 		return xtends;
 	}
 	
+    public _extends clear()
+    {
+        this.extendsFrom.clear();
+        return this;
+    }
+    
     @Override
     public String author( )
     {

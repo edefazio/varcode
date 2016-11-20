@@ -85,7 +85,7 @@ public class AddFormIfExpression
     	{
     		if( res != null && res instanceof Boolean && (Boolean)res )
     		{
-    			return form.derive( context );
+    			return form.compose( context );
     		}
     		return null;
     	}

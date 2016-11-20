@@ -16,8 +16,8 @@
 package varcode.java.lang;
 
 import varcode.java.lang._class;
-import varcode.java.model.cs._forCount;
-import varcode.java.model.cs._for;
+import varcode.java.lang.cs._forCount;
+import varcode.java.lang.cs._for;
 import java.util.Random;
 import junit.framework.TestCase;
 import varcode.java.Java;

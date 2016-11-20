@@ -131,7 +131,7 @@ public class ReplaceWithForm
     {
         try
         {        	
-            return form.derive( context );            
+            return form.compose( context );            
         }
         catch( Exception e )
         {

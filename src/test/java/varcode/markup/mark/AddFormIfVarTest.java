@@ -34,7 +34,7 @@ public class AddFormIfVarTest
         //verify the form is bindable 
         Form fp = ifform.getForm();
         
-        String res = fp.derive( 
+        String res = fp.compose( 
             VarContext.of( 
                 "logger", "org.slf4j.Logger",
                 "loggerFactory", "org.slf4j.LoggerFactory"

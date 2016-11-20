@@ -81,7 +81,7 @@ public class AddForm
         String result = null;
         try
         {
-            result = form.derive( context );
+            result = form.compose( context );
         }        
         catch( VarException ve )
         {

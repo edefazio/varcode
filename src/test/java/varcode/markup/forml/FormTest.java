@@ -66,7 +66,7 @@ public class FormTest
             .equals( field.bindEval( "field", "A" ) ) );
         */
         assertTrue( ( "public String A;" + N )
-            .equals( field.derive( VarContext.of( "field", "A" ) ) ) );
+            .equals( field.compose( VarContext.of( "field", "A" ) ) ) );
         
         //assertEquals( "public String A;" + N,
         //    field.evalCount( VarContext.of( "field", "A" ), 1 ) );
@@ -74,7 +74,7 @@ public class FormTest
         assertEquals( 
             ( "public String A;" + N
              + "public String B;" + N ), 
-                 field.derive(  
+                 field.compose(  
                      VarContext.of( 
                          "field", 
                          new String[] {"A", "B"} ) ) );
@@ -87,7 +87,7 @@ public class FormTest
     	String form = "{+field*+} {+value*+};";
     	VarForm f = (VarForm) ForMLCompiler.INSTANCE.compile( form );
     	
-    	String d = f.derive( VarContext.of( 
+    	String d = f.compose( VarContext.of( 
     			"field", new String[]{"FIELD"},
     			//"value", "VALUE" ) );
     			"value", new String[]{"VALUE"}  ) );
@@ -98,7 +98,7 @@ public class FormTest
     	ArrayList<String>value = new ArrayList<String>();
     	field.add("FIELD");
     	value.add("VALUE");
-    	d = f.derive( VarContext.of( 
+    	d = f.compose( VarContext.of( 
     			"field", field,
     			//"value", "VALUE" ) );
     			"value", value  ) );
@@ -114,7 +114,7 @@ public class FormTest
     	    	
     	 try
     	 {
-    		 f.derive( VarContext.of( 
+    		 f.compose( VarContext.of( 
     		    "field", new String[]{"FIELD"},
     			"value", new String[]{"1", "2"}  ) );
     		 fail( "Expected Exception for mismatched cardinality" );
@@ -133,7 +133,7 @@ public class FormTest
    	    	
    	 	try
    	 	{
-   	 		f.derive( VarContext.of(    	 			
+   	 		f.compose( VarContext.of(    	 			
    	 			"value", new String[]{"1", "2"}  ) );
    	 		fail( "Expected Exception for mismatched cardinality" );
    	 	}
@@ -177,7 +177,7 @@ public class FormTest
         //FormSeries fs = fp.getFormSeries();
         //System.out.println( "THE FORM SERIES "+ fs );
         
-        String res = fp.derive( 
+        String res = fp.compose( 
             VarContext.of( 
                 "logger", "org.slf4j.Logger",
                 "loggerFactory", "org.slf4j.LoggerFactory"
@@ -196,7 +196,7 @@ public class FormTest
         
         try
         {
-            f.derive( VarContext.of() );
+            f.compose( VarContext.of() );
             fail("expected Exception for missing required Var ");
         }
         catch( VarException e )
@@ -230,7 +230,7 @@ public class FormTest
         //assertTrue( names.length == 1 );
         //assertTrue( names[ 0 ].equals( "name" ) );
         
-        String res = f.derive( VarContext.of( "name", "Eric" ) );
+        String res = f.compose( VarContext.of( "name", "Eric" ) );
         //System.out.println(  res  );
         assertTrue( res.equals( "Eric" ) );
         
@@ -261,13 +261,13 @@ public class FormTest
         //System.out.println("FILL AB C" + f.fill( "a", "b", "c" ) ); 
         
         
-        String res = f.derive( p );
+        String res = f.compose( p );
         //System.out.println( res );
         assertTrue( res.equals( "a, b, c" ) );
         
         p = VarContext.of( "name", new String[] {"a", "b", "c"} );
         
-        res = f.derive( p );
+        res = f.compose( p );
         assertTrue( res.equals( "a, b, c" ) );        
     }
     
@@ -329,8 +329,8 @@ public class FormTest
         //assertTrue( varNames.contains( "name" ) );
         assertTrue( varNames.contains( "dynamicText" ) );
         
-        assertTrue( p.derive( VarContext.of(  ) ).equals( "" ) );
-        String res = p.derive( VarContext.of( "dynamicText", "a"  ) );
+        assertTrue( p.compose( VarContext.of(  ) ).equals( "" ) );
+        String res = p.compose( VarContext.of( "dynamicText", "a"  ) );
         //System.out.println( res );
         assertEquals( "a", res );
         //assertEquals( p.derive( "A" ), "A" );
@@ -342,10 +342,10 @@ public class FormTest
         //test ALLCAPS
        
         */
-        res = p.derive( VarContext.of(  "dynamicText", "ab"  ) );
+        res = p.compose( VarContext.of(  "dynamicText", "ab"  ) );
         //System.out.println( "RES IS" + res );
         assertTrue("bindAll should be the same as bind for one element", 
-                   res.equals( p.derive( VarContext.of( "dynamicText", "ab" ) ) ) );        
+                   res.equals( p.compose( VarContext.of( "dynamicText", "ab" ) ) ) );        
     }
     
     /*
@@ -362,7 +362,7 @@ public class FormTest
         Form p = ForMLCompiler.INSTANCE.compile( "name", "{+a+} a;" );
         //
         assertTrue( "if ALL fills are a null, pattern resolves empty",
-            "".equals(  p.derive( VarContext.of( ) ) ) );
+            "".equals(  p.compose( VarContext.of( ) ) ) );
     }
     
     public void testNewLinesNoBetween()
@@ -371,7 +371,7 @@ public class FormTest
              "    {+a+}" + "\r\n" + ";" );
         assertTrue(
             "null bindings evaluate to ",
-            "".equals(  p.derive( VarContext.of( ) ) ) );
+            "".equals(  p.compose( VarContext.of( ) ) ) );
         
        // System.out.println( p.bind( "a", "Eric" ) );
         /*
@@ -390,15 +390,15 @@ public class FormTest
         //If the variables for a pattern are 
         Form p = ForMLCompiler.INSTANCE.compile( "name", 
             "{+a+} {+b+};" );
-        assertEquals( "", p.derive( VarContext.of(  ) ) );
+        assertEquals( "", p.compose( VarContext.of(  ) ) );
         
-        String b = p.derive( VarContext.of( "a", "1" ) );
+        String b = p.compose( VarContext.of( "a", "1" ) );
         //System.out.println( b );
         
         assertEquals( "if ANY of the fills is non-null, present it", 
             "1 ;", b );
         
-        b = p.derive( VarContext.of( "b", "2" ) );
+        b = p.compose( VarContext.of( "b", "2" ) );
         //System.out.println( b );
         
         assertEquals( "if ANY of the fills is non-null, present it", 
@@ -412,11 +412,11 @@ public class FormTest
     public void testBetween()
     {    
         Form p = ForMLCompiler.INSTANCE.compile( "name", "{+dynamicText+}," );
-        assertTrue( "".equals(  p.derive( VarContext.of( ) ) ) );
+        assertTrue( "".equals(  p.compose( VarContext.of( ) ) ) );
         
         assertTrue(
             "verify that when binding ONE, the bewteen separator is not present", 
-            "plugin".equals( p.derive( VarContext.of( "dynamicText", "plugin" ) ) ) );
+            "plugin".equals( p.compose( VarContext.of( "dynamicText", "plugin" ) ) ) );
         
         /*
         String two = p.evalAll( 

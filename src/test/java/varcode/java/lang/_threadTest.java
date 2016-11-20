@@ -15,9 +15,9 @@
  */
 package varcode.java.lang;
 
-import varcode.java.model.cs._thread;
+import varcode.java.lang.cs._thread;
 import junit.framework.TestCase;
-import varcode.java.model.cs._thread._runnable;
+import varcode.java.lang.cs._thread._runnable;
 
 /**
  *

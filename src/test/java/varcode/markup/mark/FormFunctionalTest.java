@@ -29,9 +29,9 @@ public class FormFunctionalTest
 		VarForm vf = (VarForm)ForMLCompiler.INSTANCE.compile( formText );
 		System.out.println( vf );
 		System.out.println( vf.getAllMarks()[ 1 ]);
-		System.out.println( vf.derive(VarContext.of("className", "MyClass") ) );
+		System.out.println( vf.compose(VarContext.of("className", "MyClass") ) );
 		
-		System.out.println( vf.derive(
+		System.out.println( vf.compose(
 			VarContext.of(
 					"access", "public",
 					"className", "MyClass"
@@ -45,11 +45,11 @@ public class FormFunctionalTest
 		VarForm vf = (VarForm)ForMLCompiler.INSTANCE.compile( formText );
 		//FormMarkupParser.IfAddMark.OPEN_TAG
 		//System.out.println( vf );
-		assertEquals( "" , vf.derive( VarContext.of( ) ) ); 
-		assertEquals( "" , vf.derive( VarContext.of( "isStatic", "false" ) ) );
-		assertEquals( " static" , vf.derive( VarContext.of( "isStatic", true ) ) ); 
-		assertEquals( " static" , vf.derive( VarContext.of( "isStatic", "true" ) ) );
-		assertEquals( " static" , vf.derive( VarContext.of( "isStatic", Boolean.TRUE ) ) );
+		assertEquals( "" , vf.compose( VarContext.of( ) ) ); 
+		assertEquals( "" , vf.compose( VarContext.of( "isStatic", "false" ) ) );
+		assertEquals( " static" , vf.compose( VarContext.of( "isStatic", true ) ) ); 
+		assertEquals( " static" , vf.compose( VarContext.of( "isStatic", "true" ) ) );
+		assertEquals( " static" , vf.compose( VarContext.of( "isStatic", Boolean.TRUE ) ) );
 	}
 	
 	
@@ -62,9 +62,9 @@ public class FormFunctionalTest
 		System.out.println( vf );
 		
 		System.out.println( vf.getAllMarks()[1] );
-		System.out.println( vf.derive(VarContext.of("className", "MyClass") ) );
+		System.out.println( vf.compose(VarContext.of("className", "MyClass") ) );
 		
-		System.out.println( vf.derive(
+		System.out.println( vf.compose(
 			VarContext.of(
 					"access", "public",
 					"className", "MyClass"

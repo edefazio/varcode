@@ -2,7 +2,6 @@ package varcode.doc.form;
 
 import java.util.Collections;
 import java.util.Set;
-
 import varcode.context.VarContext;
 import varcode.markup.mark.Mark;
 
@@ -35,12 +34,19 @@ public interface Form
     String getText();
     
     /** 
-     * tailor the content and return it as a String
-     * @param context the context to derive the form
-     * @return the filled in form 
+     * Compose the content and return it as a String
+     * @param context the context to compose the form
+     * @return the String document based on data in context
      */
-    String derive( VarContext context );
+    String compose( VarContext context );
     
+    /**
+     * Derive the form given the key-value pairs as input
+     * @param keyValuePairs
+     * @return the String representing the form 
+     */
+    String compose( Object...keyValuePairs );
+        
     /** A Static Form (No variables/variability) */
     public static class StaticForm
         implements Form
@@ -74,17 +80,18 @@ public interface Form
             return text;
         }
 
-        public String getName()
-        {
-            return null;
-        }
-
         @Override
-        public String derive( VarContext context )
+        public String compose( VarContext context )
         {
             return text;
         }
 
+        @Override
+        public String compose( Object... keyValuePairs )
+        {
+            return text;
+        }
+        
         @Override
         public Mark[] getAllMarks()
         {

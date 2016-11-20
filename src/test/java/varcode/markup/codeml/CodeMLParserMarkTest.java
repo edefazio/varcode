@@ -415,7 +415,7 @@ public class CodeMLParserMarkTest
 	    /*
 	    addReplaceCodeForm.getForm().().equals( formPattern );
 	    */
-	    addReplaceCodeForm.getForm().derive( 
+	    addReplaceCodeForm.getForm().compose( 
 	        VarContext.of( "name", "eric" ) )
 	        .equals( "this is eric" );
 	    

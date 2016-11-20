@@ -57,7 +57,7 @@ public abstract class DefineVarAsForm
     {
         try
         {
-            return form.derive( context );            
+            return form.compose( context );            
         }
         catch( Exception cme )
         {

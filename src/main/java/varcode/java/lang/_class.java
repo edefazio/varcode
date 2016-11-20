@@ -953,6 +953,20 @@ public class _class
 		this.classPackage = _package.of( packageName );
 		return this;
 	}
+
+    public _class extend( Class baseClass )
+    {
+        this.signature.extendsFrom.clear();
+        this.signature.extendsFrom.addExtends( baseClass );
+        return this;
+    }
+    
+    public _class extend( String baseClass )
+    {
+        this.signature.extendsFrom.clear();
+        this.signature.extendsFrom.addExtends( baseClass );
+        return this;
+    }
 	
     /**
      * signature of the _class

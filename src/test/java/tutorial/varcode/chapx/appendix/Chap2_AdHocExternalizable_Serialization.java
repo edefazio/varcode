@@ -26,7 +26,7 @@ import varcode.java.adhoc.AdHocObjectInputStream;
 import varcode.java.lang._class;
 import varcode.java.lang.auto._autoDto;
 import varcode.java.lang.auto._autoExternalizable;
-import varcode.java.model.cs._autoToString;
+import varcode.java.lang.cs._autoToString;
 
 /**
  * Illustrates creating an AdHoc Class (and using _autoExternalizable),

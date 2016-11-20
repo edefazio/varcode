@@ -52,7 +52,7 @@ public class DefineVarAsFormTest
         
         
         System.out.println( "INIT \"" + bc.resolveVar( "fieldCount" ) + "\"" );
-        System.out.println( "RESULT \""+ acf.getForm().derive( bc ) +"\"" );
+        System.out.println( "RESULT \""+ acf.getForm().compose( bc ) +"\"" );
         
         
         System.out.println( "RESULT \""+ acf.derive( bc ) +"\"");

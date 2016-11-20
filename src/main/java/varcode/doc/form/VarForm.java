@@ -5,13 +5,12 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-
 import varcode.VarException;
-import varcode.doc.translate.TranslateBuffer;
+import varcode.context.VarBindException.NullVar;
 import varcode.context.VarBindings;
 import varcode.context.VarContext;
-import varcode.context.VarBindException.NullVar;
 import varcode.context.VarScope;
+import varcode.doc.translate.TranslateBuffer;
 import varcode.markup.mark.Mark;
 import varcode.markup.mark.Mark.BlankFiller;
 
@@ -188,22 +187,15 @@ public class VarForm
     }
 
     public void deriveTo( VarContext context, TranslateBuffer out )
-    {   //below, we can turn this code "on" if we tailor this code
-        //and set debug=true in the Context
-        /*{?debug=true:System.out.println( formVarCode );}*/
-        
+    {   
         //find out the number of Forms
         int cardinality = getFormInstanceCount( context );
        
-        /*{?debug=true:*/
-        //System.out.println( "cardinality is : " + cardinality );/*}*/
-        
         //now generate Each Form
         String[] eachForm = new String[ cardinality ]; 
         for( int i = 0; i < cardinality; i++ )
         {
-            eachForm[ i ] = tailorAt( i, context, out );
-            //System.out.println("[" + i + "]=\"" + eachForm[ i ] +"\"");
+            eachForm[ i ] = tailorAt( i, context, out );            
         }
         //	use the form separator
         out.append( seriesFormatter.format( eachForm ) );
@@ -217,7 +209,6 @@ public class VarForm
         //at the LOOP level          
         VarBindings loopBindings = 
             context.getOrCreateBindings( VarScope.LOOP );
-        
         
         Set<String> vNames = new HashSet<String>();
         formTemplate.collectVarNames( vNames, context );
@@ -289,12 +280,18 @@ public class VarForm
     }
 
     @Override
-    public String derive( VarContext context )
+    public String compose( VarContext context )
     {   
     	TranslateBuffer textBuffer = 
            new TranslateBuffer();
         deriveTo( context, textBuffer ); 
         return textBuffer.toString();
+    }
+    
+    @Override
+    public String compose( Object...keyValuePairs )
+    {
+        return compose( VarContext.of( keyValuePairs ) );
     }
     
     @Override

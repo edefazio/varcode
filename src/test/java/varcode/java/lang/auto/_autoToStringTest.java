@@ -15,7 +15,7 @@
  */
 package varcode.java.lang.auto;
 
-import varcode.java.model.cs._autoToString;
+import varcode.java.lang.cs._autoToString;
 import varcode.java.lang.auto._autoDto;
 import junit.framework.TestCase;
 import varcode.java.lang._class;

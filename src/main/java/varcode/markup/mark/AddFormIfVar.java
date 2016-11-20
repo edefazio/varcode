@@ -109,11 +109,11 @@ public class AddFormIfVar
             }
             if( targetValue == null )
             {               
-                return form.derive( context );                   	
+                return form.compose( context );                   	
             }
             if ( resolved.equals( targetValue ) )
             {              
-                return form.derive( context );            
+                return form.compose( context );            
             }
             return null;
         }

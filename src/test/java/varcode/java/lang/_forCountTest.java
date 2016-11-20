@@ -15,7 +15,7 @@
  */
 package varcode.java.lang;
 
-import varcode.java.model.cs._forCount;
+import varcode.java.lang.cs._forCount;
 import varcode.java.lang._code;
 import junit.framework.TestCase;
 

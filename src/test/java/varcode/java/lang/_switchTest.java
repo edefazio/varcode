@@ -15,7 +15,7 @@
  */
 package varcode.java.lang;
 
-import varcode.java.model.cs._switch;
+import varcode.java.lang.cs._switch;
 import junit.framework.TestCase;
 
 /**

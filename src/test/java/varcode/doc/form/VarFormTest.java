@@ -16,7 +16,7 @@ public class VarFormTest
 			ForMLCompiler.compileTemplate( "public {+type*+} {+fieldName*+};"),
 			new SeriesFormatter.BetweenTwo( System.lineSeparator() ) );
 		
-		String formed = vf.derive(
+		String formed = vf.compose(
 			VarContext.of(
 				"type",	 new Object[]{ 
 							int.class,float.class,double.class,short.class,byte.class, long.class },
@@ -30,7 +30,7 @@ public class VarFormTest
 				ForMLCompiler.compileTemplate( "public {+type*+} {+fieldName*+};"),
 				new SeriesFormatter.BetweenTwo( " " ) );
 			
-		String formed = vf.derive(
+		String formed = vf.compose(
 			VarContext.of(
 				"type",	 new Object[]{ String.class, String.class },
 				"fieldName", new String[]{"A", "B"} ) );
@@ -39,7 +39,7 @@ public class VarFormTest
 			
 		assertEquals( "public String A; public String B;", formed );
 			
-		formed = vf.derive(
+		formed = vf.compose(
 			VarContext.of(
 				"type",	 String.class,
 				"fieldName", "A") );
@@ -55,11 +55,11 @@ public class VarFormTest
 			ForMLCompiler.compileTemplate( "{+a+}"), 
 			SeriesFormatter.INLINE );
 		
-		assertEquals( "" , vf.derive( VarContext.of( ) ) );
-		assertEquals( "A" , vf.derive( VarContext.of("a", "A" ) ) );
+		assertEquals( "" , vf.compose( VarContext.of( ) ) );
+		assertEquals( "A" , vf.compose( VarContext.of("a", "A" ) ) );
 		
-		assertEquals( "ABCDEF" , vf.derive( VarContext.of("a", "ABCDEF" ) ) );
-		assertEquals( "ABCDEF" , vf.derive( VarContext.of("a", new String[]{"A","B","C","D","E","F" } ) ) );		
+		assertEquals( "ABCDEF" , vf.compose( VarContext.of("a", "ABCDEF" ) ) );
+		assertEquals( "ABCDEF" , vf.compose( VarContext.of("a", new String[]{"A","B","C","D","E","F" } ) ) );		
 	}
 	
 	public void testTranslate()
@@ -68,7 +68,7 @@ public class VarFormTest
 			ForMLCompiler.compileTemplate( "{+a+}"), 
 			SeriesFormatter.INLINE );
 		
-		String formed = vf.derive( 
+		String formed = vf.compose( 
 			VarContext.of(
 				"a", new Object[]{ 
 					int.class,float.class,double.class,short.class,byte.class, long.class } ) );
@@ -81,7 +81,7 @@ public class VarFormTest
 			ForMLCompiler.compileTemplate( "{+a+}" ), 
 			new SeriesFormatter.BetweenTwo(", ") );
 		
-		formed = vf.derive( 
+		formed = vf.compose( 
 			VarContext.of(
 				"a", new Object[]{ 
 					int.class,float.class,double.class,short.class,byte.class, long.class } ) );

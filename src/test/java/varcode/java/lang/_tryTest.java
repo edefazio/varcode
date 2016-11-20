@@ -15,7 +15,7 @@
  */
 package varcode.java.lang;
 
-import varcode.java.model.cs._try;
+import varcode.java.lang.cs._try;
 import varcode.java.lang._code;
 import java.io.IOException;
 import junit.framework.TestCase;
