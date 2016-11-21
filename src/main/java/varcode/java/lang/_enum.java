@@ -3,7 +3,6 @@ package varcode.java.lang;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
-import varcode.Model;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
@@ -338,6 +337,7 @@ public class _enum
         return this.nesteds;
     }
     
+    @Override
     public int getNestedCount()
     {
         return this.nesteds.count();
@@ -676,7 +676,7 @@ public class _enum
 	 *    
 	 */
 	public static class _valueConstructs
-		implements varcode.Model
+		implements LangModel
 	{
         /** TODO, cant I just iterate through each time w/o having to keep this around??*/
 		//private Set<String> valueNames = new HashSet<String>();
@@ -752,7 +752,7 @@ public class _enum
          * Individual construction of an Enum Value
          */
 		public static class _valueConstruct
-			implements Model
+			implements LangModel
 		{
 			private String name;
 			private _arguments args;
@@ -869,7 +869,7 @@ public class _enum
      * Enum Constructor signature
      */
 	public static class _signature
-		implements Model
+		implements LangModel
 	{
 		private String enumName = "";		
 		private _implements implementsFrom = new _implements();

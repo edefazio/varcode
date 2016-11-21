@@ -3,7 +3,7 @@ package varcode.java.lang;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.TreeSet;
-import varcode.Model;
+import varcode.Model.LangModel;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
@@ -22,7 +22,7 @@ import varcode.markup.bindml.BindML;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _imports
-    implements Model
+    implements LangModel
 {            
 	/** Create and return a mutable clone given the imports
      * @param prototype the prototype imports

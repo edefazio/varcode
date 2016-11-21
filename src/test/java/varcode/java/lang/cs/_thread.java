@@ -15,13 +15,13 @@
  */
 package varcode.java.lang.cs;
 
+import varcode.Model.LangModel;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.Dom;
-import varcode.markup.bindml.BindML;
-import varcode.Model;
 import varcode.java.lang._code;
+import varcode.markup.bindml.BindML;
 
 /**
  * Thread template idioms which benefit from editor-based code completion
@@ -70,7 +70,7 @@ public class _thread
             
     /** Creates an anonymous runnable for threading */
     public static class _runnable
-        implements Model
+        implements LangModel
     {                
         private _code body; 
         private boolean start = false;

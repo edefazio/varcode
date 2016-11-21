@@ -2,7 +2,7 @@ package varcode.java.lang;
 
 import java.util.ArrayList;
 import java.util.List;
-import varcode.Model;
+import varcode.Model.LangModel;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
@@ -10,7 +10,7 @@ import varcode.doc.Dom;
 import varcode.markup.bindml.BindML;
 
 public class _implements
-    implements Model, _facet
+    implements LangModel, _facet
 {            
 	public static final _implements NONE = new _implements();
 	

@@ -72,23 +72,6 @@ public interface Model
      */
     public static final String STRING_LITERAL_PREFIX = "$$";
     
-    /** 
-     * Authors the document bound document as a String
-     * 
-     * @return document representation of the model
-     */    
-    String author( );
-    
-    /** 
-     * Authors the document for the model directives
-     * and returns the bound document as a String
-     * 
-     * @param directives optional directives to apply when 
-     * authoring the document
-     * @return document representation of the model
-     */ 
-	String author( Directive... directives );
-    
     /**
      * Binds values from the context into BindML marks within the model
      * @param context providing bindings to be bound within the model
@@ -103,6 +86,30 @@ public interface Model
      * @return the modified variant, (if it is mutable) or a modified clone
      */
     Model replace( String target, String replacement );     
+    
+    /** 
+     * Extended Model interface form modeling a program language
+     */ 
+    public interface LangModel
+        extends Model
+    {
+        /** 
+         * Authors the document bound document as a String
+         * 
+         * @return document representation of the model
+         */    
+        String author( );
+    
+        /** 
+         * Authors the document for the model directives
+         * and returns the bound document as a String
+         * 
+         * @param directives optional directives to apply when 
+         * authoring the document
+         * @return document representation of the model
+         */ 
+	    String author( Directive... directives );
+    }
     
     /**
      * An exception in modeling an entity

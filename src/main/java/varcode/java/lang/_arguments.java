@@ -3,13 +3,12 @@ package varcode.java.lang;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
+import varcode.Model.LangModel;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.Dom;
 import varcode.markup.bindml.BindML;
-import varcode.Model;
 
 /**
  * Models 
@@ -36,7 +35,7 @@ import varcode.Model;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _arguments 
-	implements Model
+	implements LangModel
 {
 
     /** creates a new _arguments as a clone of prototype

@@ -17,13 +17,13 @@ package varcode.java.lang.cs;
 
 import java.util.ArrayList;
 import java.util.List;
+import varcode.Model.LangModel;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.Dom;
-import varcode.markup.bindml.BindML;
-import varcode.Model;
 import varcode.java.lang._code;
+import varcode.markup.bindml.BindML;
 
 /**
  * Model of an if statement 
@@ -31,7 +31,7 @@ import varcode.java.lang._code;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _if
-    implements Model
+    implements LangModel
 {        
     
     public static _if is( Object condition, Object... bodyLines )
@@ -142,7 +142,7 @@ public class _if
         
     /** Model of an else if statement */
     public static class _elseIf
-        implements Model
+        implements LangModel
     {                
         public static final Dom ELSEIF = BindML.compile( 
             "else if( {+condition*+} )" + N +  

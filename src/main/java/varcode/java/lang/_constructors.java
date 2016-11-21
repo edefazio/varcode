@@ -3,7 +3,8 @@ package varcode.java.lang;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
-import varcode.Model;
+import varcode.Model.LangModel;
+import varcode.Model.ModelException;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
@@ -20,7 +21,7 @@ import varcode.markup.bindml.BindML;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _constructors
-    implements Model
+    implements LangModel
 {
 	private List<_constructor>constructors = new ArrayList<_constructor>();
 
@@ -147,7 +148,7 @@ public class _constructors
 	
 	/** Individual constructor model */
 	public static class _constructor
-		implements Model, _facet
+		implements LangModel, _facet
 	{
         public static _constructor of( String constructorSig, Object... body )
         {
@@ -378,7 +379,7 @@ public class _constructors
 	
         /** constructor signature */
 		public static class _signature
-			implements Model
+			implements LangModel
 		{
 			private String className;
 			private _modifiers modifiers; //public protected private

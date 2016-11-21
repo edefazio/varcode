@@ -15,13 +15,13 @@
  */
 package varcode.java.lang.cs;
 
+import varcode.Model.LangModel;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.Dom;
-import varcode.markup.bindml.BindML;
-import varcode.Model;
 import varcode.java.lang._code;
+import varcode.markup.bindml.BindML;
 
 /**
  * model of a while loop
@@ -29,7 +29,7 @@ import varcode.java.lang._code;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _while
-    implements Model
+    implements LangModel
 {        
     public static _while is( Object condition, Object... bodyLines )
     {

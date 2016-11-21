@@ -1,11 +1,11 @@
 package varcode.java.lang;
 
+import varcode.Model.LangModel;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.Dom;
 import varcode.markup.bindml.BindML;
-import varcode.Model;
 
 /**
  * package representation
@@ -13,7 +13,7 @@ import varcode.Model;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _package
-    implements Model
+    implements LangModel
 {
 	public static final Dom PACKAGE = 
 		BindML.compile( 

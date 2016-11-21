@@ -18,14 +18,14 @@ package varcode.java.lang.cs;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
+import varcode.Model.LangModel;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
-import varcode.doc.translate.JavaTranslate;
 import varcode.doc.Dom;
-import varcode.markup.bindml.BindML;
-import varcode.Model;
+import varcode.doc.translate.JavaTranslate;
 import varcode.java.lang._code;
+import varcode.markup.bindml.BindML;
 
 /**
  *
@@ -45,7 +45,7 @@ import varcode.java.lang._code;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _switch
-    implements Model
+    implements LangModel
 {   
     public static _switch of( String variable )
     {
@@ -63,14 +63,14 @@ public class _switch
 
     public _code varName;
     
-    public List<Model>cases;
+    public List<LangModel>cases;
     
     public DefaultCase defaultCase;
     
     public _switch( String varName )
     {
         this.varName = _code.of( varName );
-        this.cases = new ArrayList<Model>();
+        this.cases = new ArrayList<LangModel>();
     }
     
     public VarContext getContext()
@@ -94,28 +94,28 @@ public class _switch
         this.defaultCase.bind( context );
         for(int i=0; i< this.cases.size(); i++ )
         {
-            this.cases.get(i).bind( context );
+            this.cases.get( i ).bind( context );
         }
         return this;
     }
     
     @Override
-    public _switch replace(String target, String replacement)
+    public _switch replace( String target, String replacement )
     {
-        this.varName = varName.replace(target, replacement);
-        for(int i=0; i<cases.size(); i++)
+        this.varName = varName.replace( target, replacement );
+        for( int i = 0; i < cases.size(); i++ )
         {
             Object o = cases.get( i );
             if( o instanceof Case )
             {
-                ((Case)o).replace(target, replacement);
+                ((Case)o).replace( target, replacement );
             }
             else
             {
-                ((MultiCase)o).replace(target, replacement);
+                ((MultiCase)o).replace( target, replacement );
             }
         }
-        this.defaultCase = this.defaultCase.replace(target, replacement);
+        this.defaultCase = this.defaultCase.replace( target, replacement );
         return this;
     }
 
@@ -191,7 +191,7 @@ public class _switch
     }
     
     public static class DefaultCase
-        implements Model
+        implements LangModel
     {   
         public _code code;
          
@@ -246,7 +246,7 @@ public class _switch
     
     /** Individual case within a Switch statement */
     public static class Case
-        implements Model
+        implements LangModel
     {                
         public _code caseEqual;
         public _code code;
@@ -325,7 +325,7 @@ public class _switch
      * </PRE>
      */
     public static class MultiCase
-        implements Model
+        implements LangModel
     {                
         public _code[] caseEquals;
         public _code code;

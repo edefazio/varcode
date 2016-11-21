@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import varcode.Model;
+import varcode.Model.LangModel;
 import varcode.VarException;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
@@ -20,7 +20,7 @@ import varcode.markup.bindml.BindML;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _methods
-    implements Model
+    implements LangModel
 {        
 	private Map<String, List<_method>>methodsByName = 
 		new HashMap<String, List<_method>>();
@@ -258,7 +258,7 @@ public class _methods
     
 	/** model of a method */
 	public static class _method		
-        implements Model, _facet
+        implements LangModel, _facet
     {              
 		public static final Dom METHOD = 
 			BindML.compile(
@@ -471,7 +471,7 @@ public class _methods
         }
         
 		public static class _signature
-            implements Model
+            implements LangModel
         {                    
 			public static _signature cloneOf( _signature prototype )
 			{

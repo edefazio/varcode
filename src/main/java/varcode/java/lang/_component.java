@@ -16,7 +16,7 @@
 package varcode.java.lang;
 
 import java.util.List;
-import varcode.Model;
+import varcode.Model.LangModel;
 import varcode.context.VarContext;
 import varcode.doc.Dom;
 
@@ -25,7 +25,7 @@ import varcode.doc.Dom;
  * model (_class, _enum, _interface)
  */
 public interface _component
-    extends Model
+    extends LangModel
 {
 
     _component clone();

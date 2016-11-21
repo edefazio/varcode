@@ -3,7 +3,6 @@ package varcode.java.lang;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
-import varcode.Model;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
@@ -538,7 +537,7 @@ public class _interface
 	
     /** interface signature */
     public static class _signature
-        implements Model
+        implements LangModel
     {                
         private _modifiers modifiers = new _modifiers();
         private String interfaceName;		

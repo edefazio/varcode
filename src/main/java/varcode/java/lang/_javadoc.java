@@ -3,14 +3,13 @@ package varcode.java.lang;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
-
+import varcode.Model.LangModel;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
-import varcode.doc.lib.text.EscapeString;
 import varcode.doc.Dom;
+import varcode.doc.lib.text.EscapeString;
 import varcode.markup.bindml.BindML;
-import varcode.Model;
 
 /**
  * A JavaDoc comment
@@ -18,7 +17,7 @@ import varcode.Model;
  * @author M. Eric DeFazio eric@
  */
 public class _javadoc
-    implements Model
+    implements LangModel
 {            
 	public static _javadoc cloneOf( _javadoc jdoc )
 	{

@@ -2,7 +2,7 @@ package varcode.java.lang;
 
 import java.util.ArrayList;
 import java.util.List;
-import varcode.Model;
+import varcode.Model.LangModel;
 import varcode.context.VarContext;
 import varcode.doc.Directive;
 
@@ -25,7 +25,7 @@ import varcode.doc.Directive;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _nesteds 
-    implements Model
+    implements LangModel
 {	
     //all nested components of a declaring class (_class, _enum, _interface)
     public List<_component>components = new ArrayList<_component>();

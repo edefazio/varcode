@@ -3,14 +3,13 @@ package varcode.java.lang;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import varcode.java.Cloner;
-
+import varcode.Model.LangModel;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.Dom;
+import varcode.java.Cloner;
 import varcode.markup.bindml.BindML;
-import varcode.Model;
 
 /**
  * TODO I'm considering whether I should be able to "register Dependency"
@@ -28,7 +27,7 @@ import varcode.Model;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _code
-    implements Model
+    implements LangModel
 {    
 	/**
 	 * Creates a code from the objects (Strings, _code) for instance:<PRE>
@@ -125,10 +124,10 @@ public class _code
         {
             Object o = codeSequence.get( i );
             
-            if( o instanceof Model )
+            if( o instanceof LangModel )
             {   //try, do, while, if, for, _thread, 
                 codeSequence.set(i, 
-                   ((Model)o).bind( context ) );
+                   ((LangModel)o).bind( context ) );
             }
             else if( o instanceof String )
             {
@@ -245,9 +244,9 @@ public class _code
 			{
 				replace.add( ((String)obj).replace( target, replacement) ); 
 			}
-			else if( obj instanceof Model )
+			else if( obj instanceof LangModel )
 			{
-				replace.add(((Model)obj ).replace( target, replacement ) );
+				replace.add(((LangModel)obj ).replace( target, replacement ) );
 			}
 			else
 			{

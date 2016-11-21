@@ -3,7 +3,7 @@ package varcode.java.lang;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
-import varcode.Model;
+import varcode.Model.LangModel;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
@@ -19,7 +19,7 @@ import varcode.markup.bindml.BindML;
  *  
  */
 public class _fields
-    implements Model
+    implements LangModel
 {            
     public static final Dom FIELDS = 
         BindML.compile( 
@@ -177,7 +177,7 @@ public class _fields
      * model for a field 
      */
 	public static class _field
-		implements Model, _facet
+		implements LangModel, _facet
 	{
 		public static final Dom FIELD = BindML.compile(
 			"{+javadoc+}{+fieldAnnotations+}{+modifiers+}{+type+} {+varName+}{+init+};" ); 
@@ -515,7 +515,7 @@ public class _fields
 	 * </PRE>        
 	 */
 	public static class _init 
-		implements Model
+		implements LangModel
 	{
         public static _init of( String code )
         {

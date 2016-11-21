@@ -2,14 +2,13 @@ package varcode.java.lang;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import varcode.Model.LangModel;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.Dom;
 import varcode.java.lang._annotations._annotation;
 import varcode.markup.bindml.BindML;
-import varcode.Model;
 
 /**
  * Models 
@@ -22,7 +21,7 @@ import varcode.Model;
  *
  */
 public class _parameters
-    implements Model
+    implements LangModel
 {            
 	public static final Dom PARAMS_LIST = 
         BindML.compile( "( {{+:{+params+}, +}} )" );
@@ -262,7 +261,7 @@ public class _parameters
 	
     /** a single name-value parameter to a method, constructor, etc. */
 	public static class _parameter
-        implements Model
+        implements LangModel
     {                
 		public static _parameter cloneOf( _parameter prototype ) 
 		{

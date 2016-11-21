@@ -15,21 +15,21 @@
  */
 package varcode.java.lang.cs;
 
+import varcode.Model.LangModel;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
-import varcode.doc.translate.JavaTranslate;
 import varcode.doc.Dom;
-import varcode.markup.bindml.BindML;
-import varcode.Model;
+import varcode.doc.translate.JavaTranslate;
 import varcode.java.lang._code;
+import varcode.markup.bindml.BindML;
 
 /**
  *
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _forEach
-    implements Model
+    implements LangModel
 {        
     /**
      * builds a forEach statement with body: <PRE>

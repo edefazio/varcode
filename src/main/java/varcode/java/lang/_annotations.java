@@ -18,7 +18,7 @@ package varcode.java.lang;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import varcode.Model;
+import varcode.Model.LangModel;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
@@ -43,7 +43,7 @@ import varcode.markup.bindml.BindML;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _annotations
-    implements Model, _facet
+    implements LangModel, _facet
 {    
     public static _annotations cloneOf( _annotations annotations )
     {
@@ -104,10 +104,10 @@ public class _annotations
         for( int i = 0; i < this.listOfAnnotations.size(); i++ )
         {
             Object thisAnn = this.listOfAnnotations.get( i );
-            if( thisAnn instanceof Model )
+            if( thisAnn instanceof LangModel )
             {
                 this.listOfAnnotations.set(i, 
-                    ((Model)thisAnn).bind( context ) );
+                    ((LangModel)thisAnn).bind( context ) );
             }
             else if( thisAnn instanceof String )
             {
@@ -151,9 +151,9 @@ public class _annotations
             {
                 repList.add( ((String)o).replace( target, replacement ) );
             }
-            else if( o instanceof Model )
+            else if( o instanceof LangModel )
             {
-                repList.add(((Model )o).replace( target, replacement ) );
+                repList.add(( (LangModel)o ).replace( target, replacement ) );
             }
             else
             {
@@ -218,7 +218,7 @@ public class _annotations
      * 
      */
     public static class _attributes
-        implements Model
+        implements LangModel
     {        
         public static _attributes of( Object... nameValues )
         {
@@ -244,9 +244,9 @@ public class _annotations
             for( int i = 0; i < names.size(); i++ )
             {
                 Object thisName = names.get( i );
-                if( thisName instanceof Model  )
+                if( thisName instanceof LangModel  )
                 {
-                    names.set(i , ((Model) thisName).bind( context ) );
+                    names.set( i, ((LangModel)thisName).bind( context ) );
                 }
                 else if( thisName instanceof String )
                 {
@@ -257,9 +257,9 @@ public class _annotations
             for( int i = 0; i < values.size(); i++ )
             {
                 Object thisValue = values.get( i );
-                if( thisValue instanceof Model )
+                if( thisValue instanceof LangModel )
                 {
-                    values.set(i, ((Model) thisValue).bind( context ) );
+                    values.set(i, ((LangModel)thisValue).bind( context ) );
                 }
                 else if( thisValue instanceof String )
                 {
@@ -269,34 +269,7 @@ public class _annotations
             }
             return this;
         }
-        /*
-        public void bindTo( VarContext context )
-        {
-            for( int i = 0; i < names.size(); i++ )
-            {            
-                Object thisName = names.get( i );
-                Object thisValue = values.get( i );
-                if( thisName instanceof Model )
-                {
-                    names.set(i , ((Model)thisName ).bind( context ) );                                        
-                }
-                else if( thisName instanceof String )
-                {
-                    names.set(i, 
-                        Compose.asString( BindML.compile((String)thisName), context ) );
-                }
-                if( thisValue instanceof Model )
-                {
-                    values.set(i , ((Model) thisValue).bind( context ) );                                        
-                }
-                else if( thisValue instanceof String )
-                {
-                    values.set(i, 
-                        Compose.asString( BindML.compile((String)thisValue ), context ) );
-                }
-            }
-        }
-        */
+        
          
         public int count()
         {
@@ -415,7 +388,7 @@ public class _annotations
      * A single annotation
      */
     public static class _annotation
-        implements Model, _facet
+        implements LangModel, _facet
     {        
         /** Create and return a clone of this annotation
          * @param prototype the prototype annotation

@@ -31,7 +31,7 @@ import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import java.util.List;
-import varcode.Model;
+import varcode.Model.ModelLoadException;
 import varcode.java.lang._class;
 import varcode.java.lang._code;
 import varcode.java.lang._constructors;
@@ -62,7 +62,7 @@ public class JavaASTToLangModel
     {   
             if( !interfaceDecl.isInterface() )
             {
-                throw new Model.ModelLoadException( 
+                throw new ModelLoadException( 
                     interfaceDecl.getName() + " NOT an interface" );
             }
             _interface _int = null;

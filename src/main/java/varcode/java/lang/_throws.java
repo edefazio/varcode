@@ -2,14 +2,13 @@ package varcode.java.lang;
 
 import java.util.ArrayList;
 import java.util.List;
+import varcode.Model.LangModel;
 import varcode.VarException;
-
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.Dom;
 import varcode.markup.bindml.BindML;
-import varcode.Model;
 
 /**
  * Declaration on a method the throwing of exception
@@ -17,7 +16,7 @@ import varcode.Model;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _throws
-    implements Model
+    implements LangModel
 {            
 	public static final _throws NONE = new _throws();
 	

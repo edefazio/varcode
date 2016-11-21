@@ -17,20 +17,20 @@ package varcode.java.lang.cs;
 
 import java.util.ArrayList;
 import java.util.List;
+import varcode.Model.LangModel;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.Dom;
-import varcode.markup.bindml.BindML;
-import varcode.Model;
 import varcode.java.lang._code;
+import varcode.markup.bindml.BindML;
 
 /**
  *
  * @author eric
  */
 public class _try
-    implements Model
+    implements LangModel
 {        
     /**
 	 * Any try(withResources)...catch()...finally() block of code
@@ -201,7 +201,7 @@ public class _try
      * 
      */
     public static class _catchHandleBlock
-        implements Model
+        implements LangModel
     {    
         private String exception;
         private _code handleBlock;
