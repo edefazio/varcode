@@ -16,28 +16,17 @@
 package tutorial.chap4.load;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import junit.framework.TestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import varcode.Model;
-import varcode.VarException;
-import varcode.java.Java;
 import varcode.java.lang._class;
 import varcode.java.lang._code;
-import varcode.java.lang._fields;
-import varcode.java.lang._fields._field;
-import varcode.java.lang._imports;
 import varcode.java.lang._methods._method;
-import varcode.java.load._JavaLoader;
+import varcode.java.tailor._JavaLoader;
 
 /**
  *
@@ -124,6 +113,7 @@ public class _3_LoadCustomizeAndAuthorModel
         //load a model of the above class
         _class _classModel = 
             _JavaLoader._Class.from( PrefixCreateId.class );
+            //JavaLoad._classOf( PrefixCreateId.class );
         
         //get rid of the "static" modifier (make this a top-level class)
         _classModel.getSignature().setModifiers( "public" );

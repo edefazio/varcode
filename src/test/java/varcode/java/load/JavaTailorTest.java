@@ -1,18 +1,3 @@
-/*
- * Copyright 2016 eric.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package varcode.java.load;
 
 import java.util.ArrayList;
@@ -23,13 +8,12 @@ import varcode.java.lang._enum;
 import varcode.java.lang._interface;
 import varcode.java.lang._nesteds;
 import varcode.java.tailor._JavaLoader;
-import varcode.java.tailor._Load;
 
 /**
  *
- * @author eric
+ * @author Eric DeFazio
  */
-public class _JavaLoaderNestedTestCase
+public class JavaTailorTest
     extends TestCase
 {
     public static class MemberClass
@@ -60,8 +44,8 @@ public class _JavaLoaderNestedTestCase
         // NestedClass
         // NestedInterface
         // NestedEnum
-        _class _c = _JavaLoader._Class.from( MemberClass.class );
         //_class _c = JavaLoad._classOf( MemberClass.class );
+        _class _c = _JavaLoader._Class.from( MemberClass.class );
         _nesteds ng = _c.getNesteds();
         assertEquals( 3, ng.count() );
         _class _nc = (_class)_c.getNestedByName( "NestedClass");
@@ -95,7 +79,8 @@ public class _JavaLoaderNestedTestCase
     public void testInterfaceNesteds()
     {
         _interface _i = 
-            _Load._interfaceOf( MemberInterface.class );
+            //JavaLoad._interfaceOf( MemberInterface.class );
+            _JavaLoader._Interface.from( MemberInterface.class );
         _class _c = (_class)_i.getNesteds().getByName( "NestedClass" );
         _interface _ni = (_interface)_i.getNesteds().getByName( "NestedInterface" );
         _enum _e = (_enum)_i.getNestedByName( "NestedEnum" );
@@ -105,10 +90,15 @@ public class _JavaLoaderNestedTestCase
         
         //System.out.println( MemberInterface.NestedClass.class.getName().replace( "." +this.getClass().getSimpleName(), "") );
         System.out.println( names );
-        assertTrue( names.contains( "MemberInterface$NestedClass" ) );
-        assertTrue( names.contains( "MemberInterface$NestedInterface" ) );
-        assertTrue( names.contains( "MemberInterface$NestedInterface$DeepNest" ) );
-        assertTrue( names.contains( "MemberInterface$NestedEnum" ) );
+        String packageName = this.getClass().getPackage().getName(); 
+        assertTrue( names.contains( 
+            packageName + ".MemberInterface$NestedClass" ) );
+        assertTrue( names.contains( 
+            packageName + ".MemberInterface$NestedInterface" ) );
+        assertTrue( names.contains( 
+            packageName + ".MemberInterface$NestedInterface$DeepNest" ) );
+        assertTrue( names.contains( 
+            packageName + ".MemberInterface$NestedEnum" ) );
         
         System.out.println( MemberInterface.class );
         System.out.println( MemberInterface.class.getName() );
@@ -141,9 +131,8 @@ public class _JavaLoaderNestedTestCase
     
     public void testEnumNesteds()
     {
-        //_enum _e = JavaLoad._enumOf( MemberEnum.class );
         _enum _e = _JavaLoader._Enum.from( MemberEnum.class );
+        //_enum _e = JavaLoad._enumOf( MemberEnum.class );
         
     }
-    
 }

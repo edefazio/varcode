@@ -18,7 +18,7 @@ package varcode.java.lang.auto;
 import varcode.java.lang.auto._autoExternalizable;
 import java.util.Arrays;
 import junit.framework.TestCase;
-import varcode.java.adhoc.Cloner;
+import varcode.java.Cloner;
 import varcode.java.Java;
 import varcode.java.lang._class;
 

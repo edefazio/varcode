@@ -12,8 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-package varcode.java.load;
+ */   
+package varcode.java.tailor;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseException;
@@ -21,7 +21,7 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import varcode.java.load._JavaLoader.ModelLoadException;
+import varcode.Model.ModelLoadException;
 import varcode.load.BaseSourceLoader;
 import varcode.load.SourceLoader;
 
@@ -31,57 +31,89 @@ import varcode.load.SourceLoader;
  * 
  * public class TopLevelClass
  * {
- *     public static class memberClass
+ *     public static class NestedClass
  *     {
  *     }
  * 
- *     public interface memberInteface
+ *     public interface NestedInteface
  *     {
  *     }
  * 
- *     public enum memberEnum
+ *     public enum NestedEnum
  *     {
  *     }
  * }
  * @author M. Eric DeFazio eric@varcode.io
  */
-public class MemberSourceLoader
+public class NestedJavaSourceLoader
     implements SourceLoader
 {
     private final SourceLoader sourceLoader;
     
     /** Loads Java code member classes, enums and interfaces */
-    public static final MemberSourceLoader BASE_INSTANCE = 
-        new MemberSourceLoader( BaseSourceLoader.INSTANCE );
+    public static final NestedJavaSourceLoader BASE_INSTANCE = 
+        new NestedJavaSourceLoader( BaseSourceLoader.INSTANCE );
     
     /**
      * Loads Member classes, 
      * @param sourceLoader 
      */
-    public MemberSourceLoader( SourceLoader sourceLoader )
+    public NestedJavaSourceLoader( SourceLoader sourceLoader )
     {
         this.sourceLoader = sourceLoader;
     }
 
-    
-    public SourceStream fromClass( Class<?> memberClass )
+    private static Class getTopLevelClass( Class clazz )
     {
-        SourceStream declaringClassStream  = sourceStream( 
-            memberClass.getDeclaringClass().getCanonicalName() + ".java" ); 
+        Class declaringClass = clazz.getDeclaringClass();
+        if( declaringClass == null )
+        {
+            return clazz;
+        }
+        return declaringClass;
+    }
+    
+    /**
+     * Can retrieve the source of a top-level or nested class
+     * @param nestedClass
+     * @return 
+     */
+    public SourceStream fromClass( Class<?> nestedClass )
+    {
+        Class topLevelClass = getTopLevelClass( nestedClass );
+        
+        if( topLevelClass == nestedClass )
+        {
+            //we are loading a top level class, go
+            return this.sourceStream( 
+                topLevelClass.getCanonicalName() + ".java" );
+        }
+        // nestedClass is NOT a top level class, it is declared within 
+        // another class, I need to Load/Parse the declaring class to find
+        // and return only the nested source 
+        SourceStream declaringClassStream  = 
+            sourceStream( topLevelClass.getCanonicalName() + ".java" ); 
         
         CompilationUnit cu = null;
         try
         {
             cu = JavaParser.parse( declaringClassStream.getInputStream() );
-            TypeDeclaration td = _JavaParser.findMemberNode( cu, memberClass );
-            MemberSourceStream sss = new MemberSourceStream( 
-                declaringClassStream, memberClass.getCanonicalName(), td.toString() );
-            return sss;
+            
+            //find the declaration of the nested class by recursively 
+            // checking the nodes until I find a TypeDeclaration with this name
+            TypeDeclaration td = JavaASTParser.findTypeDeclaration( 
+                cu, nestedClass.getSimpleName() );
+            
+            NestedJavaSourceStream njss = new NestedJavaSourceStream( 
+                declaringClassStream, 
+                nestedClass.getCanonicalName(), 
+                td.toString() );
+            return njss;
         }
         catch( ParseException pe )
         {
             throw new ModelLoadException(
-                "could not load model for "+ memberClass, pe );
+                "could not load model for "+ nestedClass, pe );
         }
     }
     
@@ -106,37 +138,42 @@ public class MemberSourceLoader
                 cu = JavaParser.parse( declareSource.getInputStream() );
                 
                 String name = sourceId.substring( sourceId.lastIndexOf( "$" ) + 1 );
-                TypeDeclaration td = _JavaParser.findMemberNode( cu, name );
-                MemberSourceStream sss = new MemberSourceStream( 
+                TypeDeclaration td = JavaASTParser.findTypeDeclaration( cu, name );
+                NestedJavaSourceStream sss = new NestedJavaSourceStream( 
                     declareSource, sourceId, td.toString() );
             return sss;
-        }
-        catch( ParseException pe )
-        {
-            throw new ModelLoadException(
-                "could not load model for "+ sourceId, pe );
-        }
+            }
+            catch( ParseException pe )
+            {
+                throw new ModelLoadException(
+                    "could not load model for "+ sourceId, pe );
+            }
         }
     }
 
     @Override
     public String describe()
     {
-        return "MemberSourceLoder from[" + this.sourceLoader + "]";
+        return "NestedJavaSourceLoder from[" + this.sourceLoader + "]";
     }
     
     /**
-     * A Source Stream that aliases a Member Class withinin a Declared Class
+     * A Source Stream that aliases a Member Class within a Declared Class
      * Source code
      */
-    public static class MemberSourceStream
+    public static class NestedJavaSourceStream
         implements SourceStream
     {
+        /** the sourceStream of the parent (declaring class) */
         public final SourceStream parentSourceStream;
+        
+        /** the id of the source */
         public final String sourceId;
+        
+        /** the member source as a String*/
         public final String memberSource;
     
-        public MemberSourceStream( 
+        public NestedJavaSourceStream( 
             SourceStream parentSourceStream, String sourceId, String memberSource )
         {
             this.parentSourceStream = parentSourceStream;
@@ -173,11 +210,10 @@ public class MemberSourceLoader
         {
             return asString();
         }
-        
+        /** the parent Source Stream (the declaring class' source) */
         public SourceStream getParentSourceStream()
         {
             return this.parentSourceStream;
         }
-    }
-    
+    }    
 }

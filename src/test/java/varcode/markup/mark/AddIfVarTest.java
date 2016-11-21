@@ -25,7 +25,7 @@ public class AddIfVarTest
             "/*{+?log:" + 
             logImports + "}*/";
             
-        AddTextIfVar logImportsIf = CodeMLParser.AddIfVarMark.of( mark, 0, VarNameAudit.BASE );
+        AddIfVar logImportsIf = CodeMLParser.AddIfVarMark.of( mark, 0, VarNameAudit.BASE );
         System.out.println( "NAME =\"" + logImportsIf.getVarName() +"\"" );
         assertTrue( logImportsIf.getVarName().equals( "log" ) );
         assertTrue( null == logImportsIf.getTargetValue() );
@@ -45,7 +45,7 @@ public class AddIfVarTest
     {
         String logStatement = "    LOG.trace(\"Got in method\"); ";
         String mark = "/*{+?log==trace:" + logStatement + "}*/";
-        AddTextIfVar logIfTrace = CodeMLParser.AddIfVarMark.of( mark, 0, VarNameAudit.BASE );
+        AddIfVar logIfTrace = CodeMLParser.AddIfVarMark.of( mark, 0, VarNameAudit.BASE );
         assertTrue( logIfTrace.getVarName().equals( "log" ) );
         assertTrue( logIfTrace.getTargetValue().equals( "trace" ) );
         
@@ -88,7 +88,7 @@ public class AddIfVarTest
     
     public void testCondInnerClass()
     {
-        AddTextIfVar bc = CodeMLParser.AddIfVarMark.of( 
+        AddIfVar bc = CodeMLParser.AddIfVarMark.of( 
             CONDITIONAL_INNER_CLASS, 
             1, 
             VarNameAudit.BASE );
@@ -112,7 +112,7 @@ public class AddIfVarTest
      */
     public void testToString()
     {
-        AddTextIfVar ifAdd = new AddTextIfVar( 
+        AddIfVar ifAdd = new AddIfVar( 
             "/*+?method=true:printit();*}/", 
             0, 
            "method",

@@ -15,7 +15,7 @@ import varcode.markup.mark.AddFormIfExpression;
 import varcode.markup.mark.AddFormIfVar;
 import varcode.markup.mark.AddScriptResult;
 import varcode.markup.mark.AddScriptResultIfExpression;
-import varcode.markup.mark.AddTextIfVar;
+import varcode.markup.mark.AddIfVar;
 import varcode.markup.mark.AddVarIsExpression;
 import varcode.markup.mark.Cut;
 import varcode.markup.mark.DefineVar;
@@ -309,7 +309,7 @@ public class BindMLCompilerTest
 		assertTrue( getOnlyMark( BindML.compile( "{+$script(params)+}" ) ) instanceof AddScriptResult );
 		assertTrue( getOnlyMark( BindML.compile( "{+$script(params)*+}" ) ) instanceof AddScriptResult );
 		
-		assertTrue( getOnlyMark( BindML.compile( "{+?variable:addThis+}" ) ) instanceof AddTextIfVar );
+		assertTrue(getOnlyMark( BindML.compile( "{+?variable:addThis+}" ) ) instanceof AddIfVar );
 		assertTrue( getOnlyMark( BindML.compile( "{- some text -}" ) ) instanceof Cut );
 		
 		assertTrue( getOnlyMark( BindML.compile( "{#a=1#}" ) ) instanceof DefineVar.InstanceVar );

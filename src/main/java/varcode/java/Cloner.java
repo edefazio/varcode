@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package varcode.java.adhoc;
+package varcode.java;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import varcode.VarException;
+import varcode.java.adhoc.AdHocClassLoader;
+import varcode.java.adhoc.AdHocObjectInputStream;
 
 /**
  * Deep Copy Clones an object by Serializing it as a byte array and 

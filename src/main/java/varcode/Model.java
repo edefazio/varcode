@@ -126,4 +126,26 @@ public interface Model
             super( throwable );
         }
     }
+    
+    /** 
+     * Signifies an error when attempting to Load a Model
+     */
+    public class ModelLoadException 
+        extends ModelException
+    {        
+        public ModelLoadException( String message, Throwable throwable ) 
+        {
+            super( message, throwable );
+        }
+        
+        public ModelLoadException( String message ) 
+        {
+            super( message );
+        }
+        
+        public ModelLoadException( Throwable throwable ) 
+        {
+            super( throwable );
+        }
+    }    
 }

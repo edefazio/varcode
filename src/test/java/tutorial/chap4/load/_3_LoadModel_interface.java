@@ -19,7 +19,7 @@ import java.io.Serializable;
 import junit.framework.TestCase;
 import varcode.Model;
 import varcode.java.lang._interface;
-import varcode.java.load._JavaLoader;
+import varcode.java.tailor._JavaLoader;
 
 /**
  *
@@ -31,7 +31,7 @@ public class _3_LoadModel_interface
      public void testLoad_interface()
     {
         _interface i = _JavaLoader._Interface.from( Model.class );
-        
+        //_interface i = JavaLoad._interfaceOf( Model.class );        
     }
     
     public interface MemberInterface
@@ -44,6 +44,7 @@ public class _3_LoadModel_interface
     
     public void testLoadMember_interface()
     {
-        _interface i = _JavaLoader._Interface.from( MemberInterface.class );        
+        _interface i = _JavaLoader._Interface.from( MemberInterface.class );
+        //_interface i = JavaLoad._interfaceOf( MemberInterface.class );        
     }
 }

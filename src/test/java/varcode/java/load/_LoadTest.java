@@ -1,7 +1,6 @@
 package varcode.java.load;
 
-import varcode.java.load.Context;
-import varcode.java.load._Load;
+import varcode.java.tailor._Load;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.EnumDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
@@ -22,6 +21,15 @@ public class _LoadTest
     extends TestCase
 {
  
+    /**
+     * Marker Annotation to represent the Context
+     * @author eric
+     */
+    public @interface Context
+    {
+    
+    }
+
     /**
      * Member Class Comment
      */

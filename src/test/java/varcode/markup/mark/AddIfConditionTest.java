@@ -2,7 +2,7 @@ package varcode.markup.mark;
 
 import varcode.context.VarContext;
 import varcode.context.VarScope;
-import varcode.markup.mark.AddTextIfExpression;
+import varcode.markup.mark.AddIfExpression;
 import junit.framework.TestCase;
 
 public class AddIfConditionTest
@@ -11,8 +11,8 @@ public class AddIfConditionTest
     
     public void testConditionEvalFailure()
     {
-        AddTextIfExpression aic = 
-            new AddTextIfExpression(
+        AddIfExpression aic = 
+            new AddIfExpression(
                 "/*{+?(( blahde this )):A IS GREATER}*/",
                 -1, 
                 "blahde this",
@@ -30,8 +30,8 @@ public class AddIfConditionTest
     }
     public void testSimpleEval()
     {
-        AddTextIfExpression aic = 
-              new AddTextIfExpression(
+        AddIfExpression aic = 
+              new AddIfExpression(
                   "/*{+?(( a > b )):A IS GREATER}*/",
                   -1, 
                   "a > b",
@@ -64,7 +64,7 @@ public class AddIfConditionTest
     	String expression = "a > b && a % 2 == 0";
     	String conditionalText = "A IS GREATER and EVEN";
     	
-        AddTextIfExpression aic = new AddTextIfExpression(
+        AddIfExpression aic = new AddIfExpression(
              "/*{+?(("+expression+")):" + conditionalText + "+}*/",
              -1, 
              expression,
@@ -90,7 +90,7 @@ public class AddIfConditionTest
 
     public void testNotAllVarsBound()
     {
-        AddTextIfExpression aic = new AddTextIfExpression(
+        AddIfExpression aic = new AddIfExpression(
             "/*{+?(( a > b && a % 2 == 0 )):A IS GREATER and EVEN}*/",
             -1, 
             "a > b && a % 2 == 0",
@@ -113,7 +113,7 @@ public class AddIfConditionTest
     public void testVarUnbound()
     {
         //if (typeof yourvar != 'undefined')
-        AddTextIfExpression aic = new AddTextIfExpression(
+        AddIfExpression aic = new AddIfExpression(
             "/*{+?(( typeof a != 'undefined' )):a IS DEFINED}*/",
             -1, 
             "typeof a != 'undefined'",
@@ -128,7 +128,7 @@ public class AddIfConditionTest
     
     public void testNullCheck()
     {
-        AddTextIfExpression aic = new AddTextIfExpression(
+        AddIfExpression aic = new AddIfExpression(
             "/*{+?(( a != null )):A IS NOT NULL}*/",
             -1, 
             "a != null",
@@ -154,7 +154,7 @@ public class AddIfConditionTest
     
     public void testDocumentWrite()
     {
-        AddTextIfExpression aic = new AddTextIfExpression(
+        AddIfExpression aic = new AddIfExpression(
             "/*{+?(( document.write(2 + 3) )):A IS GREATER and EVEN}*/",
             -1, 
             "document.write(2 + 3)",
@@ -173,7 +173,7 @@ public class AddIfConditionTest
     
     public void testConsoleLog()
     {
-        AddTextIfExpression aic = new AddTextIfExpression(
+        AddIfExpression aic = new AddIfExpression(
             "/*{+?(( console.log(2 + 3) )):A IS GREATER and EVEN}*/",
             -1, 
             "console.log(2 + 3)",
@@ -197,7 +197,7 @@ public class AddIfConditionTest
     //but the changes are NOT reflected in the bindings
     public void testReassignment()
     {
-        AddTextIfExpression aic = new AddTextIfExpression(
+        AddIfExpression aic = new AddIfExpression(
             "/*{+?(( a--;a >= 100 )):A IS GREATER and EVEN}*/",
             -1, 
             "a--; a >= 100",

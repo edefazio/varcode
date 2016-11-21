@@ -17,7 +17,7 @@ import varcode.markup.mark.AddFormIfExpression;
 import varcode.markup.mark.AddFormIfVar;
 import varcode.markup.mark.AddScriptResult;
 import varcode.markup.mark.AddScriptResultIfExpression;
-import varcode.markup.mark.AddTextIfVar;
+import varcode.markup.mark.AddIfVar;
 import varcode.markup.mark.AddVar;
 import varcode.markup.mark.AddVarIsExpression;
 import varcode.markup.mark.AddVarOneOf;
@@ -1520,12 +1520,12 @@ public class BindMLParser
         /** Closing mark for a AddIf */
         public static final String CLOSE_TAG = "+}";
 
-        public static AddTextIfVar of( String text, int lineNumber )
+        public static AddIfVar of( String text, int lineNumber )
         {
             return of( text, lineNumber, VarNameAudit.BASE );
         }
         
-        public static AddTextIfVar of( 
+        public static AddIfVar of( 
             String text, int lineNumber, VarNameAudit nameAudit )
         {
             String name = null;
@@ -1604,7 +1604,7 @@ public class BindMLParser
                     text, 
                     lineNumber );
             }
-            return new AddTextIfVar( text, lineNumber, name, targetValue, code );
+            return new AddIfVar( text, lineNumber, name, targetValue, code );
         }
     }
     

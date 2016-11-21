@@ -13,19 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package varcode.java.load;
+package varcode.java.tailor;
 
 import com.github.javaparser.ParseException;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.EnumDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
-
 import java.io.InputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import varcode.Model.ModelException;
-
+import varcode.Model.ModelLoadException;
 import varcode.java.lang._class;
 import varcode.java.lang._enum;
 import varcode.java.lang._interface;
@@ -65,25 +63,6 @@ public class _JavaLoader
     private static final Logger LOG = 
         LoggerFactory.getLogger( _JavaLoader.class );
  
-    public static class ModelLoadException 
-        extends ModelException
-    {        
-        public ModelLoadException( String message, Throwable throwable ) 
-        {
-            super( message, throwable );
-        }
-        
-        public ModelLoadException( String message ) 
-        {
-            super( message );
-        }
-        
-        public ModelLoadException( Throwable throwable ) 
-        {
-            super( throwable );
-        }
-    }
-    
     public static class _Interface
     {        
         public static _interface from( Class clazz )
@@ -119,10 +98,10 @@ public class _JavaLoader
                     }
                     //Parse the Declaring Class into an AST
                     CompilationUnit cu = 
-                        _JavaParser.from( ss.getInputStream() );
+                        JavaASTParser.from( ss.getInputStream() );
                     
                     TypeDeclaration interfaceDecl = 
-                        _JavaParser.findMemberNode( cu, clazz );
+                        JavaASTParser.findTypeDeclaration( cu, clazz );
                     
                     if( interfaceDecl instanceof ClassOrInterfaceDeclaration )
                     {
@@ -130,7 +109,8 @@ public class _JavaLoader
                             (ClassOrInterfaceDeclaration)interfaceDecl;
                         if( id.isInterface() )
                         {
-                            return _JavaParser._Interface.from( cu, id );
+                            //return JavaASTParser._Interface.from( cu, id );
+                            return JavaASTToLangModel._interfaceFrom( cu, id );
                         }                        
                     }
                     throw new ModelLoadException( clazz +" source not an interface " );                    
@@ -149,10 +129,12 @@ public class _JavaLoader
                 // parse the file
                 //CompilationUnit cu = JavaParser.parse( ss.getInputStream() );
                 CompilationUnit cu = 
-                    _JavaParser.from( ss.getInputStream() );
+                    JavaASTParser.from( ss.getInputStream() );
                 
-                ClassOrInterfaceDeclaration classDecl = _JavaParser.getClassNode( cu );
-                return _JavaParser._Interface.from( cu, classDecl );
+                ClassOrInterfaceDeclaration classDecl = JavaASTParser.getClassNode( cu );
+                //return JavaASTParser._Interface.from( cu, classDecl );
+                return JavaASTToLangModel._interfaceFrom( cu, classDecl );
+                
             }    
             catch( ParseException pe )
             {
@@ -169,11 +151,12 @@ public class _JavaLoader
             {
                 // parse the file
                 CompilationUnit cu = 
-                    _JavaParser.from( sourceInputStream );
+                    JavaASTParser.from( sourceInputStream );
                 
                 ClassOrInterfaceDeclaration interfaceDecl = 
-                    _JavaParser.getInterfaceNode( cu );
-                return _JavaParser._Interface.from( cu, interfaceDecl );
+                    JavaASTParser.getInterfaceNode( cu );
+                //return JavaASTParser._Interface.from( cu, interfaceDecl );
+                return JavaASTToLangModel._interfaceFrom( cu, interfaceDecl );
             }    
             catch( ParseException pe )
             {
@@ -188,10 +171,11 @@ public class _JavaLoader
             {
                 // parse the file
                 CompilationUnit cu = 
-                    _JavaParser.from( interfaceSource );
+                    JavaASTParser.from( interfaceSource );
                 
-                ClassOrInterfaceDeclaration classDecl = _JavaParser.getInterfaceNode( cu );
-                return _JavaParser._Interface.from( cu, classDecl );
+                ClassOrInterfaceDeclaration classDecl = JavaASTParser.getInterfaceNode( cu );
+                //return JavaASTParser._Interface.from( cu, classDecl );
+                return JavaASTToLangModel._interfaceFrom( cu, classDecl );
             }    
             catch( ParseException pe )
             {
@@ -215,7 +199,7 @@ public class _JavaLoader
                 SourceStream ss = null;
                 try
                 {
-                    System.out.println( "IS MEMBER CLASS ");
+                    //System.out.println( "IS MEMBER CLASS ");
                     // we have to find the source of the Member class WITHIN the 
                     // source of the declaring class
                     Class declaringClass = clazz.getDeclaringClass();
@@ -230,16 +214,17 @@ public class _JavaLoader
                     
                     //Parse the Declaring Class into an AST
                     CompilationUnit cu = 
-                        _JavaParser.from( ss.getInputStream() );
+                        JavaASTParser.from( ss.getInputStream() );
                     
                     TypeDeclaration classDecl = 
-                        _JavaParser.findMemberNode( cu, clazz );
+                        JavaASTParser.findTypeDeclaration( cu, clazz );
                     if( classDecl instanceof ClassOrInterfaceDeclaration )
                     {
                         ClassOrInterfaceDeclaration cd = (ClassOrInterfaceDeclaration) classDecl;
                         if( !cd.isInterface() )
                         {
-                            return _JavaParser._Class.fromCompilationUnit( cu, cd );
+                            //return JavaASTParser._Class.fromCompilationUnit( cu, cd );
+                            return JavaASTToLangModel.fromCompilationUnit( cu, cd );
                         }
                         else
                         {
@@ -260,10 +245,12 @@ public class _JavaLoader
                 // parse the file
                 //CompilationUnit cu = JavaParser.parse( ss.getInputStream() );
                 CompilationUnit cu = 
-                    _JavaParser.from( ss.getInputStream() );
+                    JavaASTParser.from( ss.getInputStream() );
                 
-                ClassOrInterfaceDeclaration classDecl = _JavaParser.getClassNode( cu );
-                return _JavaParser._Class.fromCompilationUnit( cu, classDecl );
+                ClassOrInterfaceDeclaration classDecl = 
+                    JavaASTParser.getClassNode( cu );
+                //return JavaASTParser._Class.fromCompilationUnit( cu, classDecl );
+                return JavaASTToLangModel.fromCompilationUnit( cu, classDecl );
             }    
             catch( ParseException pe )
             {
@@ -280,10 +267,11 @@ public class _JavaLoader
             {
                 // parse the file
                 CompilationUnit cu = 
-                    _JavaParser.from( sourceInputStream );
+                    JavaASTParser.from( sourceInputStream );
                 
-                ClassOrInterfaceDeclaration classDecl = _JavaParser.getClassNode( cu );
-                return _JavaParser._Class.fromCompilationUnit( cu, classDecl );
+                ClassOrInterfaceDeclaration classDecl = JavaASTParser.getClassNode( cu );
+                //return JavaASTParser._Class.fromCompilationUnit( cu, classDecl );
+                return JavaASTToLangModel.fromCompilationUnit( cu, classDecl );
             }    
             catch( ParseException pe )
             {
@@ -298,10 +286,11 @@ public class _JavaLoader
             {
                 // parse the file
                 CompilationUnit cu = 
-                    _JavaParser.from( classSource );
+                    JavaASTParser.from( classSource );
                 
-                ClassOrInterfaceDeclaration classDecl = _JavaParser.getClassNode( cu );
-                return _JavaParser._Class.fromCompilationUnit( cu, classDecl );
+                ClassOrInterfaceDeclaration classDecl = JavaASTParser.getClassNode( cu );
+                //return JavaASTParser._Class.fromCompilationUnit( cu, classDecl );
+                return JavaASTToLangModel.fromCompilationUnit( cu, classDecl );
             }    
             catch( ParseException pe )
             {
@@ -341,12 +330,13 @@ public class _JavaLoader
                     
                     //Parse the Declaring Class into an AST
                     CompilationUnit cu = 
-                        _JavaParser.from( ss.getInputStream() );
+                        JavaASTParser.from( ss.getInputStream() );
                     
                     EnumDeclaration classDecl = 
-                        _JavaParser.findEnumNode( cu, clazz );
+                        JavaASTParser.findEnumNode( cu, clazz );
                     
-                    return _JavaParser._Enum.fromCompilationUnit( cu, classDecl );
+                    //return JavaASTParser._Enum.fromCompilationUnit( cu, classDecl );
+                    return JavaASTToLangModel.fromCompilationUnit( cu, classDecl );
                 }
                 catch( ParseException pe )
                 {
@@ -361,10 +351,11 @@ public class _JavaLoader
                 // parse the file
                 //CompilationUnit cu = JavaParser.parse( ss.getInputStream() );
                 CompilationUnit cu = 
-                    _JavaParser.from( ss.getInputStream() );
+                    JavaASTParser.from( ss.getInputStream() );
                 
-                EnumDeclaration enumDecl = _JavaParser.getEnumNode( cu );
-                return _JavaParser._Enum.fromCompilationUnit( cu, enumDecl );
+                EnumDeclaration enumDecl = JavaASTParser.getEnumNode( cu );
+                //return JavaASTParser._Enum.fromCompilationUnit( cu, enumDecl );
+                return JavaASTToLangModel.fromCompilationUnit( cu, enumDecl );
             }    
             catch( ParseException pe )
             {
@@ -381,10 +372,11 @@ public class _JavaLoader
             {
                 // parse the file
                 CompilationUnit cu = 
-                    _JavaParser.from( sourceInputStream );
+                    JavaASTParser.from( sourceInputStream );
                 
-                EnumDeclaration enumDecl = _JavaParser.getEnumNode( cu );
-                return _JavaParser._Enum.fromCompilationUnit( cu, enumDecl );
+                EnumDeclaration enumDecl = JavaASTParser.getEnumNode( cu );
+                //return JavaASTParser._Enum.fromCompilationUnit( cu, enumDecl );
+                return JavaASTToLangModel.fromCompilationUnit( cu, enumDecl );
             }    
             catch( ParseException pe )
             {
@@ -399,10 +391,11 @@ public class _JavaLoader
             {
                 // parse the file
                 CompilationUnit cu = 
-                    _JavaParser.from( classSource );
+                    JavaASTParser.from( classSource );
                 
-                EnumDeclaration enumDecl = _JavaParser.getEnumNode( cu );
-                return _JavaParser._Enum.fromCompilationUnit( cu, enumDecl );
+                EnumDeclaration enumDecl = JavaASTParser.getEnumNode( cu );
+                //return JavaASTParser._Enum.fromCompilationUnit( cu, enumDecl );
+                return JavaASTToLangModel.fromCompilationUnit( cu, enumDecl );
             }    
             catch( ParseException pe )
             {

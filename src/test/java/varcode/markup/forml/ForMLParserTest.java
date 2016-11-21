@@ -9,7 +9,7 @@ import varcode.context.VarScope;
 import varcode.markup.bindml.BindMLParseState;
 import varcode.markup.mark.AddExpressionResult;
 import varcode.markup.mark.AddScriptResult;
-import varcode.markup.mark.AddTextIfVar;
+import varcode.markup.mark.AddIfVar;
 import varcode.markup.mark.AddVar;
 
 public class ForMLParserTest
@@ -151,7 +151,7 @@ public class ForMLParserTest
 	
 	public void testAddIfVar()
 	{		
-		AddTextIfVar aifv = (AddTextIfVar)ForMLParser.INSTANCE.parseMark( 
+		AddIfVar aifv = (AddIfVar)ForMLParser.INSTANCE.parseMark( 
 			VarContext.of(), "{+?a=1:conditionalText+}", 0 );
 		
 		assertEquals( "conditionalText", aifv.getConditionalText() );
@@ -183,7 +183,7 @@ public class ForMLParserTest
 		bindMLState.reserveBlank();
 		assertEquals( 1, bindMLState.compile().getBlanksCount() );
 		
-		aifv = (AddTextIfVar)ForMLParser.INSTANCE.parseMark( 
+		aifv = (AddIfVar)ForMLParser.INSTANCE.parseMark( 
 			VarContext.of(), "{+?a==1:name+}", 0 );
 	}
 	

@@ -1,25 +1,23 @@
 package varcode.java;
 
-import varcode.load.BaseSourceLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import varcode.VarException;
-
 import varcode.context.VarContext;
 import varcode.doc.Directive;
+import varcode.doc.Dom;
 import varcode.doc.lib.java.CommentEscape;
 import varcode.doc.lib.text.PrefixWithLineNumber;
-import varcode.doc.Dom;
 import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.adhoc.AdHocJavaFile;
 import varcode.java.adhoc.JavacException;
-import varcode.markup.codeml.CodeML;
-import varcode.load.SourceLoader.SourceStream;
+import varcode.load.BaseSourceLoader;
 import varcode.load.SourceLoader;
+import varcode.load.SourceLoader.SourceStream;
+import varcode.markup.codeml.CodeML;
 
 /**
  * Represents the combination of {@code Dom} and {@code VarContext} to 
@@ -192,6 +190,7 @@ public class JavaCase
             Java.author( adHocClassName, dom, context, directives );
     }
 
+    @Override
     public String toString()
     {
     	return this.adHocJavaFile.getCode();
@@ -268,7 +267,7 @@ public class JavaCase
         public JavaCase toJavaCase( Directive...directives );
     
         /**
-         * Return the Java Code (class, interface, Enum, etc)
+         * Return the Java Code (class, interface, enum, etc)
          * that represents this abstraction
          * 
          * @param context the context providing bound variables and functionality

@@ -47,7 +47,7 @@ import varcode.markup.mark.Mark.HasVars;
        /*{?log=trace:
        LOG.trace( "In Method " );
        }*/
-public class AddTextIfVar
+public class AddIfVar
     extends Mark
     implements BlankFiller, HasVars
 {
@@ -60,7 +60,7 @@ public class AddTextIfVar
     /** code/text conditionally written to the tailored source*/ 
     private final String conditionalText;
     
-    public AddTextIfVar( 
+    public AddIfVar( 
         String text, 
         int lineNumber, 
         String name,

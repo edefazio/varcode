@@ -21,8 +21,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectStreamClass;
 
 /**
- * Uses an AdHocClassLoader to load and deserialize a serialized 
- * AdHocClass
+ * Extension of an ObjectInputStream that uses a provided ClassLoader
+ * to store/serialize or load/deserialize an object that was created 
+ * and loaded by a potentially custom AdHocClassLoader.
  * 
  * @author M. Eric DeFazio eric@varcode.io
  */
@@ -95,7 +96,7 @@ public class AdHocObjectInputStream
     {
         String name = desc.getName();
         try
-        {
+        {   //use the provided classLoader to resolve the class
             return Class.forName( name, false, this.classLoader );
         }
         catch( ClassNotFoundException ex ) 

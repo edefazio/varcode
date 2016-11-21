@@ -18,7 +18,7 @@ import varcode.markup.mark.AddFormIfExpression;
 import varcode.markup.mark.AddFormIfVar;
 import varcode.markup.mark.AddScriptResult;
 import varcode.markup.mark.AddScriptResultIfExpression;
-import varcode.markup.mark.AddTextIfVar;
+import varcode.markup.mark.AddIfVar;
 import varcode.markup.mark.AddVarIsExpression;
 import varcode.markup.mark.AddVarOneOf;
 import varcode.markup.mark.Cut;
@@ -1445,7 +1445,7 @@ public class CodeMLParser
         //    return of( text, lineNumber, VarNameAudit.BASE );
         //}
         
-        public static AddTextIfVar of( 
+        public static AddIfVar of( 
             String text, int lineNumber, VarNameAudit nameAudit )
         {
             String name = null;
@@ -1523,7 +1523,7 @@ public class CodeMLParser
                     text, 
                     lineNumber );
             }
-            return new AddTextIfVar( text, lineNumber, name, targetValue, code );
+            return new AddIfVar( text, lineNumber, name, targetValue, code );
         }
     }
     

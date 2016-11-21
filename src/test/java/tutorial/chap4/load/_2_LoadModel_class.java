@@ -15,24 +15,12 @@
  */
 package tutorial.chap4.load;
 
-import java.io.Serializable;
-import java.lang.reflect.Modifier;
-import java.util.UUID;
 import junit.framework.TestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import varcode.Model;
 import varcode.VarException;
 import varcode.java.lang._class;
-import varcode.java.lang._constructors;
-import varcode.java.lang._constructors._constructor;
-import varcode.java.lang._fields;
-import varcode.java.lang._fields._field;
-import varcode.java.lang._interface;
-import varcode.java.lang._methods;
-import varcode.java.lang._methods._method;
-import varcode.java.lang._parameters._parameter;
-import varcode.java.load._JavaLoader;
+import varcode.java.tailor._JavaLoader;
 
 /**
  * Loads the models (_class, _enum, _interface) 
@@ -49,7 +37,8 @@ public class _2_LoadModel_class
     //load a "top level class" (stored in "VarException.java")
     public void testLoad_class()
     {
-        _class c = _JavaLoader._Class.from( VarException.class );        
+        _class c = _JavaLoader._Class.from( VarException.class );
+        //_class c = JavaLoad._classOf( VarException.class );
         LOG.debug ( c.author( ) ); 
     }
 
@@ -74,7 +63,7 @@ public class _2_LoadModel_class
     public void testLoadMember_class()
     {        
         _class c = _JavaLoader._Class.from( MemberClass.class );
-        
+        //_class c = JavaLoad._classOf( MemberClass.class );
         assertEquals( "MemberClass", c.getName() );
         c.getModifiers().containsAll( "private", "static" );
         assertTrue( 

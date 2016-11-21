@@ -1,6 +1,6 @@
 package varcode.markup.forml;
 
-import static varcode.markup.forml.ForML.Markup.*;
+import static varcode.markup.forml.ForML.MarkText.*;
 
 import junit.framework.TestCase;
 

@@ -4,44 +4,42 @@ import java.util.UUID;
 import junit.framework.TestCase;
 import varcode.java.Java;
 import varcode.java.lang._class;
-import varcode.java.load._Load;
+import varcode.java.tailor._Load;
 
 /**
- * "Tailoring" is the process of modifying an existing 
- * Class / Enum / Interface:
+ * "Tailoring" .java code in varcode involves
  * <OL>
- * <LI>load a _class model from the Class
- * <LI>mutate the _class model
- * <LI>export/write/load the _class model as a new Class 
+ * <LI>loading a _class model from existing .java source
+ * <LI>mutating the _class model
+ * <LI>write or load the _class model as .java source or a dynamic Class 
  * </OL>
  * 
  * @author Eric DeFazio 
  */
-public class _2_TailorModel
+public class _2_TailorCode
     extends TestCase
 {    
-    public static class Skeleton
+    public static class SourceClass
     {
         public static final String ID = 
             UUID.randomUUID().toString();
         
-        @Deprecated
         public static String greetings( )
         {
-            return "class " + Skeleton.class.getName() + " id " + ID;
+            return "class " + SourceClass.class.getName() + " id " + ID;
         }
     }    
     
     public void testLoadModel_Mod_Compile_Invoke()
     {
         //Skeleton is just a garden variety Java Class
-        Skeleton s = new Skeleton();
-        Skeleton.greetings();
+        SourceClass s = new SourceClass();
+        SourceClass.greetings();
+
+        // 1) find the .java source and load the _class for SourceClass
+        _class _c = _Load._classOf( SourceClass.class );
         
-        
-        //load the _model for the Skeleton class
-        _class _c = _Load._classOf( Skeleton.class );
-        
+        // 2) mutate the 
         _c.imports( UUID.class );
         _c.setName( "Tailored" ); //rename class        
         _c.setModifiers( "public" ); //reset class modifiers

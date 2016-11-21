@@ -135,19 +135,19 @@ public enum BindML
 		/** <CODE>"{+varName+}"</CODE> */
 		public static String addVar( String varName )
 		{
-			return ForML.Markup.addVar( varName ); 			 
+			return ForML.MarkText.addVar( varName ); 			 
 		}
 		
 		/** <CODE>"{+varName*+}"</CODE> */
 		public static String addVar( String varName, boolean isRequired )
 		{
-			return ForML.Markup.addVar( varName, isRequired ); 			
+			return ForML.MarkText.addVar( varName, isRequired ); 			
 		}
 		
 		/** <CODE>"{+name|defaultValue+}"</CODE>  */
 		public static String addVarWithDefault( String varName, String defaultValue )
 		{
-			return ForML.Markup.addVar( varName, defaultValue ); 			
+			return ForML.MarkText.addVar( varName, defaultValue ); 			
 		}
 		
 		/** <CODE>"{+name:(( name.length() > 2 ))|defaultValue+}"</CODE>  */
@@ -195,26 +195,26 @@ public enum BindML
 		/** <CODE>"{+$script()+}"</CODE> */
 		public static String addScriptResult( String scriptName )
 		{
-			return ForML.Markup.addScriptResult( scriptName );			
+			return ForML.MarkText.addScriptResult( scriptName );			
 		}
 		
 		/** <CODE>"{+$script()*+}"</CODE> */
 		public static String addScriptResult( String scriptName, boolean isRequired )
 		{
-			return ForML.Markup.addScriptResult( scriptName, isRequired );			
+			return ForML.MarkText.addScriptResult( scriptName, isRequired );			
 		}
 		
 		/** <CODE>"{+$script(parm1,param2)*+}"</CODE> */
 		public static String addScriptResult( 
 			String scriptName, String parameters, boolean isRequired )
 		{
-			return ForML.Markup.addScriptResult( scriptName, parameters, isRequired ); 				
+			return ForML.MarkText.addScriptResult( scriptName, parameters, isRequired ); 				
 		}
 		
 		/** <CODE>"{+((Math.PI * r * r))+}"</CODE>*/
 		public static String addExpressionResult( String expression )
 		{
-			return ForML.Markup.addExpressionResult( expression ); 	
+			return ForML.MarkText.addExpressionResult( expression ); 	
 		}
 		
 		/** <CODE>"{{+:{+fieldType+} {+fieldName+}+}}"</CODE> */

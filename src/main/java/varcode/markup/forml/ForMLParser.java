@@ -23,7 +23,7 @@ import varcode.markup.MarkupException;
 import varcode.markup.MarkupParser;
 import varcode.markup.VarNameAudit;
 import varcode.markup.mark.AddExpressionResult;
-import varcode.markup.mark.AddTextIfVar;
+import varcode.markup.mark.AddIfVar;
 import varcode.markup.mark.AddScriptResult;
 import varcode.markup.mark.AddVar;
 import varcode.markup.mark.Mark;
@@ -376,12 +376,12 @@ public class ForMLParser
         /** Closing mark for a AddIfVar Mark */
         public static final String CLOSE_TAG = "+}";
 
-        public static AddTextIfVar of(
+        public static AddIfVar of(
             String text, int lineNumber )
         {
             return of( text, lineNumber, VarNameAudit.BASE );
         }
-        public static AddTextIfVar of( 
+        public static AddIfVar of( 
             String text, int lineNumber, VarNameAudit nameAudit )
         {
             String name = null;
@@ -460,7 +460,7 @@ public class ForMLParser
                     text, 
                     lineNumber );
             }
-            return new AddTextIfVar( text, lineNumber, name, targetValue, code );
+            return new AddIfVar( text, lineNumber, name, targetValue, code );
         }
     }
 }

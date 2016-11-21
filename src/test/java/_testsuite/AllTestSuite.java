@@ -1,22 +1,25 @@
 package _testsuite;
 
-import tutorial.varcode.chapx.appendix.CodeMLMarkupModelTest;
-import tutorial.varcode.chapx.appendix.Chap1_ModelDefaultMethods;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import tutorial.chap1.java_lang._1_AuthorCode;
 import tutorial.chap1.java_lang._2_AutoDto;
 import tutorial.chap2.java_adhoc._1_AdHocInvoke;
+import tutorial.varcode.chapx.appendix.Chap1_ModelDefaultMethods;
+import tutorial.varcode.chapx.appendix.CodeMLMarkupModelTest;
 import varcode.LangTest;
-import varcode.doc.translate.ClassToStringTranslatorTest;
-import varcode.doc.translate.TranslateBufferTest;
 import varcode.context.ResolveTest;
 import varcode.context.SmartScriptResolverTest;
 import varcode.context.VarBindingsTest;
 import varcode.context.VarContextTest;
 import varcode.context.VarScopeBindingsTest;
+import varcode.context.eval.Eval_JavaScriptTest;
 import varcode.doc.AuthorTest;
 import varcode.doc.FillInTheBlanksTest;
+import varcode.doc.dom.DomTest;
+import varcode.doc.form.BetweenTokensTest;
+import varcode.doc.form.SeparateFormsTest;
+import varcode.doc.form.VarFormTest;
 import varcode.doc.lib.CountIndexTest;
 import varcode.doc.lib.CountTest; 
 import varcode.doc.lib.RowifyTest;
@@ -27,15 +30,11 @@ import varcode.doc.lib.text.PrintAsLiteralTest;
 import varcode.doc.lib.text.RemoveAllLinesWithTest;
 import varcode.doc.lib.text.SameCountTest;
 import varcode.doc.lib.text.StripMarksTest;
-import varcode.doc.dom.DomTest;
-import varcode.context.eval.Eval_JavaScriptTest;
-import varcode.doc.form.BetweenTokensTest;
-import varcode.doc.form.SeparateFormsTest;
-import varcode.doc.form.VarFormTest;
+import varcode.doc.translate.ClassToStringTranslatorTest;
+import varcode.doc.translate.TranslateBufferTest;
 import varcode.java.JavaCaseTest;
-import varcode.java.JavaTest;
-import varcode.source.JavaMarkupRepoTest;
 import varcode.java.JavaNamingTest;
+import varcode.java.JavaTest;
 import varcode.java._JavaCaseClassNameTest;
 import varcode.java._JavaCase_AllDirectivesTest;
 import varcode.java.adhoc.WorkspaceTest;
@@ -46,7 +45,6 @@ import varcode.java.lang._classTest;
 import varcode.java.lang._codeTest;
 import varcode.java.lang._constructorsTest;
 import varcode.java.lang._doTest;
-import varcode.java.lang.auto._autoDtoTest;
 import varcode.java.lang._enumTest;
 import varcode.java.lang._extendsTest;
 import varcode.java.lang._fieldsTest;
@@ -65,9 +63,14 @@ import varcode.java.lang._threadTest;
 import varcode.java.lang._throwsTest;
 import varcode.java.lang._tryTest;
 import varcode.java.lang._whileTest;
+import varcode.java.lang.auto._autoDtoTest;
 import varcode.java.lang.auto._autoEnumTest;
 import varcode.java.lang.auto._autoExternalizableTest;
 import varcode.java.lang.minTest;
+import varcode.java.load.JavaTailorTest;
+import varcode.java.load._JavaLoaderNestedTestCase;
+import varcode.java.load._JavaLoaderTestCase;
+import varcode.java.load._LoadTest;
 import varcode.markup.MarkupParserTest;
 import varcode.markup.VarNameAuditTest;
 import varcode.markup.bindml.BindMLCompilerTest;
@@ -86,7 +89,6 @@ import varcode.markup.forml.ForMLCompilerTest;
 import varcode.markup.forml.ForMLParserTest;
 import varcode.markup.forml.ForMLTest;
 import varcode.markup.forml.FormTest;
-import varcode.markup.mark.DocDirectiveTest;
 import varcode.markup.mark.AddExpressionResultTest;
 import varcode.markup.mark.AddFormIfExpressionTest;
 import varcode.markup.mark.AddFormIfVarTest;
@@ -105,6 +107,7 @@ import varcode.markup.mark.DefineVarAsExpressionResultTest;
 import varcode.markup.mark.DefineVarAsFormTest;
 import varcode.markup.mark.DefineVarAsScriptResultTest;
 import varcode.markup.mark.DefineVarTest;
+import varcode.markup.mark.DocDirectiveTest;
 import varcode.markup.mark.EvalExpressionTest;
 import varcode.markup.mark.FormFunctionalTest;
 import varcode.markup.mark.ReplaceWithExpressionResultTest;
@@ -112,9 +115,8 @@ import varcode.markup.mark.ReplaceWithFormTest;
 import varcode.markup.mark.ReplaceWithScriptResultTest;
 import varcode.markup.mark.ReplaceWithVarTest;
 import varcode.markup.mark.RunScriptTest;
+import varcode.source.JavaMarkupRepoTest;
 import varcode.source.PathWalkTest;
-//import varcode.markup.repo.UrlRepoTest; -- calls to gitHub
-
 public class AllTestSuite
 {
     public static Test suite() 
@@ -266,6 +268,11 @@ public class AllTestSuite
         suite.addTestSuite(_autoExternalizableTest.class );
                 
         //Functional / Integration Tests
+        suite.addTestSuite( JavaTailorTest.class );
+        suite.addTestSuite( _JavaLoaderNestedTestCase.class );
+        suite.addTestSuite( _JavaLoaderTestCase.class );
+        suite.addTestSuite( _LoadTest.class );
+        
         suite.addTestSuite(Chap1_ModelDefaultMethods.class );
         suite.addTestSuite(CodeMLMarkupModelTest.class );
         // $JUnit-END$

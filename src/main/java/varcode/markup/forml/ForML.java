@@ -20,7 +20,10 @@ public enum ForML
 		return ForMLParser.INSTANCE.parseMark( PARSE_CONTEXT, forMLMark, -1 );
 	}
 	
-	public enum Markup
+    /**
+     * builds Mark Text given parameters
+     */
+	public enum MarkText
 	{
 		;
 		public static final String REQUIRED = "*";

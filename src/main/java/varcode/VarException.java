@@ -16,7 +16,7 @@
 package varcode;
 
 /**
- * Base Exception for {@code VarCode}
+ * Base Exception for varcode API
  * 
  * As a rule, this library only throws "Unchecked" Exceptions
  * 

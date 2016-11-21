@@ -19,16 +19,17 @@ import varcode.java.JavaCase;
 import varcode.java.JavaCase.JavaCaseAuthor;
 
 /**
- * Collection of {@code AdHocJavaFiles} (java source code) to be compiled 
+ * One or more {@code AdHocJavaFiles} (java source code) to be compiled 
  * (via Javac) and loaded into an {@code AdHocClassLoader}.
  * 
  * {@code Workspace} represents and simplifies the client view of pushing one or 
  * more in memory Java source files to the Javac compiler at runtime 
- * and organizing the compilers result (the derived .class files) as 
- * {@code AdHocClassFile}s, and interacting with the {@code AdHocClassLoader}.
+ * and loading the compilers result (the derived .class files bytecode) as 
+ * {@code AdHocClassFile}s, in a {@code AdHocClassLoader}.
  * 
- * This greatly simplifies the client view of the process of 
- * preparing, compiling, and loading Java source files at runtime.
+ * Simplifies the client view of the process of 
+ * preparing, compiling, and loading Java source files at runtime, especially
+ * when the classes/interfaces/enums have complex dependency graphs.
  * 
  * @author M. Eric DeFazio eric@varcode.io
  */
@@ -67,6 +68,7 @@ public class Workspace
      *        _enum.of("enum MyEnum").value("ONE").toJavaCase() );
      * </PRE>
      * @param javaCases java Cases to be compiled into the workspace
+     * @return the Workspace containing all the Java Cases to be compiled
      */
     public static Workspace of( JavaCase...javaCases )
 	{
@@ -81,9 +83,8 @@ public class Workspace
      * 
      * Workspace ws = 
      *    Workspace.of( 
-     *        "MyWorkspace" 
      *        _interface.of("interface Count"), 
-     *        _enum.of("enum MyEnum").value("ONE") );
+     *        _enum.of("enum MyEnum implements Count").value("ONE") );
      * 
      * @param caseAuthors authors of JavaCases
      * @return  an AdHocClassLoader loaded with compiled Classes
@@ -337,8 +338,15 @@ public class Workspace
         }
     }
     
+    /**
+     * Compile the contents of the Workspace into a new AdHocClassLoader
+     * @param compilerOptions compiler options for the runtime Javac
+     * @return the populated AdHocClassLoader containing the compiled classes
+     * @throws JavacException if the workspace id not compile
+     */
     public AdHocClassLoader compile( 
         JavacOptions.CompilerOption...compilerOptions )
+        throws JavacException
     {
         Iterable<String> options = JavacOptions.optionsFrom( compilerOptions );
 			

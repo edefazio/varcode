@@ -18,7 +18,7 @@ package tutorial.chap4.load;
 import junit.framework.TestCase;
 import varcode.context.Bootstrap;
 import varcode.java.lang._enum;
-import varcode.java.load._JavaLoader;
+import varcode.java.tailor._JavaLoader;
 
 /**
  *
@@ -29,6 +29,7 @@ public class _4_LoadModel_enum
 {
     public void testLoadEnum()
     {
+        //_enum e = JavaLoad._enumOf( Bootstrap.class );
         _enum e = _JavaLoader._Enum.from( Bootstrap.class );
         System.out.println ( e );
     }
@@ -53,6 +54,7 @@ public class _4_LoadModel_enum
     
     public void testLoadMemberEnum()
     {
+        //_enum e = JavaLoad._enumOf( MemberEnum.class );
         _enum e = _JavaLoader._Enum.from( MemberEnum.class );
         System.out.println( e );
     }

@@ -4,7 +4,7 @@ import varcode.markup.mark.AddExpressionResult;
 import varcode.markup.mark.AddForm;
 import varcode.markup.mark.AddFormIfVar;
 import varcode.markup.mark.AddScriptResult;
-import varcode.markup.mark.AddTextIfVar;
+import varcode.markup.mark.AddIfVar;
 import varcode.markup.mark.AddVarIsExpression;
 import varcode.markup.mark.Cut;
 import varcode.markup.mark.DefineVar;
@@ -98,7 +98,7 @@ public class BindMLParserTest
 		assertTrue( BindMLParser.parseMark("{+name:(( name.length() > 3 ))+}" ) instanceof AddVarIsExpression ); //AddVar
 		assertTrue( BindMLParser.parseMark("{+$script()+}" ) instanceof AddScriptResult );  //AddScriptResult
 		assertTrue( BindMLParser.parseMark("{+((a + b + c))+}" ) instanceof AddExpressionResult );  //AddExpressionResult
-		assertTrue( BindMLParser.parseMark("{+?vari:addThis+}" ) instanceof AddTextIfVar);  //AddIfVar
+		assertTrue(BindMLParser.parseMark("{+?vari:addThis+}" ) instanceof AddIfVar);  //AddIfVar
 		
 		    	
 		assertTrue( BindMLParser.parseMark("{- some text -}" ) instanceof Cut );  //Cut

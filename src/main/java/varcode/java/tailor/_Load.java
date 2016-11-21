@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package varcode.java.load;
+package varcode.java.tailor;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseException;
@@ -23,11 +23,11 @@ import com.github.javaparser.ast.body.EnumDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import varcode.Model.ModelLoadException;
 import varcode.java.lang._class;
 import varcode.java.lang._component;
 import varcode.java.lang._enum;
 import varcode.java.lang._interface;
-import varcode.java.load._JavaLoader.ModelLoadException;
 import varcode.load.BaseSourceLoader;
 import varcode.load.SourceLoader;
 import varcode.load.SourceLoader.SourceStream;
@@ -49,7 +49,19 @@ public class _Load
     
     public static _class _classOf( Class clazz )
     {
-        return INSTANCE._class( clazz );
+        //return INSTANCE.load_class( clazz );
+        return _Model._classOf( INSTANCE.sourceLoader, clazz );
+    }
+    
+    public static _interface _interfaceOf( Class clazz )
+    {
+        return _Model._interfaceOf( INSTANCE.sourceLoader, clazz );
+    }
+    
+    public static _enum _enumOf( Class clazz )
+    {
+        return _Model._enumOf( INSTANCE.sourceLoader, clazz );
+        //return INSTANCE.load_enum( clazz );
     }
     
     public SourceStream sourceOf( Class clazz )
@@ -74,22 +86,23 @@ public class _Load
         }
         return _classOf( clazz );
     }
-        
     
+    /*
     public _interface _interfaceOf( Class clazz )
     {
         return _Model._interfaceOf( sourceLoader, clazz );
     }
     
-    public _class _class( Class clazz )
+    public _class load_class( Class clazz )
     {
         return _Model._classOf( sourceLoader, clazz );
     }
     
-    public _enum _enumOf( Class clazz )
+    public _enum load_enum( Class clazz )
     {
         return _Model._enumOf( sourceLoader, clazz );
     }
+    */
     
     
     public static class JavaSource
@@ -119,14 +132,14 @@ public class _Load
             try
             {
                 cu = JavaParser.parse( declaringClassStream.getInputStream() );
-                TypeDeclaration td = _JavaParser.findMemberNode( cu, memberClass );
+                TypeDeclaration td = JavaASTParser.findTypeDeclaration( cu, memberClass );
                 JavaMemberSourceStream sss = new JavaMemberSourceStream( 
                     declaringClassStream, memberClass.getCanonicalName(), td.toString() );
                 return sss;
             }
             catch( ParseException pe )
             {
-                throw new _JavaLoader.ModelLoadException(
+                throw new ModelLoadException(
                     "could not load model for "+ memberClass, pe );
             }
         }
@@ -154,14 +167,14 @@ public class _Load
                     cu = JavaParser.parse( declareSource.getInputStream() );
                     
                     String name = sourceId.substring( sourceId.lastIndexOf( "$" ) + 1 );
-                    TypeDeclaration td = _JavaParser.findMemberNode( cu, name );
+                    TypeDeclaration td = JavaASTParser.findTypeDeclaration( cu, name );
                     JavaMemberSourceStream sss = new JavaMemberSourceStream( 
                         declareSource, sourceId, td.toString() );
                     return sss;
                 }
                 catch( ParseException pe )
                 {
-                    throw new _JavaLoader.ModelLoadException(
+                    throw new ModelLoadException(
                         "could not load model for "+ sourceId, pe );
                 }
             }
@@ -238,15 +251,23 @@ public class _Load
          */
         public static TypeDeclaration ofClass( 
             SourceLoader sourceLoader, Class<?> clazz )
-        {
-            SourceLoader.SourceStream declaringClassStream = sourceLoader.sourceStream( 
-                clazz.getDeclaringClass().getCanonicalName() + ".java" ); 
-        
+        {            
+            SourceStream declaringClassStream = null;
+            if( clazz.getDeclaringClass() == null )
+            {
+                declaringClassStream = 
+                    sourceLoader.sourceStream( clazz.getCanonicalName()+ ".java" );
+            }
+            else
+            {
+                declaringClassStream = sourceLoader.sourceStream( 
+                    clazz.getDeclaringClass().getCanonicalName() + ".java" ); 
+            }
             CompilationUnit cu = null;
             try
             {
                 cu = JavaParser.parse( declaringClassStream.getInputStream() );
-                TypeDeclaration td = _JavaParser.findMemberNode( cu, clazz );
+                TypeDeclaration td = JavaASTParser.findTypeDeclaration( cu, clazz );
                 return td;            
             }
             catch( ParseException pe )
@@ -269,7 +290,8 @@ public class _Load
                 if( coid.isInterface() )
                 {                
                     _interface _i = _interface.of( "interface " + coid.getName() );
-                    return _JavaParser._Interface.fromInterfaceNode( _i, coid );
+                    //return JavaASTParser._Interface.fromInterfaceNode( _i, coid );
+                    return JavaASTToLangModel.fromInterfaceNode( _i, coid );
                 }
                 else
                 {
@@ -305,7 +327,8 @@ public class _Load
                 if( !coid.isInterface() )
                 {                
                     _class _c = _class.of( coid.getName() );
-                    return _JavaParser._Class.fromClassNode( _c, coid );
+                    //return JavaASTParser._Class.fromClassNode( _c, coid );
+                    return JavaASTToLangModel.fromClassNode( _c, coid );
                 }
                 else
                 {
@@ -330,7 +353,8 @@ public class _Load
             {
                 EnumDeclaration coid = (EnumDeclaration)td;
                 _enum _e = _enum.of( "enum " + coid.getName() );
-                return _JavaParser._Enum.fromEnumNode( _e, coid );            
+                //return JavaASTParser._Enum.fromEnumNode( _e, coid ); 
+                return JavaASTToLangModel.fromEnumNode( _e, coid );
             }
             throw new ModelLoadException(
                 "Type declaration is not an EnumDeclaration" );

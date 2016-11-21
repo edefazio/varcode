@@ -3,7 +3,7 @@ package varcode.markup.codeml;
 import varcode.markup.mark.AddExpressionResult;
 import varcode.markup.mark.AddForm;
 import varcode.markup.mark.AddFormIfVar;
-import varcode.markup.mark.AddTextIfVar;
+import varcode.markup.mark.AddIfVar;
 import varcode.markup.mark.AddScriptResult;
 import varcode.markup.mark.AddVarIsExpression;
 import varcode.markup.mark.Cut;
@@ -66,9 +66,9 @@ public class CodeMLParserTest
         assertTrue( CodeML.parseMark( "/*{+varName:(( varName.length() > 2 ))|defaultName+}*/" ) instanceof AddVarIsExpression );
         
         
-        assertTrue( CodeML.parseMark( "/*{+?varName:conditionalText+}*/" ) instanceof AddTextIfVar );
-        assertTrue( CodeML.parseMark( "/*{+?varName=1:conditionalText+}*/" ) instanceof AddTextIfVar );
-        assertTrue( CodeML.parseMark( "/*{+?varName==1:conditionalText+}*/" ) instanceof AddTextIfVar );
+        assertTrue(CodeML.parseMark( "/*{+?varName:conditionalText+}*/" ) instanceof AddIfVar );
+        assertTrue(CodeML.parseMark( "/*{+?varName=1:conditionalText+}*/" ) instanceof AddIfVar );
+        assertTrue(CodeML.parseMark( "/*{+?varName==1:conditionalText+}*/" ) instanceof AddIfVar );
         
         assertTrue( CodeML.parseMark( "{+(( Math.sqrt( a * a + b * b ) ))+}" ) instanceof AddExpressionResult );
         assertTrue( CodeML.parseMark( "/*{+(( Math.sqrt( a * a + b * b ) ))+}*/" ) instanceof AddExpressionResult );

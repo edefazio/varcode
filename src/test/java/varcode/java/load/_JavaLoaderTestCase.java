@@ -1,6 +1,5 @@
 package varcode.java.load;
 
-import varcode.java.load._JavaLoader;
 import java.io.Serializable;
 import java.lang.reflect.Modifier;
 import java.util.UUID;
@@ -20,8 +19,7 @@ import varcode.java.lang._javadoc;
 import varcode.java.lang._methods;
 import varcode.java.lang._methods._method;
 import varcode.java.lang._parameters;
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertTrue;
+import varcode.java.tailor._JavaLoader;
 
 /**
  * 
@@ -32,7 +30,9 @@ public class _JavaLoaderTestCase
 {
     public void testLoadTopLevelInterfaceModel()
     {
+        //_interface _i = _Load._interfaceOf( Model.class );
         _interface _i = _JavaLoader._Interface.from( Model.class );
+        //_interface _i = JavaLoad._interfaceOf( Model.class );
         //package varcode;
         assertEquals( "varcode", _i.getPackageName() );
         
@@ -56,7 +56,8 @@ public class _JavaLoaderTestCase
     
     public void testLoadMemberLevelInterfaceModel()
     {
-        _JavaLoader._Interface.from( SimpleInterface.class );        
+        _JavaLoader._Interface.from( SimpleInterface.class );
+        //JavaLoad._interfaceOf( SimpleInterface.class );        
     }
     
     @Deprecated
@@ -112,6 +113,7 @@ public class _JavaLoaderTestCase
         // and create a _class Model
         _class _c = 
             _JavaLoader._Class.from( MemberClass.class );
+            //JavaLoad._classOf( MemberClass.class );
         
         //verify I modeled the annotations
         assertEquals( 1, _c.getAnnotations().count() );
@@ -177,8 +179,8 @@ public class _JavaLoaderTestCase
     public void testLoadModelOfTopLevelClass()
     {
         //load the _class model for VarException.class
+        //_class c = JavaLoad._classOf( VarException.class );
         _class c = _JavaLoader._Class.from( VarException.class );
-        
         assertEquals( "varcode.VarException",  c.getFullyQualifiedClassName() );
         assertEquals( "varcode", c.getClassPackage().getName() );
         assertEquals( 1, c.getSignature().getExtends().count() );
@@ -222,9 +224,9 @@ public class _JavaLoaderTestCase
     public void testLoadModelOfMemberClass()
     {
         //load the "model" of the PrefixCreateIdClass( from the source )
-        _class _c = 
-            _JavaLoader._Class.from( PrefixCreateId.class );
-        
+        //_class _c = 
+        //    JavaLoad._classOf( PrefixCreateId.class );
+        _class _c = _JavaLoader._Class.from( PrefixCreateId.class );
         //System.out.println( "JAVADOC" + _c.getJavadoc() );
         
         assertTrue( _c.getSignature().getModifiers().containsAll( "public", "static" ) );

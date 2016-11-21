@@ -30,7 +30,7 @@ import varcode.markup.mark.Mark.BlankFiller;
  */
  /*{+?((log==trace)):LOG.trace( "In Method " );+}*/
 
-public class AddTextIfExpression
+public class AddIfExpression
     extends Mark
     implements BlankFiller 
 {
@@ -40,7 +40,7 @@ public class AddTextIfExpression
     /** code/text conditionally written to the tailored text*/ 
 	private final String conditionalText;
     
-    public AddTextIfExpression( 
+    public AddIfExpression( 
         String text, 
         int lineNumber, 
         String expression,
