@@ -80,8 +80,7 @@ public class _parameters
                     prefix = 0;
                 }                
             }
-        }
-		
+        }		
 		return new _parameters( params );
 	}
 	
@@ -127,7 +126,8 @@ public class _parameters
 	 * @param commaAndSpaceSeparatedTokens
 	 * @return
 	 */
-	protected static String[] normalizeTokens( String commaAndSpaceSeparatedTokens )
+	protected static String[] normalizeTokens( 
+        String commaAndSpaceSeparatedTokens )
 	{
 		String[] toks = commaAndSpaceSeparatedTokens.split( " " );
 		List<String>toksList = new ArrayList<String>(); 
@@ -180,7 +180,7 @@ public class _parameters
         if( temp.length() > 0 )
         {
             throw new ModelException( 
-                "unable to parse tokens, remaining temp = "+temp);
+                "unable to parse tokens, remaining temp = " + temp );
         }
 		return toksList.toArray( new String[ 0 ] );
 	}
@@ -319,7 +319,7 @@ public class _parameters
             this.parameterAnnotation = iv.parameterAnnotation= 
                 new _annotation( iv.parameterAnnotation.getAnnotation() );
             this.isFinal = iv.isFinal;
-			this.type = iv.type+ "";
+			this.type = iv.type + "";
 			this.name = iv.name + "";
 		}
 	
@@ -337,7 +337,7 @@ public class _parameters
                 {
                     this.isFinal = true;
                 }
-                else if( tokens[ i ].startsWith("@" ) )
+                else if( tokens[ i ].startsWith( "@" ) )
                 {
                     this.parameterAnnotation = new _annotation( tokens[ i ] );
                 }
@@ -386,9 +386,14 @@ public class _parameters
         @Override
         public _parameter bind( VarContext context )
         {
-            this.type = Compose.asString( BindML.compile( this.type ), context);
-            this.name = Compose.asString( BindML.compile( this.name ), context);
-            if( this.parameterAnnotation != null && !this.parameterAnnotation.isEmpty() )
+            this.type = Compose.asString( 
+                BindML.compile( this.type ), context );
+            
+            this.name = Compose.asString( 
+                BindML.compile( this.name ), context );
+            
+            if( this.parameterAnnotation != null && 
+                !this.parameterAnnotation.isEmpty() )
             {
                 this.parameterAnnotation = 
                     this.parameterAnnotation.bind( context );
@@ -401,8 +406,11 @@ public class _parameters
         {
             this.name = this.name.replace( target, replacement );
             this.type = this.type.replace( target, replacement );
-            this.parameterAnnotation = 
-                this.parameterAnnotation.replace( target, replacement );
+            if( this.parameterAnnotation != null )
+            {
+                this.parameterAnnotation = 
+                    this.parameterAnnotation.replace( target, replacement );
+            }
             return this;
         }
 

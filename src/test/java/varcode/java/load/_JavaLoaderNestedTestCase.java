@@ -22,8 +22,6 @@ import varcode.java.lang._class;
 import varcode.java.lang._enum;
 import varcode.java.lang._interface;
 import varcode.java.lang._nesteds;
-import varcode.java.tailor._JavaLoader;
-import varcode.java.tailor._Load;
 
 /**
  *

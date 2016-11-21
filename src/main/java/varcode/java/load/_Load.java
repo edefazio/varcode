@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package varcode.java.tailor;
+package varcode.java.load;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseException;

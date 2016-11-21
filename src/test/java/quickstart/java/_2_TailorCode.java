@@ -4,7 +4,7 @@ import java.util.UUID;
 import junit.framework.TestCase;
 import varcode.java.Java;
 import varcode.java.lang._class;
-import varcode.java.tailor._Load;
+import varcode.java.load._Load;
 
 /**
  * "Tailoring" .java code in varcode involves

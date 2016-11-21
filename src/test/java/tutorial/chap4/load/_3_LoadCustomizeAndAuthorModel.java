@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 import varcode.java.lang._class;
 import varcode.java.lang._code;
 import varcode.java.lang._methods._method;
-import varcode.java.tailor._JavaLoader;
+import varcode.java.load._JavaLoader;
 
 /**
  *

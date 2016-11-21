@@ -1,9 +1,6 @@
 package varcode.java.lang.auto;
 
-import varcode.java.lang.auto._autoGetter;
 import junit.framework.TestCase;
-import varcode.java.Java;
-import varcode.java.lang._class;
 import varcode.java.lang._fields._field;
 import varcode.java.lang._methods._method;
 import static varcode.java.lang.auto._autoGetterTest.N;
@@ -40,34 +37,4 @@ public class _autoGetterTest
             "}", 
             m.toString() );        
     }
-    
-    public void testArrayField()
-    {
-        _field f = _field.of( "public int[] f;" );
-        _method m = _autoGetter.ofArrayIndex( f );
-        assertEquals( 
-        "public int getFAt( int index )" + N + 
-        "{"+ N +             
-        "    if( this.f == null )"+ N + 
-        "    {"+ N + 
-        "        throw new IndexOutOfBoundsException( \"f is null\" );"+ N +   
-        "    }" + N + 
-        "    if( index < 0 || index > this.f.length  )" + N + 
-        "    {" + N + 
-        "        throw new IndexOutOfBoundsException(" + N + 
-        "            \"index [\" + index + \"] is not in range [0...\" + f.length + \"]\" );" + N +
-        "    }" + N + 
-        "    return this.f[ index ];" + N +            
-        "}", m.toString() );
-        
-        _class c = _class.of("A")
-            .field( "private final int[] count = new int[]{1,2,3};" );
-        
-        //create and add a getter method for the count array field
-        c.method( 
-            _autoGetter.ofArrayIndex( c.getFields().getByName( "count" ) ) );
-        
-        assertEquals( 1, Java.invoke( c.instance( ), "getCountAt", 0 ) );        
-    }
-   
 }

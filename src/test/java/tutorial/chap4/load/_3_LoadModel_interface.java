@@ -19,7 +19,7 @@ import java.io.Serializable;
 import junit.framework.TestCase;
 import varcode.Model;
 import varcode.java.lang._interface;
-import varcode.java.tailor._JavaLoader;
+import varcode.java.load._JavaLoader;
 
 /**
  *

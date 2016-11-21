@@ -1,6 +1,5 @@
 package varcode.java.load;
 
-import varcode.java.tailor._Load;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.EnumDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;

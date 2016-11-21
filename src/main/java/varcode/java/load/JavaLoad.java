@@ -1,4 +1,4 @@
-package varcode.java.tailor;
+package varcode.java.load;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseException;

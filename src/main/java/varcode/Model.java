@@ -78,15 +78,7 @@ public interface Model
      * @return the mutated model
      */
     Model bind( VarContext context );
-        
-    /**
-     * A "Brute Force" replace for the content within the template
-     * @param target the target string to look for
-     * @param replacement the replacement string
-     * @return the modified variant, (if it is mutable) or a modified clone
-     */
-    Model replace( String target, String replacement );     
-    
+            
     /** 
      * Extended Model interface form modeling a program language
      */ 
@@ -109,6 +101,14 @@ public interface Model
          * @return document representation of the model
          */ 
 	    String author( Directive... directives );
+        
+        /**
+         * A "Brute Force" replace for the content within the Model
+         * @param target the target string to look for
+         * @param replacement the replacement string
+         * @return the modified Model, (if it is mutable) or a modified clone
+         */
+        Model replace( String target, String replacement ); 
     }
     
     /**
@@ -116,8 +116,7 @@ public interface Model
      */
     public static class ModelException
         extends VarException
-    {
-        
+    {        
         public ModelException( String message, Throwable throwable )
         {
             super( message, throwable );

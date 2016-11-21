@@ -28,7 +28,7 @@ import varcode.java.lang._interface;
 import varcode.java.lang._methods;
 import varcode.java.lang._methods._method;
 import varcode.java.lang._nesteds;
-import varcode.java.tailor._Load;
+import varcode.java.load._Load;
 
 /**
  * Simple example for a "mixin" like metaprogram which takes

@@ -20,7 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import varcode.VarException;
 import varcode.java.lang._class;
-import varcode.java.tailor._JavaLoader;
+import varcode.java.load._JavaLoader;
 
 /**
  * Loads the models (_class, _enum, _interface) 

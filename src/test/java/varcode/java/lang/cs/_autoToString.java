@@ -15,12 +15,10 @@
  */
 package varcode.java.lang.cs;
 
-import java.lang.reflect.Array;
 import varcode.java.lang._class;
 import varcode.java.lang._fields;
 import varcode.java.lang._fields._field;
 import varcode.java.lang._methods._method;
-import varcode.markup.codeml.code._Method;
 
 /**
  * Rough draft of a ToString generator
@@ -49,9 +47,8 @@ public class _autoToString
         return classWithToString;
     }
     
-    
-    public static class ToString
-        extends _Method
+    /*
+    public static class ToString //extends _Method
     {
         @Override
         public String toString()
@@ -63,15 +60,16 @@ public class _autoToString
             sb.append( "    {+fieldName+} = " );
             sb.append( fieldToString( {+fieldName+} );
             sb.append( System.lineSpearator() );            
-            +}}*/
+            +}}
             return sb.toString();
         }
     }
+    */
     
+    /*
     public static class FieldToString
-        extends _Method
+        //extends _Method
     {
-        /** converts arrays to strings for toString() method */
         private static String fieldToString( Object value )
         {
             if( value == null )
@@ -102,6 +100,7 @@ public class _autoToString
             return sb.toString();
         }
     }
+*/
     
     public static _method ofAllFields( _fields fields )
     {

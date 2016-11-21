@@ -19,7 +19,6 @@ import varcode.java.lang._javadoc;
 import varcode.java.lang._methods;
 import varcode.java.lang._methods._method;
 import varcode.java.lang._parameters;
-import varcode.java.tailor._JavaLoader;
 
 /**
  * 

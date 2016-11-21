@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Eric DeFazio.
+ * Copyright 2016 eric.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,53 +13,198 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package varcode.java.tailor;
+package varcode.java.load;
 
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ParseException;
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.ImportDeclaration;
+import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.NodeWithModifiers;
 import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.ConstructorDeclaration;
-import com.github.javaparser.ast.body.EnumConstantDeclaration;
 import com.github.javaparser.ast.body.EnumDeclaration;
-import com.github.javaparser.ast.body.FieldDeclaration;
-import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.body.Parameter;
-import com.github.javaparser.ast.body.VariableDeclarator;
-import com.github.javaparser.ast.comments.JavadocComment;
-import com.github.javaparser.ast.expr.AnnotationExpr;
-import com.github.javaparser.ast.stmt.Statement;
-import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import com.github.javaparser.ast.body.TypeDeclaration;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.List;
 import varcode.Model.ModelLoadException;
-import varcode.java.lang._class;
-import varcode.java.lang._code;
-import varcode.java.lang._constructors;
-import varcode.java.lang._enum;
-import varcode.java.lang._fields;
-import varcode.java.lang._interface;
-import varcode.java.lang._javadoc;
-import varcode.java.lang._methods;
-import varcode.java.lang._modifiers;
-import varcode.java.lang._parameters;
-import varcode.java.lang._throws;
 
 /**
+ * Reads in Java Source as text and converts the text into an AST 
+ * (Abstract Syntax Tree) {@code CompilationUnit}... And converts the AST
+ * {@code CompilationUnit} into a java "Lang Model" (_class, _interface, _enum)
  *
- * @author Eric DeFazio
+ * @author M. Eric DeFazio eric@varcode.io
  */
-public class JavaASTToLangModel
+public enum JavaASTParser
 {
-    /**
-     * Creates and returns an interface 
-     * @param cu the top level CompilationUnit node of an interface
-     * @param interfaceDecl the interface Declaration
-     * @return the _interface LangModel representing the code
+    ;
+    
+    /** 
+     * read the .java source from the input stream and construct a 
+     * {@code CompilationUnit}
+     * @param javaSourceInputStream .java source as an inputStream
+     * @return the CompilationUnit root node of the parsed AST
+     * @throws com.github.javaparser.ParseException if parsing failed
      */
-    public static _interface _interfaceFrom( 
-        CompilationUnit cu, 
-        ClassOrInterfaceDeclaration interfaceDecl )
-    {   
+    public static CompilationUnit from( InputStream javaSourceInputStream )            
+        throws ParseException
+    {
+        return JavaParser.parse( javaSourceInputStream );           
+    }
+        
+    public static CompilationUnit from( String string )
+        throws ParseException
+    {
+        ByteArrayInputStream bais = 
+            new ByteArrayInputStream( string.getBytes() );
+        return JavaASTParser.from( bais );
+    }
+    
+    public static EnumDeclaration findEnumNode( 
+        CompilationUnit cu, Class clazz )
+    {
+        List<TypeDeclaration> types =  cu.getTypes();
+         for( int i = 0; i < types.size(); i++ )
+        {
+            TypeDeclaration td = types.get( i );
+            //System.out.println( "FOUND " + td.getName() );
+            
+            if( td.getName().equals( clazz.getSimpleName() ) )
+            {
+                return (EnumDeclaration)td;
+            }
+            else
+            {
+                List<BodyDeclaration> bds = td.getMembers();
+                for( int j = 0; j < bds.size(); j++ )
+                {
+                    if( bds.get( j ) instanceof TypeDeclaration )
+                    {
+                        TypeDeclaration ntd = (TypeDeclaration)bds.get( j );
+                        if( ntd.getName().equals( clazz.getSimpleName() ) ) 
+                        {
+                            return (EnumDeclaration)ntd;
+                        }
+                    }
+                }
+            }
+        }        
+        //List<Node> nodes = cu.getChildrenNodes();
+        throw new ModelLoadException( 
+            "Could not find class declaration for \""
+            + clazz.getCanonicalName() + "\"" );
+    }
+    
+    /**
+     * Recursively search through the nodes of the AST
+     * to find a {@code TypeDeclaration} node named <CODE>name</CODE>
+     * and return that node.
+     * @param cu the CompilationUnit (top Level AST node)
+     * @param name the name of the TypeDeclaration to find
+     * @return the TypeDeclaration node (and its children)
+     * @throws ModelLoadException if unable to find a TypeDeclaration with that name
+     */
+    public static TypeDeclaration findTypeDeclaration( 
+        CompilationUnit cu, String name )
+    {
+        List<TypeDeclaration> types =  cu.getTypes();
+        //System.out.println( "LOOKING FOR "+ clazz.getSimpleName() );
+        for( int i = 0; i < types.size(); i++ )
+        {
+            TypeDeclaration td = types.get( i );
+            
+            if( td.getName().equals( name ) )
+            {
+                return (TypeDeclaration)td;
+            }
+            else
+            {
+                List<BodyDeclaration> bds = td.getMembers();
+                for( int j = 0; j < bds.size(); j++ )
+                {
+                    if( bds.get( j ) instanceof TypeDeclaration )
+                    {
+                        TypeDeclaration ntd = (TypeDeclaration)bds.get( j );
+                        if( ntd.getName().equals( name ) ) 
+                        {
+                            //System.out.println("FOUND NODE"+ ntd );
+                            return (TypeDeclaration)ntd;
+                        }
+                    }
+                }
+            }
+        }        
+        //List<Node> nodes = cu.getChildrenNodes();
+        throw new ModelLoadException( 
+            "Could not find type declaration for \""+ name + "\"" );
+    }
+    
+    public static TypeDeclaration findTypeDeclaration( 
+        CompilationUnit cu, Class clazz )
+    {           
+        return JavaASTParser.findTypeDeclaration( cu, clazz.getSimpleName() );
+    }
+
+    public static ClassOrInterfaceDeclaration getInterfaceNode( CompilationUnit cu )
+    {
+        ClassOrInterfaceDeclaration cd = getClassNode( cu ); 
+        if( !cd.isInterface() )
+        {
+            throw new ModelLoadException( "Not an interface" );
+        }        
+        return cd;
+    }
+    
+    public static EnumDeclaration getEnumNode( CompilationUnit cu )
+    {
+        List<Node> nodes = cu.getChildrenNodes();
+        for( int i = 0; i < nodes.size(); i++ )
+        {
+            if( nodes.get( i ) instanceof EnumDeclaration )
+            {
+                EnumDeclaration ci = 
+                    (EnumDeclaration)nodes.get( i );
+                return ci;                
+            }
+        }
+        throw new ModelLoadException( "Could not find enum declaration" );
+    }
+    
+    public static ClassOrInterfaceDeclaration getClassNode( CompilationUnit cu )
+    {
+        List<Node> nodes = cu.getChildrenNodes();
+        for( int i = 0; i < nodes.size(); i++ )
+        {
+            if( nodes.get( i ) instanceof ClassOrInterfaceDeclaration )
+            {
+                ClassOrInterfaceDeclaration ci = 
+                    (ClassOrInterfaceDeclaration)nodes.get( i );
+                return ci;                
+            }
+        }
+        throw new ModelLoadException( "Could not find class declaration" );
+    }
+    
+    public static int getModifiers( Node node )
+    {
+        if( node instanceof NodeWithModifiers )
+        {
+            return ((NodeWithModifiers)node).getModifiers();
+        }
+        else
+        {
+            return 0; 
+        }
+    }
+    /*
+    public enum _Interface
+    {
+        ;
+            
+        public static _interface from( 
+            CompilationUnit cu, ClassOrInterfaceDeclaration interfaceDecl )
+        {   
             if( !interfaceDecl.isInterface() )
             {
                 throw new ModelLoadException( 
@@ -90,11 +235,11 @@ public class JavaASTToLangModel
                 }
             }
             return fromInterfaceNode(_int, interfaceDecl );
-    }
+        }
         
-    public static _interface fromInterfaceNode( 
-        _interface _int, ClassOrInterfaceDeclaration interfaceDecl )   
-    {
+        public static _interface fromInterfaceNode( 
+            _interface _int, ClassOrInterfaceDeclaration interfaceDecl )   
+        {
             _int.getSignature().setModifiers( _modifiers.of( interfaceDecl.getModifiers() ) );
             
             if( interfaceDecl.getJavaDoc() != null )
@@ -124,16 +269,16 @@ public class JavaASTToLangModel
                     //System.out.println( "MethodDeclaration" + methd);
                     
                     List<AnnotationExpr> ann = md.getAnnotations();
-                    _methods._method meth = null;
+                    _method meth = null;
                     if( md.getBody() != null )
                     {
                         String body = md.getBody().toString();
                         body = body.substring( body.indexOf('{')+1, body.lastIndexOf( "}") ).trim();
-                        meth = _methods._method.of( methd, _code.of( body ) );  
+                        meth = _method.of( methd, _code.of( body ) );  
                     }
                     else
                     {
-                        meth = _methods._method.of( methd );  
+                        meth = _method.of( methd );  
                     }
                     if( md.getJavaDoc() != null )
                     {                       
@@ -166,14 +311,14 @@ public class JavaASTToLangModel
                         String type = fd.getType().toString();
                         _modifiers mods = _modifiers.of( fd.getModifiers() );
                         
-                        _fields._field f = null;
+                        _field f = null;
                         if( init == null || init.trim().length() == 0 )
                         {
-                            f = new _fields._field( mods, type, name );
+                            f = new _field( mods, type, name );
                         }
                         else
                         {
-                            f = new _fields._field( mods, type, name, _fields._init.of( init ) ); 
+                            f = new _field( mods, type, name, _init.of( init ) ); 
                         }
                         for( int k = 0; k < ann.size(); k++ )
                         {
@@ -195,13 +340,13 @@ public class JavaASTToLangModel
                     if( cidef.isInterface() )
                     {
                         _interface _i = _interface.of( "interface " + cidef.getName() );
-                        _i = fromInterfaceNode( _i, cidef );
+                        _i = _Interface.fromInterfaceNode( _i, cidef );
                         _int.nest( _i );
                     }
                     else
                     {
                         _class _c = _class.of( cidef.getName() );
-                        _c = fromClassNode( _c, cidef );
+                        _c = _Class.fromClassNode( _c, cidef );
                         _int.nest( _c );
                     }
                 }
@@ -209,7 +354,7 @@ public class JavaASTToLangModel
                 {
                     EnumDeclaration nestedEnum = (EnumDeclaration)member;
                     _enum _en = _enum.of( "enum "+ nestedEnum.getName() );
-                    _en = fromEnumNode( _en, nestedEnum );
+                    _en = _Enum.fromEnumNode( _en, nestedEnum );
                     _int.nest( _en );
                 }
                 else
@@ -217,12 +362,17 @@ public class JavaASTToLangModel
                     System.out.println( "NOT HANDLED "+ member );
                 }
             }            
-            return _int;            
+            return _int;
+        }    
     }
     
-    public static _class fromCompilationUnit( 
-        CompilationUnit cu, ClassOrInterfaceDeclaration classDecl )
-    {            
+    public enum _Class
+    {
+        ;
+            
+        public static _class fromCompilationUnit( 
+            CompilationUnit cu, ClassOrInterfaceDeclaration classDecl )
+        {            
             _class _c = null;
             if( cu == null )
             {
@@ -253,15 +403,14 @@ public class JavaASTToLangModel
                 }
             }
             return fromClassNode(_c, classDecl );
-    }
+        }
         
-    public static _class fromClassNode( 
-        _class c, ClassOrInterfaceDeclaration classDecl )
-    {
-        List<AnnotationExpr>annots =  classDecl.getAnnotations();
+        public static _class fromClassNode( _class c, ClassOrInterfaceDeclaration classDecl )
+        {
+             List<AnnotationExpr>annots =  classDecl.getAnnotations();
              
-        JavadocComment jd = classDecl.getJavaDoc();
-        if( jd != null )
+            JavadocComment jd = classDecl.getJavaDoc();
+            if( jd != null )
             {
                 c.javadoc( jd.getContent() );
             }
@@ -305,7 +454,7 @@ public class JavaASTToLangModel
                     {
                         params.add( _parameters.of( parameters.get( j ).toString() ) );                        
                     }
-                    _constructors._constructor ctor = new _constructors._constructor( mods, name, params, throwsEx );
+                    _constructor ctor = new _constructor( mods, name, params, throwsEx );
                     
                     //set the body
                     List<Statement>statements = cd.getBlock().getStmts();
@@ -368,6 +517,7 @@ public class JavaASTToLangModel
                 {
                     FieldDeclaration fd = (FieldDeclaration)member;
                     
+                    
                     //they could be doing this:
                     //int a,b,c;
                     JavadocComment fjd = fd.getJavaDoc();
@@ -384,14 +534,14 @@ public class JavaASTToLangModel
                         String type = fd.getType().toString();
                         _modifiers mods = _modifiers.of( fd.getModifiers() );
                         
-                        _fields._field f = null;
+                        _field f = null;
                         if( init == null || init.trim().length() == 0 )
                         {
-                            f = new _fields._field( mods, type, name );
+                            f = new _field( mods, type, name );
                         }
                         else
                         {
-                            f = new _fields._field( mods, type, name, _fields._init.of( init ) ); 
+                            f = new _field( mods, type, name, _init.of( init ) ); 
                         }
                         for( int k = 0; k < ann.size(); k++ )
                         {
@@ -413,13 +563,13 @@ public class JavaASTToLangModel
                     if( cidef.isInterface() )
                     {   //nested interface
                         _interface _i = _interface.of( "interface " + cidef.getName() );
-                        _i = fromInterfaceNode( _i, cidef );
+                        _i = _Interface.fromInterfaceNode( _i, cidef );
                         c.nest( _i );
                     }
                     else
                     {   //nested class
                         _class _c = _class.of( cidef.getName() );
-                        _c = fromClassNode( _c, cidef );
+                        _c = _Class.fromClassNode( _c, cidef );
                         c.nest( _c );
                     }
                 }
@@ -427,7 +577,7 @@ public class JavaASTToLangModel
                 {   //nested enum
                     EnumDeclaration nestedEnum = (EnumDeclaration)member;
                     _enum _en = _enum.of( "enum " + nestedEnum.getName() );
-                    _en = fromEnumNode( _en, nestedEnum );
+                    _en = _Enum.fromEnumNode( _en, nestedEnum );
                     c.nest( _en );
                 }
                 else
@@ -435,12 +585,18 @@ public class JavaASTToLangModel
                     System.out.println( "NOT HANDLED "+ member );
                 }
             }
-            return c;       
+            return c;
+        }
     }
     
-    public static _enum fromCompilationUnit( 
+    public enum _Enum
+    {
+        ;
+            
+        public static _enum fromCompilationUnit( 
             CompilationUnit cu, EnumDeclaration enumDecl )
-    {            
+        {            
+            
             _enum _e = null;
             if( cu.getPackage() != null )
             {
@@ -465,10 +621,10 @@ public class JavaASTToLangModel
                 }
             }
             return fromEnumNode( _e, enumDecl );
-    }
+        }
         
-    public static _enum fromEnumNode( _enum _e, EnumDeclaration enumDecl )
-    {
+        public static _enum fromEnumNode( _enum _e, EnumDeclaration enumDecl )
+        {
             List<AnnotationExpr>annots =  enumDecl.getAnnotations();        
             JavadocComment jd = enumDecl.getJavaDoc();
             if( jd != null )
@@ -519,7 +675,7 @@ public class JavaASTToLangModel
                     {
                         params.add( _parameters.of( parameters.get( j ).toString() ) );                        
                     }
-                    _constructors._constructor ctor = new _constructors._constructor( mods, name, params, throwsEx );
+                    _constructor ctor = new _constructor( mods, name, params, throwsEx );
                     
                     //set the body
                     List<Statement>statements = cd.getBlock().getStmts();
@@ -595,14 +751,14 @@ public class JavaASTToLangModel
                         String type = fd.getType().toString();
                         _modifiers mods = _modifiers.of( fd.getModifiers() );
                         
-                        _fields._field f = null;
+                        _field f = null;
                         if( init == null || init.trim().length() == 0 )
                         {
-                            f = new _fields._field( mods, type, name );
+                            f = new _field( mods, type, name );
                         }
                         else
                         {
-                            f = new _fields._field( mods, type, name, _fields._init.of( init ) ); 
+                            f = new _field( mods, type, name, _init.of( init ) ); 
                         }
                         for( int k = 0; k < ann.size(); k++ )
                         {
@@ -624,13 +780,13 @@ public class JavaASTToLangModel
                     if( cidef.isInterface() )
                     {
                         _interface _i = _interface.of( "interface " + cidef.getName() );
-                        _i = fromInterfaceNode( _i, cidef );
+                        _i = _Interface.fromInterfaceNode( _i, cidef );
                         _e.nest( _i );
                     }
                     else
                     {
                         _class _c = _class.of( cidef.getName() );
-                        _c = fromClassNode( _c, cidef );
+                        _c = _Class.fromClassNode( _c, cidef );
                         _e.nest( _c );
                     }
                 }
@@ -638,7 +794,7 @@ public class JavaASTToLangModel
                 {
                     EnumDeclaration nestedEnum = (EnumDeclaration)member;
                     _enum _en = _enum.of( "enum "+ nestedEnum.getName() );
-                    _en = fromEnumNode( _en, nestedEnum );
+                    _en = _Enum.fromEnumNode( _en, nestedEnum );
                     _e.nest( _en );
                 }
                 else
@@ -647,5 +803,7 @@ public class JavaASTToLangModel
                 }
             }
             return _e;
-    }    
+        }
+    }
+*/
 }

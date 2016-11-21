@@ -312,7 +312,7 @@ public class _methods
 		public static _method cloneOf( _method prototype ) 
 		{
 			_method m = 
-				new _method( _signature.cloneOf(prototype.signature ) );
+				new _method( _signature.cloneOf( prototype.signature ) );
 			m.javadoc = _javadoc.cloneOf(prototype.javadoc );
 			m.methodBody = prototype.getBody();			
             m.annotations = new _annotations( prototype.annotations.getAnnotations() );
