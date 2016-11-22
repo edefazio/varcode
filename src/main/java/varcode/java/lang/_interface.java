@@ -423,6 +423,27 @@ public class _interface
         return method( null, signature );
     }
     
+    /**
+     * add one or more extensions for this interface to the signature and return 
+     * the modified _interface
+     * @param extendFrom one or more extends to add to the interface
+     * @return the modified _interface
+     */
+    public _interface extend( String...extendFrom )
+    {
+        for( int i = 0; i < extendFrom.length; i++ )
+        {
+            this.interfaceSignature.extendsFrom.addExtends( extendFrom[ i ] );
+        }
+        return this;
+    }
+    
+    /**
+     * Add one or more annotations to the _interface and return the modified 
+     * _interface
+     * @param annotations String annotations to parse and add
+     * @return the modified _interface
+     */
     public _interface annotate( String... annotations )
     {
         this.annotations.add(  (Object[])annotations );

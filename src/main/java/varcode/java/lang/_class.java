@@ -247,6 +247,18 @@ public class _class
         return Compose.asString( CLASS, getContext(), directives );			
 	}
 	
+    /**
+     * sets the modifiers using the int notation (i.e.
+     * <CODE>setModifiers( Modifier.PUBLIC | Modifier.STATIC );</CODE> )
+     *
+     * @param modifiers the modifiers as an int
+     * @return the modified class
+     */
+    public _class setModifiers( int modifiers )
+    {
+        this.signature.modifiers = _modifiers.of( modifiers );
+        return this;
+    }
     
     public _class setModifiers( String...keywords )
     {
@@ -577,6 +589,16 @@ public class _class
 		return this;
 	}
 
+    public _class implement( String... interfaces )
+    {
+        if( signature.implementsFrom == null )
+        {
+            signature.implementsFrom = new _implements();
+        }
+        signature.implementsFrom.implement( interfaces );
+        return this;
+    }
+    
     /**
      * Implement one or more interfaces
      * @param classes to implement

@@ -110,7 +110,7 @@ public class _JavaLoader
                         if( id.isInterface() )
                         {
                             //return JavaASTParser._Interface.from( cu, id );
-                            return JavaASTToLangModel._interfaceFrom( cu, id );
+                            return Java_LangModelCompiler._interfaceFrom( cu, id );
                         }                        
                     }
                     throw new ModelLoadException( clazz +" source not an interface " );                    
@@ -133,7 +133,7 @@ public class _JavaLoader
                 
                 ClassOrInterfaceDeclaration classDecl = JavaASTParser.getClassNode( cu );
                 //return JavaASTParser._Interface.from( cu, classDecl );
-                return JavaASTToLangModel._interfaceFrom( cu, classDecl );
+                return Java_LangModelCompiler._interfaceFrom( cu, classDecl );
                 
             }    
             catch( ParseException pe )
@@ -156,7 +156,7 @@ public class _JavaLoader
                 ClassOrInterfaceDeclaration interfaceDecl = 
                     JavaASTParser.getInterfaceNode( cu );
                 //return JavaASTParser._Interface.from( cu, interfaceDecl );
-                return JavaASTToLangModel._interfaceFrom( cu, interfaceDecl );
+                return Java_LangModelCompiler._interfaceFrom( cu, interfaceDecl );
             }    
             catch( ParseException pe )
             {
@@ -175,7 +175,7 @@ public class _JavaLoader
                 
                 ClassOrInterfaceDeclaration classDecl = JavaASTParser.getInterfaceNode( cu );
                 //return JavaASTParser._Interface.from( cu, classDecl );
-                return JavaASTToLangModel._interfaceFrom( cu, classDecl );
+                return Java_LangModelCompiler._interfaceFrom( cu, classDecl );
             }    
             catch( ParseException pe )
             {
@@ -183,6 +183,36 @@ public class _JavaLoader
                     "Unable to parse Source from String", pe );
             }
         }        
+    }
+    
+    /**
+     * Gets the top level class i.e. a Class named "TopLevelClass" 
+     * (defined in a file like TopLevelClass.java") for a given Class
+     *
+     * NOTE: since we can get many nest Levels Deep:
+     * <PRE>
+     * public class TopLevel
+     * {
+     *    public static class Nested1Level 
+     *    {
+     *        public static class Nested2Level
+     *        {
+     *        }
+     *    }
+     * }
+     * </PRE> ... we cant just get a Classes declaringClass, we need to continue
+     * recursing until we find the class that has null for DeclaringClass.
+     *
+     * @param clazz the class to obtain top level class from
+     * @return the top level Class that contains the Class (could be itself)
+     */
+    public static Class getTopLevelClass( Class clazz )
+    {
+        if( clazz.getDeclaringClass() == null )
+        {   //it must be declared in its own file 
+            return clazz;
+        }
+        return getTopLevelClass( clazz.getDeclaringClass() );
     }
     
     public static class _Class
@@ -202,7 +232,17 @@ public class _JavaLoader
                     //System.out.println( "IS MEMBER CLASS ");
                     // we have to find the source of the Member class WITHIN the 
                     // source of the declaring class
-                    Class declaringClass = clazz.getDeclaringClass();
+                    Class declaringClass = getTopLevelClass( clazz ); //clazz.getDeclaringClass();
+                    //if( declaringClass == null )
+                    //{
+                        //System.out.println( "Declaring Class is null " );
+                    //    declaringClass = clazz;
+                    //}
+                    //else
+                    //{
+                    //    System.out.println( "Declaring class " 
+                    //        + declaringClass.getCanonicalName() + ".java" );
+                    //}
                     ss = sourceLoader.sourceStream( 
                         declaringClass.getCanonicalName() + ".java" );                          
                     if( ss == null )
@@ -218,13 +258,14 @@ public class _JavaLoader
                     
                     TypeDeclaration classDecl = 
                         JavaASTParser.findTypeDeclaration( cu, clazz );
+                    
                     if( classDecl instanceof ClassOrInterfaceDeclaration )
                     {
                         ClassOrInterfaceDeclaration cd = (ClassOrInterfaceDeclaration) classDecl;
                         if( !cd.isInterface() )
                         {
                             //return JavaASTParser._Class.fromCompilationUnit( cu, cd );
-                            return JavaASTToLangModel.fromCompilationUnit( cu, cd );
+                            return Java_LangModelCompiler._classFrom( cu, cd );
                         }
                         else
                         {
@@ -250,7 +291,7 @@ public class _JavaLoader
                 ClassOrInterfaceDeclaration classDecl = 
                     JavaASTParser.getClassNode( cu );
                 //return JavaASTParser._Class.fromCompilationUnit( cu, classDecl );
-                return JavaASTToLangModel.fromCompilationUnit( cu, classDecl );
+                return Java_LangModelCompiler._classFrom( cu, classDecl );
             }    
             catch( ParseException pe )
             {
@@ -271,7 +312,7 @@ public class _JavaLoader
                 
                 ClassOrInterfaceDeclaration classDecl = JavaASTParser.getClassNode( cu );
                 //return JavaASTParser._Class.fromCompilationUnit( cu, classDecl );
-                return JavaASTToLangModel.fromCompilationUnit( cu, classDecl );
+                return Java_LangModelCompiler._classFrom( cu, classDecl );
             }    
             catch( ParseException pe )
             {
@@ -290,7 +331,7 @@ public class _JavaLoader
                 
                 ClassOrInterfaceDeclaration classDecl = JavaASTParser.getClassNode( cu );
                 //return JavaASTParser._Class.fromCompilationUnit( cu, classDecl );
-                return JavaASTToLangModel.fromCompilationUnit( cu, classDecl );
+                return Java_LangModelCompiler._classFrom( cu, classDecl );
             }    
             catch( ParseException pe )
             {
@@ -336,7 +377,7 @@ public class _JavaLoader
                         JavaASTParser.findEnumNode( cu, clazz );
                     
                     //return JavaASTParser._Enum.fromCompilationUnit( cu, classDecl );
-                    return JavaASTToLangModel.fromCompilationUnit( cu, classDecl );
+                    return Java_LangModelCompiler._enumFrom( cu, classDecl );
                 }
                 catch( ParseException pe )
                 {
@@ -355,7 +396,7 @@ public class _JavaLoader
                 
                 EnumDeclaration enumDecl = JavaASTParser.getEnumNode( cu );
                 //return JavaASTParser._Enum.fromCompilationUnit( cu, enumDecl );
-                return JavaASTToLangModel.fromCompilationUnit( cu, enumDecl );
+                return Java_LangModelCompiler._enumFrom( cu, enumDecl );
             }    
             catch( ParseException pe )
             {
@@ -376,7 +417,7 @@ public class _JavaLoader
                 
                 EnumDeclaration enumDecl = JavaASTParser.getEnumNode( cu );
                 //return JavaASTParser._Enum.fromCompilationUnit( cu, enumDecl );
-                return JavaASTToLangModel.fromCompilationUnit( cu, enumDecl );
+                return Java_LangModelCompiler._enumFrom( cu, enumDecl );
             }    
             catch( ParseException pe )
             {
@@ -395,7 +436,7 @@ public class _JavaLoader
                 
                 EnumDeclaration enumDecl = JavaASTParser.getEnumNode( cu );
                 //return JavaASTParser._Enum.fromCompilationUnit( cu, enumDecl );
-                return JavaASTToLangModel.fromCompilationUnit( cu, enumDecl );
+                return Java_LangModelCompiler._enumFrom( cu, enumDecl );
             }    
             catch( ParseException pe )
             {

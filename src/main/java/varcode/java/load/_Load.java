@@ -291,7 +291,7 @@ public class _Load
                 {                
                     _interface _i = _interface.of( "interface " + coid.getName() );
                     //return JavaASTParser._Interface.fromInterfaceNode( _i, coid );
-                    return JavaASTToLangModel.fromInterfaceNode( _i, coid );
+                    return Java_LangModelCompiler._interfaceFromAST( _i, coid );
                 }
                 else
                 {
@@ -328,7 +328,7 @@ public class _Load
                 {                
                     _class _c = _class.of( coid.getName() );
                     //return JavaASTParser._Class.fromClassNode( _c, coid );
-                    return JavaASTToLangModel.fromClassNode( _c, coid );
+                    return Java_LangModelCompiler._classFromAST( _c, coid );
                 }
                 else
                 {
@@ -354,7 +354,7 @@ public class _Load
                 EnumDeclaration coid = (EnumDeclaration)td;
                 _enum _e = _enum.of( "enum " + coid.getName() );
                 //return JavaASTParser._Enum.fromEnumNode( _e, coid ); 
-                return JavaASTToLangModel.fromEnumNode( _e, coid );
+                return Java_LangModelCompiler._enumFromAST( _e, coid );
             }
             throw new ModelLoadException(
                 "Type declaration is not an EnumDeclaration" );

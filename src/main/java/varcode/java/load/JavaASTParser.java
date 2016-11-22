@@ -131,6 +131,12 @@ public enum JavaASTParser
                             //System.out.println("FOUND NODE"+ ntd );
                             return (TypeDeclaration)ntd;
                         }
+                        //recurse to find 
+                        ntd = recurseTypeChildren( ntd, name );
+                        if( ntd != null )
+                        {
+                            return ntd;
+                        }
                     }
                 }
             }
@@ -140,10 +146,30 @@ public enum JavaASTParser
             "Could not find type declaration for \""+ name + "\"" );
     }
     
+    private static TypeDeclaration recurseTypeChildren( 
+        TypeDeclaration td, String name )
+    {
+        List<BodyDeclaration> bds = td.getMembers();
+        for( int i = 0; i < bds.size(); i++ )
+        {
+            BodyDeclaration bd = bds.get( i );
+            if( bd instanceof TypeDeclaration )
+            {
+                TypeDeclaration t = (TypeDeclaration)bd;
+                if( t.getName().equals( name ) )
+                {
+                    return t;
+                }
+                return recurseTypeChildren( t, name );
+            }
+        }
+        return null;
+    }
+    
     public static TypeDeclaration findTypeDeclaration( 
         CompilationUnit cu, Class clazz )
     {           
-        return JavaASTParser.findTypeDeclaration( cu, clazz.getSimpleName() );
+        return findTypeDeclaration( cu, clazz.getSimpleName() );
     }
 
     public static ClassOrInterfaceDeclaration getInterfaceNode( CompilationUnit cu )

@@ -4,7 +4,7 @@ import java.util.UUID;
 import junit.framework.TestCase;
 import varcode.java.Java;
 import varcode.java.lang._class;
-import varcode.java.load._Load;
+import varcode.java.load._JavaLoader;
 
 /**
  * "Tailoring" .java code in varcode involves
@@ -37,7 +37,8 @@ public class _2_TailorCode
         SourceClass.greetings();
 
         // 1) find the .java source and load the _class for SourceClass
-        _class _c = _Load._classOf( SourceClass.class );
+        //_class _c = _Load._classOf( SourceClass.class );
+        _class _c = _JavaLoader._Class.from( SourceClass.class );
         
         // 2) mutate the 
         _c.imports( UUID.class );

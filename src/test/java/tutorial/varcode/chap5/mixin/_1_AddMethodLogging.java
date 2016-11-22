@@ -28,7 +28,7 @@ import varcode.java.lang._interface;
 import varcode.java.lang._methods;
 import varcode.java.lang._methods._method;
 import varcode.java.lang._nesteds;
-import varcode.java.load._Load;
+import varcode.java.load._JavaLoader;
 
 /**
  * Simple example for a "mixin" like metaprogram which takes
@@ -148,17 +148,26 @@ public class _1_AddMethodLogging
     
     public static void main( String[] args )
     {
-        _class c = _Load.INSTANCE._classOf( SomeDumbClass.class );
+        //? Can I load a deep nested class?
+        _class n = _JavaLoader._Class.from( 
+            AddForNestedLogger.NestedClass.class );
+        
+        System.out.println( n );
+        
+        //_class c = _Load.INSTANCE._classOf( SomeDumbClass.class );
+        _class c = _JavaLoader._Class.from( SomeDumbClass.class );
         addMethodLogging( c );
         System.out.println( c );
         
-        _interface i = _Load.INSTANCE._interfaceOf( NoLoggerToAdd.class );
+        //_interface i = _Load.INSTANCE._interfaceOf( NoLoggerToAdd.class );
+        _interface i = _JavaLoader._Interface.from( NoLoggerToAdd.class );
         System.out.println( i );
         
         addMethodLogging( i );        
         System.out.println( i );
 
-        _enum e = _Load.INSTANCE._enumOf( AddForNestedLogger.class ) ;
+        //_enum e = _Load.INSTANCE._enumOf( AddForNestedLogger.class ) ;
+        _enum e = _JavaLoader._Enum.from( AddForNestedLogger.class );
         addMethodLogging( e );
         System.out.println( e );        
     }
