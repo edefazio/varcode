@@ -47,50 +47,143 @@ public enum JavaASTParser
      * @return the CompilationUnit root node of the parsed AST
      * @throws com.github.javaparser.ParseException if parsing failed
      */
-    public static CompilationUnit from( InputStream javaSourceInputStream )            
+    public static CompilationUnit astFrom( 
+        InputStream javaSourceInputStream )            
         throws ParseException
     {
         return JavaParser.parse( javaSourceInputStream );           
     }
         
-    public static CompilationUnit from( String string )
+    public static CompilationUnit astFrom( String string )
         throws ParseException
     {
         ByteArrayInputStream bais = 
             new ByteArrayInputStream( string.getBytes() );
-        return JavaASTParser.from( bais );
+        return JavaASTParser.astFrom( bais );
     }
     
-    public static EnumDeclaration findEnumNode( 
-        CompilationUnit cu, Class clazz )
+    
+    public static EnumDeclaration findEnumDeclaration(
+        CompilationUnit astRoot, String enumName )
     {
-        List<TypeDeclaration> types =  cu.getTypes();
-         for( int i = 0; i < types.size(); i++ )
+        TypeDeclaration td = findTypeDeclaration( astRoot, enumName );
+        if( td instanceof EnumDeclaration )
         {
-            TypeDeclaration td = types.get( i );
-            //System.out.println( "FOUND " + td.getName() );
-            
-            if( td.getName().equals( clazz.getSimpleName() ) )
+            return (EnumDeclaration)td;            
+        }
+        throw new ModelLoadException( 
+            "Could not find interface declaration for \""
+                + enumName + "\"" );
+    }
+    
+    /**
+     * finds and returns the EnumTypeDeclaration (AST node) for the clazz 
+     * @param astRoot the CompilationRoot AST Node
+     * @param clazz the clazz to resolve the EnumDeclaration from
+     * @return the EnumTypeDeclaration AST node
+     */
+    public static EnumDeclaration findEnumDeclaration( 
+        CompilationUnit astRoot, Class clazz )
+    {
+        TypeDeclaration td = findTypeDeclaration( astRoot, clazz );
+        if( td instanceof EnumDeclaration )
+        {
+            return (EnumDeclaration) td;
+        }
+        throw new ModelLoadException( 
+            "Could not find class declaration for \""
+            + clazz.getCanonicalName() + "\"" );
+    }
+    
+    
+    /**
+     * finds and returns the EnumTypeDeclaration (AST node) for the clazz 
+     * @param astRoot the CompilationRoot AST Node
+     * @param interfaceName the name of the interface
+     * @return the ClassOrInterfaceDeclaration AST node
+     */
+    public static ClassOrInterfaceDeclaration findInterfaceDeclaration( 
+        CompilationUnit astRoot, String interfaceName )
+    {
+        TypeDeclaration td = findTypeDeclaration( astRoot, interfaceName );
+        if( td instanceof ClassOrInterfaceDeclaration )
+        {
+            ClassOrInterfaceDeclaration cd = (ClassOrInterfaceDeclaration)td;
+            if( cd.isInterface() )
             {
-                return (EnumDeclaration)td;
+                return cd;
             }
-            else
+        }
+        throw new ModelLoadException( 
+            "Could not find interface declaration for \""
+            + interfaceName + "\"" );
+    }
+    
+    /**
+     * finds and returns the EnumTypeDeclaration (AST node) for the clazz 
+     * @param astRoot the CompilationRoot AST Node
+     * @param clazz the clazz to resolve the EnumDeclaration from
+     * @return the EnumTypeDeclaration AST node
+     */
+    public static ClassOrInterfaceDeclaration findInterfaceDeclaration( 
+        CompilationUnit astRoot, Class clazz )
+    {
+        TypeDeclaration td = findTypeDeclaration( astRoot, clazz );
+        if( td instanceof ClassOrInterfaceDeclaration )
+        {
+            ClassOrInterfaceDeclaration cd = (ClassOrInterfaceDeclaration)td;
+            if( cd.isInterface() )
             {
-                List<BodyDeclaration> bds = td.getMembers();
-                for( int j = 0; j < bds.size(); j++ )
-                {
-                    if( bds.get( j ) instanceof TypeDeclaration )
-                    {
-                        TypeDeclaration ntd = (TypeDeclaration)bds.get( j );
-                        if( ntd.getName().equals( clazz.getSimpleName() ) ) 
-                        {
-                            return (EnumDeclaration)ntd;
-                        }
-                    }
-                }
+                return cd;
             }
-        }        
-        //List<Node> nodes = cu.getChildrenNodes();
+        }
+        throw new ModelLoadException( 
+            "Could not find class declaration for \""
+            + clazz.getCanonicalName() + "\"" );
+    }
+    
+    /**
+     * finds and returns the EnumTypeDeclaration (AST node) for the clazz 
+     * @param astRoot the CompilationRoot AST Node
+     * @param className the (simple) class Name ClassOrInterfaceDeclaration 
+     * AST Node from
+     * @return the EnumTypeDeclaration AST node
+     */
+    public static ClassOrInterfaceDeclaration findClassDeclaration( 
+        CompilationUnit astRoot, String className )
+    {
+        TypeDeclaration td = findTypeDeclaration( astRoot, className );
+        if( td instanceof ClassOrInterfaceDeclaration )
+        {
+            ClassOrInterfaceDeclaration cd = (ClassOrInterfaceDeclaration)td;
+            if( ! cd.isInterface() )
+            {
+                return cd;
+            }
+        }
+        throw new ModelLoadException( 
+            "Could not find class declaration for \""
+            + className + "\"" );
+    }
+    
+    /**
+     * finds and returns the EnumTypeDeclaration (AST node) for the clazz 
+     * @param astRoot the CompilationRoot AST Node
+     * @param clazz the clazz to resolve the EnumDeclaration from
+     * @return the EnumTypeDeclaration AST node
+     */
+    public static ClassOrInterfaceDeclaration findClassDeclaration( 
+        CompilationUnit astRoot, Class clazz )
+    {
+        TypeDeclaration td = findTypeDeclaration( astRoot, clazz );
+        if( td instanceof ClassOrInterfaceDeclaration )
+        {
+            ClassOrInterfaceDeclaration cd = (ClassOrInterfaceDeclaration)td;
+            if( ! cd.isInterface() )
+            {
+                return cd;
+            }
+        }
         throw new ModelLoadException( 
             "Could not find class declaration for \""
             + clazz.getCanonicalName() + "\"" );
@@ -172,7 +265,9 @@ public enum JavaASTParser
         return findTypeDeclaration( cu, clazz.getSimpleName() );
     }
 
-    public static ClassOrInterfaceDeclaration getInterfaceNode( CompilationUnit cu )
+    /*
+    public static ClassOrInterfaceDeclaration getInterfaceNode( 
+        CompilationUnit cu )
     {
         ClassOrInterfaceDeclaration cd = getClassNode( cu ); 
         if( !cd.isInterface() )
@@ -181,7 +276,8 @@ public enum JavaASTParser
         }        
         return cd;
     }
-    
+    */
+    /*
     public static EnumDeclaration getEnumNode( CompilationUnit cu )
     {
         List<Node> nodes = cu.getChildrenNodes();
@@ -196,7 +292,9 @@ public enum JavaASTParser
         }
         throw new ModelLoadException( "Could not find enum declaration" );
     }
+    */
     
+    /*
     public static ClassOrInterfaceDeclaration getClassNode( CompilationUnit cu )
     {
         List<Node> nodes = cu.getChildrenNodes();
@@ -211,6 +309,7 @@ public enum JavaASTParser
         }
         throw new ModelLoadException( "Could not find class declaration" );
     }
+    */
     
     public static int getModifiers( Node node )
     {

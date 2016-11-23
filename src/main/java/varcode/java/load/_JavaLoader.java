@@ -20,7 +20,6 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.EnumDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
-import java.io.InputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import varcode.Model.ModelLoadException;
@@ -98,7 +97,7 @@ public class _JavaLoader
                     }
                     //Parse the Declaring Class into an AST
                     CompilationUnit cu = 
-                        JavaASTParser.from( ss.getInputStream() );
+                        JavaASTParser.astFrom( ss.getInputStream() );
                     
                     TypeDeclaration interfaceDecl = 
                         JavaASTParser.findTypeDeclaration( cu, clazz );
@@ -129,9 +128,13 @@ public class _JavaLoader
                 // parse the file
                 //CompilationUnit cu = JavaParser.parse( ss.getInputStream() );
                 CompilationUnit cu = 
-                    JavaASTParser.from( ss.getInputStream() );
+                    JavaASTParser.astFrom( ss.getInputStream() );
                 
-                ClassOrInterfaceDeclaration classDecl = JavaASTParser.getClassNode( cu );
+                ClassOrInterfaceDeclaration classDecl = 
+                    JavaASTParser.findClassDeclaration( cu, clazz );
+                
+                //ClassOrInterfaceDeclaration classDecl = 
+                //    JavaASTParser.getClassNode( cu );
                 //return JavaASTParser._Interface.from( cu, classDecl );
                 return Java_LangModelCompiler._interfaceFrom( cu, classDecl );
                 
@@ -144,6 +147,10 @@ public class _JavaLoader
             }        
         }
         
+        /**
+        
+        @param sourceInputStream
+        @return 
         
         public static _interface from( InputStream sourceInputStream )
         {
@@ -151,7 +158,7 @@ public class _JavaLoader
             {
                 // parse the file
                 CompilationUnit cu = 
-                    JavaASTParser.from( sourceInputStream );
+                    JavaASTParser.astFrom( sourceInputStream );
                 
                 ClassOrInterfaceDeclaration interfaceDecl = 
                     JavaASTParser.getInterfaceNode( cu );
@@ -164,14 +171,16 @@ public class _JavaLoader
                     "Unable to parse _interface Source from InputStream", pe );
             }                     
         }
+        */
         
+        /*
         public static _interface from( String interfaceSource )
         {
             try 
             {
                 // parse the file
                 CompilationUnit cu = 
-                    JavaASTParser.from( interfaceSource );
+                    JavaASTParser.astFrom( interfaceSource );
                 
                 ClassOrInterfaceDeclaration classDecl = JavaASTParser.getInterfaceNode( cu );
                 //return JavaASTParser._Interface.from( cu, classDecl );
@@ -182,7 +191,8 @@ public class _JavaLoader
                 throw new ModelLoadException(
                     "Unable to parse Source from String", pe );
             }
-        }        
+        }     
+        */
     }
     
     /**
@@ -254,7 +264,7 @@ public class _JavaLoader
                     
                     //Parse the Declaring Class into an AST
                     CompilationUnit cu = 
-                        JavaASTParser.from( ss.getInputStream() );
+                        JavaASTParser.astFrom( ss.getInputStream() );
                     
                     TypeDeclaration classDecl = 
                         JavaASTParser.findTypeDeclaration( cu, clazz );
@@ -286,10 +296,14 @@ public class _JavaLoader
                 // parse the file
                 //CompilationUnit cu = JavaParser.parse( ss.getInputStream() );
                 CompilationUnit cu = 
-                    JavaASTParser.from( ss.getInputStream() );
+                    JavaASTParser.astFrom( ss.getInputStream() );
+                
+                //ClassOrInterfaceDeclaration classDecl = 
+                //    JavaASTParser.getClassNode( cu );
                 
                 ClassOrInterfaceDeclaration classDecl = 
-                    JavaASTParser.getClassNode( cu );
+                    JavaASTParser.findClassDeclaration( cu, clazz );
+                
                 //return JavaASTParser._Class.fromCompilationUnit( cu, classDecl );
                 return Java_LangModelCompiler._classFrom( cu, classDecl );
             }    
@@ -301,16 +315,17 @@ public class _JavaLoader
             }        
         }
         
-        
+        /*
         public static _class from( InputStream sourceInputStream )
         {
             try 
             {
                 // parse the file
                 CompilationUnit cu = 
-                    JavaASTParser.from( sourceInputStream );
+                    JavaASTParser.astFrom( sourceInputStream );
                 
-                ClassOrInterfaceDeclaration classDecl = JavaASTParser.getClassNode( cu );
+                ClassOrInterfaceDeclaration classDecl = 
+                    JavaASTParser.getClassNode( cu );
                 //return JavaASTParser._Class.fromCompilationUnit( cu, classDecl );
                 return Java_LangModelCompiler._classFrom( cu, classDecl );
             }    
@@ -320,14 +335,16 @@ public class _JavaLoader
                     "Unable to parse Source from InputStream", pe );
             }                     
         }
+        */
         
+        /*
         public static _class from( String classSource )
         {
             try 
             {
                 // parse the file
                 CompilationUnit cu = 
-                    JavaASTParser.from( classSource );
+                    JavaASTParser.astFrom( classSource );
                 
                 ClassOrInterfaceDeclaration classDecl = JavaASTParser.getClassNode( cu );
                 //return JavaASTParser._Class.fromCompilationUnit( cu, classDecl );
@@ -338,7 +355,8 @@ public class _JavaLoader
                 throw new ModelLoadException(
                     "Unable to parse Source from String", pe );
             }
-        }        
+        }   
+        */
     }
     
     
@@ -371,10 +389,10 @@ public class _JavaLoader
                     
                     //Parse the Declaring Class into an AST
                     CompilationUnit cu = 
-                        JavaASTParser.from( ss.getInputStream() );
+                        JavaASTParser.astFrom( ss.getInputStream() );
                     
                     EnumDeclaration classDecl = 
-                        JavaASTParser.findEnumNode( cu, clazz );
+                        JavaASTParser.findEnumDeclaration( cu, clazz );
                     
                     //return JavaASTParser._Enum.fromCompilationUnit( cu, classDecl );
                     return Java_LangModelCompiler._enumFrom( cu, classDecl );
@@ -392,9 +410,10 @@ public class _JavaLoader
                 // parse the file
                 //CompilationUnit cu = JavaParser.parse( ss.getInputStream() );
                 CompilationUnit cu = 
-                    JavaASTParser.from( ss.getInputStream() );
+                    JavaASTParser.astFrom( ss.getInputStream() );
                 
-                EnumDeclaration enumDecl = JavaASTParser.getEnumNode( cu );
+                EnumDeclaration enumDecl = 
+                    JavaASTParser.findEnumDeclaration( cu, clazz );
                 //return JavaASTParser._Enum.fromCompilationUnit( cu, enumDecl );
                 return Java_LangModelCompiler._enumFrom( cu, enumDecl );
             }    
@@ -406,14 +425,14 @@ public class _JavaLoader
             }        
         }
         
-        
+        /*
         public static _enum from( InputStream sourceInputStream )
         {
             try 
             {
                 // parse the file
                 CompilationUnit cu = 
-                    JavaASTParser.from( sourceInputStream );
+                    JavaASTParser.astFrom( sourceInputStream );
                 
                 EnumDeclaration enumDecl = JavaASTParser.getEnumNode( cu );
                 //return JavaASTParser._Enum.fromCompilationUnit( cu, enumDecl );
@@ -432,7 +451,7 @@ public class _JavaLoader
             {
                 // parse the file
                 CompilationUnit cu = 
-                    JavaASTParser.from( classSource );
+                    JavaASTParser.astFrom( classSource );
                 
                 EnumDeclaration enumDecl = JavaASTParser.getEnumNode( cu );
                 //return JavaASTParser._Enum.fromCompilationUnit( cu, enumDecl );
@@ -443,7 +462,9 @@ public class _JavaLoader
                 throw new ModelLoadException(
                     "Unable to parse Source from String", pe );
             }
-        }        
+        }
+        */
     }
+    
     public static final String N = System.lineSeparator();
 }

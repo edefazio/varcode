@@ -67,7 +67,9 @@ import varcode.java.lang.auto._autoDtoTest;
 import varcode.java.lang.auto._autoEnumTest;
 import varcode.java.lang.auto._autoExternalizableTest;
 import varcode.java.lang.minTest;
+import varcode.java.load.JavaASTParserTest;
 import varcode.java.load.JavaTailorTest;
+import varcode.java.load.Java_LangModelCompilerTest;
 import varcode.java.load._JavaLoaderNestedTestCase;
 import varcode.java.load._JavaLoaderTestCase;
 import varcode.java.load._LoadTest;
@@ -268,6 +270,9 @@ public class AllTestSuite
         suite.addTestSuite(_autoExternalizableTest.class );
                 
         //Functional / Integration Tests
+        suite.addTestSuite( JavaASTParserTest.class );        
+        suite.addTestSuite( Java_LangModelCompilerTest.class );
+        
         suite.addTestSuite( JavaTailorTest.class );
         suite.addTestSuite( _JavaLoaderNestedTestCase.class );
         suite.addTestSuite( _JavaLoaderTestCase.class );
