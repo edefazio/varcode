@@ -278,8 +278,8 @@ public class AllTestSuite
         suite.addTestSuite( _JavaLoaderTestCase.class );
         suite.addTestSuite( _LoadTest.class );
         
-        suite.addTestSuite(Chap1_ModelDefaultMethods.class );
-        suite.addTestSuite(CodeMLMarkupModelTest.class );
+        suite.addTestSuite( Chap1_ModelDefaultMethods.class );
+        suite.addTestSuite( CodeMLMarkupModelTest.class );
         // $JUnit-END$
         return suite;
     }

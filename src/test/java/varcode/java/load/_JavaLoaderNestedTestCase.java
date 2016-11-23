@@ -93,7 +93,8 @@ public class _JavaLoaderNestedTestCase
     public void testInterfaceNesteds()
     {
         _interface _i = 
-            _Load._interfaceOf( MemberInterface.class );
+            _JavaLoader._Interface.from(  MemberInterface.class );
+            //_Load._interfaceOf( MemberInterface.class );
         _class _c = (_class)_i.getNesteds().getByName( "NestedClass" );
         _interface _ni = (_interface)_i.getNesteds().getByName( "NestedInterface" );
         _enum _e = (_enum)_i.getNestedByName( "NestedEnum" );
@@ -103,10 +104,10 @@ public class _JavaLoaderNestedTestCase
         
         //System.out.println( MemberInterface.NestedClass.class.getName().replace( "." +this.getClass().getSimpleName(), "") );
         System.out.println( names );
-        assertTrue( names.contains( "MemberInterface$NestedClass" ) );
-        assertTrue( names.contains( "MemberInterface$NestedInterface" ) );
-        assertTrue( names.contains( "MemberInterface$NestedInterface$DeepNest" ) );
-        assertTrue( names.contains( "MemberInterface$NestedEnum" ) );
+        assertTrue( names.contains( "varcode.java.load.MemberInterface$NestedClass" ) );
+        assertTrue( names.contains( "varcode.java.load.MemberInterface$NestedInterface" ) );
+        assertTrue( names.contains( "varcode.java.load.MemberInterface$NestedInterface$DeepNest" ) );
+        assertTrue( names.contains( "varcode.java.load.MemberInterface$NestedEnum" ) );
         
         System.out.println( MemberInterface.class );
         System.out.println( MemberInterface.class.getName() );

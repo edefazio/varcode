@@ -17,7 +17,7 @@ package tutorial.varcode.chapx.appendix;
 
 import junit.framework.TestCase;
 import varcode.java.lang._class;
-import varcode.java.load._Load;
+import varcode.java.load._JavaLoader;
 
 /**
  * varcode can create ad hoc Object instances
@@ -44,7 +44,7 @@ public class _3_LoadAndModifyInstance
     
     public void testAuthorDynamicInstance()
     {
-        _class _c = _Load._classOf( SkeletonBean.class );
+        _class _c = _JavaLoader._Class.from( SkeletonBean.class );
         _c.setName( "AuthoredBean" );
         _c.property( "private String name;" );//add field, getter setter
         _c.property( "private final int count;" );

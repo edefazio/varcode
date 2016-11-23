@@ -1,5 +1,7 @@
 package varcode.java.load;
 
+import com.github.javaparser.ParseException;
+import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.EnumDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
@@ -10,6 +12,7 @@ import varcode.java.lang._fields._field;
 import varcode.java.lang._interface;
 import varcode.java.lang._methods;
 import varcode.java.lang._methods._method;
+import varcode.load.BaseSourceLoader;
 import varcode.load.SourceLoader.SourceStream;
 
 /**
@@ -43,15 +46,22 @@ public class _LoadTest
         }
     }
 
-    static final _Load LOADER = _Load.INSTANCE;
-    public void testLoadMemberClass()
+    //static final _JavaLoader LOADER = _Load.INSTANCE;
+    public void testLoadMemberClass() throws ParseException
     {
-        SourceStream source = 
-            LOADER.sourceOf( MemberClass.class );
+        //SourceStream source = 
+        //    BaseSourceLoader.INSTANCE.sourceStream( MemberClass.class );
+            //LOADER.sourceOf( MemberClass.class );
 
-        System.out.println( source.asString() );
+        SourceStream ss = _java.sourceFrom( MemberClass.class );
         
-        TypeDeclaration dec = LOADER.astNodeOf( MemberClass.class );
+        System.out.println( ss.asString() );
+        
+        CompilationUnit astRoot = _java.astFrom( _LoadTest.class );        
+        TypeDeclaration dec = JavaASTParser.findClassDeclaration(
+            astRoot,
+            MemberClass.class );
+        
         assertTrue( dec instanceof ClassOrInterfaceDeclaration );
         assertFalse( ((ClassOrInterfaceDeclaration)dec).isInterface() );        
     }
@@ -73,15 +83,16 @@ public class _LoadTest
     public void testLoadMemberInterface()
     {
         SourceStream source = 
-            LOADER.sourceOf( MemberInterface.class );
+            BaseSourceLoader.INSTANCE.sourceStream( MemberInterface.class );
+            //LOADER.sourceOf( MemberInterface.class );
         
         System.out.println( source );
         
-        TypeDeclaration dec = LOADER.astNodeOf( MemberInterface.class );
+        TypeDeclaration dec = _java.astDeclarationFrom( MemberInterface.class );
         assertTrue( dec instanceof ClassOrInterfaceDeclaration );
         assertTrue( ((ClassOrInterfaceDeclaration)dec).isInterface() );
         
-        _interface _i = LOADER._interfaceOf( MemberInterface.class );
+        _interface _i = _java._interfaceFrom( MemberInterface.class );
         
         assertEquals( _i.getName(), "MemberInterface" );
         assertEquals( _i.getSignature().getExtends().getAt( 0 ), "Serializable" );
@@ -126,11 +137,11 @@ public class _LoadTest
     public void testLoadMemberEnum()
     {
         SourceStream source = 
-            LOADER.sourceOf( MemberEnum.class );
+            _java.sourceFrom( MemberEnum.class );
         
         System.out.println( source );
         
-        TypeDeclaration dec = LOADER.astNodeOf( MemberEnum.class );
+        TypeDeclaration dec = _java.astDeclarationFrom( MemberEnum.class );
         assertTrue( dec instanceof EnumDeclaration );
     }
         

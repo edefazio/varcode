@@ -53,6 +53,7 @@ public enum JavaASTParser
     {
         return JavaParser.parse( javaSourceInputStream );           
     }
+    
         
     public static CompilationUnit astFrom( String string )
         throws ParseException
@@ -202,9 +203,10 @@ public enum JavaASTParser
         CompilationUnit cu, String name )
     {
         List<TypeDeclaration> types =  cu.getTypes();
-        //System.out.println( "LOOKING FOR "+ clazz.getSimpleName() );
+        System.out.println( "LOOKING FOR \"" + name + "\"" );
         for( int i = 0; i < types.size(); i++ )
         {
+            System.out.println( "FOund "+ types.get( i ).getName() );
             TypeDeclaration td = types.get( i );
             
             if( td.getName().equals( name ) )

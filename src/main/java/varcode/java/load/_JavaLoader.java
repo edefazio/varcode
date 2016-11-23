@@ -232,6 +232,13 @@ public class _JavaLoader
             return _Class.from( BaseSourceLoader.INSTANCE, clazz );
         }
         
+        public static _class from( CompilationUnit astRoot, Class clazz )
+        {
+            ClassOrInterfaceDeclaration astClassDecl = 
+                JavaASTParser.findClassDeclaration( astRoot, clazz );
+            return Java_LangModelCompiler._classFrom( astRoot, astClassDecl );
+        }
+        
         public static _class from( SourceLoader sourceLoader, Class clazz )
         {
             if( clazz.isMemberClass() )
@@ -263,12 +270,12 @@ public class _JavaLoader
                     }
                     
                     //Parse the Declaring Class into an AST
-                    CompilationUnit cu = 
+                    CompilationUnit astRoot = 
                         JavaASTParser.astFrom( ss.getInputStream() );
                     
-                    TypeDeclaration classDecl = 
-                        JavaASTParser.findTypeDeclaration( cu, clazz );
-                    
+                    return from( astRoot, clazz );
+                    //return Java_LangModelCompiler._classFrom( astRoot, astClassDecl );
+                    /*
                     if( classDecl instanceof ClassOrInterfaceDeclaration )
                     {
                         ClassOrInterfaceDeclaration cd = (ClassOrInterfaceDeclaration) classDecl;
@@ -282,6 +289,7 @@ public class _JavaLoader
                             throw new ModelLoadException( clazz + " is an interface " ); 
                         }
                     }
+                    */
                 }
                 catch( ParseException pe )
                 {
@@ -295,17 +303,18 @@ public class _JavaLoader
             {
                 // parse the file
                 //CompilationUnit cu = JavaParser.parse( ss.getInputStream() );
-                CompilationUnit cu = 
+                CompilationUnit astRoot = 
                     JavaASTParser.astFrom( ss.getInputStream() );
                 
+                return from( astRoot, clazz );
                 //ClassOrInterfaceDeclaration classDecl = 
                 //    JavaASTParser.getClassNode( cu );
                 
-                ClassOrInterfaceDeclaration classDecl = 
-                    JavaASTParser.findClassDeclaration( cu, clazz );
+                //ClassOrInterfaceDeclaration classDecl = 
+                //    JavaASTParser.findClassDeclaration( cu, clazz );
                 
                 //return JavaASTParser._Class.fromCompilationUnit( cu, classDecl );
-                return Java_LangModelCompiler._classFrom( cu, classDecl );
+                //return Java_LangModelCompiler._classFrom( cu, classDecl );
             }    
             catch( ParseException pe )
             {
