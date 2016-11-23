@@ -285,7 +285,11 @@ public class _methods
         public static _method of( String methodSignature, _code body )
         {
             _method m = new _method( methodSignature );
-            return m.body( body );            
+            if( body != null && !body.isEmpty() )
+            {
+                return m.body( body );
+            }
+            return m;
         }
 		
         public static _method of( String signature, Object... body )

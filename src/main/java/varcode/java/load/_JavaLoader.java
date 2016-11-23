@@ -131,7 +131,7 @@ public class _JavaLoader
                     JavaASTParser.astFrom( ss.getInputStream() );
                 
                 ClassOrInterfaceDeclaration classDecl = 
-                    JavaASTParser.findClassDeclaration( cu, clazz );
+                    JavaASTParser.findInterfaceDeclaration( cu, clazz );
                 
                 //ClassOrInterfaceDeclaration classDecl = 
                 //    JavaASTParser.getClassNode( cu );

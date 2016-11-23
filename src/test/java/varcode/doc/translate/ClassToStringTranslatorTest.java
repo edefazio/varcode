@@ -1,7 +1,6 @@
 package varcode.doc.translate;
 
 import junit.framework.TestCase;
-import varcode.doc.translate.ClassToStringTranslate;
 
 public class ClassToStringTranslatorTest
 	extends TestCase 
@@ -9,7 +8,7 @@ public class ClassToStringTranslatorTest
 
 	public void testTranslate()
     {
-    	assertEquals( "String", 
+    	assertEquals( "java.lang.String", 
     		ClassToStringTranslate.INSTANCE.translate( String.class ) );
     }
 	

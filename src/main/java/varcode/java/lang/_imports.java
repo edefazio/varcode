@@ -1,6 +1,7 @@
 package varcode.java.lang;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 import varcode.Model.LangModel;
@@ -60,16 +61,16 @@ public class _imports
     public _imports replace( String target, String replacement )
     {
         Set<String> replaced = new TreeSet<String>();
-        String[] classes = this.importClasses.toArray( new String[0] );
-        for( int i=0; i< classes.length; i++ )
+        String[] classes = this.importClasses.toArray( new String[ 0 ] );
+        for( int i = 0; i < classes.length; i++ )
         {
             replaced.add( classes[ i ].replace( target, replacement ) ); 
         }
         this.importClasses = replaced;
         
         Set<String> replacedStatic = new TreeSet<String>();
-        classes = this.staticImports.toArray( new String[0] );
-        for( int i=0; i< classes.length; i++ )
+        classes = this.staticImports.toArray( new String[ 0 ] );
+        for( int i = 0; i < classes.length; i++ )
         {
             replacedStatic.add( classes[ i ].replace( target, replacement ) ); 
         }
@@ -168,6 +169,27 @@ public class _imports
     // we dont need to import these Strings */
     public static final String[] PRIMITIVES = new String[]
         {"boolean", "byte", "char", "double", "float", "int", "long", "short"};
+    public static final Set<Object> EXCLUDE_IMPORTS =
+        new HashSet<Object>();
+    static
+    {
+        Object[] exclude = {
+            String.class, String.class.getName(), 
+            Boolean.class, Boolean.class.getName(), 
+            Byte.class, Byte.class.getName(),
+            Character.class, Character.class.getName(),
+            Double.class, Double.class.getName(),
+            Float.class, Float.class.getName(),
+            Integer.class, Integer.class.getName(),
+            Long.class, Long.class.getName(),
+            Short.class, Short.class.getName(),
+
+            Class.class, Class.class.getName(),
+            ClassNotFoundException.class, ClassNotFoundException.class.getName(),
+            
+        }; 
+        EXCLUDE_IMPORTS.addAll( Arrays.asList( exclude ) );
+    }
     
 	private _imports addImport( Set<String>imports, Object importClass, boolean isStatic )
 	{
@@ -176,14 +198,17 @@ public class _imports
 			Class<?> clazz = (Class<?>)importClass;
 			if( clazz.isArray() )
 			{
-				return addImport( imports, clazz.getComponentType(), isStatic );
+				return addImport( 
+                    imports, clazz.getComponentType(), isStatic );
 			}
 			if( !clazz.isPrimitive() 
-				&& !clazz.getPackage().getName().equals( "java.lang" ) )
+				&& !EXCLUDE_IMPORTS.contains( clazz ) )
+                //&& !clazz.getPackage().getName().equals( "java.lang" ) )
 			{   //dont need to add primitives or java.lang classes
 				if( isStatic )
 				{  // they want us to model a class (statically) 
-					imports.add( clazz.getCanonicalName() + ".*" );
+					//imports.add( clazz.getCanonicalName() + ".*" );
+                    this.staticImports.add( clazz.getCanonicalName() + ".*" );
 				}
 				else
 				{
@@ -194,11 +219,21 @@ public class _imports
 		else if( importClass instanceof String )
 		{
 			String s = (String)importClass;
+            
             if( Arrays.binarySearch( PRIMITIVES, s ) < 0 
-                && !s.startsWith( "java.lang" ) 
+                //&& !s.startsWith( "java.lang" ) 
+                && !EXCLUDE_IMPORTS.contains( s )
                 && !s.equals( "class" ) )
             {
-                imports.add( s );
+                if( isStatic )
+                {
+                    //if( s.endsWith( "*" ))
+                    staticImports.add( s );
+                }
+                else
+                {
+                    imports.add( s );
+                }
             }			
 		}
 		else if( importClass.getClass().isArray() )
@@ -228,5 +263,4 @@ public class _imports
 		this.importClasses.addAll( toMerge.importClasses );
 		this.staticImports.addAll( toMerge.staticImports );
 	}	
-
 }

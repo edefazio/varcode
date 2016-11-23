@@ -4,10 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
 import junit.framework.TestCase;
-import varcode.doc.translate.TranslateBuffer;
-import varcode.doc.translate.Translator;
 import varcode.context.VarBindings;
 import varcode.context.eval.Eval_JavaScript;
 
@@ -113,7 +110,10 @@ public class TranslateBufferTest
 			Boolean.class, Character.class, Integer.class, Float.class, Byte.class, Short.class, Long.class, Double.class, String.class });
 		
 		assertEquals( 
-			"Boolean, Character, Integer, Float, Byte, Short, Long, Double, String", sb.toString() );
+			"java.lang.Boolean, java.lang.Character, java.lang.Integer," +
+            " java.lang.Float, java.lang.Byte, java.lang.Short," + 
+            " java.lang.Long, java.lang.Double, java.lang.String", 
+            sb.toString() );
 	}
 	
 	public void testClassNonJavaLang() 

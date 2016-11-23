@@ -23,6 +23,7 @@ import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.EnumConstantDeclaration;
 import com.github.javaparser.ast.body.EnumDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
+import com.github.javaparser.ast.body.InitializerDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.VariableDeclarator;
@@ -41,7 +42,6 @@ import varcode.java.lang._enum;
 import varcode.java.lang._fields;
 import varcode.java.lang._fields._field;
 import varcode.java.lang._interface;
-import varcode.java.lang._javadoc;
 import varcode.java.lang._methods;
 import varcode.java.lang._methods._method;
 import varcode.java.lang._modifiers;
@@ -272,9 +272,11 @@ public class Java_LangModelCompiler
                 _nestedEnum = _enumFromAST( _nestedEnum, astNestedEnum );
                 _int.nest( _nestedEnum );
             }
+            
             else
             {
-                LOG.error(" UNKNOWN AST MEMBER " + astMember );
+                LOG.error(" UNKNOWN AST MEMBER " + astMember + System.lineSeparator() 
+                    + " of " + astMember.getClass() );         
             }
         }            
         return _int;            
@@ -430,10 +432,15 @@ public class Java_LangModelCompiler
                 
                 List<AnnotationExpr> astMethodAnnots = 
                     astMethodDecl.getAnnotations();
-                
-                String body = astMethodDecl.getBody().toString();
-                body = body.substring( 
-                    body.indexOf( '{' ) + 1, body.lastIndexOf( "}" ) ).trim();
+                String body = null;
+                if( astMethodDecl.getBody() != null )
+                {
+                    //I could "getStatements()"
+                    //TODO I need to normalize the code inside methods
+                    body = astMethodDecl.getBody().toString();
+                    body = body.substring( 
+                        body.indexOf( "{" ) + 1, body.lastIndexOf( "}" ) ).trim();
+                }
                 
                 if( astMethodDecl.getJavaDoc() == null )
                 {
@@ -448,7 +455,11 @@ public class Java_LangModelCompiler
                 else
                 {
                     _method _meth = _method.of(
-                        astMethodDecl.getJavaDoc().getContent(), methd, body );      
+                        astMethodDecl.getJavaDoc().getContent(), methd );
+                    if( body != null )
+                    {
+                        _meth.body( body );
+                    }
                     for( int k = 0; k < astMethodAnnots.size(); k++ )
                     {
                         _meth.annotate( astMethodAnnots.get( k ).toString() );
@@ -526,9 +537,26 @@ public class Java_LangModelCompiler
                 _nestedEnum = _enumFromAST( _nestedEnum, astNestedEnumDecl );
                 _c.nest( _nestedEnum );
             }
+            else if( astMember instanceof InitializerDeclaration )
+            {   //static block
+                InitializerDeclaration astBlock = 
+                    (InitializerDeclaration)astMember;
+                
+                if( astBlock.isStatic() )
+                {
+                    _c.staticBlock( astBlock.getBlock().getStmts().toArray() );
+                }
+                else
+                {
+                    //code block??
+                    LOG.error(" UNKNOWN CLODE BLOCK MEMBER " + astMember + System.lineSeparator() 
+                        + " of " + astMember.getClass() );   
+                }
+            }
             else
             {
-                LOG.error( "Unable to handle AST MEMBER "+ astMember );                
+                LOG.error( "Unable to handle AST MEMBER "+ astMember + System.lineSeparator() 
+                    + " of " + astMember.getClass() );                        
             }
         }
         return _c;       
@@ -660,8 +688,8 @@ public class Java_LangModelCompiler
                 
                 if( astConstDecl.getJavaDoc() != null )
                 {
-                    _javadoc doc = new _javadoc();
-                    _ctor.javadoc( doc.getComment() );    
+                    //_javadoc doc = new _javadoc();
+                    _ctor.javadoc( astConstDecl.getJavaDoc().getContent() );    
                 }
                 
                 _e.constructor( _ctor );
@@ -767,7 +795,8 @@ public class Java_LangModelCompiler
             }
             else
             {
-                LOG.error( "Unhandled AST Member " + astMember );              
+                LOG.error( "Unhandled AST Member " + astMember + System.lineSeparator() 
+                    + " of " + astMember.getClass() );              
             }
         }
         return _e;

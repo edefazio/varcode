@@ -5,7 +5,6 @@
  */
 package varcode.java.lang;
 
-import varcode.java.lang._throws;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import junit.framework.TestCase;
@@ -117,7 +116,7 @@ public class _throwsTest
                 new Class[]{ FileNotFoundException.class, RuntimeException.class} ) ).author();
         
         assertEquals( N 
-            + "    throws java.io.FileNotFoundException, RuntimeException",
+            + "    throws java.io.FileNotFoundException, java.lang.RuntimeException",
             res );        
     }
 

@@ -16,6 +16,7 @@ public enum ClassToStringTranslate
 {
     INSTANCE;
         
+    @Override
     public Object translate( Object source )
     {
     	if( source == null )
@@ -26,9 +27,9 @@ public enum ClassToStringTranslate
         {
         	Class<?> clazz = (Class<?>)source;
                 
-            if( !clazz.isPrimitive()
-                && clazz.getPackage() != null	
-                && clazz.getPackage().getName().equals( "java.lang" ) )
+            if( clazz.isPrimitive() )
+                //&& clazz.getPackage() != null	
+                //&& clazz.getPackage().getName().equals( "java.lang" ) )
             {
                 return clazz.getSimpleName();
             }

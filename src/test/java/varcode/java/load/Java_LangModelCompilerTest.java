@@ -17,10 +17,13 @@ package varcode.java.load;
 
 import com.github.javaparser.ParseException;
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import junit.framework.TestCase;
 import varcode.java.lang._class;
 import varcode.java.lang._enum;
 import varcode.java.lang._interface;
+import varcode.load.BaseSourceLoader;
+import varcode.load.SourceLoader.SourceStream;
 
 /**
  *
@@ -40,6 +43,28 @@ public class Java_LangModelCompilerTest
             JavaASTParser.findClassDeclaration( cu, "A" ) );
         
         assertEquals( "A", _c.getName() );        
+    }
+    
+    
+    public void testBigClass() throws ParseException
+    {
+        //Load the Source for the Class
+        SourceStream ss = 
+            BaseSourceLoader.INSTANCE.sourceStream( LargeTopLevelClass.class );
+        
+        //Create the AST root from the Source File
+        CompilationUnit astRoot = 
+            JavaASTParser.astFrom( ss.getInputStream() );
+        
+        //find the class AST declaration within the rootAST
+        ClassOrInterfaceDeclaration astClass = 
+            JavaASTParser.findClassDeclaration( 
+                astRoot, LargeTopLevelClass.class );
+        
+        //create the _class model
+        _class _c = Java_LangModelCompiler._classFrom( astRoot, astClass );
+        
+        System.out.println( _c.author() );
     }
     
     public void testInterface() throws ParseException
