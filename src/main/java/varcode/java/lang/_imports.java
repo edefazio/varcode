@@ -98,6 +98,11 @@ public class _imports
 		return importClasses.size() + staticImports.size();
 	}
 	
+    public boolean contains( Class clazz )
+    {
+        return this.importClasses.contains( clazz.getCanonicalName() );
+    }
+    
 	public boolean contains( String s )
 	{
 		return importClasses.contains( s ) || staticImports.contains( s );

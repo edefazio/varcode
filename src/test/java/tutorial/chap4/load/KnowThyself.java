@@ -1,65 +1,111 @@
-/*
- * Copyright 2016 Eric DeFazio.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package tutorial.chap4.load;
 
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.BodyDeclaration;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
+import java.util.List;
 import junit.framework.TestCase;
 import varcode.java.lang._class;
+import varcode.java.lang._methods._method;
 import varcode.java.load._java;
 import varcode.load.SourceLoader.SourceStream;
 
 /**
- *
- * @author Eric DeFazio
+ * 
+ * @author Eric DeFazio eric@varcode.io
  */
 public class KnowThyself
     extends TestCase
 {
+    /** Load the Source that makes up this class at runtime */
     public void testLoadSource()
     {        
-        //Load the Source that makes up this class at runtime
         SourceStream ss = _java.sourceFrom( KnowThyself.class );
-        System.out.println( ss.asString() );
+        //System.out.println( ss.asString() );
     }
     
-    
+    /** 
+     * Load the AST (Abstract Syntax Tree) Model that represents 
+     * this class at runtime (First reads the source, then parses out
+     * the AST from the source).
+     * the AST ROOT contains package, and import information AS 
+     * well as the KnowThyself Type Declaration (as a CHILD NODE)
+     */
     public void testLoadAST()
     {
-        //Load the AST Model that represents this class at runtime
-        // the ROOT contains package, and import information AS well as
-        // the KnowThyself class Declaration
         CompilationUnit astRoot = _java.astFrom( KnowThyself.class );
-        System.out.println( astRoot );
+        //System.out.println( astRoot );
+        List<TypeDeclaration> types = astRoot.getTypes();
+        assertEquals( 1, types.size() );
+        
+        //here we can ger the AST type declaration (child) from the AST root
+        ClassOrInterfaceDeclaration astClass = 
+            (ClassOrInterfaceDeclaration)types.get( 0 ); 
+        assertEquals( "KnowThyself", astClass.getName() );
+        assertEquals( java.lang.reflect.Modifier.PUBLIC, astClass.getModifiers() ); 
     }
     
+    /**
+     * Load the AST child node (the TypeDeclaration) that represents the
+     * declaration of KnowThySelf
+     */
     public void testLoadASTTypeDeclaration()
     {
-        //Load the AST model of the TypeDeclaration ( this is an AST node
-        // that is a CHILD of the astRoot CompilationUnit )
-        TypeDeclaration astClassDef = _java.astDeclarationFrom( KnowThyself.class );        
-        System.out.println( astClassDef );
+        TypeDeclaration astClassDef = 
+            _java.astDeclarationFrom( KnowThyself.class );
+        assertEquals( "KnowThyself", astClassDef.getName() );
+        assertEquals( java.lang.reflect.Modifier.PUBLIC, astClassDef.getModifiers() );        
+        
+        //Members are fields, methods, nested classes, enums, interfaces, static blocks...
+        List<BodyDeclaration> members = astClassDef.getMembers();
+        
+        //get the 
+        for( int i = 0;i < members.size(); i++ )
+        {
+            if( members.get( i ) instanceof MethodDeclaration )
+            {
+                MethodDeclaration astMethod 
+                    = (MethodDeclaration)members.get( i );
+                
+                if( "testLoadASTTypeDeclaration".equals( astMethod.getName() ) )
+                {
+                    assertEquals( 
+                        java.lang.reflect.Modifier.PUBLIC, astMethod.getModifiers() );
+                    
+                    assertEquals( "void", astMethod.getType().toString() );
+                    assertEquals( 0, astMethod.getTypeParameters().size() );
+                    assertEquals( 0, astMethod.getThrows().size());
+                }
+            }
+        }
     }
     
+    /**
+     * loads the _class LangModel from the Class at runtime
+     */
     public void testLoad_LangModel()
     {   
         //Load a _LangModel based on the code (from the AST)
         _class _c = _java._classFrom( KnowThyself.class );
         assertEquals( "KnowThyself", _c.getName() );
         assertEquals( "tutorial.chap4.load", _c.getClassPackage().getName() );
-        assertNotNull( _c.getMethodNamed( "testLoad_LangModel" ) );
+        assertTrue( _c.getModifiers().contains( "public" ) );
+        
+        _method _m = _c.getMethodNamed( "testLoad_LangModel" );
+        assertNotNull( _m );
+        
+        assertTrue( _m.getModifiers().contains( "public" ) );
+        assertEquals( "void", _m.getReturnType() );
+        
+        
+        assertEquals( "TestCase",  _c.getSignature().getExtends().getAt( 0 ) );
+        assertTrue( _c.getImports().contains( TestCase.class ) );
+        assertTrue( _c.getImports().contains( CompilationUnit.class ) );
+        assertTrue( _c.getImports().contains( TypeDeclaration.class ) );
+        assertTrue( _c.getImports().contains( _class.class ) );
+        assertTrue( _c.getImports().contains( _java.class ) );
+        assertTrue( _c.getImports().contains( SourceStream.class ) );
     }
 }
