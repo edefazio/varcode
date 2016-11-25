@@ -28,6 +28,8 @@ import varcode.java.lang._class;
 import varcode.java.lang._component;
 import varcode.java.lang._enum;
 import varcode.java.lang._interface;
+import varcode.java.load.JavaASTParser;
+import varcode.java.load.Java_LangModelCompiler;
 import varcode.load.BaseSourceLoader;
 import varcode.load.SourceLoader;
 import varcode.load.SourceLoader.SourceStream;
