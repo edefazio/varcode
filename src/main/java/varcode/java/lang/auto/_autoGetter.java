@@ -42,7 +42,7 @@ public class _autoGetter
     }
     public static _method of( Object type, String fieldName )
     {
-        System.out.println( "HERE" );
+        //System.out.println( "HERE" );
         return _method.of( 
             "public " + type + " get" + firstCaps( fieldName) +"( )",
             _code.of( "return this." + fieldName + ";" ) );            

@@ -69,11 +69,14 @@ public class JavaTranslate
     	}
     	if( input instanceof CharSequence )
     	{
+            
             String str = ((CharSequence)input).toString();
+            /*
     		if( str.startsWith( "java.lang." ) )
             {
                 return str.substring( "java.lang.".length() );
             }
+            */
             return str;
     	}    	
     	if( input.getClass().isArray() )
@@ -111,10 +114,12 @@ public class JavaTranslate
     	}
     	//if there was no translation, just append
     	String str = translated.toString();
+        /*
         if( str.startsWith( "java.lang." ) )
         {
             return str.substring( "java.lang.".length() );
         }
+        */
         return str;
     }   
 }

@@ -17,6 +17,7 @@ package varcode.doc.translate;
 
 import java.lang.reflect.AnnotatedType;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,14 @@ import varcode.doc.translate.TypeTranslateTest.AClass;
 public class JavaTranslateTest
     extends TestCase
 {
+    
+    public void testReflectModifier()
+    {
+        System.out.println( T.translate("java.lang.reflect.Modifier;" ) );
+        System.out.println( T.translate( Modifier.class ) );
+        
+        assertEquals( "java.lang.reflect.Modifier" , T.translate( Modifier.class ) );
+    }
     public void testTranslatePrimitives()
     {
         //assertEquals( JTranslate.INSTANCE.translate( 'c' ), "'c'");
@@ -51,13 +60,13 @@ public class JavaTranslateTest
         AnnotatedType at = AClass.class.getMethod( "doNothing", String.class )
             .getAnnotatedParameterTypes()[0]; 
         
-        assertEquals( "String", 
+        assertEquals( "java.lang.String", 
             T.translate( at ) );
         
         Type pt = AClass.class.getMethod( "doNothing", String.class )
             .getParameterTypes()[0]; 
         
-        assertEquals( "String", 
+        assertEquals( "java.lang.String", 
             T.translate( pt ) );
         
         
@@ -77,7 +86,7 @@ public class JavaTranslateTest
             "java.util.Map<java.lang.String, java.util.List<java.lang.Integer>>, java.lang.String, int", annParam );
         
         assertEquals( 
-            "java.util.Map, String, int", param );
+            "java.util.Map, java.lang.String, int", param );
         
         
         assertEquals( "int", 

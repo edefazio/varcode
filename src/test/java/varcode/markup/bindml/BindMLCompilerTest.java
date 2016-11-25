@@ -57,7 +57,7 @@ public class BindMLCompilerTest
         AddForm af = (AddForm)m;
         assertEquals( "", af.derive(VarContext.of() ) );
         assertEquals( "int 3", af.derive(VarContext.of("type", int.class, "value", 3) ) );
-        assertEquals( "int 3, String 4", af.derive(
+        assertEquals( "int 3, java.lang.String 4", af.derive(
             VarContext.of( "type", new Class[]{int.class, String.class}, "value", new Object[]{3, 4}) ) );        
     }
     

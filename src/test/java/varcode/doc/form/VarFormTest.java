@@ -37,7 +37,7 @@ public class VarFormTest
 			
 		//System.out.println( formed );
 			
-		assertEquals( "public String A; public String B;", formed );
+		assertEquals( "public java.lang.String A; public java.lang.String B;", formed );
 			
 		formed = vf.compose(
 			VarContext.of(
@@ -46,7 +46,7 @@ public class VarFormTest
 		
 		//System.out.println( formed );
 		
-		assertEquals( "public String A;", formed );
+		assertEquals( "public java.lang.String A;", formed );
 	}
 	
 	public void testOnlyVarInline()

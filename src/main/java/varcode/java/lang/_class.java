@@ -869,6 +869,15 @@ public class _class
         return this.javadoc;
     }
     
+    public String getPackageName()
+    {
+        if( this.classPackage != null )
+        {
+            return this.classPackage.getName();
+        }
+        return null;
+    }
+    
     public _package getClassPackage()
     {
         return this.classPackage;

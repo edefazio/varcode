@@ -24,7 +24,7 @@ public class _fieldsTest
         _field f = _field.of( "public {+type+} {+name+}" );
         f.bind(VarContext.of( 
             "type", String.class, "name", "firstName") );
-        assertEquals( "public String firstName;", f.toString() );
+        assertEquals( "public java.lang.String firstName;", f.toString() );
         
         f = _field.of( "public {+type+} {+name+}" );
         f.annotate("@{+ann+}");
@@ -32,7 +32,7 @@ public class _fieldsTest
             "ann", "Deprecated", "type", String.class, "name", "firstName") );
         assertEquals( 
             "@Deprecated" + N +
-            "public String firstName;", f.toString() );        
+            "public java.lang.String firstName;", f.toString() );        
     }
     
     public void testBindInFields()

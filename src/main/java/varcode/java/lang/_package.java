@@ -98,7 +98,6 @@ public class _package
         if( this.name != null )
         {
             String res = Compose.asString( BindML.compile( this.name ), context );
-            System.out.println ( "RED" + res );
             this.name = res;
         }
         return this;

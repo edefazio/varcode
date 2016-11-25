@@ -203,10 +203,10 @@ public enum JavaASTParser
         CompilationUnit cu, String name )
     {
         List<TypeDeclaration> types =  cu.getTypes();
-        System.out.println( "LOOKING FOR \"" + name + "\"" );
+        //System.out.println( "LOOKING FOR \"" + name + "\"" );
         for( int i = 0; i < types.size(); i++ )
         {
-            System.out.println( "FOund "+ types.get( i ).getName() );
+            //System.out.println( "FOund "+ types.get( i ).getName() );
             TypeDeclaration td = types.get( i );
             
             if( td.getName().equals( name ) )

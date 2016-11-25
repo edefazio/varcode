@@ -429,10 +429,10 @@ public class _methods
 
         public VarContext getContext()
         {
-			return VarContext.of( "javadocComment", javadoc,
+            return VarContext.of( "javadocComment", javadoc,
                 "methodAnnotations", annotations,    
                 "methodSignature", signature,                        
-				"methodBody", methodBody );
+		"methodBody", methodBody );
         }
         
         @Override
@@ -442,18 +442,19 @@ public class _methods
         }
         
         @Override
-		public String author( Directive... directives ) 
-		{            
-			if( this.methodBody == null || this.methodBody.isEmpty() )
-			{
-				return Compose.asString( NO_BODY_METHOD, 
-					getContext(),
-					directives );
-			}
-			return Compose.asString( METHOD, 
-				getContext(),
-				directives );
-		}
+        public String author( Directive... directives ) 
+	{            
+            if( this.methodBody == null || this.methodBody.isEmpty() )
+            {
+                return Compose.asString( 
+                    NO_BODY_METHOD, 
+                    getContext(),
+                    directives );
+            }
+            return Compose.asString( METHOD, 
+		getContext(),
+		directives );
+        }
 		
         public String getReturnType()
         {

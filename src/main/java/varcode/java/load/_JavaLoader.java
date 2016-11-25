@@ -82,7 +82,6 @@ public class _JavaLoader
                 SourceStream ss = null;
                 try
                 {
-                    System.out.println( "IS MEMBER INTERFACE ");
                     // we have to find the source of the Member class WITHIN the 
                     // source of the declaring class
                     Class declaringClass = clazz.getDeclaringClass();
@@ -383,7 +382,7 @@ public class _JavaLoader
                 SourceStream ss = null;
                 try
                 {
-                    System.out.println( "IS MEMBER ENUM ");
+                    //System.out.println( "IS MEMBER ENUM ");
                     // we have to find the source of the Member class WITHIN the 
                     // source of the declaring class
                     Class declaringClass = clazz.getDeclaringClass();
