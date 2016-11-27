@@ -2,9 +2,8 @@ package tutorial.varcode.chapx.appendix;
 
 import java.util.UUID;
 import junit.framework.TestCase;
-import varcode.java.Java;
 import varcode.java.langmodel._class;
-import varcode.java.load._java;
+import varcode.java._Java;
 
 /**
  * "Tailoring" .java code in varcode involves
@@ -39,7 +38,7 @@ public class _2_TailorCode
         // 1) find the .java source and load the _class for SourceClass
         //_class _c = _Load._classOf( SourceClass.class );
         //_class _c = _JavaLoader._Class.from( SourceClass.class );
-        _class _c = _java._classFrom( SourceClass.class );
+        _class _c = _Java._classFrom( SourceClass.class );
         
         // 2) mutate the 
         _c.imports( UUID.class );
@@ -59,18 +58,18 @@ public class _2_TailorCode
         
         //invoke the static greetings method on the "Tailored" ad hoc class
         assertEquals( "Tailored Greeting!", 
-            Java.invoke( adHocClass, "greetings" ) );        
+            _Java.invoke( adHocClass, "greetings" ) );        
         
         //create a new instance of the "Tailored" class
         Object instance = _c.instance();
         
         //set the name and count on the instance
-        Java.invoke( instance, "setName", "Eric" );
-        Java.invoke( instance, "setCount", 10 );
+        _Java.invoke( instance, "setName", "Eric" );
+        _Java.invoke( instance, "setCount", 10 );
         
         //verify the name and count on the instance
-        assertEquals( 10, Java.invoke( instance,"getCount" ) );
-        assertEquals( "Eric", Java.invoke( instance,"getName" ) );
+        assertEquals( 10, _Java.invoke( instance,"getCount" ) );
+        assertEquals( "Eric", _Java.invoke( instance,"getName" ) );
         
     }
 }

@@ -15,10 +15,9 @@
  */
 package varcode.java.load;
 
-import varcode.java.load._java;
 import com.github.javaparser.ast.CompilationUnit;
 import junit.framework.TestCase;
-import varcode.java.ast.JavaASTToCodeVisitor;
+import varcode.java._Java;
 
 /**
  *
@@ -34,9 +33,9 @@ public class FormatCodeTest
         //CompilationUnit cu = JavaParser.parse(code);
         //_java.astTypeDeclarationFrom( FormatCodeTest.class );
         CompilationUnit cu = 
-            _java.astFrom( "class A { int f; void foo(int p) { return 'z'; }}" );
+            _Java.astFrom( "class A { int f; void foo(int p) { return 'z'; }}" );
         
-        _java._classFrom( "public class A {}" );
+        _Java._classFrom( "public class A {}" );
         
         //String source = JavaASTToCodeVisitor.print( cu );
         //System.out.println( source );

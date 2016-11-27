@@ -2,7 +2,7 @@ package tutorial.varcode.chap4.markup;
 
 import junit.framework.TestCase;
 import varcode.doc.Dom;
-import varcode.java.Java;
+import varcode.java._Java;
 import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.adhoc.AdHocJavaFile;
 import varcode.java.adhoc.Workspace;
@@ -32,14 +32,14 @@ public class _1_BindML_JavaClass
     
     public void testBindMLJavaFile()
     {
-        AdHocJavaFile javaFile = Java.author( "MyClass", ClassDom, 
+        AdHocJavaFile javaFile = _Java.author( "MyClass", ClassDom, 
             "className", "MyClass" );
         
         System.out.println( javaFile );
         
         AdHocClassLoader adHoc = Workspace.compileNow( javaFile );
 
-        javaFile = Java.author( "MyClass", ClassDom, 
+        javaFile = _Java.author( "MyClass", ClassDom, 
             "className", "MyClass", 
             "fieldType", int.class,
             "fieldName", "count" );        
@@ -47,7 +47,7 @@ public class _1_BindML_JavaClass
         //compile a new class with a single field
         adHoc = Workspace.compileNow( javaFile );
         
-        javaFile = Java.author( "MyClass", ClassDom, 
+        javaFile = _Java.author( "MyClass", ClassDom, 
             "className", "MyClass", 
             "fieldType", new Object[]{int.class, String.class},
             "fieldName", new String[]{"count","name"} );

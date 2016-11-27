@@ -1,7 +1,7 @@
 package tutorial.chap3.markup;
 /*{-*/
 import junit.framework.TestCase;
-import varcode.java.Java;
+import varcode.java._Java;
 import varcode.java.JavaCase;
 import varcode.java.langmodel._class;
 import varcode.java.langmodel._code;
@@ -47,7 +47,7 @@ public class /*{+className*/_4_CodeML_Model/*+}*/ /*{-*/extends TestCase/*-}*/
             "addFieldHere", f );
         
         Object instance = thisCase.instance( );
-        assertEquals( 1, Java.getFieldValue( instance, "VERSION" ) ); 
+        assertEquals( 1, _Java.getFieldValue( instance, "VERSION" ) ); 
     }
     
     public void testAddNestedClass()
@@ -74,10 +74,10 @@ public class /*{+className*/_4_CodeML_Model/*+}*/ /*{-*/extends TestCase/*-}*/
         
         //create an instance of the declared nested class 
         //(pasing in 321 in constructor)
-        Object nestedInstance = Java.instance( declaredClasses[ 0 ], 321 );
+        Object nestedInstance = _Java.instance( declaredClasses[ 0 ], 321 );
         
         //verify getId returns the value passed in via the consturctor
-        assertEquals(321, Java.invoke( nestedInstance, "getId" ) );                
+        assertEquals( 321, _Java.invoke( nestedInstance, "getId" ) );                
     }
     
     public void testAddNestedInterface()
@@ -98,11 +98,11 @@ public class /*{+className*/_4_CodeML_Model/*+}*/ /*{-*/extends TestCase/*-}*/
         
         //create an instance of the declared nested class 
         //(pasing in 321 in constructor)
-        //Object nestedInstance = Java.instance( declaredClasses[ 0 ], 321 );
+        //Object nestedInstance = _Java.instance( declaredClasses[ 0 ], 321 );
         
         //verify getId returns the value passed in via the consturctor
         assertEquals( Math.PI, 
-            Java.getFieldValue( declaredClasses[ 0 ], "PI" ) );                
+            _Java.getFieldValue( declaredClasses[ 0 ], "PI" ) );                
     }
     
     public void testAddNestedEnum()

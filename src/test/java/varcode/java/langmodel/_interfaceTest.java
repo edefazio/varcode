@@ -13,7 +13,7 @@ import java.util.UUID;
 import junit.framework.TestCase;
 import varcode.context.VarContext;
 import varcode.doc.Dom;
-import varcode.java.Java;
+import varcode.java._Java;
 import varcode.java.JavaCase;
 import varcode.java.langmodel._interface._signature;
 
@@ -105,7 +105,7 @@ public class _interfaceTest
         Field[] fields = theInterfaceClass.getDeclaredFields();
         
         assertEquals( 2, fields.length );        
-        assertEquals( 100, Java.getFieldValue( theInterfaceClass, "ID" ) );
+        assertEquals( 100, _Java.getFieldValue( theInterfaceClass, "ID" ) );
         
         Class[] declaredClasses = 
             theInterfaceClass.getDeclaredClasses();

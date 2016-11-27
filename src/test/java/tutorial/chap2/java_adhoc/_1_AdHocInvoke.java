@@ -4,7 +4,7 @@ import java.util.UUID;
 import junit.framework.TestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import varcode.java.Java;
+import varcode.java._Java;
 import varcode.java.langmodel._class;
 
 /**
@@ -36,7 +36,7 @@ public class _1_AdHocInvoke
                                            // compile & load adHocClass
         
         String id = //invoke the static method "doCreateId" on adHocClass
-            (String)Java.invoke( adHocClass, "doCreateId" );
+            (String)_Java.invoke( adHocClass, "doCreateId" );
         
         assertNotNull( id );
         
@@ -64,7 +64,7 @@ public class _1_AdHocInvoke
             _withInstanceMethod.instance( "pre" );//pass in "pre" to constructor
                                     
         String id = //invoke "createId" method on the "AdHoc" instance
-            (String)Java.invoke( instance, "createId" );
+            (String)_Java.invoke( instance, "createId" );
         
         assertTrue( id.startsWith( "pre" ) );
         LOG.debug( id ); 

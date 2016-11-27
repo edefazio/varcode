@@ -105,10 +105,10 @@ public class _JavaLoaderNestedTestCase
         
         //System.out.println( MemberInterface.NestedClass.class.getName().replace( "." +this.getClass().getSimpleName(), "") );
         System.out.println( names );
-        assertTrue( names.contains( "varcode.java.load.MemberInterface$NestedClass" ) );
-        assertTrue( names.contains( "varcode.java.load.MemberInterface$NestedInterface" ) );
-        assertTrue( names.contains( "varcode.java.load.MemberInterface$NestedInterface$DeepNest" ) );
-        assertTrue( names.contains( "varcode.java.load.MemberInterface$NestedEnum" ) );
+        assertTrue( names.contains( "varcode.java.load.langmodel.MemberInterface$NestedClass" ) );
+        assertTrue( names.contains( "varcode.java.load.langmodel.MemberInterface$NestedInterface" ) );
+        assertTrue( names.contains( "varcode.java.load.langmodel.MemberInterface$NestedInterface$DeepNest" ) );
+        assertTrue( names.contains( "varcode.java.load.langmodel.MemberInterface$NestedEnum" ) );
         
         System.out.println( MemberInterface.class );
         System.out.println( MemberInterface.class.getName() );

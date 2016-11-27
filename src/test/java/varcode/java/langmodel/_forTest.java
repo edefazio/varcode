@@ -15,12 +15,11 @@
  */
 package varcode.java.langmodel;
 
-import varcode.java.langmodel._class;
 import varcode.java.langmodel.cs._forCount;
 import varcode.java.langmodel.cs._for;
 import java.util.Random;
 import junit.framework.TestCase;
-import varcode.java.Java;
+import varcode.java._Java;
 import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.langmodel._methods._method;
 
@@ -103,7 +102,7 @@ public class _forTest
         //System.out.println( testClass );
         Object instance = testClass.instance( );
         
-        assertEquals( 5050, Java.invoke( instance, "sum" ) );
+        assertEquals( 5050, _Java.invoke( instance, "sum" ) );
         
         _method mstar = computeRange("multiply10to20", 10, 20, "*" );
         _class c = _class.of("B").method( m );
@@ -140,7 +139,7 @@ public class _forTest
             Object o = _class.of( "A" + i ).method( m ).instance( reuseClassLoader );
             
             //Now verify that calling the method produces the correct result
-            assertEquals( Java.invoke( o, "sum" ), sumOf1To( max ) );
+            assertEquals( _Java.invoke( o, "sum" ), sumOf1To( max ) );
         }           
     }
     

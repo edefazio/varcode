@@ -15,9 +15,8 @@
  */
 package varcode.java.langmodel.auto;
 
-import varcode.java.langmodel.auto._autoEnum;
 import junit.framework.TestCase;
-import varcode.java.Java;
+import varcode.java._Java;
 import varcode.java.langmodel._enum;
 import varcode.java.langmodel._literal;
 
@@ -40,11 +39,11 @@ public class _autoEnumTest
         
         assertTrue( enumClass.isEnum() );
         assertEquals( 2,  enumClass.getEnumConstants().length );
-        assertEquals( "first", Java.invoke(enumClass.getEnumConstants()[0], "getName" ) );
-        assertEquals( "second", Java.invoke(enumClass.getEnumConstants()[1], "getName" ) );
+        assertEquals( "first", _Java.invoke(enumClass.getEnumConstants()[0], "getName" ) );
+        assertEquals( "second", _Java.invoke(enumClass.getEnumConstants()[1], "getName" ) );
         
-        assertEquals( 1, Java.invoke(enumClass.getEnumConstants()[0], "getCount" ) );
-        assertEquals( 2, Java.invoke(enumClass.getEnumConstants()[1], "getCount" ) );
+        assertEquals( 1, _Java.invoke(enumClass.getEnumConstants()[0], "getCount" ) );
+        assertEquals( 2, _Java.invoke(enumClass.getEnumConstants()[1], "getCount" ) );
         
     }
     /**
@@ -58,7 +57,7 @@ public class _autoEnumTest
         
         Class enumClass = auto.toJavaCase( ).loadClass();
         assertEquals(
-            42,  Java.invoke( enumClass.getEnumConstants()[ 0 ], "getAge" ) );
+            42,  _Java.invoke( enumClass.getEnumConstants()[ 0 ], "getAge" ) );
         
         auto.value( "Blah", 22 );
         
@@ -66,7 +65,7 @@ public class _autoEnumTest
         enumClass = auto.toJavaCase( ).loadClass();
         
         assertEquals(
-            22,  Java.invoke( enumClass.getEnumConstants()[ 1 ], "getAge" ) );        
+            22, _Java.invoke( enumClass.getEnumConstants()[ 1 ], "getAge" ) );        
     }
     
 
@@ -113,7 +112,7 @@ public class _autoEnumTest
         enumClass = ae.toJavaCase( ).loadClass();
         assertEquals( 1, enumClass.getEnumConstants().length );
         assertEquals( 
-            "WILLIAM", Java.invoke( enumClass.getEnumConstants()[0], "getId" ) );
+            "WILLIAM", _Java.invoke( enumClass.getEnumConstants()[0], "getId" ) );
         
         ae = _autoEnum.of( "ex.varcode.e.MyEnum" );
         ae.property( "public final int count;" );
@@ -122,7 +121,7 @@ public class _autoEnumTest
         enumClass = ae.toJavaCase( ).loadClass();
         assertEquals( 1, enumClass.getEnumConstants().length );
         assertEquals( 
-            1, Java.invoke( enumClass.getEnumConstants()[ 0 ], "getCount" ) );
+            1, _Java.invoke( enumClass.getEnumConstants()[ 0 ], "getCount" ) );
         
     }
 }

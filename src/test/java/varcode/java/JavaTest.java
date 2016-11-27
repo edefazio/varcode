@@ -13,19 +13,19 @@ public class JavaTest
 {
 	public void testComposeAndLoadClassNoMarks()
 	{
-		System.out.println( Java.describeEnvironment() );
+		//System.out.println( _Java.describeEnvironment() );
 		Dom emptyMarks = BindML.compile( "public class A { }" );
 		AdHocJavaFile javaCode = 
-			Java.author( "A", emptyMarks, VarContext.of( ) );
+                    _Java.author( "A", emptyMarks, VarContext.of( ) );
 		
-		Class<?> clazz = Java.loadClass( javaCode );
+		Class<?> clazz = _Java.loadClass( javaCode );
 		assertEquals( "A", clazz.getName() );
 		
 		//now try with some compiler options (compile with Java 1.3 compatibility)
-		clazz = Java.loadClass( 
-			javaCode, 
-			JavacOptions.Flags.ALL_DEBUG_INFORMATION,  
-			JavacOptions.JavaSourceVersion.MajorVersion._1_3 );
+		clazz = _Java.loadClass( 
+                    javaCode, 
+                    JavacOptions.Flags.ALL_DEBUG_INFORMATION,  
+                    JavacOptions.JavaSourceVersion.MajorVersion._1_3 );
 		assertEquals( "A", clazz.getName() );		
 	}
     

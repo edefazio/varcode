@@ -15,11 +15,10 @@
  */
 package varcode.java.langmodel.auto;
 
-import varcode.java.langmodel.auto._autoDto;
 import java.math.BigDecimal;
 import java.util.Map;
 import junit.framework.TestCase;
-import varcode.java.Java;
+import varcode.java._Java;
 import varcode.java.JavaCase;
 
 /**
@@ -59,24 +58,24 @@ public class _autoDtoTest
         
         o = d.toJavaCase( ).instance();
         
-        assertEquals( null, Java.invoke( o, "getName" ) );
-        Java.invoke(o, "setName", "A");
-        assertEquals( "A", Java.invoke( o, "getName" ) );
+        assertEquals( null, _Java.invoke( o, "getName" ) );
+        _Java.invoke(o, "setName", "A");
+        assertEquals( "A", _Java.invoke( o, "getName" ) );
         
         
         d.property( int.class, "count" );
         o = d.toJavaCase( ).instance();
         
-        Java.invoke(o, "setCount", 5 );
-        assertEquals( 5, Java.invoke( o, "getCount" ) );
+        _Java.invoke(o, "setCount", 5 );
+        assertEquals( 5, _Java.invoke( o, "getCount" ) );
         
         //make sure when I create a field whos type requires an import it
         //works
         d.property( BigDecimal.class, "value" );
         o = d.toJavaCase( ).instance();
         
-        Java.invoke( o, "setValue", new BigDecimal( Math.PI ) );
-        assertEquals( new BigDecimal( Math.PI ), Java.invoke( o, "getValue" ) );        
+        _Java.invoke( o, "setValue", new BigDecimal( Math.PI ) );
+        assertEquals( new BigDecimal( Math.PI ), _Java.invoke( o, "getValue" ) );        
     }
     
     //verify that _autoDto works when dealing with final fields
@@ -95,9 +94,9 @@ public class _autoDtoTest
         
         //System.out.println( jc );
         Object myVoInstance = jc.instance( 12345 );
-        assertEquals( null, Java.invoke( myVoInstance, "getName" ) );
-        assertEquals( 100, Java.invoke( myVoInstance, "getCount" ) );
-        assertEquals( 12345, Java.invoke( myVoInstance, "getId" ) );
+        assertEquals( null, _Java.invoke( myVoInstance, "getName" ) );
+        assertEquals( 100, _Java.invoke( myVoInstance, "getCount" ) );
+        assertEquals( 12345, _Java.invoke( myVoInstance, "getId" ) );
     }
     
 }

@@ -24,7 +24,7 @@ import java.util.Date;
 import java.util.Random;
 import java.util.UUID;
 import junit.framework.TestCase;
-import varcode.java.Java;
+import varcode.java._Java;
 import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.adhoc.AdHocObjectInputStream;
 import varcode.java.langmodel._class;
@@ -76,7 +76,7 @@ public class Example1
             Date d = new Date();
             
             Class myBeanClass = MyBean.loadClass();            
-            Object instance = Java.instance(myBeanClass, d );
+            Object instance = _Java.instance(myBeanClass, d );
             
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             oos = new ObjectOutputStream( baos );
@@ -93,7 +93,7 @@ public class Example1
             Object deserialized = ois.readObject();
                 
             //now verify the date (on the deserialized object is the same)
-            assertEquals( d, Java.invoke( deserialized, "getDate" ) );              
+            assertEquals( d, _Java.invoke( deserialized, "getDate" ) );              
         }
         catch( Exception ex ) 
         {
@@ -116,7 +116,7 @@ public class Example1
                     "return UUID.randomUUID().toString();" )
                 .instance();                
         //invoke a method on the 
-        System.out.println( Java.invoke( authored, "getId" ) );
+        System.out.println( _Java.invoke( authored, "getId" ) );
     }
     
     public void testSimple()
@@ -133,7 +133,7 @@ public class Example1
         System.out.println( myId );
         
         Object inst = myId.instance( );
-        assertEquals( 100, Java.invoke( inst, "getId" ) );
+        assertEquals( 100, _Java.invoke( inst, "getId" ) );
         
         System.out.println( _class.of( "EZClass" ) );
         

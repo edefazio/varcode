@@ -4,7 +4,7 @@ import java.util.UUID;
 import junit.framework.TestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import varcode.java.Java;
+import varcode.java._Java;
 import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.adhoc.Workspace;
 import varcode.java.langmodel._class;
@@ -50,7 +50,7 @@ public class _2_AdHocWorkspace
         Class guidInter = adHoc.find( _GuidInterface.getFullyQualifiedClassName() );
         
         //new instance of the guidClass passing in "prefix" constructor arg
-        Object guidClassInstance = Java.instance( 
+        Object guidClassInstance = _Java.instance( 
             adHoc.find( _GuidClass.getFullyQualifiedClassName() ),
             "prefix" );
         
@@ -58,15 +58,15 @@ public class _2_AdHocWorkspace
         //of the GuidGen interface 
         assertTrue( guidInter.isAssignableFrom( guidClassInstance.getClass() ) );
         
-        String prefixGuid = (String)Java.invoke( guidClassInstance, "createGuid" );
+        String prefixGuid = (String)_Java.invoke( guidClassInstance, "createGuid" );
         
         assertTrue( prefixGuid.startsWith( "prefix" ) );
         
         Class guidEnum = adHoc.find( _GuidEnum.getFullyQualifiedClassName() );
         
-        Object guidEnumValue = Java.getFieldValue( guidEnum, "INSTANCE" );
+        Object guidEnumValue = _Java.getFieldValue( guidEnum, "INSTANCE" );
         
-        String enumGuid = (String)Java.invoke( guidEnumValue, "createGuid" );
+        String enumGuid = (String)_Java.invoke( guidEnumValue, "createGuid" );
         
         LOG.debug( enumGuid );
         

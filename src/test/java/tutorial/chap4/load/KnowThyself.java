@@ -9,7 +9,7 @@ import java.util.List;
 import junit.framework.TestCase;
 import varcode.java.langmodel._class;
 import varcode.java.langmodel._methods._method;
-import varcode.java.load._java;
+import varcode.java._Java;
 import varcode.load.SourceLoader.SourceStream;
 
 /**
@@ -22,7 +22,7 @@ public class KnowThyself
     /** Load the Source that makes up this class at runtime */
     public void testLoadSource()
     {        
-        SourceStream ss = _java.sourceFrom( KnowThyself.class );
+        SourceStream ss = _Java.sourceFrom( KnowThyself.class );
         //System.out.println( ss.asString() );
     }
     
@@ -35,7 +35,7 @@ public class KnowThyself
      */
     public void testLoadAST()
     {
-        CompilationUnit astRoot = _java.astFrom( KnowThyself.class );
+        CompilationUnit astRoot = _Java.astFrom( KnowThyself.class );
         //System.out.println( astRoot );
         List<TypeDeclaration> types = astRoot.getTypes();
         assertEquals( 1, types.size() );
@@ -54,7 +54,7 @@ public class KnowThyself
     public void testLoadASTTypeDeclaration()
     {
         TypeDeclaration astClassDef = 
-            _java.astTypeDeclarationFrom( KnowThyself.class );
+            _Java.astTypeDeclarationFrom( KnowThyself.class );
         assertEquals( "KnowThyself", astClassDef.getName() );
         assertEquals( java.lang.reflect.Modifier.PUBLIC, astClassDef.getModifiers() );        
         
@@ -88,7 +88,7 @@ public class KnowThyself
     public void testLoad_LangModel()
     {   
         //Load a _LangModel based on the code (from the AST)
-        _class _c = _java._classFrom( KnowThyself.class );
+        _class _c = _Java._classFrom( KnowThyself.class );
         assertEquals( "KnowThyself", _c.getName() );
         assertEquals( "tutorial.chap4.load", _c.getClassPackage().getName() );
         assertTrue( _c.getModifiers().contains( "public" ) );
@@ -105,7 +105,7 @@ public class KnowThyself
         assertTrue( _c.getImports().contains( CompilationUnit.class ) );
         assertTrue( _c.getImports().contains( TypeDeclaration.class ) );
         assertTrue( _c.getImports().contains( _class.class ) );
-        assertTrue( _c.getImports().contains( _java.class ) );
+        assertTrue( _c.getImports().contains( _Java.class ) );
         assertTrue( _c.getImports().contains( SourceStream.class ) );
     }
 }

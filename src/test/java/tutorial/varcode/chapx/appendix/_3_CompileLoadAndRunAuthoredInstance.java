@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 import junit.framework.TestCase;
-import varcode.java.Java;
+import varcode.java._Java;
 import varcode.java.JavaCase;
 import varcode.java.langmodel._class;
 
@@ -30,7 +30,7 @@ public class _3_CompileLoadAndRunAuthoredInstance
     public void testCompileNewInstanceAndRun()
     {
         Object instance = _GuidPrefix.instance( "prefix" );
-        String guid = (String)Java.invoke( instance, "createGuid" );
+        String guid = (String)_Java.invoke( instance, "createGuid" );
         assertTrue( guid.startsWith( "prefix" ) );
     }
     

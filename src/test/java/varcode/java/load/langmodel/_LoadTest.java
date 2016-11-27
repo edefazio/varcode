@@ -1,7 +1,6 @@
 package varcode.java.load.langmodel;
 
-import varcode.java.load._java;
-import varcode.java.ast.JavaASTParser;
+//import varcode.java.ast.JavaASTParser;
 import com.github.javaparser.ParseException;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -15,7 +14,8 @@ import varcode.java.langmodel._interface;
 import varcode.java.langmodel._methods;
 import varcode.java.langmodel._methods._method;
 import varcode.java.load.BaseSourceLoader;
-import varcode.java.load._java;
+import varcode.java._Java;
+import varcode.java.ast.JavaASTParser;
 import varcode.load.SourceLoader.SourceStream;
 
 /**
@@ -56,11 +56,11 @@ public class _LoadTest
         //    BaseSourceLoader.INSTANCE.sourceStream( MemberClass.class );
             //LOADER.sourceOf( MemberClass.class );
 
-        SourceStream ss = _java.sourceFrom( MemberClass.class );
+        SourceStream ss = _Java.sourceFrom( MemberClass.class );
         
         System.out.println( ss.asString() );
         
-        CompilationUnit astRoot = _java.astFrom( _LoadTest.class );        
+        CompilationUnit astRoot = _Java.astFrom( _LoadTest.class );        
         TypeDeclaration dec = JavaASTParser.findClassDeclaration(
             astRoot,
             MemberClass.class );
@@ -91,11 +91,11 @@ public class _LoadTest
         
         System.out.println( source );
         
-        TypeDeclaration dec = _java.astTypeDeclarationFrom( MemberInterface.class );
+        TypeDeclaration dec = _Java.astTypeDeclarationFrom( MemberInterface.class );
         assertTrue( dec instanceof ClassOrInterfaceDeclaration );
         assertTrue( ((ClassOrInterfaceDeclaration)dec).isInterface() );
         
-        _interface _i = _java._interfaceFrom( MemberInterface.class );
+        _interface _i = _Java._interfaceFrom( MemberInterface.class );
         
         assertEquals( _i.getName(), "MemberInterface" );
         assertEquals( _i.getSignature().getExtends().getAt( 0 ), "Serializable" );
@@ -140,11 +140,11 @@ public class _LoadTest
     public void testLoadMemberEnum()
     {
         SourceStream source = 
-            _java.sourceFrom( MemberEnum.class );
+            _Java.sourceFrom( MemberEnum.class );
         
         System.out.println( source );
         
-        TypeDeclaration dec = _java.astTypeDeclarationFrom( MemberEnum.class );
+        TypeDeclaration dec = _Java.astTypeDeclarationFrom( MemberEnum.class );
         assertTrue( dec instanceof EnumDeclaration );
     }
         

@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import varcode.context.VarContext;
-import varcode.java.Java;
+import varcode.java._Java;
 import varcode.java.langmodel._class;
 import varcode.java.langmodel.cs._for;
 import varcode.java.langmodel.cs._thread;
@@ -77,15 +77,15 @@ public class Chap1_ModelFor_If_AndAnnotations
     public void testIt( )
     {        
         System.out.println(
-            Java.invoke( Authored.instance( ), "greetCustomer", "Eric" ) );
+            _Java.invoke( Authored.instance( ), "greetCustomer", "Eric" ) );
         
-        assertEquals( 45, Java.invoke( Count.instance( ), "count" ) );
+        assertEquals( 45, _Java.invoke( Count.instance( ), "count" ) );
         
         Object inst = 
             NumberUtil.bindInstance( VarContext.of( "methodName", "doubleNumber" ) );
         
-        assertEquals(4L, Java.invoke( inst, "doubleNumber", 2 ) );
-        Java.invoke( inst, "printDoubleNumber", 2 );        
+        assertEquals( 4L, _Java.invoke( inst, "doubleNumber", 2 ) );
+        _Java.invoke( inst, "printDoubleNumber", 2 );        
         
         BookService.getMethodsByName("findById")
             .get( 0 ) //there is only 1 method with this name
@@ -101,8 +101,8 @@ public class Chap1_ModelFor_If_AndAnnotations
         assertEquals("Inner", classes[ 0 ].getSimpleName() );
         
         
-        Object inner = Java.instance( classes[ 0 ] );
-        Java.invoke(inner, "runInner");
+        Object inner = _Java.instance( classes[ 0 ] );
+        _Java.invoke(inner, "runInner");
         //Outer.instance( "Eric" );
         
     }    

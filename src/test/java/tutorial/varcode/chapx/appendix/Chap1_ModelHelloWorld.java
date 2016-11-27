@@ -16,7 +16,7 @@
 package tutorial.varcode.chapx.appendix;
 
 import junit.framework.TestCase;
-import varcode.java.Java;
+import varcode.java._Java;
 import varcode.java.langmodel._class;
 
 /**
@@ -35,6 +35,6 @@ public class Chap1_ModelHelloWorld
                 "System.out.println(\"Hello World\");" )
             .instance();
         
-        Java.invoke( helloInstance, "main", (Object)new String[ 0 ] );
+        _Java.invoke( helloInstance, "main", (Object)new String[ 0 ] );
     }
 }

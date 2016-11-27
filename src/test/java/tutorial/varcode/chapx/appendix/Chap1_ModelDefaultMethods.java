@@ -7,7 +7,7 @@ package tutorial.varcode.chapx.appendix;
 
 import java.util.UUID;
 import junit.framework.TestCase;
-import varcode.java.Java;
+import varcode.java._Java;
 import varcode.java.JavaCase;
 import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.adhoc.Workspace;
@@ -58,9 +58,9 @@ public class Chap1_ModelDefaultMethods
             Workspace.compileNow( THE_INTERFACE, THE_IMPLEMENTER );
         
         Class implc = adHocClassLoader.find( THE_IMPLEMENTER.getClassName() );
-        Object implObject = Java.instance( implc );
+        Object implObject = _Java.instance( implc );
         //calls the default method on the implementation (defined on the interface)
-        assertNotNull( Java.invoke( implObject, "getID" ) );        
+        assertNotNull( _Java.invoke( implObject, "getID" ) );        
     }
     
     /** 
@@ -91,9 +91,9 @@ public class Chap1_ModelDefaultMethods
             Workspace.compileNow( THE_INTERFACE, THE_IMPLEMENTER_OVERRIDE );
         
         Class implc = adHocClassLoader.find( THE_IMPLEMENTER_OVERRIDE.getClassName() );
-        Object implObject = Java.instance( implc );
+        Object implObject = _Java.instance( implc );
         //calls the overridden method on the implementation (defined on the interface)
-        assertEquals( "OVERRIDE", Java.invoke( implObject, "getID" ) );        
+        assertEquals( "OVERRIDE", _Java.invoke( implObject, "getID" ) );        
     }
     
     

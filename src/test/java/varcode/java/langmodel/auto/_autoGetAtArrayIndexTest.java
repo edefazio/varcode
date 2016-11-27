@@ -15,9 +15,8 @@
  */
 package varcode.java.langmodel.auto;
 
-import varcode.java.langmodel.auto._autoGetAtArrayIndex;
 import junit.framework.TestCase;
-import varcode.java.Java;
+import varcode.java._Java;
 import varcode.java.langmodel._class;
 import varcode.java.langmodel._fields;
 import varcode.java.langmodel._methods;
@@ -57,6 +56,6 @@ public class _autoGetAtArrayIndexTest
             _autoGetAtArrayIndex.fromField( 
                 c.getFields().getByName( "count" ) ) );
         
-        assertEquals( 1, Java.invoke( c.instance( ), "getCountAt", 0 ) );        
+        assertEquals( 1, _Java.invoke( c.instance( ), "getCountAt", 0 ) );        
     }
 }

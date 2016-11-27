@@ -19,7 +19,7 @@ import java.util.UUID;
 import junit.framework.TestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import varcode.java.Java;
+import varcode.java._Java;
 import varcode.java.langmodel._class;
 
 public class Varcode_AdHoc
@@ -37,7 +37,7 @@ public class Varcode_AdHoc
         
         System.out.println( c );        
         
-        String id = (String) Java.invoke(
+        String id = (String) _Java.invoke(
             c.instance(), 
             "createId" ); 
         

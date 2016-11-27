@@ -3,7 +3,7 @@ package tutorial.chap3.markup;
 /*{-*/
 import java.util.UUID;
 import junit.framework.TestCase;
-import varcode.java.Java;
+import varcode.java._Java;
 import varcode.java.JavaCase;/*-}*/
 /*{+imports+}*/
 
@@ -23,7 +23,7 @@ public class /*{+className*/_3_CodeML_JavaClass/*+}*/ /*{-*/extends TestCase/*-}
         
         Object instance = thisCase.instance( );
         
-        assertNotNull( Java.getFieldValue( instance, "genId" ) );
+        assertNotNull( _Java.getFieldValue( instance, "genId" ) );
         
     }
     

@@ -5,17 +5,12 @@
  */
 package varcode.java.langmodel;
 
-import varcode.java.langmodel._class;
-import varcode.java.langmodel._parameters;
-import varcode.java.langmodel._enum;
-import varcode.java.langmodel._interface;
-import varcode.java.langmodel._literal;
 import java.io.Serializable;
 import java.lang.reflect.Modifier;
 import java.util.UUID;
 import junit.framework.TestCase;
 import varcode.VarException;
-import varcode.java.Java;
+import varcode.java._Java;
 import varcode.java.JavaCase;
 import varcode.java.langmodel._constructors._constructor;
 import varcode.java.langmodel._enum._signature;
@@ -150,8 +145,8 @@ public class _enumTest
         assertEquals( "A",e1.name() );
         assertEquals( "B",e2.name() );
         
-        assertEquals( "a", Java.invoke( e1, "getName" ) );
-        assertEquals( "b", Java.invoke( e2, "getName" ) );
+        assertEquals( "a", _Java.invoke( e1, "getName" ) );
+        assertEquals( "b", _Java.invoke( e2, "getName" ) );
         
         
         //check nested classes
@@ -159,7 +154,7 @@ public class _enumTest
         
         Class nestedInterface = enumClass.getDeclaredClasses()[0];
         //verify I can get the field value from the nested interface
-        assertNotNull( Java.getFieldValue( nestedInterface, "GUID" ) );        
+        assertNotNull( _Java.getFieldValue( nestedInterface, "GUID" ) );        
     }    
     
     public void testNest()  
@@ -325,7 +320,7 @@ public class _enumTest
 		Object o = enumClass.getEnumConstants()[0];
 		System.out.println( o );
 		
-		System.out.println( Java.getFieldValue(o, "rid" ) );
+		System.out.println( _Java.getFieldValue(o, "rid" ) );
 		//System.out.println( Java.getStaticField( enumClass, "rid" ) );		
 	}
 	
@@ -399,13 +394,13 @@ public class _enumTest
 		Class<?> c = e.toJavaCase( ).loadClass();
 		assertTrue( c.isEnum() );
 		assertEquals( 3, c.getEnumConstants().length );
-		assertEquals( "Eric", Java.invoke( c.getEnumConstants()[0], "getName" ) );
-		assertEquals( "Mark", Java.invoke( c.getEnumConstants()[1], "getName" ) );
-		assertEquals( "Sally", Java.invoke( c.getEnumConstants()[2], "getName" ) );
+		assertEquals( "Eric", _Java.invoke( c.getEnumConstants()[0], "getName" ) );
+		assertEquals( "Mark", _Java.invoke( c.getEnumConstants()[1], "getName" ) );
+		assertEquals( "Sally", _Java.invoke( c.getEnumConstants()[2], "getName" ) );
 		
-		assertEquals( 42, Java.invoke( c.getEnumConstants()[0], "getAge" ) );
-		assertEquals( 54, Java.invoke( c.getEnumConstants()[1], "getAge" ) );
-		assertEquals( 34, Java.invoke( c.getEnumConstants()[2], "getAge" ) );		
+		assertEquals( 42, _Java.invoke( c.getEnumConstants()[0], "getAge" ) );
+		assertEquals( 54, _Java.invoke( c.getEnumConstants()[1], "getAge" ) );
+		assertEquals( 34, _Java.invoke( c.getEnumConstants()[2], "getAge" ) );		
 	}
 	
 	public void testEnumWithStaticBlock()

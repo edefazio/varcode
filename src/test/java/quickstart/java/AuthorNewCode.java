@@ -1,7 +1,7 @@
 package quickstart.java;
 
 import junit.framework.TestCase;
-import varcode.java.Java;
+import varcode.java._Java;
 import varcode.java.langmodel._class;
 
 /**
@@ -74,13 +74,13 @@ public class AuthorNewCode
         Class adHocClass = _c.loadClass();
         
         /*4: call a static method on an AdHocClass */ 
-        assertEquals( 100, Java.invoke( adHocClass, "staticMethod" ) );
+        assertEquals( 100, _Java.invoke( adHocClass, "staticMethod" ) );
         
         /*5: create a new adHocInstance of a _class */
         Object adHocInstance = _c.instance( );
         
         /*6: invoke an instance method */
         assertEquals( "ParamValue100", 
-            Java.invoke( adHocInstance, "instanceMethod", "ParamValue" ) ); 
+            _Java.invoke( adHocInstance, "instanceMethod", "ParamValue" ) ); 
     }    
 }

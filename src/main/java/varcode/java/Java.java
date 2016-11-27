@@ -29,10 +29,6 @@ import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.adhoc.AdHocJavaFile;
 import varcode.java.adhoc.JavacOptions;
 import varcode.java.adhoc.Workspace;
-import varcode.markup.MarkupException;
-import varcode.markup.codeml.CodeML;
-import varcode.load.SourceLoader.SourceStream;
-import varcode.load.SourceLoader;
 
 /**
  * ***********************************************************
@@ -116,44 +112,7 @@ public enum Java
 		sb.append( "\r\n" );
 		return sb.toString();
 	}
-	
-	 /**
-     * Using the default Java Environment (for where the source code of a Class should
-     * be at runtime), read in the Java Source for the given {@code markupClass} to 
-     * compile the {@code Dom} and return it.<BR><BR>
-     * 
-     * NOTE: the markupClazz MUST BE a TOP LEVEL class (not an inner class)
-     * 
-     * @param markupClass the class marked up with CodeML marks to be compiled to a Dom
-     * @return the dom the Dom representation of the Java source document
-     */
-    public static Dom compileCodeML( Class<?> markupClass )
-    	throws MarkupException
-    {
-         return compileCodeML( BaseSourceLoader.INSTANCE, markupClass );
-    }
-    
-    /**
-     * Using the MarkupRepo for associating where the source code ".java" file of 
-     * a Class should be at runtime), read in the .java file for the given 
-     * {@code markupClass} to compile the {@code Dom} and return it.<BR><BR>
-     * 
-     * NOTE: the markupClazz MUST BE a TOP LEVEL class (not an inner class)
-     * @param markupRepo where to find the markupClass
-     * @param markupClazz the class marked up with CodeML marks to be compiled to a Dom
-     * @return the dom the Dom representation of the Java source document
-     */
-    public static Dom compileCodeML(
-        SourceLoader markupRepo, Class<?> markupClazz )
-    { 
-    	SourceStream markupStream = markupRepo.sourceStream( 
-            markupClazz.getCanonicalName() + ".java" );
-                
-        Dom dom = CodeML.compile( markupStream );
-        LOG.debug( "Compiled Dom from \"" + markupClazz + "\"" );
-        return dom;
-    }
-    
+
     public static final String JAVA_CLASS_NAME = "fullyQualifieldJavaClassName";
     
     public static final String JAVA_SIMPLE_CLASS_NAME = "className";
@@ -165,6 +124,7 @@ public enum Java
     {
         return author( className, dom, VarContext.of( keyValuePairs ) );
     }
+    
 	/**
      * Authors and returns an {@code AdHocJavaFile} with name {@code className} 
      * using a {@code Dom} and based on the specialization provided in the
@@ -241,7 +201,7 @@ public enum Java
         ws.addCode( javaFile );
         adHocClassLoader = ws.compile( compilerOptions );
         return adHocClassLoader.find( javaFile.getClassName() );
-	}
+    }
     
     /**
      * Construct a "new" java instance by calling the constructor
@@ -379,7 +339,7 @@ public enum Java
         }
      }
     
-    public static Object getStaticField( Class<?> clazz, String fieldName )
+    public static Object getStaticFieldValue( Class<?> clazz, String fieldName )
     {
     	try
 		{    		
@@ -448,7 +408,7 @@ public enum Java
             { 
                 LOG.debug( "getting static field \"" + fieldName + "\"" );
             }
-    		return getStaticField( (Class<?>)instanceOrClass, fieldName );
+    		return getStaticFieldValue( (Class<?>)instanceOrClass, fieldName );
     	}
     	try 
 		{
@@ -834,6 +794,7 @@ public enum Java
         return null;
     }
     
+    /*
 	public static Object getStaticFieldValue( Class<?> clazz, String fieldName ) 
 	{
 		try 
@@ -854,7 +815,8 @@ public enum Java
             throw new VarException( "Illegal Argument for field \"" + fieldName + "\"", e );
         }        	
 	}
-	
+    */
+    
     public static Object getStaticFieldValue( Field field )
 	{
     	try 

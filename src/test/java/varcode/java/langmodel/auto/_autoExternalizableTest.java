@@ -15,11 +15,10 @@
  */
 package varcode.java.langmodel.auto;
 
-import varcode.java.langmodel.auto._autoExternalizable;
 import java.util.Arrays;
 import junit.framework.TestCase;
 import varcode.java.Cloner;
-import varcode.java.Java;
+import varcode.java._Java;
 import varcode.java.langmodel._class;
 
 /**
@@ -61,14 +60,14 @@ public class _autoExternalizableTest
         // and writeExternal/ readExternal methods
         Object clone = Cloner.clone( instance );
         
-        assertEquals( Integer.MIN_VALUE, Java.getFieldValue(clone, "aInt"));
-        assertEquals( Byte.MIN_VALUE, Java.getFieldValue(clone, "aByte"));
-        assertEquals( Short.MIN_VALUE, Java.getFieldValue(clone, "aShort"));
-        assertEquals( true, Java.getFieldValue(clone, "aBoolean"));
-        assertEquals( 'a', Java.getFieldValue(clone, "aChar"));
-        assertEquals( Long.MIN_VALUE, Java.getFieldValue(clone, "aLong"));
-        assertEquals( Float.MIN_VALUE, Java.getFieldValue(clone, "aFloat"));
-        assertEquals( Double.MIN_VALUE, Java.getFieldValue(clone, "aDouble"));        
+        assertEquals( Integer.MIN_VALUE, _Java.getFieldValue(clone, "aInt"));
+        assertEquals( Byte.MIN_VALUE, _Java.getFieldValue(clone, "aByte"));
+        assertEquals( Short.MIN_VALUE, _Java.getFieldValue(clone, "aShort"));
+        assertEquals( true, _Java.getFieldValue(clone, "aBoolean"));
+        assertEquals( 'a', _Java.getFieldValue(clone, "aChar"));
+        assertEquals( Long.MIN_VALUE, _Java.getFieldValue(clone, "aLong"));
+        assertEquals( Float.MIN_VALUE, _Java.getFieldValue(clone, "aFloat"));
+        assertEquals( Double.MIN_VALUE, _Java.getFieldValue(clone, "aDouble"));        
     }
     
     //verify that we can handle externalizing primitive array fields
@@ -93,28 +92,28 @@ public class _autoExternalizableTest
         Object clone = Cloner.clone( instance );
         
         assertTrue( Arrays.equals( new int[]{Integer.MIN_VALUE}, 
-            (int[])Java.getFieldValue(clone, "intArr") ));
+            (int[])_Java.getFieldValue(clone, "intArr") ));
         
         assertTrue( Arrays.equals( new byte[]{Byte.MIN_VALUE}, 
-            (byte[])Java.getFieldValue(clone, "byteArr") ));
+            (byte[])_Java.getFieldValue(clone, "byteArr") ));
         
         assertTrue( Arrays.equals( new short[]{Short.MIN_VALUE}, 
-            (short[])Java.getFieldValue(clone, "shortArr") ));
+            (short[])_Java.getFieldValue(clone, "shortArr") ));
         
         assertTrue( Arrays.equals( new boolean[]{true}, 
-            (boolean[])Java.getFieldValue(clone, "booleanArr") ));
+            (boolean[])_Java.getFieldValue(clone, "booleanArr") ));
         
         assertTrue( Arrays.equals( new long[]{Long.MIN_VALUE}, 
-            (long[])Java.getFieldValue(clone, "longArr") ));
+            (long[])_Java.getFieldValue(clone, "longArr") ));
         
         assertTrue( Arrays.equals( new float[]{Float.MIN_VALUE}, 
-            (float[])Java.getFieldValue(clone, "floatArr") ));
+            (float[])_Java.getFieldValue(clone, "floatArr") ));
         
         assertTrue( Arrays.equals( new double[]{Double.MIN_VALUE}, 
-            (double[])Java.getFieldValue(clone, "doubleArr") ));
+            (double[])_Java.getFieldValue(clone, "doubleArr") ));
         
         assertTrue( Arrays.equals( new char[]{'a'}, 
-            (char[])Java.getFieldValue(clone, "charArr") )); 
+            (char[])_Java.getFieldValue(clone, "charArr") )); 
         
         //what if they are all nulls??
         
@@ -136,28 +135,28 @@ public class _autoExternalizableTest
         clone = Cloner.clone( instance );
         
         assertTrue( Arrays.equals( null, 
-            (int[])Java.getFieldValue(clone, "intArr") ));
+            (int[])_Java.getFieldValue(clone, "intArr") ));
         
         assertTrue( Arrays.equals( null, 
-            (byte[])Java.getFieldValue(clone, "byteArr") ));
+            (byte[])_Java.getFieldValue(clone, "byteArr") ));
         
         assertTrue( Arrays.equals( null, 
-            (short[])Java.getFieldValue(clone, "shortArr") ));
+            (short[])_Java.getFieldValue(clone, "shortArr") ));
         
         assertTrue( Arrays.equals( null, 
-            (boolean[])Java.getFieldValue(clone, "booleanArr") ));
+            (boolean[])_Java.getFieldValue(clone, "booleanArr") ));
         
         assertTrue( Arrays.equals( null, 
-            (long[])Java.getFieldValue(clone, "longArr") ));
+            (long[])_Java.getFieldValue(clone, "longArr") ));
         
         assertTrue( Arrays.equals( null, 
-            (float[])Java.getFieldValue(clone, "floatArr") ));
+            (float[])_Java.getFieldValue(clone, "floatArr") ));
         
         assertTrue( Arrays.equals( null, 
-            (double[])Java.getFieldValue(clone, "doubleArr") ));
+            (double[])_Java.getFieldValue(clone, "doubleArr") ));
         
         assertTrue( Arrays.equals( null, 
-            (char[])Java.getFieldValue(clone, "charArr") )); 
+            (char[])_Java.getFieldValue(clone, "charArr") )); 
         
     }    
 }

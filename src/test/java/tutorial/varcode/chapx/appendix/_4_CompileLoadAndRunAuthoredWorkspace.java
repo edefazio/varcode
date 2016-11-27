@@ -2,7 +2,7 @@ package tutorial.varcode.chapx.appendix;
 
 import java.util.UUID;
 import junit.framework.TestCase;
-import varcode.java.Java;
+import varcode.java._Java;
 import varcode.java.JavaCase;
 import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.adhoc.Workspace;
@@ -54,7 +54,7 @@ public class _4_CompileLoadAndRunAuthoredWorkspace
         Class guidInter = adHoc.find( _GuidInterface.getClassName() );
         
         //new instance of the guidClass passing in "GuidPre" constructor arg
-        Object guidClassInstance = Java.instance( 
+        Object guidClassInstance = _Java.instance( 
             adHoc.find( _GuidClass.getClassName() ),
             "prefix" );
         
@@ -62,15 +62,15 @@ public class _4_CompileLoadAndRunAuthoredWorkspace
         //of the GuidGen interface 
         assertTrue( guidInter.isAssignableFrom( guidClassInstance.getClass() ) );
         
-        String prefixGuid = (String)Java.invoke( guidClassInstance, "createGuid" );
+        String prefixGuid = (String)_Java.invoke( guidClassInstance, "createGuid" );
         
         assertTrue( prefixGuid.startsWith( "prefix" ) );
         
         Class guidEnum = adHoc.find( _GuidEnum.getClassName() );
         
-        Object guidEnumValue = Java.getFieldValue( guidEnum, "INSTANCE" );
+        Object guidEnumValue = _Java.getFieldValue( guidEnum, "INSTANCE" );
         
-        String enumGuid = (String)Java.invoke( guidEnumValue, "createGuid" );
+        String enumGuid = (String)_Java.invoke( guidEnumValue, "createGuid" );
         
         System.out.println( enumGuid );
         

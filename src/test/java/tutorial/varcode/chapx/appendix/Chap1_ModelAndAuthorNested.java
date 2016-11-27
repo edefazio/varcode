@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 import junit.framework.TestCase;
-import varcode.java.Java;
+import varcode.java._Java;
 import varcode.java.langmodel._class;
 import varcode.java.langmodel._interface;
 
@@ -39,10 +39,10 @@ public class Chap1_ModelAndAuthorNested
             interfaceClass.getDeclaredClasses()[ 0 ];
         
         //create an instance of the nested class
-        Object instance = Java.instance( nestedImplClass );
+        Object instance = _Java.instance( nestedImplClass );
         
         //call the genId() default method on the nested Impl class
-        String id = (String)Java.invoke( instance, "genId" );
+        String id = (String)_Java.invoke( instance, "genId" );
         
         assertNotNull( id );
         System.out.println( id );

@@ -17,7 +17,7 @@ package tutorial.chap1.java_lang;
 
 import java.util.UUID;
 import junit.framework.TestCase;
-import varcode.java.Java;
+import varcode.java._Java;
 import varcode.java.langmodel._class;
 import varcode.java.langmodel._code;
 
@@ -150,7 +150,7 @@ public class _3_Tuple
         System.out.println( c ); 
         Object instance = c.instance( );
         
-        Java.getFieldValue( instance, "_1" );
+        _Java.getFieldValue( instance, "_1" );
         
     }
 }

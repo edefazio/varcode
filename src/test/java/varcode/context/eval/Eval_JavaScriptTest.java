@@ -1,15 +1,13 @@
 package varcode.context.eval;
 
-import varcode.context.eval.Eval_JavaScript;
-import varcode.context.eval.Evaluator;
-import varcode.context.eval.EvalException;
 import javax.script.SimpleBindings;
 
 import junit.framework.TestCase;
 import varcode.context.ScopeBindings;
 import varcode.context.VarBindings;
 import varcode.doc.Dom;
-import varcode.java.Java;
+import varcode.java.load.BaseSourceLoader;
+import varcode.markup.codeml.CodeML;
 
 /*{$init(
 var fun1 = function( name ) 
@@ -99,7 +97,10 @@ public class Eval_JavaScriptTest
 	    
 	public static void main( String[] args )
 	{
-		Dom dom = Java.compileCodeML( Eval_JavaScriptTest.class ); 
-		System.out.println( dom );
+            Dom dom = 
+                CodeML.compile( 
+                    BaseSourceLoader.INSTANCE.sourceStream( Eval_JavaScriptTest.class ) );
+
+            System.out.println( dom );
 	}
 }

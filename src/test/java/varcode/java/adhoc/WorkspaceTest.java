@@ -3,7 +3,7 @@ package varcode.java.adhoc;
 import java.util.ArrayList;
 import junit.framework.TestCase;
 import varcode.VarException;
-import varcode.java.Java;
+import varcode.java._Java;
 import varcode.java.langmodel._class;
 import varcode.java.langmodel.auto._autoEnum;
 
@@ -28,7 +28,7 @@ public class WorkspaceTest
         //
         Class cl = ah.find( WorkspaceTest.class.getCanonicalName() );
         
-        assertEquals(200, Java.getFieldValue( cl, "ID" ) );
+        assertEquals(200, _Java.getFieldValue( cl, "ID" ) );
         
     }
     
@@ -44,7 +44,7 @@ public class WorkspaceTest
         AdHocClassLoader cl = Workspace.compileNow( auto.toJavaCase( ) );
         
         assertEquals( 42,  
-            Java.invoke( 
+            _Java.invoke( 
                 cl.find("ex.varcode.e.MyEnum").getEnumConstants()[ 0 ], "getAge" ) );
         
         auto.value( "Blah", 22 );
@@ -81,10 +81,10 @@ public class WorkspaceTest
         
         AdHocClassLoader a2cl = a2.compile( );
         
-        int a1id = (Integer)Java.getFieldValue( 
+        int a1id = (Integer)_Java.getFieldValue( 
             a1cl.find( "A" ), "ID" );
         
-        int a2id = (Integer)Java.getFieldValue( 
+        int a2id = (Integer)_Java.getFieldValue( 
             a2cl.find( "A" ), "ID" );
         
         assertEquals( 1, a1id );
@@ -102,7 +102,7 @@ public class WorkspaceTest
         {    
             Class cl = c.loadClass( "A" );
             System.out.println( "THE VALUE IS " + 
-                Java.getFieldValue( cl, "ID" ) );
+                _Java.getFieldValue( cl, "ID" ) );
         }
         catch( Exception e )
         {
@@ -200,11 +200,11 @@ public class WorkspaceTest
 		assertNotNull( ah.find("A_ReliesOn_B") );
 		assertNotNull( ah.find("B_ReliesOn_A") );
 		
-		Object a = Java.instance( ah.find("A_ReliesOn_B"), new Object[]{null});
-		Object b = Java.instance( ah.find("B_ReliesOn_A"), new Object[]{null});
+		Object a = _Java.instance( ah.find("A_ReliesOn_B"), new Object[]{null});
+		Object b = _Java.instance( ah.find("B_ReliesOn_A"), new Object[]{null});
 		
-		Java.invoke( a, "setB", b );
-		Java.invoke( b, "setA", a );
+		_Java.invoke( a, "setB", b );
+		_Java.invoke( b, "setA", a );
 		
 	}
 	

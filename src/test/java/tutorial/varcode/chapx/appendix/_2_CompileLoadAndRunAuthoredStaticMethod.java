@@ -2,7 +2,7 @@ package tutorial.varcode.chapx.appendix;
 
 import java.util.UUID;
 import junit.framework.TestCase;
-import varcode.java.Java;
+import varcode.java._Java;
 import varcode.java.langmodel._class;
 
 /**
@@ -27,7 +27,7 @@ public class _2_CompileLoadAndRunAuthoredStaticMethod
             .imports( UUID.class )
             .loadClass(); //compile & load class w/o writing the .java file
         
-        String id = (String)Java.invoke( authoredClass, "createId" );
+        String id = (String)_Java.invoke( authoredClass, "createId" );
         System.out.println( id ); 
     }
     
