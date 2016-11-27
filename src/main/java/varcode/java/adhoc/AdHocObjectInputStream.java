@@ -34,7 +34,7 @@ public class AdHocObjectInputStream
     private final ClassLoader classLoader;
     
     public AdHocObjectInputStream( 
-        AdHocClassLoader classLoader, InputStream is ) 
+        ClassLoader classLoader, InputStream is ) 
         throws IOException
     {
         super( is );

@@ -17,7 +17,7 @@ package varcode.java.langmodel.auto;
 
 import java.util.Arrays;
 import junit.framework.TestCase;
-import varcode.java.Cloner;
+import varcode.java.CloneInstance;
 import varcode.java._Java;
 import varcode.java.langmodel._class;
 
@@ -58,7 +58,7 @@ public class _autoExternalizableTest
         
         // cloner serializes and Deserializes using the externalizable interface
         // and writeExternal/ readExternal methods
-        Object clone = Cloner.clone( instance );
+        Object clone = CloneInstance.clone( instance );
         
         assertEquals( Integer.MIN_VALUE, _Java.getFieldValue(clone, "aInt"));
         assertEquals( Byte.MIN_VALUE, _Java.getFieldValue(clone, "aByte"));
@@ -89,7 +89,7 @@ public class _autoExternalizableTest
         
         //cloner serializes and Deserializes using the externalizable interface
         // and writeExternal/ readExternal methods
-        Object clone = Cloner.clone( instance );
+        Object clone = CloneInstance.clone( instance );
         
         assertTrue( Arrays.equals( new int[]{Integer.MIN_VALUE}, 
             (int[])_Java.getFieldValue(clone, "intArr") ));
@@ -132,7 +132,7 @@ public class _autoExternalizableTest
         
         //cloner serializes and Deserializes using the externalizable interface
         // and writeExternal/ readExternal methods
-        clone = Cloner.clone( instance );
+        clone = CloneInstance.clone( instance );
         
         assertTrue( Arrays.equals( null, 
             (int[])_Java.getFieldValue(clone, "intArr") ));

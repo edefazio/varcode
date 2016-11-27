@@ -255,7 +255,15 @@ public class _JavaLoader
             }
         }
         
+        /**
+         * 
+         * @param sourceLoader
+         * @param clazz
+         * @return
+         * @throws varcode.Model.ModelLoadException 
+         */
         public static _class from( SourceLoader sourceLoader, Class clazz )
+            throws ModelLoadException
         {
             if( clazz.isMemberClass() )
             {

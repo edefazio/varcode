@@ -8,7 +8,7 @@ import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.Dom;
-import varcode.java.Cloner;
+import varcode.java.CloneInstance;
 import varcode.markup.bindml.BindML;
 
 /**
@@ -81,7 +81,7 @@ public class _code
             }
             else 
             {
-                cloneArr[ i ] = Cloner.clone( o ); 
+                cloneArr[ i ] = CloneInstance.clone( o ); 
             }
         }
         _code theClone = _code.of( cloneArr );

@@ -58,10 +58,10 @@ public class _Java
     
     public static final String JAVA_PACKAGE_NAME = "packageName";
     
-    public static AdHocJavaFile author( 
-        String className, Dom dom, Object...keyValuePairs )
+    
+    public static AdHocJavaFile author( String className, Dom dom, Object...keyValuePairs )
     {
-        return Java.author( className, dom, VarContext.of( keyValuePairs ) );
+        return author( className, dom, VarContext.of( keyValuePairs ) );
     }
     
     /**
@@ -79,7 +79,7 @@ public class _Java
     	String className, Dom dom, VarContext context, Directive...directives )    
     {       	
     	DocState docState = 
-            new DocState( dom, context, directives ); 
+        	new DocState( dom, context, directives ); 
         
     	String[] pckgClass = 
             JavaNaming.ClassName.extractPackageAndClassName( className );
@@ -335,7 +335,7 @@ public class _Java
     public static Object instance( 
         Class<?> theClass, Object... constructorArgs )
     {
-        return Java.instance( theClass, constructorArgs );
+        return JavaReflection.instance( theClass, constructorArgs );
     }
     
     /**
@@ -348,49 +348,49 @@ public class _Java
     public static Object invoke( 
     	Object target, String methodName, Object... arguments )
     {      
-        return Java.invoke( target, methodName, arguments );
+        return JavaReflection.invoke( target, methodName, arguments );
     }
 
     public static Object getStaticFieldValue( Class<?> clazz, String fieldName )
     {
-    	return Java.getStaticFieldValue( clazz, fieldName );
+    	return JavaReflection.getStaticFieldValue( clazz, fieldName );
     }
     
     public static Object getStaticFieldValue( Field field )
     {
-        return Java.getStaticFieldValue( field );
+        return JavaReflection.getStaticFieldValue( field );
     }
     
     public static void setFieldValue( Object instance, String fieldName, Object value )
     {
-        Java.setFieldValue( instance, fieldName, value );
+        JavaReflection.setFieldValue( instance, fieldName, value );
     }
     
     public static Object getFieldValue( Object instanceOrClass, String fieldName )
     {
-        return Java.getFieldValue( instanceOrClass, fieldName );
+        return JavaReflection.getFieldValue( instanceOrClass, fieldName );
     }
     
     public static Object invokeStatic( 
         Class<?> clazz, String methodName, Object... args )
     {
-        return Java.invokeStatic( clazz, methodName, args );
+        return JavaReflection.invokeStatic( clazz, methodName, args );
     }
     
     public static Method getStaticMethod( 
         Method[] methods, String methodName, Object[] args )
     {
-        return Java.getStaticMethod( methods, methodName, args );
+        return JavaReflection.getStaticMethod( methods, methodName, args );
     }
     
     public static List<Method> getMethodsByName( Class clazz, String methodName )
     {
-        return Java.getMethods( clazz, methodName );
+        return JavaReflection.getMethods( clazz, methodName );
     }
     
     public static Method getMethod( 
         Method[] methods, String methodName, Object... args )
     {
-        return Java.getMethod( methods, methodName, args );
+        return JavaReflection.getMethod( methods, methodName, args );
     }
 }

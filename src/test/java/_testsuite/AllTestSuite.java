@@ -34,7 +34,7 @@ import varcode.doc.translate.ClassToStringTranslatorTest;
 import varcode.doc.translate.TranslateBufferTest;
 import varcode.java.JavaCaseTest;
 import varcode.java.JavaNamingTest;
-import varcode.java.JavaTest;
+import varcode.java._JavaTest;
 import varcode.java._JavaCaseClassNameTest;
 import varcode.java._JavaCase_AllDirectivesTest;
 import varcode.java.adhoc.WorkspaceTest;
@@ -147,7 +147,7 @@ public class AllTestSuite
         suite.addTestSuite( _JavaCase_AllDirectivesTest.class );
         suite.addTestSuite( _JavaCaseClassNameTest.class );
         suite.addTestSuite( JavaCaseTest.class );
-        suite.addTestSuite( JavaTest.class );
+        suite.addTestSuite(_JavaTest.class );
         suite.addTestSuite( JavaMarkupRepoTest.class );
         suite.addTestSuite( JavaNamingTest.class );
 		

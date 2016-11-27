@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 eric.
+ * Copyright 2016 M. Eric DeFazio.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,15 +26,24 @@ import varcode.java.adhoc.AdHocObjectInputStream;
 
 /**
  * Deep Copy Clones an object by Serializing it as a byte array and 
- * then de-serializing it.
+ * then de-serializing it. 
+ * (Obviously this will have issues with transient fields, by design)
  * 
  * NOTE the underlying class MUST BE SERIALIZABLE
  * 
  * @see _auto_externalizable
  * @author M. Eric DeFazio  eric@varcode.io
  */
-public class Cloner
+public class CloneInstance
 {
+    /**
+     * Creates a deep clone of the prototype Object by serializing and deserializing
+     * a copy (and returning a copy)
+     * @param prototype the prototype Object to be cloned
+     * @return the clone
+     * @throws VarException if there was an error serializing and deserializing 
+     * the object
+     */
     public static Object clone( Object prototype )
     {
         if( prototype.getClass().getClassLoader() instanceof AdHocClassLoader )
@@ -55,8 +64,7 @@ public class Cloner
             ByteArrayInputStream bais = new ByteArrayInputStream( baos.toByteArray() );                
             ObjectInputStream ois = new ObjectInputStream( bais );
             
-            return ois.readObject();
-            
+            return ois.readObject();            
         }
         catch( IOException ex ) 
         {
@@ -76,9 +84,9 @@ public class Cloner
      * @param adHocClassLoader a child adHocClassloader containing additional 
      * classes not on the 
      * @param toClone the object to clone
-     * @return  the object
+     * @return the object
      */
-    public static Object clone( AdHocClassLoader adHocClassLoader, Object toClone )
+    public static Object clone( ClassLoader adHocClassLoader, Object toClone )
     {
         ObjectOutputStream oos = null;
         try 
