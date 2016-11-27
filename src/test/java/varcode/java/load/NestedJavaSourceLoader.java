@@ -22,9 +22,8 @@ import com.github.javaparser.ast.body.TypeDeclaration;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import varcode.Model.ModelLoadException;
-import varcode.java.load.JavaASTParser;
-import varcode.java.load.JavaASTParser;
-import varcode.load.BaseSourceLoader;
+import varcode.java.ast.JavaASTParser;
+import varcode.java.ast.JavaASTParser;
 import varcode.load.SourceLoader;
 
 /**

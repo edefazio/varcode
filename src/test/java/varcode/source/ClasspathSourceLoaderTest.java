@@ -15,7 +15,7 @@
  */
 package varcode.source;
 
-import varcode.load.ClassPathSourceLoader;
+import varcode.java.load.ClassPathSourceLoader;
 import junit.framework.TestCase;
 import varcode.VarException;
 import varcode.load.SourceLoader.SourceStream;

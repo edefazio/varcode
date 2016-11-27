@@ -7,8 +7,8 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import java.util.List;
 import junit.framework.TestCase;
-import varcode.java.lang._class;
-import varcode.java.lang._methods._method;
+import varcode.java.langmodel._class;
+import varcode.java.langmodel._methods._method;
 import varcode.java.load._java;
 import varcode.load.SourceLoader.SourceStream;
 
@@ -54,7 +54,7 @@ public class KnowThyself
     public void testLoadASTTypeDeclaration()
     {
         TypeDeclaration astClassDef = 
-            _java.astDeclarationFrom( KnowThyself.class );
+            _java.astTypeDeclarationFrom( KnowThyself.class );
         assertEquals( "KnowThyself", astClassDef.getName() );
         assertEquals( java.lang.reflect.Modifier.PUBLIC, astClassDef.getModifiers() );        
         

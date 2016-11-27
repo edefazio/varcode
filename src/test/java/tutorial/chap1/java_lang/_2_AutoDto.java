@@ -4,9 +4,9 @@ import java.util.Date;
 import junit.framework.TestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import varcode.java.lang._class;
-import varcode.java.lang.auto._autoDto;
-import varcode.java.lang.auto._autoExternalizable;
+import varcode.java.langmodel._class;
+import varcode.java.langmodel.auto._autoDto;
+import varcode.java.langmodel.auto._autoExternalizable;
 
 /**
  * _auto... provide create another model abstraction layer on top of existing

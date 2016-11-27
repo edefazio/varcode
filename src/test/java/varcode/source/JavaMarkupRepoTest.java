@@ -1,6 +1,6 @@
 package varcode.source;
 
-import varcode.load.BaseSourceLoader;
+import varcode.java.load.BaseSourceLoader;
 import junit.framework.TestCase;
 import varcode.java.JavaNaming;
 import varcode.load.SourceLoader.SourceStream;

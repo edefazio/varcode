@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import varcode.java.Java;
-import varcode.java.lang._class;
+import varcode.java.langmodel._class;
 
 /**
  * Java AdHoc  

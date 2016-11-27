@@ -23,10 +23,10 @@ import java.util.UUID;
 import junit.framework.TestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import varcode.java.lang._class;
-import varcode.java.lang._code;
-import varcode.java.lang._methods._method;
-import varcode.java.load._JavaLoader;
+import varcode.java.langmodel._class;
+import varcode.java.langmodel._code;
+import varcode.java.langmodel._methods._method;
+import varcode.java.load.langmodel._JavaLoader;
 
 /**
  *

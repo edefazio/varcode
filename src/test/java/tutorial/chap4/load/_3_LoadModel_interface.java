@@ -18,8 +18,8 @@ package tutorial.chap4.load;
 import java.io.Serializable;
 import junit.framework.TestCase;
 import varcode.Model;
-import varcode.java.lang._interface;
-import varcode.java.load._JavaLoader;
+import varcode.java.langmodel._interface;
+import varcode.java.load.langmodel._JavaLoader;
 
 /**
  *

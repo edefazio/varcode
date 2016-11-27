@@ -14,7 +14,7 @@ import varcode.doc.lib.text.PrefixWithLineNumber;
 import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.adhoc.AdHocJavaFile;
 import varcode.java.adhoc.JavacException;
-import varcode.load.BaseSourceLoader;
+import varcode.java.load.BaseSourceLoader;
 import varcode.load.SourceLoader;
 import varcode.load.SourceLoader.SourceStream;
 import varcode.markup.codeml.CodeML;

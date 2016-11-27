@@ -1,6 +1,6 @@
 package varcode.java;
 
-import varcode.load.BaseSourceLoader;
+import varcode.java.load.BaseSourceLoader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;

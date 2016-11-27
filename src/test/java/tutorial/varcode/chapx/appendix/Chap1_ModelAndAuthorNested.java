@@ -5,8 +5,8 @@ import java.util.Date;
 import java.util.UUID;
 import junit.framework.TestCase;
 import varcode.java.Java;
-import varcode.java.lang._class;
-import varcode.java.lang._interface;
+import varcode.java.langmodel._class;
+import varcode.java.langmodel._interface;
 
 /**
  *

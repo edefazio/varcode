@@ -17,8 +17,8 @@ package tutorial.chap4.load;
 
 import junit.framework.TestCase;
 import varcode.context.Bootstrap;
-import varcode.java.lang._enum;
-import varcode.java.load._JavaLoader;
+import varcode.java.langmodel._enum;
+import varcode.java.load.langmodel._JavaLoader;
 
 /**
  *

@@ -17,10 +17,10 @@ package indepth.varcode._classes;
 
 import java.lang.reflect.Modifier;
 import junit.framework.TestCase;
-import varcode.java.lang._class;
-import varcode.java.lang._enum;
-import varcode.java.lang._fields._field;
-import varcode.java.lang._modifiers;
+import varcode.java.langmodel._class;
+import varcode.java.langmodel._enum;
+import varcode.java.langmodel._fields._field;
+import varcode.java.langmodel._modifiers;
 
 /**
  *

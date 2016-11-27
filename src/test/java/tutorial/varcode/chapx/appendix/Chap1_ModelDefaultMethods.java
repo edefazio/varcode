@@ -11,8 +11,8 @@ import varcode.java.Java;
 import varcode.java.JavaCase;
 import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.adhoc.Workspace;
-import varcode.java.lang._class;
-import varcode.java.lang._interface;
+import varcode.java.langmodel._class;
+import varcode.java.langmodel._interface;
 
 /**
  * This is an integration Test that tries to test out 

@@ -1,12 +1,13 @@
 package varcode.java.load;
 
+import varcode.java.load.langmodel._JavaLoader;
 import java.util.ArrayList;
 import java.util.List;
 import junit.framework.TestCase;
-import varcode.java.lang._class;
-import varcode.java.lang._enum;
-import varcode.java.lang._interface;
-import varcode.java.lang._nesteds;
+import varcode.java.langmodel._class;
+import varcode.java.langmodel._enum;
+import varcode.java.langmodel._interface;
+import varcode.java.langmodel._nesteds;
 
 /**
  *

@@ -15,18 +15,20 @@
  */
 package varcode.java.load;
 
+import varcode.java.load.langmodel._JavaLoader;
+import varcode.java.ast.JavaASTParser;
 import com.github.javaparser.ParseException;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import varcode.Model.ModelLoadException;
-import varcode.java.lang._class;
-import varcode.java.lang._interface;
-import varcode.load.BaseSourceLoader;
+import varcode.java.langmodel._class;
+import varcode.java.langmodel._enum;
+import varcode.java.langmodel._interface;
 import varcode.load.SourceLoader;
 import varcode.load.SourceLoader.SourceStream;
 
 /**
- * Loads/Builds Source, AST and Models for Java source code
+ * TOOL API for Loading Source, AST and langmodel for Java source code
  *
  * @author Eric DeFazio eric@varcode.io
  */
@@ -47,7 +49,7 @@ public class _java
      * <CODE>sourceLoader</CODE> provided.
      * @param sourceLoader the loader for finding and returning the source
      * @param clazz the class to load the source for
-     * @return  the SourceStream ( wrapping an inputStream)
+     * @return  the SourceStream ( wrapping an inputStream )
      */
     public static SourceStream sourceFrom( 
         SourceLoader sourceLoader, Class clazz )
@@ -56,11 +58,34 @@ public class _java
     }
     
     /**
-     * Loads the  
-     * @param topLevelClass
+     * Returns the ASTRoot {@code CompilationUnit}
+     * @param javaSourceCode
      * @return 
+     * @throws ModelLoadException if unable to  load the AST from the javaSourceCode
+     */
+    public static CompilationUnit astFrom( CharSequence javaSourceCode )
+        throws ModelLoadException 
+    {
+        try
+        {
+            return JavaASTParser.astFrom( javaSourceCode );
+        }
+        catch( ParseException pe )
+        {
+             throw new ModelLoadException(
+                "Unable to parse AST from Java Source :" 
+                + System.lineSeparator() + javaSourceCode, pe );
+        }
+    }
+    
+    /**
+     * Loads the astRootNode {@code CompilationUnit} for a 
+     * @param topLevelClass a Top Level Java class
+     * @return the {@code CompilationUnit} (root AST node)
+     * @throws ModelLoadException if unable to parse the {@code CompilationUnit} 
      */
     public static CompilationUnit astFrom( Class topLevelClass )
+        throws ModelLoadException
     {
         try
         {
@@ -93,10 +118,11 @@ public class _java
      * returns the AST TypeDeclaration node that represents the clazz
      * the TypeDeclaration instance is a child node of a ast Root 
      * <CODE>CompilationUnit</CODE>
-     * @param clazz a Class
-     * @return 
+     * @param clazz a Class to read the 
+     * @return the {@code TypeDeclaration} ast node
+     * @throws ModelLoadException if unable to parse the {@code TypeDeclaration} 
      */
-    public static TypeDeclaration astDeclarationFrom( Class clazz )
+    public static TypeDeclaration astTypeDeclarationFrom( Class clazz )
     {
         Class topLevelClass = getTopLevelClass( clazz ); 
         SourceStream ss = 
@@ -137,11 +163,36 @@ public class _java
             clazz + " )" );        
     }
     
+    /**
+     * Parse and return the _class (lang_model) from the source code
+     * @param javaSourceCode the Java source code to parse and compile into a _class
+     * @return a _class (lang_model) representing the java source
+     * @throws ModelLoadException if unable to load the _class 
+     */
+    public static _class _classFrom( CharSequence javaSourceCode )
+        throws ModelLoadException
+    {
+        return _JavaLoader._Class.from( javaSourceCode );
+    }
+    
+    /**
+     * Parse and return the _class (lang_model) from the source code
+     * @param clazz a Java class
+     * @return a _class (lang_model) representing the java source
+     * @throws ModelLoadException if unable to load the _class 
+     */
     public static _class _classFrom( Class clazz )
     {
         return _JavaLoader._Class.from( clazz );
     }
     
+    /**
+     * Parse and return the _class (lang_model) from the source code
+     * @param sourceLoader the loader for resolving the source for the class
+     * @param clazz a Java class
+     * @return a _class (lang_model) representing the java source
+     * @throws ModelLoadException if unable to load the _class 
+     */
     public static _class _classFrom( SourceLoader sourceLoader, Class clazz )
     {
         return _JavaLoader._Class.from( sourceLoader, clazz );
@@ -155,5 +206,10 @@ public class _java
     public static _interface _interfaceFrom( Class clazz )
     {
         return _JavaLoader._Interface.from( clazz );
+    }
+    
+    public static _enum _enumFrom( Class clazz )
+    {
+        return _JavaLoader._Enum.from( clazz );
     }
 }
