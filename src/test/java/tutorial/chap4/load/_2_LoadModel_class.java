@@ -37,9 +37,9 @@ public class _2_LoadModel_class
     //load a "top level class" (stored in "VarException.java")
     public void testLoad_class()
     {
-        _class c = _JavaLoader._Class.from( VarException.class );
+        _class _c = _JavaLoader._Class.from( VarException.class );
         //_class c = JavaLoad._classOf( VarException.class );
-        LOG.debug ( c.author( ) ); 
+        LOG.debug( _c.author( ) ); 
     }
 
     private static class MemberClass
@@ -62,16 +62,11 @@ public class _2_LoadModel_class
      */
     public void testLoadMember_class()
     {        
-        _class c = _JavaLoader._Class.from( MemberClass.class );
+        _class _c = _JavaLoader._Class.from( MemberClass.class );
         //_class c = JavaLoad._classOf( MemberClass.class );
-        assertEquals( "MemberClass", c.getName() );
-        c.getModifiers().containsAll( "private", "static" );
-        assertTrue( 
-            c.getMethodNamed( "someMethod" )
+        assertEquals("MemberClass", _c.getName() );
+        _c.getModifiers().containsAll( "private", "static" );
+        assertTrue(_c.getMethodNamed( "someMethod" )
                 .getModifiers().containsAll( "public", "static", "final" ) );
-    }
-    
-   
-    
-    
+    }    
 }

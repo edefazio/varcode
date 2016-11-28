@@ -157,11 +157,16 @@ public class _constructors
             return ctor;
         }
         
-		public static _constructor cloneOf( _constructor prototype )
-		{
-			_constructor ctor =  new _constructor(
-				_signature.cloneOf( prototype.constructorSig ) );
-			ctor.annotations = prototype.getAnnotations();
+        public _parameters getParameters()
+        {
+            return this.constructorSig.getParameters();
+        }
+        
+	public static _constructor cloneOf( _constructor prototype )
+	{
+            _constructor ctor =  new _constructor(
+		_signature.cloneOf( prototype.constructorSig ) );
+		ctor.annotations = prototype.getAnnotations();
             if( prototype.javadoc != null )
             {
                 ctor.javadoc = _javadoc.of( prototype.getJavadoc().getComment() );
@@ -260,6 +265,11 @@ public class _constructors
         public _annotations getAnnotations()
         {
             return this.annotations;
+        }
+        
+        public _constructor setBody( String body )
+        {
+            return setBody( _code.of( body ) );            
         }
         
         public _constructor setBody( _code body )

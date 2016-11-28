@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package indepth.varcode._classes;
+package use.java.langmodel;
 
 import java.lang.reflect.Modifier;
 import junit.framework.TestCase;
@@ -31,18 +31,18 @@ public class Fields
 {
     public void testBuildFields( )
     {
-        _field f = _field.of("public String a; ");
-        _field f2 = new _field( Modifier.PUBLIC, "String", "b" );
-        _field f3 = new _field( _modifiers.of(Modifier.PUBLIC ), "String", "b" ); 
-        _field f4 = new _field( _modifiers.of("public" ), "String", "b" ); 
+        _field _f = _field.of( "public String a;" );
+        _field _f2 = new _field( Modifier.PUBLIC, "String", "b" );
+        _field _f3 = new _field( _modifiers.of( Modifier.PUBLIC ), "String", "b" ); 
+        _field _f4 = new _field( _modifiers.of( "public" ), "String", "b" ); 
         
         _class _c = _class.of( "public class A" )
-            .field( f )
-            .field( _modifiers.of("public", "final"), "String", "b" )
+            .field(_f )
+            .field( _modifiers.of( "public", "final" ), "String", "b" )
             .field( Modifier.PUBLIC | Modifier.STATIC, "String", "c" );
         
         _enum _e = _enum.of("public enum E")
-            .field( f );
+            .field(_f );
                 
     }
 }

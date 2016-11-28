@@ -41,54 +41,53 @@ public class _1_AddMethodLogging
 {
     /**
      * add the appropriate Logger imports
-     * @param component a (_class, _enum, _interface)
+     * @param _component a (_class, _enum, _interface)
      */
-    public static void addImport( _component component )
+    public static void addImport( _component _component )
     {        
-        _imports imports = component.getImports();
+        _imports imports = _component.getImports();
         imports.addImports( Logger.class, LoggerFactory.class );        
     }
     
     /**
      * conditionally add a static final LOG field to the class
      * if a LOG static field if it doesn't exist, create one
-     * @param component a (_class, _enum, _interface)
+     * @param _component a (_class, _enum, _interface)
      */
-    public static void addLOGField( _component component )
+    public static void addLOGField( _component _component )
     {
-        _fields fs = component.getFields();
-        _field f = fs.getByName( "LOG" );
-        if( f == null )
+        _fields _fs = _component.getFields();
+        _field _f = _fs.getByName( "LOG" );
+        if( _f == null )
         {
-            fs.addFields( 
-                _field.of(
+            _fs.addFields( _field.of( 
                 "public static final Logger LOG = LoggerFactory.getLogger( " 
-                    + component.getName() + ".class );" ) );
+                + _component.getName() + ".class );" ) );
         }
     }
     
-    public static _component addMethodLogging( _component component )
+    public static _component addMethodLogging( _component _component )
     {
-        return addMethodLogging( component, true );
+        return addMethodLogging(_component, true );
     }
     
     /**
      * 
-     * @param component the component to add method logging to
+     * @param _component the component to add method logging to
      * @return the modified component
      */
     public static _component addMethodLogging( 
-        _component component, boolean applyToAllNestedComponents )
+        _component _component, boolean applyToAllNestedComponents )
     {   
         if( applyToAllNestedComponents )
         {
-            _nesteds nests = component.getNesteds();    
+            _nesteds nests = _component.getNesteds();    
             for( int i = 0; i < nests.count();i++ )
             {
                 addMethodLogging( nests.getAt( i ), true );
             }
         }
-        _methods methods = component.getMethods();
+        _methods methods = _component.getMethods();
                 
         boolean hasLoggedMethod = false;
         
@@ -109,10 +108,10 @@ public class _1_AddMethodLogging
         //least one method that can be logged
         if( hasLoggedMethod )
         {
-            addImport( component );
-            addLOGField(  component );
+            addImport( _component );
+            addLOGField( _component );
         }
-        return component;
+        return _component;
     }
     
     public static class SomeDumbClass
@@ -149,26 +148,26 @@ public class _1_AddMethodLogging
     public static void main( String[] args )
     {
         //? Can I load a deep nested class?
-        _class n = _JavaLoader._Class.from( 
+        _class _n = _JavaLoader._Class.from( 
             AddForNestedLogger.NestedClass.class );
         
-        System.out.println( n );
+        System.out.println( _n );
         
         //_class c = _Load.INSTANCE._classOf( SomeDumbClass.class );
-        _class c = _JavaLoader._Class.from( SomeDumbClass.class );
-        addMethodLogging( c );
-        System.out.println( c );
+        _class _c = _JavaLoader._Class.from( SomeDumbClass.class );
+        addMethodLogging( _c );
+        System.out.println( _c );
         
         //_interface i = _Load.INSTANCE._interfaceOf( NoLoggerToAdd.class );
-        _interface i = _JavaLoader._Interface.from( NoLoggerToAdd.class );
-        System.out.println( i );
+        _interface _i = _JavaLoader._Interface.from( NoLoggerToAdd.class );
+        System.out.println(_i );
         
-        addMethodLogging( i );        
-        System.out.println( i );
+        addMethodLogging(_i );        
+        System.out.println(_i );
 
         //_enum e = _Load.INSTANCE._enumOf( AddForNestedLogger.class ) ;
-        _enum e = _JavaLoader._Enum.from( AddForNestedLogger.class );
-        addMethodLogging( e );
-        System.out.println( e );        
+        _enum _e = _JavaLoader._Enum.from( AddForNestedLogger.class );
+        addMethodLogging(_e );
+        System.out.println(_e );        
     }
 }

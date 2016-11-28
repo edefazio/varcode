@@ -1,4 +1,4 @@
-package quickstart.java;
+package use.java.langmodel.chap1;
 
 import junit.framework.TestCase;
 import varcode.java._Java;
@@ -52,13 +52,13 @@ import varcode.java.langmodel._class;
  * 
  * @author M. Eric DeFazio eric@varcode.io
  */
-public class AuthorNewCode
+public class AuthorNewCode_Describe
     extends TestCase
 {    
     public void testAuthorUseAdHocCode()
     {
         /*1: build a _class langmodel representing java source code  */
-        _class _c = _class.of( "quickstart.java", 
+        _class _c = _class.of( "use.java.langmodel", 
             "public class Authored" )    
             .field( "public static final int ID = 100;" )
             .method( "public static int staticMethod()", 

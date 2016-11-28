@@ -95,6 +95,10 @@ public class JavaReflection
     public static Object invoke( 
     	Object target, String methodName, Object... arguments )
     {       
+        if( methodName.indexOf( "(" ) > 0 )
+        {
+            methodName = methodName.substring(0, methodName.indexOf( "(" ) );
+        }
         Method method = null;        
     	try            
         {            

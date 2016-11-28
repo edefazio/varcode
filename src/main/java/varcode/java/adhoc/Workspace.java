@@ -49,7 +49,7 @@ public class Workspace
      * @param caseAuthors authors of Java Cases that contain Java code
      * @return a Workspace containing the JavaFiles that are
      */
-    public static Workspace ofAuthors( JavaCaseAuthor...caseAuthors )
+    public static Workspace of( JavaCaseAuthor...caseAuthors )
     {
         JavaCase[] cases = new JavaCase[ caseAuthors.length ];
         
@@ -57,7 +57,7 @@ public class Workspace
         {
             cases[ i ] = caseAuthors[ i ].toJavaCase( );
         }
-        return of( cases );
+        return Workspace.of( cases );
     }
     
     /** 

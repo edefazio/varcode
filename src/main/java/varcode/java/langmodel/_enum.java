@@ -400,69 +400,78 @@ public class _enum
     }
         
     @Override
-	public String author( Directive... directives ) 
-	{
-		return toJavaCase( directives ).toString();
-	}
+    public String author( Directive... directives ) 
+    {
+	return toJavaCase( directives ).toString();
+    }
 
     @Override
-	public String toString()
-	{
-		return author();
-	}
+    public String toString()
+    {
+	return author();
+    }
 	
-	public static _enum of( String enumSignature )
-	{
-		_signature sig = _signature.of( enumSignature );
-		_enum e = new _enum( sig );
-		return e;
-	}
+    public static _enum of( String enumSignature )
+    {
+        _signature sig = _signature.of( enumSignature );
+        _enum e = new _enum( sig );
+        return e;
+    }
 	
-	public static _enum of( String packageName, String enumSignature )
-	{
-		_signature sig = _signature.of( enumSignature );
-		_enum e = new _enum( sig );
-		e.packageName( packageName );
-		return e;
-	}
+    public static _enum of( Package pkg, String enumSignature )
+    {
+        _signature sig = _signature.of( enumSignature );
+        _enum e = new _enum( sig );
+        e.packageName( pkg.getName() );
+        return e;
+    }
+	
+    public static _enum of( String packageName, String enumSignature )
+    {
+        _signature sig = _signature.of( enumSignature );
+        _enum e = new _enum( sig );
+        e.packageName( packageName );
+        return e;
+    }
     
     public static _enum of( String javadoc, String packageName, String enumSignature )
     {
         _signature sig = _signature.of( enumSignature );
-		_enum e = new _enum( sig );
-		e.packageName( packageName );
+            _enum e = new _enum( sig );
+            e.packageName( packageName );
+            
         e.javadoc( javadoc );
-		return e;
+            return e;
     }
 	
-	public _enum( _signature signature )
-	{
-		this.enumSignature = signature;
-	}
+    public _enum( _signature signature )
+    {
+	this.enumSignature = signature;
+    }
 	
-	public _enum(
-		_package enumPackage, 
-		_imports imports, 
-		_javadoc javadocComment, 
-		_signature signature,		
-		_fields members,
-		_staticBlock staticBlock,
-		_methods methods,
-		_nesteds nested )
-	{
-		this.enumPackage = enumPackage;
-		this.imports = imports;
-		this.javadoc = javadocComment;
-		this.enumSignature = signature;
-		this.staticBlock = staticBlock;
-		this.fields = members;
-		this.methods = methods;
-		this.nesteds = nested;
-	}
+    public _enum(
+	_package enumPackage, 
+	_imports imports, 
+	_javadoc javadocComment, 
+	_signature signature,		
+	_fields members,
+	_staticBlock staticBlock,
+	_methods methods,
+	_nesteds nested )
+    {
+	this.enumPackage = enumPackage;
+	this.imports = imports;
+	this.javadoc = javadocComment;
+	this.enumSignature = signature;
+	this.staticBlock = staticBlock;
+	this.fields = members;
+	this.methods = methods;
+	this.nesteds = nested;
+    }
 	
-	public _enum packageName( String packageName )
-	{
-		return packageName( _package.of( packageName ) );
+    public _enum packageName( String packageName )
+    {
+	return packageName( _package.of( packageName ) );
 	}
 	
 	public _enum packageName( _package packageImpl )

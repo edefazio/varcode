@@ -1,4 +1,4 @@
-package indepth.varcode.marks;
+package use.markup;
 
 /**
  * "{+mark+}", "{+mark|default+}", "{mark*+}"

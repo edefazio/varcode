@@ -146,9 +146,9 @@ public class _3_Tuple
     
     public void testSimple( )
     {
-        _class c = Tuple.modelOf( 1,2 );
-        System.out.println( c ); 
-        Object instance = c.instance( );
+        _class _c = Tuple.modelOf( 1,2 );
+        System.out.println( _c ); 
+        Object instance = _c.instance( );
         
         _Java.getFieldValue( instance, "_1" );
         

@@ -30,21 +30,19 @@ public class _3_LoadModel_interface
 {
      public void testLoad_interface()
     {
-        _interface i = _JavaLoader._Interface.from( Model.class );
+        _interface _i = _JavaLoader._Interface.from( Model.class );
         //_interface i = JavaLoad._interfaceOf( Model.class );        
     }
     
     public interface MemberInterface
         extends Serializable
-    {
-        
-        void doIt(); 
-        
+    {        
+        void doIt();         
     }
     
     public void testLoadMember_interface()
     {
-        _interface i = _JavaLoader._Interface.from( MemberInterface.class );
+        _interface _i = _JavaLoader._Interface.from( MemberInterface.class );
         //_interface i = JavaLoad._interfaceOf( MemberInterface.class );        
     }
 }

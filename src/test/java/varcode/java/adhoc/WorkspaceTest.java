@@ -21,7 +21,7 @@ public class WorkspaceTest
             "public class "+this.getClass().getSimpleName() )
             .field("public static final int ID = 200;");
         
-        Workspace ws = Workspace.ofAuthors( c );
+        Workspace ws = Workspace.of( c );
         
         AdHocClassLoader ah = ws.compile( );
         
@@ -71,10 +71,10 @@ public class WorkspaceTest
     // so there is no conflict
     public void testDualWorkspaces()
     {
-        Workspace a1 = Workspace.of( )
+        Workspace a1 = new Workspace()
             .addCode( "A", "public class A{ public static final int ID = 1; }" );
         
-        Workspace a2 = Workspace.of(  )
+        Workspace a2 = new Workspace(  )
             .addCode( "A", "public class A{ public static final int ID = 2; }" );
         
         AdHocClassLoader a1cl = a1.compile( );
@@ -210,7 +210,7 @@ public class WorkspaceTest
 	
 	public void testOneFile()
 	{
-		Workspace sws = Workspace.of( );
+		Workspace sws = new Workspace();
 		sws.addCode( "A", "public class A {}" );
         
 		AdHocClassLoader ah = sws.compile( );
@@ -222,7 +222,7 @@ public class WorkspaceTest
 	{
 		try
 		{
-			Workspace.of( )
+			new Workspace()
 		    	.addCode( "A", "asdfklhjasdjklf" )
 		    	.compile( );
 			fail( "Expected Compiler Exception" );
@@ -238,9 +238,9 @@ public class WorkspaceTest
 	
 	public void testTwoClasses()
 	{
-		AdHocClassLoader cw = 
-			Workspace.of( )
-			    .addCode( 
+            AdHocClassLoader cw = 
+		new Workspace()
+                    .addCode( 
 			        "A", 
 			        "public class A" + N 
 			       +"{" + N
@@ -270,7 +270,7 @@ public class WorkspaceTest
 	public void testTwoClassesCycle()
 	{
 		AdHocClassLoader cw = 
-			Workspace.of( )
+			new Workspace()
 			    .addCode( 
 			        "A", 
 			        "public class A" + N 
@@ -298,7 +298,7 @@ public class WorkspaceTest
 	public void testCompilerException()
 	{
 		Workspace sw = 
-			Workspace.of(  )
+                    new Workspace()
                 .addCode( "ExceptionLine3",
 				"public class ExceptionLine3 {" + N 
 			   +"    public int a = 0;" + N
@@ -320,7 +320,7 @@ public class WorkspaceTest
 	
 	public void testTwoClassesFailCompilerOption()
 	{
-		Workspace sw = Workspace.of( )
+		Workspace sw = new Workspace()
 	    .addCode( 
 	        "A", 
 	        "public class A" + N 

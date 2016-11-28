@@ -16,6 +16,7 @@
 package tutorial.varcode.chapx.appendix;
 
 import junit.framework.TestCase;
+import varcode.java._Java;
 import varcode.java.langmodel._class;
 import varcode.java.load.langmodel._JavaLoader;
 
@@ -44,7 +45,7 @@ public class _3_LoadAndModifyInstance
     
     public void testAuthorDynamicInstance()
     {
-        _class _c = _JavaLoader._Class.from( SkeletonBean.class );
+        _class _c = _Java._classFrom( SkeletonBean.class );
         _c.setName( "AuthoredBean" );
         _c.property( "private String name;" );//add field, getter setter
         _c.property( "private final int count;" );

@@ -25,14 +25,14 @@ public class /*{+className*/_4_CodeML_Model/*+}*/ /*{-*/extends TestCase/*-}*/
     /*{-*/
     public void testAddMethod()
     {
-        _method m = _method.of(
+        _method _m = _method.of(
             "Simple ToString method ", 
             "public String toString()", 
             _code.of("return this.getClass().getName().toString();") );
             
-        JavaCase thisCase = JavaCase.of(_4_CodeML_Model.class, 
+        JavaCase thisCase = JavaCase.of( _4_CodeML_Model.class, 
             "ex.varcode.java.code.AddMethodClass", 
-            "addMethodHere", m );
+            "addMethodHere", _m );
             
         System.out.println( thisCase.toString() );
         assertEquals( "ex.varcode.java.code.AddMethodClass", 
@@ -41,10 +41,10 @@ public class /*{+className*/_4_CodeML_Model/*+}*/ /*{-*/extends TestCase/*-}*/
     
     public void testAddField()
     {
-        _field f = _field.of( "public static final int VERSION = 1;" );
+        _field _f = _field.of( "public static final int VERSION = 1;" );
         JavaCase thisCase = JavaCase.of(_4_CodeML_Model.class, 
             "ex.varcode.java.code.AddFieldClass", 
-            "addFieldHere", f );
+            "addFieldHere", _f );
         
         Object instance = thisCase.instance( );
         assertEquals( 1, _Java.getFieldValue( instance, "VERSION" ) ); 
@@ -52,7 +52,7 @@ public class /*{+className*/_4_CodeML_Model/*+}*/ /*{-*/extends TestCase/*-}*/
     
     public void testAddNestedClass()
     {
-        _class nestedClass = 
+        _class _nestedClass = 
             _class.of( "public static class NestedClass" )
                .field( "private final int id;" )
                .constructor(
@@ -62,7 +62,7 @@ public class /*{+className*/_4_CodeML_Model/*+}*/ /*{-*/extends TestCase/*-}*/
         
         JavaCase thisCase = JavaCase.of(_4_CodeML_Model.class, 
             "ex.varcode.java.code.AddNestedClass", 
-            "addNestedClassHere", nestedClass );
+            "addNestedClassHere", _nestedClass );
         
         //System.out.println( thisCase );
         
@@ -82,13 +82,13 @@ public class /*{+className*/_4_CodeML_Model/*+}*/ /*{-*/extends TestCase/*-}*/
     
     public void testAddNestedInterface()
     {
-        _interface nestedInterface = 
+        _interface _nestedInterface = 
             _interface.of( "public interface NestedInterface" )
                .field( "public final double PI = Math.PI;" );
         
         JavaCase thisCase = JavaCase.of(_4_CodeML_Model.class, 
             "ex.varcode.java.code.AddNestedInterface", 
-            "addNestedInterfaceHere", nestedInterface );
+            "addNestedInterfaceHere", _nestedInterface );
         
         Class theClass = thisCase.loadClass();
         Class[] declaredClasses = theClass.getDeclaredClasses();
@@ -107,7 +107,7 @@ public class /*{+className*/_4_CodeML_Model/*+}*/ /*{-*/extends TestCase/*-}*/
     
     public void testAddNestedEnum()
     {
-        _enum nestedEnum = 
+        _enum _nestedEnum = 
             _enum.of( "public enum Colors" )
                 .field( "public final int argb;" )
                 .constructor(
@@ -118,7 +118,7 @@ public class /*{+className*/_4_CodeML_Model/*+}*/ /*{-*/extends TestCase/*-}*/
                 .value("BLUE",  0x0000FF );
         JavaCase jc = JavaCase.of(_4_CodeML_Model.class,                 
             "ex.varcode.java.code.NestedEnumClass",            
-            "addNestedEnumHere", nestedEnum );
+            "addNestedEnumHere", _nestedEnum );
         
         Class topClass = jc.loadClass();
         assertEquals( 1, topClass.getDeclaredClasses().length );

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package indepth.varcode._classes;
+package use.java.langmodel;
 
 import junit.framework.TestCase;
 import varcode.java.langmodel._methods._method;
@@ -25,9 +25,9 @@ import varcode.java.langmodel._methods._method;
 public class Methods
     extends TestCase
 {
-    _method abstractMethod = _method.of("public abstract int absMethod( String input )");
+    _method _abstractMethod = _method.of("public abstract int absMethod( String input )");
     
-    _method varArgsMethod = _method.of( 
+    _method _varArgsMethod = _method.of( 
         "public int varArgsMethod( String... inputs )",
         "return inputs.length;" );
     

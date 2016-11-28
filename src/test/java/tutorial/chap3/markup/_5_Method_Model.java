@@ -23,13 +23,13 @@ public class _5_Method_Model
     public void testMethod()
     {
         _class _c = _JavaLoader._Class.from( _MethodTemplate.class );
-        _method m = _c.getMethodNamed( "nextRandomLong" );
+        _method _m = _c.getMethodNamed( "nextRandomLong" );
         
         //_method m = new _MethodTemplate().compose( );
-        assertEquals( "nextRandomLong",m.getName());
-        assertTrue( m.getSignature().getModifiers().containsAll("public","static") );
-        assertEquals( "long", m.getSignature().getReturnType() );
-        assertEquals( 1, m.getSignature().getParameters().count() );        
+        assertEquals( "nextRandomLong",_m.getName() );
+        assertTrue( _m.getSignature().getModifiers().containsAll("public","static") );
+        assertEquals( "long", _m.getSignature().getReturnType() );
+        assertEquals( 1, _m.getSignature().getParameters().count() );        
     }
     
     

@@ -238,16 +238,28 @@ public class _fields
             return this.fieldAnnotations;
         }
         
-		public String getType()
-		{
-			return this.type;
-		}
+	public String getType()
+	{
+            return this.type;
+	}
 		
-		public _modifiers getModifiers()
-		{
-			return this.mods;
-		}
-		
+	public _modifiers getModifiers()
+	{
+            return this.mods;
+	}
+	
+        public _field setModifiers( String ...modifiers )
+        {
+            this.mods = _modifiers.of( modifiers );
+            return this;
+        }
+        
+        public _field setModifiers( int modifiers )
+        {
+            this.mods = _modifiers.of( modifiers );
+            return this;
+        }
+        
         @Override
         public _field replace( String target, String replacement )
         {
@@ -458,9 +470,15 @@ public class _fields
 
 		public _field setType( String newType )  
 		{
-			this.type = newType;
-			return this;
+                    this.type = newType;
+                    return this;
 		}
+                
+                public _field setName( String newName )
+                {
+                    this.name = newName;
+                    return this;
+                }
 	}
 	
     public VarContext getContext()

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ex.varcode.java.code;
+package use.java.langmodel;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -40,26 +40,26 @@ public class Example1
 {
     public void testHello()
     {
-        _class hello = _class.of("HelloWorld")
+        _class hello = _class.of( "HelloWorld" )
             .method( "public static final void main(String[] args)",
             "System.out.println(\"Hello World !\");");
         
         System.out.println( hello ); 
     }
     
-    public static _field f = _field.of( "public final {+type+} {+name+}" );
+    public static _field _F = _field.of( "public final {+type+} {+name+}" );
     
-    public static _class Tuple = 
+    public static _class _Tuple = 
        _class.of("public class {+tupleName+} implements Serializable");
             
     
     public void testLazyBind()
     {
-        _class myTuple = _class.cloneOf( Tuple );
+        _class myTuple = _class.cloneOf(_Tuple );
         myTuple.replace( "tupleName", "MyTuple" );
     }
     
-    public static _class MyBean = 
+    public static _class _MyBean = 
        _class.of("public class MyBean implements Serializable")
             .imports( Serializable.class, Date.class )
             .field("private final Date date;")
@@ -75,7 +75,7 @@ public class Example1
         {
             Date d = new Date();
             
-            Class myBeanClass = MyBean.loadClass();            
+            Class myBeanClass = _MyBean.loadClass();            
             Object instance = _Java.instance(myBeanClass, d );
             
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -121,7 +121,7 @@ public class Example1
     
     public void testSimple()
     {
-        _class myId = _class.of("Authored")
+        _class _myId = _class.of("Authored")
             .imports( Random.class )
             .field("public static final int ID = 100;")
             .field("private static final Random RANDOM = new Random();")    
@@ -130,9 +130,9 @@ public class Example1
             .method("public static int RandomInt()",
                 "return RANDOM.nextInt();");
                 
-        System.out.println( myId );
+        System.out.println( _myId );
         
-        Object inst = myId.instance( );
+        Object inst = _myId.instance( );
         assertEquals( 100, _Java.invoke( inst, "getId" ) );
         
         System.out.println( _class.of( "EZClass" ) );

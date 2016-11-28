@@ -30,7 +30,7 @@ import varcode.markup.bindml.BindML;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _class    
-	implements JavaCaseAuthor, _component
+    implements JavaCaseAuthor, _component
 {	
 	private _package classPackage;
 	private _imports imports;
@@ -113,7 +113,26 @@ public class _class
 	}
 	
     /** 
-     * Create and return a builder for a new class<PRE> 
+     * Create and return a langmodel for a new class<PRE> 
+     * _class.of( 
+     *    BaseClass.getClass().getPackage(), 
+     *   "public class MyClass extends BaseClass implements Something" );</PRE>
+     * 
+     * creates and returns a public _class "MyClass" in same package 
+     * as the {@code BaseClass} that extends {@code BaseClass}
+     * @param pkg the package the class belongs in (i.e. SomeClass.class.getPackage())
+     * @param classSignature the signature of the class ("public class MyClass")
+     * or
+     * ("private static class MyClass extends BaseClass implements Callable<Integer>")
+     * @return a new _class
+     */        
+    public static _class of( Package pkg, String classSignature )
+    {
+        return new _class( pkg.getName(), classSignature ); 
+    }
+    
+    /** 
+     * Create and return a langmodel for a new class<PRE> 
      * _class.of( 
      *    "ex.varcode", "public class MyClass extends BaseClass implements Something" );</PRE>
      * 
@@ -818,6 +837,18 @@ public class _class
         return this;
     }
     
+    /**
+     * Returns the field with the given name, or null if a field by that name 
+     * doesn't exist.
+     * 
+     * @param fieldName the name of the field
+     * @return the _field (langmodel) for the field
+     */
+    public _field getField( String fieldName )
+    {
+        return this.fields.getByName( fieldName );
+    }
+    
     public _class field( String field )
     {
 		fields.addFields( _fields._field.of( field ) );		
@@ -1019,6 +1050,10 @@ public class _class
         this.signature.extendsFrom.clear();
         this.signature.extendsFrom.addExtends( baseClass );
         return this;
+    }
+
+    public Object getFieldByName(String count) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 	
     /**

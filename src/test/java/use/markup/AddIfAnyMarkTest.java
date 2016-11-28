@@ -1,4 +1,4 @@
-package indepth.varcode.marks;
+package use.markup;
 
 import junit.framework.TestCase;
 import varcode.doc.form.Form;

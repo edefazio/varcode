@@ -260,14 +260,14 @@ public class _parameters
     }
 	
     /** a single name-value parameter to a method, constructor, etc. */
-	public static class _parameter
+    public static class _parameter
         implements LangModel
     {                
-		public static _parameter cloneOf( _parameter prototype ) 
-		{
-			_parameter p = new _parameter( 
-				prototype.type + "", 
-				prototype.name + "" );
+	public static _parameter cloneOf( _parameter prototype ) 
+	{
+            _parameter p = new _parameter( 
+		prototype.type + "", 
+		prototype.name + "" );
             
             if( prototype.isFinal )
             {
@@ -279,7 +279,7 @@ public class _parameters
                 p.annotate( prototype.parameterAnnotation );
             }
             return p;
-		}
+	}
 	
         public _parameter annotate( _annotation annotation )
         {
@@ -326,6 +326,18 @@ public class _parameters
         public _parameter setFinal()
         {
             this.isFinal = true;
+            return this;
+        }
+        
+        public _parameter setType( String type )
+        {
+            this.type = type;
+            return this;
+        }
+        
+        public _parameter setName( String name )
+        {
+            this.name = name;
             return this;
         }
         

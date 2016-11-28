@@ -2,11 +2,14 @@ package _testsuite;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import use.java.langmodel.chap1.AuthorNewCode_Describe;
+import use.java.langmodel.chap1.TailorExistingCode_Describe;
 import tutorial.chap1.java_lang._1_AuthorCode;
 import tutorial.chap1.java_lang._2_AutoDto;
 import tutorial.chap2.java_adhoc._1_AdHocInvoke;
 import tutorial.varcode.chapx.appendix.Chap1_ModelDefaultMethods;
 import tutorial.varcode.chapx.appendix.CodeMLMarkupModelTest;
+
 import varcode.LangTest;
 import varcode.context.ResolveTest;
 import varcode.context.SmartScriptResolverTest;
@@ -119,14 +122,17 @@ import varcode.markup.mark.ReplaceWithVarTest;
 import varcode.markup.mark.RunScriptTest;
 import varcode.source.JavaMarkupRepoTest;
 import varcode.source.PathWalkTest;
+
 public class AllTestSuite
 {
     public static Test suite() 
     {
         TestSuite suite = new TestSuite( AllTestSuite.class.getName() );
         // $JUnit-BEGIN$
+        suite.addTestSuite(AuthorNewCode_Describe.class );
+        suite.addTestSuite(TailorExistingCode_Describe.class );
         
-        suite.addTestSuite(_1_AuthorCode.class );
+        suite.addTestSuite( _1_AuthorCode.class );
         suite.addTestSuite( _2_AutoDto.class );
         
         suite.addTestSuite(_1_AdHocInvoke.class );

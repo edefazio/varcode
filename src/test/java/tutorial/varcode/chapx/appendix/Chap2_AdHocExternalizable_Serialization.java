@@ -40,7 +40,7 @@ import varcode.java.langmodel.cs._autoToString;
 public class Chap2_AdHocExternalizable_Serialization
     extends TestCase
 {
-    public static _autoDto dto = _autoDto.of( 
+    public static _autoDto _dto = _autoDto.of( 
         "tutorial.varcode.chapx.appendix.Exter" )
         .property( String.class, "name" )
         .property( Date.class, "date" )
@@ -49,7 +49,7 @@ public class Chap2_AdHocExternalizable_Serialization
         .imports( Map.class );
     
     public static _class _extern = 
-        _autoToString.of( _autoExternalizable.of( dto.toClassModel() ) );    
+        _autoToString.of( _autoExternalizable.of( _dto.toClassModel() ) );    
     
     public void testSerDeser() 
         throws IOException, ClassNotFoundException

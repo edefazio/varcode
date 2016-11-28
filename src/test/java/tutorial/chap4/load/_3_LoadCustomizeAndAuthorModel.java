@@ -124,7 +124,7 @@ public class _3_LoadCustomizeAndAuthorModel
         _classModel.imports( Date.class, SimpleDateFormat.class );
         
         //get the createId method (there should be only 1 at index 0)
-        _method m = _classModel.getMethodsByName( "createId" ).get( 0 );
+        _method _m = _classModel.getMethodsByName( "createId" ).get( 0 );
         
         /*
         "SimpleDateFormat sdf = new SimpleDateFormat( \"YYYY-MM-DD-hh:mm:ss\" );
@@ -132,7 +132,7 @@ public class _3_LoadCustomizeAndAuthorModel
         "return this.prefix + date + UUID.randomUUID().toString();"
         */        
         //extract the original body from the code
-        _code originalBody = m.getBody();
+        _code originalBody = _m.getBody();
         
     }
     /*
