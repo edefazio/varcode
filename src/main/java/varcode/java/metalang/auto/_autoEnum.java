@@ -23,8 +23,8 @@ import varcode.java.JavaNaming;
 import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.metalang._code;
 import varcode.java.metalang._enum;
-import varcode.java.metalang._enum._valueConstructs;
-import varcode.java.metalang._enum._valueConstructs._valueConstruct;
+import varcode.java.metalang._enum._constants;
+import varcode.java.metalang._enum._constants._constant;
 import varcode.java.metalang._fields;
 import varcode.java.metalang._fields._field;
 import varcode.java.metalang._implements;
@@ -86,7 +86,7 @@ public class _autoEnum
      * </PRE>
      * NOTE: could be empty (if using the singleton enum idiom)
      */
-    private final _valueConstructs valueConstructs = new _valueConstructs();
+    private final _constants valueConstructs = new _constants();
     
     /**
      * creates and returns an enum at the package and of the nmame provided
@@ -344,7 +344,7 @@ public class _autoEnum
 
     public _autoEnum value( String name, Object...values )
     {
-        this.valueConstructs.addEnumValue( _valueConstruct.of( name, values ) );
+        this.valueConstructs.addConstant(_constant.of( name, values ) );
         return this;
     }
 

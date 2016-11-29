@@ -25,6 +25,9 @@ import java.io.ObjectStreamClass;
  * to store/serialize or load/deserialize an object that was created 
  * and loaded by a potentially custom AdHocClassLoader.
  * 
+ * NOTE: this InputStream can use ANY ClassLoader (not only AdHocClassLoader
+ * instances)
+ * 
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class AdHocObjectInputStream

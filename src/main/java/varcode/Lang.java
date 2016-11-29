@@ -167,7 +167,7 @@ public enum Lang
     }
 
     public enum FlatPathResolver
-            implements PathResolver
+        implements PathResolver
     {
         INSTANCE;
 

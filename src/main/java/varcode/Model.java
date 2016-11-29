@@ -79,8 +79,8 @@ public interface Model
     Model bind( VarContext context );
             
     /** 
-     * MetaLanguage Model of a program language
-     * the <A HREF="https://en. wikipedia.org/wiki/Metalanguage">metalanguage</A>
+     * MetaLanguage Model of a program language entites.
+     * <A HREF="https://en. wikipedia.org/wiki/Metalanguage">metalanguage</A>
      */ 
     public interface MetaLang
         extends Model

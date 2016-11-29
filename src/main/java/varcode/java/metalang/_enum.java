@@ -12,55 +12,55 @@ import varcode.java.JavaCase;
 import varcode.java.JavaCase.JavaCaseAuthor;
 import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.metalang._constructors._constructor;
-import varcode.java.metalang._enum._valueConstructs._valueConstruct;
+import varcode.java.metalang._enum._constants._constant;
 import varcode.java.metalang._fields._field;
 import varcode.java.metalang._methods._method;
 import varcode.markup.bindml.BindML;
 
 /**
- * 
+ * MetaLang model 
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _enum
-	implements JavaCaseAuthor, _component
+    implements JavaCaseAuthor, _component
 {
     private _package enumPackage = new _package( "" ); 
     private _imports imports = new _imports();
     private _javadoc javadoc = new _javadoc();
     private _annotations annotations;
-    private _signature enumSignature;
+    private _signature signature;
     private _constructors constructors = new _constructors();
     private _staticBlock staticBlock = new _staticBlock( (Object[])null );
     private _fields fields = new _fields();
-    private _valueConstructs values = new _valueConstructs();
+    private _constants constants = new _constants();
     private _methods methods = new _methods();
     private _nesteds nesteds = new _nesteds();
 	
-	public static final Dom ENUM = 
-		BindML.compile( 
-			"{+pckage+}" +
-			"{{+?imports:{+imports+}" + N +"+}}" +
-			"{+javadocComment+}" +
+    public static final Dom ENUM = 
+        BindML.compile( 
+            "{+pckage+}" +
+            "{{+?imports:{+imports+}" + N +"+}}" +
+            "{+javadocComment+}" +
             "{+enumAnnotations+}" +        
-			"{+enumSignature*+}" + N +
-			"{" + N +
-			"{+values+}" + N +
-			"{{+?members:{+$>(members)+}" + N +
-			"+}}" +
-			"{{+?constructors:{+$>(constructors)+}" + N +
-			"+}}" +
-			"{{+?methods:{+$>(methods)+}" + N + 
-			"+}}" +
-			"{{+?nested:{+$>(nested)+}" + N + 
-			"+}}" +
-			"{{+?staticBlock:{+$>(staticBlock)+}" + N +
-			"+}}" +
-			"}" );
+            "{+enumSignature*+}" + N +
+            "{" + N +
+            "{+values+}" + N +
+            "{{+?members:{+$>(members)+}" + N +
+            "+}}" +
+            "{{+?constructors:{+$>(constructors)+}" + N +
+            "+}}" +
+            "{{+?methods:{+$>(methods)+}" + N + 
+            "+}}" +
+            "{{+?nested:{+$>(nested)+}" + N + 
+            "+}}" +
+            "{{+?staticBlock:{+$>(staticBlock)+}" + N +
+            "+}}" +
+            "}" );
 	
-	public static _enum cloneOf(_enum prototype )
-	{
-		return new _enum( prototype );
-	}
+    public static _enum cloneOf(_enum prototype )
+    {
+        return new _enum( prototype );
+    }
 	
     public _enum add( _facet... facets )
     {
@@ -108,27 +108,27 @@ public class _enum
         return this.getSignature().getModifiers();
     }
     
-	public _enum( _enum prototype )
-	{
-		this.enumPackage = _package.cloneOf( prototype.enumPackage );
-		this.imports = _imports.cloneOf( prototype.imports );
-		this.javadoc = _javadoc.cloneOf( prototype.javadoc );
+    public _enum( _enum prototype )
+    {
+        this.enumPackage = _package.cloneOf( prototype.enumPackage );
+        this.imports = _imports.cloneOf( prototype.imports );
+        this.javadoc = _javadoc.cloneOf( prototype.javadoc );
         this.annotations = _annotations.cloneOf( prototype.annotations );
-		this.enumSignature = _signature.cloneOf( prototype.enumSignature  );
-		this.constructors = _constructors.cloneOf( prototype.constructors );
-		if( prototype.staticBlock!= null && !prototype.staticBlock.isEmpty() )
-		{
-			this.staticBlock = _staticBlock.of( prototype.staticBlock.getBody() );
-		}
-		else
-		{
-			this.staticBlock = new _staticBlock();
-		}
-		this.fields = _fields.cloneOf( prototype.fields );
-		this.values = _valueConstructs.cloneOf( prototype.values );
-		this.methods = _methods.cloneOf( prototype.methods );		
-		this.nesteds = _nesteds.cloneOf(prototype.nesteds );
-	}
+        this.signature = _signature.cloneOf(prototype.signature  );
+        this.constructors = _constructors.cloneOf( prototype.constructors );
+        if( prototype.staticBlock!= null && !prototype.staticBlock.isEmpty() )
+        {
+            this.staticBlock = _staticBlock.of( prototype.staticBlock.getBody() );
+        }
+        else
+        {
+            this.staticBlock = new _staticBlock();
+        }
+        this.fields = _fields.cloneOf( prototype.fields );
+        this.constants = _constants.cloneOf(prototype.constants );
+        this.methods = _methods.cloneOf( prototype.methods );		
+        this.nesteds = _nesteds.cloneOf(prototype.nesteds );
+    }
     
     /** Creates and returns a clone of this component 
      * @return a deep clone of this component
@@ -145,11 +145,11 @@ public class _enum
         this.imports.bind( context );
         this.javadoc.bind( context );
         this.annotations.bind( context );
-        this.enumSignature.bind( context );
+        this.signature.bind( context );
         this.constructors.bind( context );
         this.staticBlock.bind( context );
         this.fields.bind( context );
-        this.values.bind( context );
+        this.constants.bind( context );
         this.methods.bind( context );
         this.nesteds.bind( context );
         return this;
@@ -170,7 +170,7 @@ public class _enum
     @Override
     public String getName()
     {
-        return this.enumSignature.getName();
+        return this.signature.getName();
     }
     
     public String getPackageName()
@@ -188,55 +188,55 @@ public class _enum
     }
     
     @Override
-	public VarContext getContext()
+    public VarContext getContext()
+    {
+	String[] n = null;
+	if( nesteds.count() > 0 )
 	{
-		String[] n = null;
-		if( nesteds.count() > 0 )
-		{
-			//I need to go to each of the nested classes/ interfaces/ etc.
-			// and read what thier imports are, then add these imports to my imports
-			String[] nested = new String[nesteds.count()];
-			for( int i = 0; i < nesteds.count(); i++ )
-			{
-				_component comp = nesteds.components.get( i );
-				VarContext vc = comp.getContext();
-				vc.getScopeBindings().remove("pckage");
-				vc.getScopeBindings().remove("imports");
-				nested[ i ] = Compose.asString( comp.getDom(), vc );				
-			}
-			n = nested;			
-		}
-		_imports imp = null;
-		if( this.getImports().count() > 0 )
-		{
-			imp = this.getImports();
-		}
-		_constructors cons = null;
-		if( constructors.count() > 0 )
-		{
-			cons = constructors; 
-		}
-		_fields mems = null;
-		if( this.fields != null && this.fields.count() > 0 )
-		{
-			mems = this.fields;
-		}
-		_methods meth = null;
-		if( this.methods != null && this.methods.count() > 0 )
-		{
-			meth = this.methods;
-		}			
-		return VarContext.of(
-			"pckage", this.enumPackage, 
-			"imports", imp, 
-			"javadocComment", javadoc,
-			"enumSignature", enumSignature,
-			"constructors", cons,
-			"staticBlock", staticBlock,
-			"members", mems,
-			"values", values,
-			"nested", n,
-			"methods", meth );
+            //I need to go to each of the nested classes/ interfaces/ etc.
+            // and read what thier imports are, then add these imports to my imports
+            String[] nested = new String[ nesteds.count() ];
+            for( int i = 0; i < nesteds.count(); i++ )
+            {
+		_component _comp = nesteds.components.get( i );
+		VarContext vc = _comp.getContext();
+                vc.getScopeBindings().remove( "pckage" );
+		vc.getScopeBindings().remove( "imports" );
+		nested[ i ] = Compose.asString( _comp.getDom(), vc );				
+            }
+            n = nested;			
+	}
+	_imports _imp = null;
+	if( this.getImports().count() > 0 )
+	{
+            _imp = this.getImports();
+	}
+	_constructors _ctors = null;
+	if( constructors.count() > 0 )
+	{
+            _ctors = constructors; 
+	}
+	_fields _fs = null;
+	if( this.fields != null && this.fields.count() > 0 )
+	{
+            _fs = this.fields;
+	}
+	_methods _ms = null;
+	if( this.methods != null && this.methods.count() > 0 )
+	{
+            _ms = this.methods;
+	}			
+	return VarContext.of(
+            "pckage", this.enumPackage, 
+            "imports", _imp, 
+            "javadocComment", javadoc,
+            "enumSignature", signature,
+            "constructors", _ctors,
+            "staticBlock", staticBlock,
+            "members", _fs,
+            "values", constants,
+            "nested", n,
+            "methods", _ms );
 	}
 	
     public Class loadClass( )
@@ -246,13 +246,13 @@ public class _enum
     
     public _enum implement( Class...implementClass )
     {
-        this.enumSignature.implementsFrom.implement( implementClass );
+        this.signature.implementsFrom.implement( implementClass );
         return this;
     }
     
     public _enum implement( String...implementClass )
     {
-        this.enumSignature.implementsFrom.implement( implementClass );
+        this.signature.implementsFrom.implement( implementClass );
         return this;
     }
     
@@ -283,12 +283,12 @@ public class _enum
         String authored = this.author( directives );
         
         //now compile the marks and fill them in with the context
-		return JavaCase.of(
-			theClassName,
-			BindML.compile( authored ), 
-			context,
-			directives );			
-	}
+	return JavaCase.of(
+            theClassName,
+            BindML.compile( authored ), 
+            context,
+            directives );			
+    }
 	
     public _package getPackage()
     {
@@ -302,7 +302,7 @@ public class _enum
     
     public _signature getSignature()
     {
-        return this.enumSignature;
+        return this.signature;
     }
     
     public _constructors getConstructors()
@@ -321,9 +321,9 @@ public class _enum
         return this.fields;
     }
     
-    public _valueConstructs getValueConstructs()
+    public _constants getValueConstructs()
     {
-        return this.values;
+        return this.constants;
     }
     
     @Override
@@ -381,18 +381,18 @@ public class _enum
         return this.nesteds.getAt(  index );
     }
     
-	public String getFullyQualifiedClassName()
-	{		
-		if( this.enumPackage != null && ! this.enumPackage.isEmpty() )
-		{
-			return this.enumPackage.getName() + "." 
-                + this.enumSignature.getName();
-		}
-		else
-		{
-			return this.enumSignature.getName();
-		}
-	}
+    public String getFullyQualifiedClassName()
+    {	
+        if( this.enumPackage != null && ! this.enumPackage.isEmpty() )
+        {
+            return this.enumPackage.getName() + "." 
+                + this.signature.getName();
+        }
+        else
+        {
+            return this.signature.getName();
+        }
+    }
 	
     @Override
     public String author( )
@@ -447,7 +447,7 @@ public class _enum
 	
     public _enum( _signature signature )
     {
-	this.enumSignature = signature;
+	this.signature = signature;
     }
 	
     public _enum(
@@ -463,7 +463,7 @@ public class _enum
 	this.enumPackage = enumPackage;
 	this.imports = imports;
 	this.javadoc = javadocComment;
-	this.enumSignature = signature;
+	this.signature = signature;
 	this.staticBlock = staticBlock;
 	this.fields = members;
 	this.methods = methods;
@@ -575,16 +575,16 @@ public class _enum
 	
 	public _enum value( String name, Object...arguments )
 	{
-		return value( _valueConstruct.of( name, arguments ) );
+		return value(_constant.of( name, arguments ) );
 	}
 	
-	public _enum value( _valueConstruct valueConstruct )
+	public _enum value( _constant valueConstruct )
 	{
-		this.values.addEnumValue( valueConstruct );
+		this.constants.addConstant( valueConstruct );
 		return this;
 	}
     
-    public _enum values( _valueConstructs values )
+    public _enum values( _constants values )
     {
         for( int i = 0; i < values.count(); i++ )
         {
@@ -657,7 +657,7 @@ public class _enum
 
     public _enum setModifiers( _modifiers mods )
     {
-        this.enumSignature.modifiers = mods;
+        this.signature.modifiers = mods;
         return this;
     }
 	    
@@ -685,28 +685,26 @@ public class _enum
 	 * this abstractions contains the List and verifies that
 	 *    
 	 */
-	public static class _valueConstructs
-            implements Model.MetaLang
-	{
-        /** TODO, cant I just iterate through each time w/o having to keep this around??*/
-		//private Set<String> valueNames = new HashSet<String>();
-		
-		private List<_valueConstruct> valueConstructs = 
-			new ArrayList<_valueConstruct>();
+    public static class _constants
+        implements Model.MetaLang
+    {
+        /** TODO, cant I just iterate through each time w/o having to keep this around??*/		
+	private List<_constant> constants = 
+            new ArrayList<_constant>();
 			
-		public _valueConstructs addEnumValue( _valueConstruct value )
-		{
-            for( int i = 0; i < this.valueConstructs.size(); i++ )
+	public _constants addConstant( _constant constant )
+	{
+            for( int i = 0; i < this.constants.size(); i++ )
             {
-                if( this.valueConstructs.get( i ).name.equals( value.name ) )
+                if( this.constants.get( i ).name.equals( constant.name ) )
                 {
                     throw new ModelException( 
-                        "Enum already contains a value for \"" + value.name +"\"" );
+                        "Enum already contains a constant with name \"" + constant.name +"\"" );
                 }
             }
-			this.valueConstructs.add( value );
-			return this;
-		}
+            this.constants.add( constant );
+            return this;
+	}
 		
 		//the form is always
 		// Identifier1( parameters, separated, by commas ), 
@@ -717,97 +715,106 @@ public class _enum
 		
 		//NOTE : must be unique names
 		
-		public static _valueConstructs cloneOf( _valueConstructs prototype ) 
+		public static _constants cloneOf( _constants prototype ) 
 		{
-			_valueConstructs clone = new _valueConstructs();
+			_constants clone = new _constants();
 			for( int i = 0; i < prototype.count(); i++ )
 			{
-				clone.addEnumValue( _valueConstruct.cloneOf( 
-			        prototype.valueConstructs.get( i ) ) );
+				clone.addConstant( _constant.cloneOf(prototype.constants.get( i ) ) );
 			}
 			return clone;
 		}
 
-        public _valueConstruct getAt( int index )
+        public _constant getByName( String name )
+        {
+            for( int i = 0; i < this.constants.size(); i++ )
+            {
+                if( this.constants.get( i ).name.equals( name ) )
+                {
+                    return this.constants.get( i );
+                }
+            }
+            return null;
+        }
+        public _constant getAt( int index )
         {
             if( index < count() )
             {
-                return this.valueConstructs.get( index );
+                return this.constants.get( index );
             }
             throw new ModelException(
                 "Invalid value construct index [" + index + "]");
         }
             
         @Override
-        public _valueConstructs bind( VarContext context )
+        public _constants bind( VarContext context )
         {
-            for( int i = 0; i < this.valueConstructs.size(); i++ )
+            for( int i = 0; i < this.constants.size(); i++ )
             {
-                this.valueConstructs.get( i ).bind( context );
+                this.constants.get( i ).bind( context );
             }
             return this;
         }
                 
         @Override
-        public _valueConstructs replace( String target, String replacement )
+        public _constants replace( String target, String replacement )
         {
-            for( int i = 0; i < this.valueConstructs.size(); i++ )
+            for( int i = 0; i < this.constants.size(); i++ )
             {
-                this.valueConstructs.get( i ).replace( target, replacement );
+                this.constants.get( i ).replace( target, replacement );
             }
             return this;
         }
         
         /**
-         * Individual construction of an Enum Value
+         * Individual Enum value const constructor
          */
-		public static class _valueConstruct
-			implements MetaLang
-		{
-			private String name;
-			private _arguments args;
+	public static class _constant
+            implements MetaLang
+	{
+            private String name;
+            private _arguments args;
 			
-			/** So:
-			 * <PRE>
-			 * ERIC( 42, "Michael" ),
-			 * ^^^^  ^^^^^^^^^^^^^
-			 * name    arguments
-			 * 
-			 * ERIC,
-			 * ^^^^
-			 * name
-			 * </PRE>
-			 * 
-			 * @param name the name iof the enumValue
-			 * @param arguments the arguments passed into the enum constructor
-			 * @return the valueConstruct with name and arguments
-			 */
-			public static _valueConstruct of( String name, Object... arguments )
-			{
-				return new _valueConstruct( name, _arguments.of( arguments ) );								
-			}
+            /** So:
+             * <PRE>
+             * ERIC( 42, "Michael" ),
+             * ^^^^  ^^^^^^^^^^^^^
+             * name    arguments
+             * 
+             * ERIC,
+             * ^^^^
+             * name
+             * </PRE>
+             * 
+             * @param name the name iof the enumValue
+             * @param arguments the arguments passed into the enum constructor
+             * @return the valueConstruct with name and arguments
+             */
+            public static _constant of( String name, Object... arguments )
+            {
+		return new _constant( name, _arguments.of( arguments ) );								
+            }
 			
-			public static _valueConstruct cloneOf( _valueConstruct construct )
-			{
-				return new _valueConstruct( 
-					construct.name,
-					_arguments.cloneOf( construct.args ) );
-					
-			}
+            public static _constant cloneOf( _constant construct )
+            {
+		return new _constant( 
+                    construct.name,
+                    _arguments.cloneOf( construct.args ) );					
+            }
             
-			public _valueConstruct( String name, _arguments args )
-			{
-				this.name = name;
-				this.args = args;
-			}
+            public _constant( String name, _arguments args )
+            {
+		this.name = name;
+		this.args = args;
+            }
 			
-			public Dom VALUE_CONSTRUCT = BindML.compile(
-				"{+name*+}{+args+}" );			
+            public Dom CONST_CONSTRUCT = BindML.compile(
+		"{+name*+}{+args+}" );			
     
             @Override
-            public _valueConstruct bind( VarContext context )
+            public _constant bind( VarContext context )
             {
-                this.name = Compose.asString( BindML.compile(this.name), context );
+                this.name = Compose.asString( BindML.compile( this.name ), context );
                 this.args.bind( context );
                 return this;
             }
@@ -819,34 +826,33 @@ public class _enum
             }
             
             @Override
-			public String author( Directive... directives ) 
-			{
-				VarContext vc = VarContext.of( "name", name );
-				if( args != null && args.count() > 0 )
-				{
-					vc.set( "args", args );
-				}
-				return Compose.asString( VALUE_CONSTRUCT, vc, directives );
-			}		
+            public String author( Directive... directives ) 
+            {
+                VarContext vc = VarContext.of( "name", name );
+		if( args != null && args.count() > 0 )
+                {
+                    vc.set( "args", args );
+		}
+		return Compose.asString( CONST_CONSTRUCT, vc, directives );
+            }		
 			
             @Override
-			public String toString()
-			{
-				return author(); 
-			}
+            public String toString()
+            {
+		return author(); 
+            }
             
             @Override
-            public _valueConstruct replace( String target, String replacement )
+            public _constant replace( String target, String replacement )
             {
                 this.args = this.args.replace( target, replacement );
                 this.name = this.name.replace( target, replacement );
                 return this;
             }
-		}
+	}
 
-		public Dom VALUE_CONSTRUCTORS = BindML.compile(
-			"{{+:    {+valueConstructs+}," + N 
-		 + "+}};" + N + N );
+	public Dom CONST_CONSTRUCTORS = BindML.compile(
+            "{{+:    {+valueConstructs+}," + N + "+}};" + N + N );
 		
         @Override
         public String author( )
@@ -855,40 +861,38 @@ public class _enum
         }
         
         @Override
-		public String author( Directive... directives ) 
-		{
-			return Compose.asString( 
-				VALUE_CONSTRUCTORS, 
-				VarContext.of( "valueConstructs", valueConstructs ),
-				directives );
-		}
+	public String author( Directive... directives ) 
+	{
+            return Compose.asString( CONST_CONSTRUCTORS, 
+		VarContext.of( "valueConstructs", constants ),
+		directives );
+	}
 		
-		public int count()
-		{
-			return this.valueConstructs.size();
-		}
+	public int count()
+	{
+            return this.constants.size();
+	}
 		
         @Override
-		public String toString()
-		{
-			return author();
-		}
+	public String toString()
+	{
+            return author();
 	}
+    }
 	
     /**
      * Enum Constructor signature
      */
-	public static class _signature
-		implements MetaLang
-	{
-		private String enumName = "";		
-		private _implements implementsFrom = new _implements();
-		private _modifiers modifiers = new _modifiers();
+    public static class _signature
+	implements MetaLang
+    {
+	private String enumName = "";		
+	private _implements implementsFrom = new _implements();
+	private _modifiers modifiers = new _modifiers();
 		
-		public static final Dom CLASS_SIGNATURE = 
-			BindML.compile( "{+modifiers+}enum {+enumName*+}{+implementsFrom+}" );
+	public static final Dom ENUM_SIGNATURE = 
+            BindML.compile( "{+modifiers+}enum {+enumName*+}{+implementsFrom+}" );
 
-        
         @Override
         public String author( )
         {
@@ -896,15 +900,15 @@ public class _enum
         }
         
         @Override
-		public String author( Directive... directives ) 
-		{
-			return Compose.asString( CLASS_SIGNATURE, 
-				VarContext.of(
-					"enumName", enumName,
-					"modifiers", modifiers,
-					"implementsFrom", implementsFrom ), 
-				directives );
-		} 
+	public String author( Directive... directives ) 
+	{
+            return Compose.asString( ENUM_SIGNATURE, 
+                VarContext.of(
+                    "enumName", enumName,
+                    "modifiers", modifiers,
+                    "implementsFrom", implementsFrom ), 
+                    directives );
+	} 
         
         @Override
         public _signature bind( VarContext context )
@@ -915,20 +919,20 @@ public class _enum
             return this;
         }
         
-		public static _signature cloneOf( _signature prototype ) 
-		{
-			_signature s = new _signature();
-			s.enumName = prototype.enumName + "";
-			s.implementsFrom = _implements.cloneOf( prototype.implementsFrom );
-			s.modifiers = _modifiers.cloneOf( prototype.modifiers );
-			return s; 			
-		}
+	public static _signature cloneOf( _signature prototype ) 
+	{
+            _signature s = new _signature();
+            s.enumName = prototype.enumName + "";
+            s.implementsFrom = _implements.cloneOf( prototype.implementsFrom );
+            s.modifiers = _modifiers.cloneOf( prototype.modifiers );
+            return s; 			
+	}
 
         @Override
-		public String toString()
-		{
-			return author();
-		}
+	public String toString()
+	{
+            return author();
+	}
 
         @Override
         public _signature replace( String target, String replacement )
@@ -939,19 +943,20 @@ public class _enum
             return this;
         }
         
-		public _modifiers getModifiers()
-		{
-			return this.modifiers;
-		}
-		public _implements getImplements()
-		{
-			return this.implementsFrom;
-		}
+	public _modifiers getModifiers()
+	{
+            return this.modifiers;
+	}
+        
+	public _implements getImplements()
+	{
+            return this.implementsFrom;
+	}
 		
-		public String getName()
-		{
-			return this.enumName;
-		}
+	public String getName()
+	{
+            return this.enumName;
+	}
         
         /**
          * finds the index of the target token 
@@ -971,14 +976,14 @@ public class _enum
             return -1;
         }
         
-		public static _signature of( String enumSignature )
-		{
-			_signature sig = new _signature();
+        public static _signature of( String enumSignature )
+	{
+            _signature sig = new _signature();
 		
-			String[] tokens = enumSignature.split(" ");
+            String[] tokens = enumSignature.split(" ");
 		
-			int enumTokenIndex = -1;
-			int implementsTokenIndex = -1;
+            int enumTokenIndex = -1;
+            int implementsTokenIndex = -1;
 		
             if( indexOf( tokens, "enum" ) < 0 )
             {
@@ -989,104 +994,106 @@ public class _enum
                 System.arraycopy( tokens, 0, preamble, 2, tokens.length );
                 tokens = preamble;
             }
-			if( tokens.length < 2 )
-			{
-				throw new ModelException( 
+            if( tokens.length < 2 )
+            {
+		throw new ModelException( 
                     "enum signature must have at least (2) tokens \"enum enumName\" " );	
-			} 		
-			for( int i = 0; i < tokens.length; i++ )
-			{
-				if( tokens[ i ].equals( "enum" ) )
-				{
-					enumTokenIndex = i;
-				}			
-				else if( tokens[ i ].equals( "implements" ) )
-				{
-					implementsTokenIndex = i;
-				}
-			}
+            } 		
+            for( int i = 0; i < tokens.length; i++ )
+            {
+		if( tokens[ i ].equals( "enum" ) )
+                {
+                    enumTokenIndex = i;
+		}			
+		else if( tokens[ i ].equals( "implements" ) )
+		{
+                    implementsTokenIndex = i;
+		}
+            }
 		
-			if( ( enumTokenIndex < 0 ) || ( enumTokenIndex >= tokens.length -1 ) )
-			{   //cant be 
-				throw new ModelException( 
-					"enum token cant be not found or the last token for \"" 
-                        + enumSignature + "\"" ); 
-			}
-			sig.enumName = tokens[ enumTokenIndex + 1 ];
+            if( ( enumTokenIndex < 0 ) || ( enumTokenIndex >= tokens.length -1 ) )
+            {   //cant be 
+		throw new ModelException( 
+                    "enum token cant be not found or the last token for \"" 
+                    + enumSignature + "\"" ); 
+            }
+            sig.enumName = tokens[ enumTokenIndex + 1 ];
 		
-			if( enumTokenIndex > 0 )
-			{   //modifier provided
-				String[] mods = new String[ enumTokenIndex ];
-				System.arraycopy( tokens, 0, mods, 0, enumTokenIndex );
-				sig.modifiers = _modifiers.of( mods );
-				if( sig.modifiers.containsAny( 
-					Modifier.ABSTRACT, 
-					Modifier.FINAL, 
-					Modifier.NATIVE,
-					Modifier.STRICT,
-					Modifier.STATIC,
-					Modifier.PROTECTED,
-					Modifier.PRIVATE,
-					Modifier.SYNCHRONIZED, 
-					Modifier.TRANSIENT, 
-					Modifier.VOLATILE,
+            if( enumTokenIndex > 0 )
+            {   //modifier provided
+		String[] mods = new String[ enumTokenIndex ];
+		System.arraycopy( tokens, 0, mods, 0, enumTokenIndex );
+		sig.modifiers = _modifiers.of( mods );
+		if( sig.modifiers.containsAny( 
+                    Modifier.ABSTRACT, 
+                    Modifier.FINAL, 
+                    Modifier.NATIVE,
+                    Modifier.STRICT,
+                    Modifier.STATIC,
+                    Modifier.PROTECTED,
+                    Modifier.PRIVATE,
+                    Modifier.SYNCHRONIZED, 
+                    Modifier.TRANSIENT, 
+                    Modifier.VOLATILE,
                     _modifiers._modifier.INTERFACE_DEFAULT.getBitValue() ) )
-				{
-					throw new ModelException(
-						"Invalid Modifier(s) for enum of \"" + enumSignature 
-                            + "\" only public allowed" );
-				}
-			}		
-			if( implementsTokenIndex > enumTokenIndex + 1 )
+		{
+                    throw new ModelException(
+			"Invalid Modifier(s) for enum of \"" + enumSignature 
+                        + "\" only public allowed" );
+		}
+            }		
+            if( implementsTokenIndex > enumTokenIndex + 1 )
+            {
+		if( implementsTokenIndex == tokens.length -1 )
+		{
+                    throw new ModelException( 
+                        "implements token cannot be the last token" );
+                }
+		int tokensLeft = tokens.length - ( implementsTokenIndex + 1 );
+                String[] implementsTokens = new String[ tokensLeft ];
+		System.arraycopy( 
+                    tokens, implementsTokenIndex + 1, implementsTokens, 0, tokensLeft );
+                List<String>normalImplementsTokens = new ArrayList<String>();
+                for( int i = 0; i < implementsTokens.length; i++)
+		{
+                    if( implementsTokens[ i ].contains( "," ) )
+                    {
+			String[] splitTokens = implementsTokens[ i ].split( "," );
+			for( int j = 0; j < splitTokens.length; j++ )
 			{
-				if( implementsTokenIndex == tokens.length -1 )
-				{
-					throw new ModelException( "implements token cannot be the last token" );
-				}
-				int tokensLeft = tokens.length - ( implementsTokenIndex + 1 );
-				String[] implementsTokens = new String[ tokensLeft ];
-				System.arraycopy(tokens, implementsTokenIndex + 1, implementsTokens, 0, tokensLeft );
-				List<String>normalImplementsTokens = new ArrayList<String>();
-				for( int i = 0; i < implementsTokens.length; i++)
-				{
-					if( implementsTokens[ i ].contains( "," ) )
-					{
-						String[] splitTokens = implementsTokens[ i ].split( "," );
-						for( int j = 0; j < splitTokens.length; j++ )
-						{
-							String tok = splitTokens[ j ].trim();
-							if( tok.length() > 0 )
-							{ 
-								normalImplementsTokens.add( tok );
-							}
-						}
-					}
-				}
-				sig.implementsFrom = 
+                            String tok = splitTokens[ j ].trim();
+                            if( tok.length() > 0 )
+                            { 
+				normalImplementsTokens.add( tok );
+                            }
+                        }
+                    }
+                }
+		sig.implementsFrom = 
                     varcode.java.metalang._implements.of( 
                         normalImplementsTokens.toArray( new String[ 0 ] ) ); //className.of( implementsTokens );
-			}
-			return sig;		
-		}
-
-		public String getImplements( int index ) 
-		{			
-			return implementsFrom.getAt( index );
-		}	
+            }
+            return sig;		
 	}
 
-    @Override
-	public Dom getDom() 
-	{
-		return ENUM;
-	}
+	public String getImplements( int index ) 
+	{			
+            return implementsFrom.getAt( index );
+	}	
+    }
 
     @Override
-	public _enum replace( String target, String replacement  ) 
-	{
+    public Dom getDom() 
+    {
+	return ENUM;
+    }
+
+    @Override
+    public _enum replace( String target, String replacement  ) 
+    {
         this.constructors = this.constructors.replace( target, replacement );
         this.enumPackage = this.enumPackage.replace( target, replacement);
-        this.enumSignature = this.enumSignature.replace( target, replacement );
+        this.signature = this.signature.replace( target, replacement );
         return this;
-	}
+    }
 }

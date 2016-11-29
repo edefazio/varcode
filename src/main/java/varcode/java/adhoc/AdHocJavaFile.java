@@ -49,11 +49,11 @@ public class AdHocJavaFile
     	String code = null;
     	try
     	{
-    		code = javaFileObject.getCharContent( true ).toString();
+            code = javaFileObject.getCharContent( true ).toString();
     	}
     	catch( IOException ioe )
     	{
-    		throw new VarException(
+            throw new VarException(
                 "Unable to read code from JavaFileObject \"" + javaFileObject 
               + "\"", ioe );
     	}
@@ -74,15 +74,15 @@ public class AdHocJavaFile
         
     	if( fullName.contains( "." ) )
     	{
-    		String className = 
+            String className = 
                 fullName.substring( fullName.lastIndexOf( "." ) + 1 );
-    		String packageName = 
+            String packageName = 
                 fullName.substring( 0, fullName.lastIndexOf( "." ) );
-    		return new AdHocJavaFile( packageName, className, code );
+            return new AdHocJavaFile( packageName, className, code );
     	}
     	else
     	{
-    		return new AdHocJavaFile( fullName, code );
+            return new AdHocJavaFile( fullName, code );
     	}
     }
     

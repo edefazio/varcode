@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import varcode.VarException;
 
 /** 
- * Container to hold a Java .class file (bytecodes) in memory
+ * Container to hold a Java (.class file) (bytecodes) in memory
  * 
  * Implementation of a {@code SimpleFileObject} that maintains the Java 
  * bytecode (binary) for a class "In-Memory" as a local 
@@ -67,7 +67,7 @@ public class AdHocClassFile
         return adHocClassBytecode;
     }
 
-    /** gets the Class bytecodes as an array of Bytes */
+    /** gets the Class bytecodes as an array of bytes */
     public byte[] toByteArray() 
     {
         //return adHocClassBytecode.toByteArray();
@@ -84,7 +84,7 @@ public class AdHocClassFile
      * compiler)attempts to load a class 
      * 
      * that has not been loaded, and when the class
-     * has finally been read in, compiled and the 
+     * has finally been read in, compiled and the finalized
      */
     public static class RegisterOnCloseOutputStream 
         extends OutputStream
@@ -155,7 +155,9 @@ public class AdHocClassFile
         *             an <code>IOException</code> is thrown if the output
         *             stream is closed.
         */
-        public void write(byte b[], int off, int len) throws IOException {
+        public void write(byte b[], int off, int len) 
+            throws IOException 
+        {
             classBytecodeOutputStream.write( b, off, len );
         }
         

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 eric.
+ * Copyright 2016 M. Eric DeFazio
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -91,6 +91,24 @@ public class _annotations
     public _annotations( List<Object> annotations )
     {
         this.listOfAnnotations = new ArrayList<Object>();
+    }
+    
+    public _annotations removeAt( int annotationIndex )
+    {
+        if( this.listOfAnnotations.size() > annotationIndex )
+        {
+            this.listOfAnnotations.remove( annotationIndex );
+            System.out.println( this.listOfAnnotations );
+            return this;
+        }
+        throw new ModelException(
+            "No annotation at index [" + annotationIndex + "]");
+    }
+    
+    public _annotations clear()
+    {
+        this.listOfAnnotations.clear();   
+        return this;
     }
     
     public VarContext getContext()

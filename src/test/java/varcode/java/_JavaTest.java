@@ -25,7 +25,7 @@ public class _JavaTest
 	clazz = _Java.loadClass( 
             javaCode, 
             JavacOptions.Flags.ALL_DEBUG_INFORMATION,  
-            JavacOptions.JavaSourceVersion.MajorVersion._1_3 );
+            JavacOptions.SourceVersion.MajorVersion._1_3 );
             assertEquals( "A", clazz.getName() );		
     }
     

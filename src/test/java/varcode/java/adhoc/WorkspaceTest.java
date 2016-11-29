@@ -343,11 +343,11 @@ public class WorkspaceTest
 	       +"}" );
 		
 		//this wil compile just fine if Source compatibility >= 1.5
-		assertNotNull( sw.compile(JavacOptions.JavaSourceVersion.MajorVersion._1_5 ) );
+		assertNotNull( sw.compile(JavacOptions.SourceVersion.MajorVersion._1_5 ) );
 				
 		try
 		{   //this will fail (since I have a Generic and source version 1.4 compiler option
-			sw.compile( JavacOptions.JavaSourceVersion.MajorVersion._1_4 );			
+			sw.compile( JavacOptions.SourceVersion.MajorVersion._1_4 );			
 			fail( "expected Compiler Exception using Generics for  Source Version 1.4" );
 		}
 		catch( JavacException e )
@@ -386,7 +386,7 @@ public class WorkspaceTest
 		Workspace.compileNow(
 			new ArrayList<AdHocJavaFile>(){{ add(new AdHocJavaFile( className, code ) );}},
 			//compiles with Java 1.3 source code compatibility
-			JavacOptions.JavaSourceVersion.MajorVersion._1_3 );
+			JavacOptions.SourceVersion.MajorVersion._1_3 );
 	} 
 
 	public void testSimpleCompilerOptions()
@@ -427,7 +427,7 @@ public class WorkspaceTest
 			Workspace.compileNow(  
 				new ArrayList<AdHocJavaFile>(){{ add(new AdHocJavaFile( className, code ) );}},
 				//compiles with Java 1.3 source code compatibility			
-				JavacOptions.JavaSourceVersion.MajorVersion._1_3 );
+				JavacOptions.SourceVersion.MajorVersion._1_3 );
 			fail( "expected Exception for Source not compatible " );	
 		}
 		catch( VarException ve )
@@ -456,7 +456,7 @@ public class WorkspaceTest
 		{
 			Workspace.compileNow( 
 				new ArrayList<AdHocJavaFile>(){{ add(new AdHocJavaFile( className, code ) );}},
-				JavacOptions.JavaSourceVersion.MajorVersion._1_3 );
+				JavacOptions.SourceVersion.MajorVersion._1_3 );
 				//JavacCompiler.Flags.VERSION );
 			fail( "Expected Exception for Trying to Compile annotations with old Java Version" );
 		}

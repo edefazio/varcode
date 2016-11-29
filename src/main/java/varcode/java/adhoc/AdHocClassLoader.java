@@ -10,9 +10,8 @@ import varcode.VarException;
 import varcode.java.metalang._component;
 
 /**
- * A ClassLoader that caches {@code InMemoryJavaClass}es (containers
- * for Java class bytecodes) and delegates to the parent ClassLoader
- * when resolving classes by name.
+ * A ClassLoader that maintains a cache Map of {@code InMemoryJavaClass}es by name
+ * and delegates to the parent ClassLoader when resolving classes by name.
  * 
  * @author M. Eric DeFazio eric@varcode.io
  */
@@ -43,8 +42,9 @@ public class AdHocClassLoader
     public void introduce( AdHocClassFile adHocClass ) 
     {
     	if( LOG.isTraceEnabled() ) 
-    	{ LOG.trace( "Introducing Class \"" + adHocClass.getName() + "\" to classLoader" ); }
-    	
+    	{ 
+            LOG.trace( "Introducing Class \"" + adHocClass.getName() + "\" to classLoader" ); 
+        }        
         classNameToAdHocClass.put( adHocClass.getName(), adHocClass );
     }
 
@@ -90,8 +90,8 @@ public class AdHocClassLoader
     	AdHocClassFile adHocClass = classNameToAdHocClass.get( className );
     	if( adHocClass == null ) 
     	{
-    		if( LOG.isTraceEnabled() )
-        	{    
+            if( LOG.isTraceEnabled() )
+            {    
                 LOG.trace( className + " Not an AdHoc class, checking parent ClassLoader"); 
             }
     		return super.findClass(className );
@@ -105,7 +105,6 @@ public class AdHocClassLoader
     }
 
     public Class<?> find( _component component )
-        throws ClassNotFoundException
     {
         return findBySimpleName( component.getName() );
     }
@@ -125,11 +124,11 @@ public class AdHocClassLoader
      * but are in different packages, so USE AT YOUR OWN RISK.
      * 
      * @param simpleName the simple name of the class
-     * @return the Class with this name
-     * @throws ClassNotFoundException if no class with that name is found
+     * @return the Class with this name or null if it is not found
+     * @throws VarException if there is no class found with this simple name
      */
     public Class<?> findBySimpleName( String simpleName )
-        throws ClassNotFoundException
+        throws VarException
     {
         String[] classNames = 
             this.classNameToAdHocClass.keySet().toArray( new String[ 0 ] );
@@ -149,11 +148,19 @@ public class AdHocClassLoader
             cn = cn.substring( start );
             if( cn.equals( simpleName ) )
             {
-                return findClass( classNames[ i ] );
+                try
+                {
+                    return findClass( classNames[ i ] );
+                }
+                catch( ClassNotFoundException cnfe )
+                {
+                    throw new VarException(
+                        "Unable to find class by simple name " + simpleName , cnfe );
+                }
             }
         }
-        throw new ClassNotFoundException(
-            "Could not find a class with the simple name " + simpleName );
+        throw new VarException(
+            "Unable to find class by simple name " + simpleName );
     }
     
     /**
@@ -184,8 +191,6 @@ public class AdHocClassLoader
      */
     public void unloadAll()
     {
-        //What I COULD do, is keep the names in the Map
-        // so that I could RELOAD the classes (PERHAPS)
         this.classNameToAdHocClass.clear();
     }    
 }
