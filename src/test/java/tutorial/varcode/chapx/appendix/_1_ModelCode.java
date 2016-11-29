@@ -4,7 +4,7 @@ package tutorial.varcode.chapx.appendix;
 import java.util.UUID;
 import junit.framework.TestCase;
 import varcode.java.JavaCase;
-import varcode.java.langmodel._class;
+import varcode.java.metalang._class;
 
 /**
  * "Authoring" means "generating" .java source code from scratch.  

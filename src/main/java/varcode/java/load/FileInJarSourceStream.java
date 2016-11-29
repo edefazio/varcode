@@ -23,7 +23,8 @@ import varcode.VarException;
 import varcode.load.SourceLoader.SourceStream;
 
 /**
- * A file in a Jar or Zip file (usually on the ClasPath)
+ * A SourceStream that represents reading source from a file in a Jar 
+ * or Zip file (usually on the ClassPath)
  *
  * @author M. Eric DeFazio eric@varcode.io
  */
@@ -93,7 +94,8 @@ public class FileInJarSourceStream
         }
         catch( IOException ioe )
         {
-            throw new VarException( "Unable to get the String from the Stream" );
+            throw new VarException( 
+                "Unable to get the String from the Stream", ioe );
         }        
     }
     

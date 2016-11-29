@@ -19,9 +19,9 @@ import varcode.VarException;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Dom;
-import varcode.java.load.BaseSourceLoader;
-import varcode.java.langmodel._code;
-import varcode.java.langmodel._methods._method;
+import varcode.java.load.JavaSourceLoader;
+import varcode.java.metalang._code;
+import varcode.java.metalang._methods._method;
 import varcode.markup.codeml.CodeML;
 import varcode.load.SourceLoader.SourceStream;
 import varcode.load.SourceLoader;
@@ -48,7 +48,7 @@ public abstract class _Method
 
     protected _Method(  )
     {
-        this(BaseSourceLoader.INSTANCE );
+        this(JavaSourceLoader.INSTANCE );
     }
   
     /** Load ".java" Source Code for the class from the MarkupRepo */

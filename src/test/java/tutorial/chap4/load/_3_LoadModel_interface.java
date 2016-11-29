@@ -18,8 +18,8 @@ package tutorial.chap4.load;
 import java.io.Serializable;
 import junit.framework.TestCase;
 import varcode.Model;
-import varcode.java.langmodel._interface;
-import varcode.java.load.langmodel._JavaLoader;
+import varcode.java.metalang._interface;
+import varcode.java.load.JavaMetaLangLoader;
 
 /**
  *
@@ -30,7 +30,7 @@ public class _3_LoadModel_interface
 {
      public void testLoad_interface()
     {
-        _interface _i = _JavaLoader._Interface.from( Model.class );
+        _interface _i = JavaMetaLangLoader._Interface.from( Model.class );
         //_interface i = JavaLoad._interfaceOf( Model.class );        
     }
     
@@ -42,7 +42,7 @@ public class _3_LoadModel_interface
     
     public void testLoadMember_interface()
     {
-        _interface _i = _JavaLoader._Interface.from( MemberInterface.class );
+        _interface _i = JavaMetaLangLoader._Interface.from( MemberInterface.class );
         //_interface i = JavaLoad._interfaceOf( MemberInterface.class );        
     }
 }

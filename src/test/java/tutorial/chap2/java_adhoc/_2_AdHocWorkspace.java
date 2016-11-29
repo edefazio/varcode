@@ -7,9 +7,9 @@ import org.slf4j.LoggerFactory;
 import varcode.java._Java;
 import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.adhoc.Workspace;
-import varcode.java.langmodel._class;
-import varcode.java.langmodel._enum;
-import varcode.java.langmodel._interface;
+import varcode.java.metalang._class;
+import varcode.java.metalang._enum;
+import varcode.java.metalang._interface;
 
 /**
  *

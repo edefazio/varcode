@@ -2,13 +2,14 @@ package quickstart.java;
 
 import junit.framework.TestCase;
 import varcode.java._Java;
-import varcode.java.langmodel._class;
+import varcode.java.metalang._class;
 
 /**
- * varcode makes generating Java source code easy with the langmodel API.
+ * varcode makes generating Java source code easy with the metalang API.
+ * (code in varcode.java.metalang)
  * 
- * Models like {@code _class, _enum, and _interface} can also be compiled 
- * (using Javac), loaded (in a new {@code AdHocClassLoader}) and used 
+ * Meta Language models like {@code _class, _enum, and _interface} can also be 
+ * compiled (using Javac), loaded (in a new {@code AdHocClassLoader}) and used 
  * in an ad-hoc manner <B>at runtime</B>.
  * 
  * NOTE: to compile / load / instantiate new instances, a JDK (not just a JRE) 

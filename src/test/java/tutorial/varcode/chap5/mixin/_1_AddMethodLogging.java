@@ -17,18 +17,18 @@ package tutorial.varcode.chap5.mixin;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import varcode.java.langmodel._class;
-import varcode.java.langmodel._code;
-import varcode.java.langmodel._component;
-import varcode.java.langmodel._enum;
-import varcode.java.langmodel._fields;
-import varcode.java.langmodel._fields._field;
-import varcode.java.langmodel._imports;
-import varcode.java.langmodel._interface;
-import varcode.java.langmodel._methods;
-import varcode.java.langmodel._methods._method;
-import varcode.java.langmodel._nesteds;
-import varcode.java.load.langmodel._JavaLoader;
+import varcode.java.metalang._class;
+import varcode.java.metalang._code;
+import varcode.java.metalang._component;
+import varcode.java.metalang._enum;
+import varcode.java.metalang._fields;
+import varcode.java.metalang._fields._field;
+import varcode.java.metalang._imports;
+import varcode.java.metalang._interface;
+import varcode.java.metalang._methods;
+import varcode.java.metalang._methods._method;
+import varcode.java.metalang._nesteds;
+import varcode.java.load.JavaMetaLangLoader;
 
 /**
  * Simple example for a "mixin" like metaprogram which takes
@@ -148,25 +148,25 @@ public class _1_AddMethodLogging
     public static void main( String[] args )
     {
         //? Can I load a deep nested class?
-        _class _n = _JavaLoader._Class.from( 
+        _class _n = JavaMetaLangLoader._Class.from( 
             AddForNestedLogger.NestedClass.class );
         
         System.out.println( _n );
         
         //_class c = _Load.INSTANCE._classOf( SomeDumbClass.class );
-        _class _c = _JavaLoader._Class.from( SomeDumbClass.class );
+        _class _c = JavaMetaLangLoader._Class.from( SomeDumbClass.class );
         addMethodLogging( _c );
         System.out.println( _c );
         
         //_interface i = _Load.INSTANCE._interfaceOf( NoLoggerToAdd.class );
-        _interface _i = _JavaLoader._Interface.from( NoLoggerToAdd.class );
+        _interface _i = JavaMetaLangLoader._Interface.from( NoLoggerToAdd.class );
         System.out.println(_i );
         
         addMethodLogging(_i );        
         System.out.println(_i );
 
         //_enum e = _Load.INSTANCE._enumOf( AddForNestedLogger.class ) ;
-        _enum _e = _JavaLoader._Enum.from( AddForNestedLogger.class );
+        _enum _e = JavaMetaLangLoader._Enum.from( AddForNestedLogger.class );
         addMethodLogging(_e );
         System.out.println(_e );        
     }

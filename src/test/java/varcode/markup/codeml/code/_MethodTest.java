@@ -20,9 +20,9 @@ import java.util.Map;
 import junit.framework.TestCase;
 import varcode.context.VarContext;
 import varcode.doc.Dom;
-import varcode.java.langmodel._methods._method;
-import varcode.java.langmodel._modifiers;
-import varcode.java.langmodel._throws;
+import varcode.java.metalang._methods._method;
+import varcode.java.metalang._modifiers;
+import varcode.java.metalang._throws;
 
 /**
  *  
@@ -126,7 +126,7 @@ public class _MethodTest
         
         m.getSignature().setReturnType( String.class );
         
-        assertEquals( "public static String newName(  )", m.getSignature().toString() );
+        assertEquals( "public static java.lang.String newName(  )", m.getSignature().toString() );
         
         m.getSignature().setReturnType( "Object" );
         
@@ -301,7 +301,7 @@ public class _MethodTest
             "param", String.class, 
             "arg", "blah" );
         String s = m.getSignature().toString();
-        assertEquals( "public int doCount( String blah )",  s);
+        assertEquals( "public int doCount( java.lang.String blah )",  s);
         
         _method mcw = bcml.composeWith( int.class, "count", String.class, "blah" );
         assertEquals( s, mcw.getSignature().toString() );
@@ -412,10 +412,10 @@ public class _MethodTest
             "arg", "blah" );
         
         
-        assertEquals( "public int doCount( String blah )", m.getSignature().toString() );
+        assertEquals( "public int doCount( java.lang.String blah )", m.getSignature().toString() );
         assertEquals( 
             "System.out.println( blah );" + N + 
-            "System.out.println( String.class );" + N +
+            "System.out.println( java.lang.String.class );" + N +
             "System.out.println( int.class );" + N + 
             "return null;", m.getBody().toString() );
     }

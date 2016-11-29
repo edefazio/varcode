@@ -23,7 +23,7 @@ import varcode.doc.lib.text.RemoveAllLinesWith;
 import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.adhoc.AdHocJavaFile;
 import varcode.java.adhoc.JavacException;
-import varcode.java.load.BaseSourceLoader;
+import varcode.java.load.JavaSourceLoader;
 import varcode.load.SourceLoader;
 import varcode.load.SourceLoader.SourceStream;
 import varcode.markup.codeml.CodeML;
@@ -171,7 +171,7 @@ public class JavaCase
     public static JavaCase of(
     	Class<?> markupClass, String adHocClassName, Object... keyValuePairs )
     {
-        return of( BaseSourceLoader.INSTANCE, 
+        return of(JavaSourceLoader.INSTANCE, 
             markupClass, 
             adHocClassName, 
             VarContext.of( keyValuePairs ) );
@@ -188,7 +188,7 @@ public class JavaCase
         VarContext context, 
         Directive...directives )
     {
-        return of( BaseSourceLoader.INSTANCE, 
+        return of(JavaSourceLoader.INSTANCE, 
             markupClass, 
             adHocClassName, 
             context, 
@@ -330,15 +330,15 @@ public class JavaCase
     {
     	try
     	{
-    		return _Java.loadClass( this.adHocJavaFile );    		
+            return _Java.loadClass( this.adHocJavaFile );    		
     	}
     	catch( JavacException je)
     	{   //if an error occurs compiling the source, 
-    		//prefix the source with line numbers and print it out to help debugging
-    		String codePrefixed = 
-    			PrefixWithLineNumber.doPrefix( this.adHocJavaFile.getCode() );
-    		LOG.error( codePrefixed );
-    		throw je;
+            //prefix the source with line numbers and print it out to help debugging
+            String codePrefixed = 
+                PrefixWithLineNumber.doPrefix( this.adHocJavaFile.getCode() );
+            LOG.error( codePrefixed );
+            throw je;
     	}
     }
         

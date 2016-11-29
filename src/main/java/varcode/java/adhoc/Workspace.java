@@ -366,9 +366,9 @@ public class Workspace
 			
 	    if( !compiledNoErrors )
 	    {
-            throw new JavacException( 
-	        	this.classNameToAdHocJavaFileMap.values(),  
-	        	diagnostics );
+                throw new JavacException( 
+                    this.classNameToAdHocJavaFileMap.values(),  
+                    diagnostics );
 	    }	        	
         try
         {

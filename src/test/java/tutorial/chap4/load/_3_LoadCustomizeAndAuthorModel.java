@@ -23,10 +23,10 @@ import java.util.UUID;
 import junit.framework.TestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import varcode.java.langmodel._class;
-import varcode.java.langmodel._code;
-import varcode.java.langmodel._methods._method;
-import varcode.java.load.langmodel._JavaLoader;
+import varcode.java.metalang._class;
+import varcode.java.metalang._code;
+import varcode.java.metalang._methods._method;
+import varcode.java.load.JavaMetaLangLoader;
 
 /**
  *
@@ -112,7 +112,7 @@ public class _3_LoadCustomizeAndAuthorModel
     {
         //load a model of the above class
         _class _classModel = 
-            _JavaLoader._Class.from( PrefixCreateId.class );
+            JavaMetaLangLoader._Class.from( PrefixCreateId.class );
             //JavaLoad._classOf( PrefixCreateId.class );
         
         //get rid of the "static" modifier (make this a top-level class)

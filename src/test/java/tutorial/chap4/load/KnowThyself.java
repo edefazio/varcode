@@ -7,8 +7,8 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import java.util.List;
 import junit.framework.TestCase;
-import varcode.java.langmodel._class;
-import varcode.java.langmodel._methods._method;
+import varcode.java.metalang._class;
+import varcode.java.metalang._methods._method;
 import varcode.java._Java;
 import varcode.load.SourceLoader.SourceStream;
 

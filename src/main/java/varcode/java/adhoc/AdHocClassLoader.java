@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import varcode.VarException;
-import varcode.java.langmodel._component;
+import varcode.java.metalang._component;
 
 /**
  * A ClassLoader that caches {@code InMemoryJavaClass}es (containers

@@ -23,10 +23,10 @@ import java.util.Date;
 import java.util.Map;
 import junit.framework.TestCase;
 import varcode.java.adhoc.AdHocObjectInputStream;
-import varcode.java.langmodel._class;
-import varcode.java.langmodel.auto._autoDto;
-import varcode.java.langmodel.auto._autoExternalizable;
-import varcode.java.langmodel.cs._autoToString;
+import varcode.java.metalang._class;
+import varcode.java.metalang.auto._autoDto;
+import varcode.java.metalang.auto._autoExternalizable;
+import varcode.java.lang.cs._autoToString;
 
 /**
  * Illustrates creating an AdHoc Class (and using _autoExternalizable),

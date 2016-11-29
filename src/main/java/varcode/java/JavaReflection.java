@@ -41,6 +41,22 @@ public class JavaReflection
     private static final Logger LOG = 
     	LoggerFactory.getLogger( JavaReflection.class );
     
+    
+    /**
+     * Gets the "top level" class (the one having a file name) that contains
+     * the source/ declaration of the <CODE>clazz</CODE>
+     * @param clazz the class to retrieve
+     * @return the top Level Class for this class
+     */
+    public static Class getTopLevelClass( Class clazz )
+    {
+        if( clazz.getDeclaringClass() == null )
+        {
+            return clazz;
+        }
+        return getTopLevelClass( clazz.getDeclaringClass() );
+    }
+    
     /** 
      * <UL>
      * <LI>creates an instance of the tailored class constructor 

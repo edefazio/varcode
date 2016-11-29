@@ -1,7 +1,7 @@
 package quickstart.java;
 
 import varcode.java._Java;
-import varcode.java.langmodel._class;
+import varcode.java.metalang._class;
 
 public class TailorExistingCode 
 {
@@ -15,10 +15,10 @@ public class TailorExistingCode
 
     public static void main( String[] args )
     {
-        /* load the _class model from the Existing java nested class */
+        /* load the _class metalang model from the Existing java nested class */
         _class _c = _Java._classFrom( Existing.class );
         
-        /* change the _class */
+        /* change the _class metalang model */
         _c.setName( "Tailored" ); //rename class from "Existing" to "Tailored"
         _c.setModifiers( "public" ); //set Tailored as public, non-static
         _c.getField( "count" ) //change count field ... 

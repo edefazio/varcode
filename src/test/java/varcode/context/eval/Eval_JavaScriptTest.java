@@ -6,7 +6,7 @@ import junit.framework.TestCase;
 import varcode.context.ScopeBindings;
 import varcode.context.VarBindings;
 import varcode.doc.Dom;
-import varcode.java.load.BaseSourceLoader;
+import varcode.java.load.JavaSourceLoader;
 import varcode.markup.codeml.CodeML;
 
 /*{$init(
@@ -98,8 +98,7 @@ public class Eval_JavaScriptTest
 	public static void main( String[] args )
 	{
             Dom dom = 
-                CodeML.compile( 
-                    BaseSourceLoader.INSTANCE.sourceStream( Eval_JavaScriptTest.class ) );
+                CodeML.compile(JavaSourceLoader.INSTANCE.sourceStream( Eval_JavaScriptTest.class ) );
 
             System.out.println( dom );
 	}

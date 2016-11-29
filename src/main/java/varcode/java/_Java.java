@@ -35,11 +35,11 @@ import varcode.java.adhoc.AdHocJavaFile;
 import varcode.java.adhoc.JavacOptions;
 import varcode.java.adhoc.Workspace;
 import varcode.java.ast.JavaASTParser;
-import varcode.java.langmodel._class;
-import varcode.java.langmodel._enum;
-import varcode.java.langmodel._interface;
-import varcode.java.load.BaseSourceLoader;
-import varcode.java.load.langmodel._JavaLoader;
+import varcode.java.metalang._class;
+import varcode.java.metalang._enum;
+import varcode.java.metalang._interface;
+import varcode.java.load.JavaSourceLoader;
+import varcode.java.load.JavaMetaLangLoader;
 import varcode.load.SourceLoader;
 
 /**
@@ -149,7 +149,7 @@ public class _Java
      */
     public static SourceLoader.SourceStream sourceFrom ( Class clazz )
     {
-        return BaseSourceLoader.INSTANCE.sourceStream( clazz );
+        return JavaSourceLoader.INSTANCE.sourceStream( clazz );
     }
     
     /**
@@ -234,7 +234,7 @@ public class _Java
     {
         Class topLevelClass = getTopLevelClass( clazz ); 
         SourceLoader.SourceStream ss = 
-            BaseSourceLoader.INSTANCE.sourceStream( topLevelClass );
+            JavaSourceLoader.INSTANCE.sourceStream( topLevelClass );
         try
         {
             CompilationUnit cu = JavaASTParser.astFrom( ss.getInputStream() );
@@ -280,7 +280,7 @@ public class _Java
     public static _class _classFrom( CharSequence javaSourceCode )
         throws Model.ModelLoadException
     {
-        return _JavaLoader._Class.from( javaSourceCode );
+        return JavaMetaLangLoader._Class.from( javaSourceCode );
     }
     
     /**
@@ -291,7 +291,7 @@ public class _Java
      */
     public static _class _classFrom( Class clazz )
     {
-        return _JavaLoader._Class.from( clazz );
+        return JavaMetaLangLoader._Class.from( clazz );
     }
     
     /**
@@ -303,22 +303,22 @@ public class _Java
      */
     public static _class _classFrom( SourceLoader sourceLoader, Class clazz )
     {
-        return _JavaLoader._Class.from( sourceLoader, clazz );
+        return JavaMetaLangLoader._Class.from( sourceLoader, clazz );
     }
     
     public static _class _classFrom( CompilationUnit astRoot, Class clazz )
     {
-        return _JavaLoader._Class.from( astRoot, clazz );
+        return JavaMetaLangLoader._Class.from( astRoot, clazz );
     }
     
     public static _interface _interfaceFrom( Class clazz )
     {
-        return _JavaLoader._Interface.from( clazz );
+        return JavaMetaLangLoader._Interface.from( clazz );
     }
     
     public static _enum _enumFrom( Class clazz )
     {
-        return _JavaLoader._Enum.from( clazz );
+        return JavaMetaLangLoader._Enum.from( clazz );
     }
     
     // * * * REFLECTION RELATED * * * 

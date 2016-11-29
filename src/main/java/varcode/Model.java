@@ -68,7 +68,6 @@ public interface Model
     /** 
      * Strings passed in with this prefix signify they are 
      * Literals and not a String representation of an entity
-     * 
      */
     public static final String STRING_LITERAL_PREFIX = "$$";
     
@@ -80,15 +79,15 @@ public interface Model
     Model bind( VarContext context );
             
     /** 
-     * Extended Model interface form modeling a program language
+     * MetaLanguage Model of a program language
+     * the <A HREF="https://en. wikipedia.org/wiki/Metalanguage">metalanguage</A>
      */ 
-    public interface LangModel
+    public interface MetaLang
         extends Model
     {
         /** 
-         * Authors the document bound document as a String
-         * 
-         * @return document representation of the model
+         * Authors the code as a String the in the target language 
+         * @return document representation of the model 
          */    
         String author( );
     
@@ -100,10 +99,10 @@ public interface Model
          * authoring the document
          * @return document representation of the model
          */ 
-	    String author( Directive... directives );
+	String author( Directive... directives );
         
         /**
-         * A "Brute Force" replace for the content within the Model
+         * A "Brute Force" replace for the content within the MetaLanguage Model
          * @param target the target string to look for
          * @param replacement the replacement string
          * @return the modified Model, (if it is mutable) or a modified clone

@@ -46,6 +46,10 @@ public final class JavacException
             
 			sb.append( d.getMessage( null ) );
 		
+                        if( ! ( d.getSource() instanceof AdHocJavaFile ) )
+                        {    
+                            return sb.toString();
+                        }
 			String className = ((AdHocJavaFile)d.getSource()).getClassName(); 
 			sb.append( N );
 			sb.append( className ); //javaCode.className );
@@ -80,15 +84,13 @@ public final class JavacException
 		}
 	
 	public JavacException( 
-        Collection<AdHocJavaFile> javaCode,
-		DiagnosticCollector<JavaFileObject> diagnostics )
+            Collection<AdHocJavaFile> javaCode,
+            DiagnosticCollector<JavaFileObject> diagnostics )
 	{
-        
-		super(
-			"Failed Compilation of workspace" + N
-		   + composeStackTrace( javaCode, diagnostics ) );
+            super( "Failed Compilation of workspace" + N
+                + composeStackTrace( javaCode, diagnostics ) );
        
-		this.diagnostics = diagnostics.getDiagnostics();		
+            this.diagnostics = diagnostics.getDiagnostics();
 	}
 	
 	public JavacException( String message )

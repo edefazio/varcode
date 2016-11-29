@@ -1,7 +1,7 @@
 package tutorial.chap3.markup;
 
 import junit.framework.TestCase;
-import varcode.java.langmodel._methods;
+import varcode.java.lang._methods;
 import varcode.markup.codeml.code._Method;
 
 /**

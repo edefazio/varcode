@@ -1,11 +1,10 @@
 package tutorial.chap3.markup;
 
 import junit.framework.TestCase;
-import varcode.java.langmodel._class;
-import varcode.java.langmodel._methods._method;
-import varcode.java.load.langmodel._JavaLoader;
+import varcode.java.metalang._class;
+import varcode.java.metalang._methods._method;
+import varcode.java.load.JavaMetaLangLoader;
 //import varcode.markup.codeml.code._Method;
-
 public class _5_Method_Model
     extends TestCase
 {
@@ -22,7 +21,7 @@ public class _5_Method_Model
     
     public void testMethod()
     {
-        _class _c = _JavaLoader._Class.from( _MethodTemplate.class );
+        _class _c = JavaMetaLangLoader._Class.from( _MethodTemplate.class );
         _method _m = _c.getMethodNamed( "nextRandomLong" );
         
         //_method m = new _MethodTemplate().compose( );

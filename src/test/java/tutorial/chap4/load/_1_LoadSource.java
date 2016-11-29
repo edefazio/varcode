@@ -4,7 +4,7 @@ import junit.framework.TestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import varcode.VarException;
-import varcode.java.load.BaseSourceLoader;
+import varcode.java.load.JavaSourceLoader;
 import varcode.load.SourceLoader.SourceStream;
 
 /**
@@ -23,7 +23,7 @@ public class _1_LoadSource
     public void testLoadJavaSource()
     {
         SourceStream ss = 
-           BaseSourceLoader.INSTANCE.sourceStream( VarException.class );
+           JavaSourceLoader.INSTANCE.sourceStream( VarException.class );
         
         LOG.debug( ss.describe() );
         LOG.debug( ss.asString() );                
@@ -38,7 +38,7 @@ public class _1_LoadSource
     public void testLoadMavenPomSource( )
     {
         SourceStream ss = 
-            BaseSourceLoader.INSTANCE.sourceStream( "pom.xml" );
+            JavaSourceLoader.INSTANCE.sourceStream( "pom.xml" );
         
         LOG.debug( ss.describe() );
         LOG.debug( ss.asString() );        

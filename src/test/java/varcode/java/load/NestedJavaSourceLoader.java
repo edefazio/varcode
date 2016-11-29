@@ -53,7 +53,7 @@ public class NestedJavaSourceLoader
     
     /** Loads Java code member classes, enums and interfaces */
     public static final NestedJavaSourceLoader BASE_INSTANCE = 
-        new NestedJavaSourceLoader( BaseSourceLoader.INSTANCE );
+        new NestedJavaSourceLoader( JavaSourceLoader.INSTANCE );
     
     /**
      * Loads Member classes, 

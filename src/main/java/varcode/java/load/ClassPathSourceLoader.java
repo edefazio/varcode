@@ -1,6 +1,5 @@
 package varcode.java.load;
 
-import varcode.load.*;
 import java.io.File;
 import java.net.URL;
 import org.slf4j.Logger;
@@ -18,38 +17,39 @@ public class ClassPathSourceLoader
     implements SourceLoader
 {
     private static final Logger LOG = 
-        LoggerFactory.getLogger(ClassPathSourceLoader.class );
+        LoggerFactory.getLogger( ClassPathSourceLoader.class );
     
     /** 
      * find the source ".java" file for the runtime class {@code markupClass}
      * 
-     * @param markupClass the markup class
-     * @return a MarkupStream 
+     * @param runtimeClass the runtime class
+     * @return a SourceStream 
      */
-    public SourceStream loadMarkup( Class markupClass )
+    public SourceStream sourceStream( Class runtimeClass )
     {
-        Class topLevelClass = markupClass;
-        if( markupClass.isMemberClass() )
+        Class topLevelClass = runtimeClass;
+        if( runtimeClass.isMemberClass() )
         {
-            topLevelClass = markupClass.getDeclaringClass();
+            topLevelClass = runtimeClass.getDeclaringClass();
         }
         SourceStream ms = sourceStream( 
             topLevelClass.getCanonicalName()
                 .replace( ".", File.separator ) + ".java" ); 
-        if( topLevelClass == markupClass )
+        
+        if( topLevelClass == runtimeClass )
         {   //the class asked for is the main file
             return ms;
         }
-        LOG.warn(
-            markupClass.getName()+ " is a member class, returning Stream for the Declaring Class" );
+        LOG.info( runtimeClass.getName()+ 
+            " is a nested class, returning Stream for the Declaring Class" );
         return ms;
     }
     
     @Override
-    public SourceStream sourceStream( String markupId )
+    public SourceStream sourceStream( String sourceId )
     {
         String relativePath = 
-	        File.separatorChar + Lang.fromCodeId( markupId ).resolvePath( markupId );
+	    File.separatorChar + Lang.fromCodeId( sourceId ).resolvePath( sourceId );
         
         relativePath = relativePath.replace( File.separatorChar, '/' );
         
@@ -60,7 +60,7 @@ public class ClassPathSourceLoader
             
             return new FileInJarSourceStream( 
                 url.toString(), 
-                markupId, 
+                sourceId, 
                 getClass().getResourceAsStream( relativePath ) );
         }
         LOG.debug( "Could not find resource on classpath:" +  relativePath );

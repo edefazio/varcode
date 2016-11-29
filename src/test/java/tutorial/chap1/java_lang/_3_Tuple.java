@@ -18,8 +18,8 @@ package tutorial.chap1.java_lang;
 import java.util.UUID;
 import junit.framework.TestCase;
 import varcode.java._Java;
-import varcode.java.langmodel._class;
-import varcode.java.langmodel._code;
+import varcode.java.metalang._class;
+import varcode.java.metalang._code;
 
 /**
  *

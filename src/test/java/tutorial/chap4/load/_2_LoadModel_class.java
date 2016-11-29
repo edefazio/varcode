@@ -19,8 +19,8 @@ import junit.framework.TestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import varcode.VarException;
-import varcode.java.langmodel._class;
-import varcode.java.load.langmodel._JavaLoader;
+import varcode.java.metalang._class;
+import varcode.java.load.JavaMetaLangLoader;
 
 /**
  * Loads the models (_class, _enum, _interface) 
@@ -37,7 +37,7 @@ public class _2_LoadModel_class
     //load a "top level class" (stored in "VarException.java")
     public void testLoad_class()
     {
-        _class _c = _JavaLoader._Class.from( VarException.class );
+        _class _c = JavaMetaLangLoader._Class.from( VarException.class );
         //_class c = JavaLoad._classOf( VarException.class );
         LOG.debug( _c.author( ) ); 
     }
@@ -62,7 +62,7 @@ public class _2_LoadModel_class
      */
     public void testLoadMember_class()
     {        
-        _class _c = _JavaLoader._Class.from( MemberClass.class );
+        _class _c = JavaMetaLangLoader._Class.from( MemberClass.class );
         //_class c = JavaLoad._classOf( MemberClass.class );
         assertEquals("MemberClass", _c.getName() );
         _c.getModifiers().containsAll( "private", "static" );
