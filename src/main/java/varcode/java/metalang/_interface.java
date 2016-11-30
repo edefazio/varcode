@@ -16,7 +16,7 @@ import varcode.markup.bindml.BindML;
 
 //allow default methods
 public class _interface 
-    implements JavaCaseAuthor, _component
+    implements JavaCaseAuthor, _javaComponent
 {    
     public static final Dom INTERFACE = 
 	BindML.compile( 
@@ -45,7 +45,7 @@ public class _interface
             String[] nested = new String[ nesteds.count() ];
             for( int i = 0; i < nesteds.count(); i++ )
             {
-                _component comp = nesteds.components.get( i );
+                _javaComponent comp = nesteds.components.get( i );
                 VarContext vc = comp.getContext();
                 vc.getScopeBindings().remove( "pckage" );
                 vc.getScopeBindings().remove( "imports" );
@@ -170,7 +170,7 @@ public class _interface
     private _fields fields;
     private _methods methods;
     private _imports imports;
-    private _nesteds nesteds;
+    private _nests nesteds;
 	
     @Override
     public _interface bind( VarContext context )
@@ -216,7 +216,7 @@ public class _interface
         this.imports = _imports.cloneOf( prototype.imports );
 		
 		//NESTEDS
-        this.nesteds = _nesteds.cloneOf(prototype.nesteds );
+        this.nesteds = _nests.cloneOf(prototype.nesteds );
     }
 	
     public _interface( String packageName, String interfaceSignature )
@@ -228,7 +228,7 @@ public class _interface
         this.methods = new _methods();
         this.fields = new _fields();
         this.imports = new _imports();
-        this.nesteds = new _nesteds();
+        this.nesteds = new _nests();
     }
 
     public _interface packageName( String packageName )
@@ -276,7 +276,7 @@ public class _interface
     }
 	
     @Override
-    public _nesteds getNesteds()
+    public _nests getNesteds()
     {
         return this.nesteds;
     }
@@ -318,7 +318,7 @@ public class _interface
     {         
         for( int i = 0; i < this.nesteds.count(); i++ )
         {
-            _component nest = this.nesteds.getAt( i );
+            _javaComponent nest = this.nesteds.getAt( i );
             String nestedClassName = nest.getName();
             String thisNestClassName = containerClassName + "$" + nestedClassName;
             nestedClassNames.add(  thisNestClassName );
@@ -338,12 +338,12 @@ public class _interface
         return this.nesteds.count();
     }
         
-    public _component getNestedByName( String name )
+    public _javaComponent getNestedByName( String name )
     {
         return this.nesteds.getByName( name ); 
     }
     
-    public _component getNestedAt( int index )
+    public _javaComponent getNestedAt( int index )
     {
         return this.nesteds.getAt(  index );
     }
@@ -550,7 +550,7 @@ public class _interface
         return this;
     }
 
-    public _interface nest( _component component )
+    public _interface nest( _javaComponent component )
     {
         this.nesteds.add( component );
         return this;

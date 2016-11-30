@@ -22,7 +22,7 @@ import junit.framework.TestCase;
 import varcode.java.metalang._class;
 import varcode.java.metalang._enum;
 import varcode.java.metalang._interface;
-import varcode.java.metalang._nesteds;
+import varcode.java.metalang._nests;
 
 /**
  * uses the JavaMetaLangLoader to load Nested / Member Classes
@@ -62,7 +62,7 @@ public class JavaMetaLangLoaderNestedTest
         // NestedEnum
         _class _c = JavaMetaLangLoader._Class.from( MemberClass.class );
         //_class _c = JavaLoad._classOf( MemberClass.class );
-        _nesteds ng = _c.getNesteds();
+        _nests ng = _c.getNesteds();
         assertEquals( 3, ng.count() );
         _class _nc = (_class)_c.getNestedByName( "NestedClass");
         assertNotNull( _nc );

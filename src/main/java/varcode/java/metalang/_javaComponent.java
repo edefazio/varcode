@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 eric.
+ * Copyright 2016 M. Eric DeFazio.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,46 +24,31 @@ import varcode.Model.MetaLang;
  * A Component that can be nested (_class, _enum, _interface) within a top level
  * model (_class, _enum, _interface)
  */
-public interface _component
+public interface _javaComponent
     extends MetaLang
 {
-
-    _component clone();
+    /** @return a clone of this component */
+    _javaComponent clone();
     
-    /**
-     * @return the name of this component (simple name)
-     */
+    /** @return the name of this component (simple name) */
     String getName();
 
-    /**
-     * @return the Dom of the component
-     */
+    /** @return the Dom of the component */
     Dom getDom();
 
-    /**
-     * @return the context for this nest component
-     */
+    /** @return the context for this nest component*/
     VarContext getContext();
 
-    /**
-     * @return all imports for this component
-     */
+    /** @return all imports for this component */
     _imports getImports();
 
-    /**
-     * @return the fields for this component
-     */
+    /** @return the fields for this component */
     _fields getFields();
 
-    /**
-     * @return the _methods for this component
-     */
+    /** @return the _methods for this component */
     _methods getMethods();
     
-    /** 
-     * the count of nested (_classes, _interfaces, _enums) 
-     *in this component) 
-     */
+    /** @return the count of nested (_classes, _interfaces, _enums) */
     int getNestedCount();
     
     /** 
@@ -71,13 +56,13 @@ public interface _component
      * @param index the index of the nested component to retrieve
      * @return  the component
      */
-    _component getNestedAt( int index );
+    _javaComponent getNestedAt( int index );
     
     /** 
      * Gets all nested subcomponents of this _component
      * @return nested sub components
      */
-    _nesteds getNesteds(); 
+    _nests getNesteds(); 
     
     /**
      * 

@@ -68,13 +68,13 @@ public class AddScriptResult
     }
 	
     @Override
-	public Object derive( VarContext context ) 
-	{	
-	    //VarScript script = context.getVarScript( scriptName );
-	    VarScript script = context.resolveScript( scriptName, scriptInput );
+    public Object derive( VarContext context ) 
+    {	
+        //VarScript script = context.getVarScript( scriptName );
+	VarScript script = context.resolveScript( scriptName, scriptInput );
         if( script != null )
         {            
-        	Object derived = null;
+            Object derived = null;
             try
             {
                 derived = script.eval( context, scriptInput );                
@@ -94,11 +94,11 @@ public class AddScriptResult
         }
         if( isRequired )
         {
-        	throw new NullVar( scriptName, text, lineNumber );
+            throw new NullVar( scriptName, text, lineNumber );
         }
         //the script wasnt required
         return "";
-	}
+    }
 	
     @Override
 	public void fill( VarContext context, TranslateBuffer buffer )

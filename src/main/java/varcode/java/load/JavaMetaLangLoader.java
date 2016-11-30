@@ -28,7 +28,6 @@ import varcode.Model.ModelLoadException;
 import varcode.java.metalang._class;
 import varcode.java.metalang._enum;
 import varcode.java.metalang._interface;
-import varcode.java.load.JavaSourceLoader;
 import varcode.load.SourceLoader;
 import varcode.load.SourceLoader.SourceStream;
 

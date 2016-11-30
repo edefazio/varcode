@@ -18,6 +18,7 @@ import varcode.markup.mark.AddFormIfVar;
 import varcode.markup.mark.AddScriptResult;
 import varcode.markup.mark.AddScriptResultIfExpression;
 import varcode.markup.mark.AddIfVar;
+import varcode.markup.mark.AddScriptResultIfVar;
 import varcode.markup.mark.AddVar;
 import varcode.markup.mark.AddVarIsExpression;
 import varcode.markup.mark.AddVarOneOf;
@@ -95,6 +96,7 @@ public class BindMLParser
     //"{+",   "+}"  //Add               
     //"{+$",  "+}"  //AddScriptResult, ReplaceWithScript
     //"{+?",  "+}"  //Add --> AddIf
+    //"{+?",  ")+}" //AddScriptResultIfVar
     //"{+?(( expression )):$script(params)+}
     
     
@@ -136,9 +138,9 @@ public class BindMLParser
                     return "{+";
                     
                 case '#' : //{#
-                	       //   {#
+                	   //   {#
                            //   {##
-                	       //   {#$                                              
+                	   //   {#$                                              
                     if( charIs( line, openBraceIndex + 2, '#' ) )
                     {
                         return "{##";                  
@@ -216,7 +218,7 @@ public class BindMLParser
     	//AddFormIfExpression
         OPENTAG_TO_CLOSETAG.put(  "{+",   "+}"   ); //Add               
         OPENTAG_TO_CLOSETAG.put(  "{+$",  "+}"  ); //AddScriptResult, ReplaceWithScript
-        OPENTAG_TO_CLOSETAG.put(  "{+?",  "+}"  ); //Add --> AddIf, AddScriptResultIfExpression
+        OPENTAG_TO_CLOSETAG.put(  "{+?",  "+}"  ); //Add --> AddIf, AddScriptResultIfExpression, AddScriptResultIfVar
          // {+?(( env == test )):$capture(inputVO)+}
         OPENTAG_TO_CLOSETAG.put(  "{((",  "))}"  ); //EvaluateExpression
         
@@ -326,7 +328,7 @@ public class BindMLParser
         {
             // "{+",     "+}"  ); //AddVar         
             // "{+$",    "+}"  ); //AddScriptResult
-            // "{+?",    "+}"  ); //AddIfVar, AddScriptResultIfExpression
+            // "{+?",    "+}"  ); //AddIfVar, AddScriptResultIfExpression, AddScriptResultIfVar
             // "{+(("    "))+}"); //AddExpressionResult
         	// "{{+",    "+}}" ); //AddForm
             // "{{+?",   "+}}" ); //AddFormIf
@@ -354,12 +356,18 @@ public class BindMLParser
                 }
                 if( charIs( text, 2, '?' ) )
                 {   //"{+?",    "+}"  //AddIf
-                	
-                	if( charIs( text, 3, '(' ) && charIs(text, 4, '(' ) )
-                	{
-                		//"{+?((   
-                		return AddScriptResultIfExpressionMark.of( text, lineNumber );
-                	}
+                    if( charIs( text, 3, '(' ) && charIs(text, 4, '(' ) )
+                    {
+                	//"{+?((   
+                	return AddScriptResultIfExpressionMark.of( text, lineNumber );
+                    }
+                    /* MED ADDED *///ends with ")+}"
+                    if( text.endsWith( AddScriptResultIfVarMark.CLOSE_TAG ) &&
+                        text.contains( AddScriptResultIfVarMark.MID_TAG ) ) 
+                    {
+                        return AddScriptResultIfVarMark.of( text, lineNumber );
+                    }
+                    /* ADDED */
                     return AddIfVarMark.of( text, lineNumber );
                 }                
                 if( charIs( text, 2, '(' ) )
@@ -1608,7 +1616,111 @@ public class BindMLParser
         }
     }
     
-   
+    /**
+     *  {+?var:$>(var)+}
+     *  {+?var==3:$>(var)+} 
+     * 
+     *  STARTS WITH "{+?"
+     *  CONTAINS    ":$"
+     *  ENDS WITH   ")+}"
+     */
+    public static class AddScriptResultIfVarMark
+    {
+        public static final String OPEN_TAG = "{+?";  
+        public static final String MID_TAG = ":$"; 
+        public static final String CLOSE_TAG = ")+}"; 
+        
+        
+        public static AddScriptResultIfVar of( 
+            String text, 
+            int lineNumber )
+            throws MarkupException
+        {
+            if( !text.startsWith( OPEN_TAG ) )
+            {
+                throw new MarkupException(
+                    "Invalid AddScriptResultIfVarMark : " + N
+                    + text + N
+                    + "  ... on line [" + lineNumber + "] must start with "
+                    + " \"" + OPEN_TAG + "\" ",
+                    text, 
+                    lineNumber );                
+            }
+            if( !text.endsWith( CLOSE_TAG ) )
+            {
+                throw new MarkupException(
+                    "Invalid AddScriptResultIfVarMark : " + N 
+                   + text + N
+                   + "  ... on line [" + lineNumber + "] must end with CLOSE MARK"
+                   + " \"" + CLOSE_TAG + "\" ",
+                   text, 
+                   lineNumber );   
+            }
+            int midIndex = text.indexOf( MID_TAG );
+            if( midIndex < 0 )
+            {
+                throw new MarkupException(
+                    "Invalid AddScriptResultIfVarMark : " + N 
+                   + text + N
+                   + "  ... on line [" + lineNumber + "] must contain INTERIOR"
+                   + " \"" + MID_TAG + "\" ",
+                   text, 
+                   lineNumber );   
+            }
+            int openParamIndex = text.lastIndexOf( '(' );
+            
+            if( openParamIndex < 0 )
+            {
+                throw new MarkupException(
+                    "Invalid AddScriptResultIfVarMark : " + N 
+                   + text + N
+                   + "  ... on line [" + lineNumber + "] must contain (",
+                   text, 
+                   lineNumber );   
+            }
+
+            // {+?var:$>(var)+}
+            // ---   -- -   --- 
+            // ---              OPEN_TAG
+            //       --         MID_TAG
+            //          -       OPEN_PARAM_INDEX            
+            //              --- CLOSE_TAG 
+            
+            // {+?var=true:$>(var)+}
+            // ---        -- -   --- 
+            // ---                   OPEN_TAG
+            //            --         MID_TAG
+            //               -       OPEN_PARAM_INDEX            
+            //                  ---  CLOSE_TAG 
+            
+            String expression = text.substring( OPEN_TAG.length(), midIndex );
+            String scriptName = text.substring( midIndex + MID_TAG.length(), openParamIndex );
+            
+            int eqIndex = expression.indexOf( "=" );
+            String varName = null;
+            String targetValue = null;
+            if( eqIndex > 0 )
+            { 
+                varName = expression.substring( 0, expression.indexOf( "=" ) ).trim();
+                targetValue = expression.substring( expression.lastIndexOf( "=" ) + 1 ).trim();
+            }
+            else
+            {
+                varName = expression.trim();
+            }
+            String paramContents = 
+                text.substring( openParamIndex + 1, text.length() - CLOSE_TAG.length() );
+
+            return new AddScriptResultIfVar( 
+                text, 
+                lineNumber, 
+                varName,
+                targetValue,
+                scriptName, 
+                paramContents );            
+        }        
+    }
+    
     public static class AddScriptResultMark
     {
         public static final String OPEN_TAG = "{+$";  

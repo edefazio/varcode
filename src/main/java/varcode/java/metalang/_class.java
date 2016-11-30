@@ -30,7 +30,7 @@ import varcode.markup.bindml.BindML;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _class    
-    implements JavaCaseAuthor, _component
+    implements JavaCaseAuthor, _javaComponent
 {	
 	private _package classPackage;
 	private _imports imports;
@@ -44,7 +44,7 @@ public class _class
 	private _staticBlock staticBlock;
 	
 	/** Nested inner classes, static nested classes, interfaces, enums */
-	private _nesteds nesteds;
+	private _nests nesteds;
 	
 	public static _class cloneOf( _class prototype )
 	{
@@ -58,6 +58,38 @@ public class _class
     {
         return cloneOf( this );
     }
+    
+    /**
+     * 
+     * @param type
+     * @return 
+     */
+    public List<_field> getFieldsByType( Class type )
+    {
+        List<_field> bySimpleName = new ArrayList<_field>();
+        if( this.imports.contains( type ) )
+        {   //is this type imported? 
+            // this means they CAN use the Simple Type Name
+            //i.e. they can use:
+            // _field _x = _field.of( "public Map m;" ); 
+            // - instead of -
+            // _field _y = _field.of( "public java.util.Map m;");
+            // and BOTH _x and _y are returned from :
+            // _c.getFieldsOfType( Map.class );
+            bySimpleName = 
+                this.fields.getByType( type.getSimpleName() );
+        }
+        List<_field> byFullName = 
+            this.fields.getByType( type.getCanonicalName() );
+        byFullName.addAll( bySimpleName );
+        return byFullName;
+    }
+    
+    public List<_field> getFieldsByType( String typeName )
+    {
+        return this.fields.getByType( typeName );
+    }
+    
     
     public _class add( _facet... facets )
     {
@@ -202,7 +234,7 @@ public class _class
 		this.methods = new _methods();
 		this.staticBlock = new _staticBlock();
 		this.constructors = new _constructors();
-		this.nesteds = new _nesteds();
+		this.nesteds = new _nests();
 	}
 	
 	/**
@@ -230,7 +262,7 @@ public class _class
 		this.constructors = _constructors.cloneOf( prototype.constructors );
 		
 		//NESTEDS
-		this.nesteds = _nesteds.cloneOf(prototype.nesteds );
+		this.nesteds = _nests.cloneOf(prototype.nesteds );
 	}
 	
 	public static final Dom CLASS = 
@@ -316,7 +348,7 @@ public class _class
 			String[] nested = new String[ nesteds.count() ];
 			for( int i = 0; i < nesteds.count(); i++ )
 			{
-				_component comp = nesteds.components.get( i );
+				_javaComponent comp = nesteds.components.get( i );
 				VarContext vc = comp.getContext();
 				
 				//inner classes inherit package, so remove the package
@@ -418,7 +450,7 @@ public class _class
     {         
         for( int i = 0; i < this.nesteds.count(); i++ )
         {
-            _component nest = this.nesteds.getAt( i );
+            _javaComponent nest = this.nesteds.getAt( i );
             String nestedClassName = nest.getName();
             String thisNestClassName = containerClassName + ".$" + nestedClassName;
             nestedClassNames.add(  thisNestClassName );
@@ -687,19 +719,19 @@ public class _class
         return this;
     }
     
-	public _class method( _method m )
+    public _class method( _method m )
+    {
+	if( m.isAbstract() && !this.isAbstract() )
 	{
-		if( m.isAbstract() && !this.isAbstract() )
-		{
-			throw new ModelException(
-				"Cannot add an abstract method " + N + m + N + " to a non-abstract class " );
-		}
-		if( m.isAbstract() && !m.getBody().isEmpty() )
-		{
-			throw new ModelException( 
-				"abstract method :" + N + m + N + "cannot have a method body:" + N + m.getBody() );
-		}
-		this.methods.addMethod( m );
+            throw new ModelException(
+		"Cannot add an abstract method " + N + m + N + " to a non-abstract class " );
+	}
+	if( m.isAbstract() && !m.getBody().isEmpty() )
+	{
+            throw new ModelException( 
+		"abstract method :" + N + m + N + "cannot have a method body:" + N + m.getBody() );
+	}
+	this.methods.addMethod( m );
 		return this;
 	}
 	
@@ -880,7 +912,7 @@ public class _class
      * @param component the component to nest inside this class
      * @return this _class containing the nested component
      */
-    public _class nest( _component component )
+    public _class nest( _javaComponent component )
     {
         this.nesteds.add( component );
         return this;
@@ -975,18 +1007,18 @@ public class _class
     }
         
     @Override
-    public _nesteds getNesteds()
+    public _nests getNesteds()
     {
         return this.nesteds;
     }
     
     @Override
-    public _component getNestedAt( int index )
+    public _javaComponent getNestedAt( int index )
     {
         return this.nesteds.getAt( index );
     }
     
-    public _component getNestedByName( String name )
+    public _javaComponent getNestedByName( String name )
     {
         return this.nesteds.getByName( name );
     }
@@ -994,6 +1026,14 @@ public class _class
     public _class setName( String name )
     {
         String oldName = getName();
+        
+        //any old reference to OLDNAME.class, change it to NEWNAME.class
+        this.replace( oldName + ".class", name + ".class" );
+        System.out.println( "HERE   WE GOO ");
+        
+        //what about "fully qualified references?" DOESNT matter (above should cover it)
+        
+        
         this.getSignature().className = name;
         _constructors cs = this.getConstructors();
         for( int i = 0; i < cs.count(); i++ )
@@ -1052,8 +1092,9 @@ public class _class
         return this;
     }
 
-    public Object getFieldByName(String count) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Object getFieldByName(String name ) 
+    {
+        return this.fields.getByName( name );
     }
 	
     /**
@@ -1340,8 +1381,8 @@ public class _class
 
 	//move this to enum and interface
     @Override
-	public _class replace( String target, String replacement  ) 
-	{		
+    public _class replace( String target, String replacement  ) 
+    {		
         this.signature.replace( target, replacement );
         this.annotations.replace( target, replacement );
         this.classPackage.replace( target, replacement );
@@ -1349,12 +1390,11 @@ public class _class
         this.javadoc.replace( target, replacement );
         this.constructors.replace( target, replacement );
         this.imports.replace( target, replacement );
-		this.methods.replace( target, replacement );
-        
+	this.methods.replace( target, replacement );
         this.staticBlock.replace( target, replacement );
         this.nesteds.replace( target, replacement );
         
-		this.fields.replace( target, replacement );
+	this.fields.replace( target, replacement );
         return this;        
-	}
+    }
 }

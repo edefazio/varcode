@@ -9,7 +9,7 @@ public class CodeMLFunctionalTests_DefineVar
 
 	public static void defines( String bindML, String varName, Object expected )	
 	{
-		DocState ts = CodeML.tailor( bindML );
+		DocState ts = CodeML.composeToState( bindML );
 		is( expected, ts.getContext().resolveVar( varName ) );
 	}
 	
@@ -34,10 +34,10 @@ public class CodeMLFunctionalTests_DefineVar
 	{
 		defines( "/*{#a:$count(b)#}*/", "a", null );
 		defines( "/*{##a:$count(b)##}*/", "a", null );
-		DocState ts = CodeML.tailor( "/*{#a:$count(b)#}*/", "b", new String[ 0 ] );
+		DocState ts = CodeML.composeToState( "/*{#a:$count(b)#}*/", "b", new String[ 0 ] );
 		assertEquals( 0, ts.getContext().resolveVar( "a" ) );
 		
-		ts = CodeML.tailor( "/*{##b:1##}*//*{#a:$count(b)#}*/");
+		ts = CodeML.composeToState( "/*{##b:1##}*//*{#a:$count(b)#}*/");
 		assertEquals( 1, ts.getContext().resolveVar( "a" ) );
 	}
 	
@@ -79,7 +79,7 @@ public class CodeMLFunctionalTests_DefineVar
 	{
 		try
 		{
-			CodeML.tailor( "/*{#int:3#}*/" );
+			CodeML.composeToState( "/*{#int:3#}*/" );
 			fail( "expected exception for bad var name " );
 		}
 		catch( MarkupException me )
@@ -89,7 +89,7 @@ public class CodeMLFunctionalTests_DefineVar
 		
 		try
 		{
-			CodeML.tailor( "/*{##int:3##}*/" );
+			CodeML.composeToState( "/*{##int:3##}*/" );
 			fail( "expected exception for bad var name " );
 		}
 		catch( MarkupException me )
@@ -98,7 +98,7 @@ public class CodeMLFunctionalTests_DefineVar
 		}
 		try
 		{
-			CodeML.tailor( "/*{#%a:3#}*/" );
+			CodeML.composeToState( "/*{#%a:3#}*/" );
 			fail( "expected exception for bad var name " );
 		}
 		catch( MarkupException me )
@@ -107,7 +107,7 @@ public class CodeMLFunctionalTests_DefineVar
 		}
 		try
 		{
-			CodeML.tailor( "/*{##%a:3##}*/" );
+			CodeML.composeToState( "/*{##%a:3##}*/" );
 			fail( "expected exception for bad var name " );
 		}
 		catch( MarkupException me )

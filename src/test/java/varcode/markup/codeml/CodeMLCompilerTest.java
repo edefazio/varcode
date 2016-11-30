@@ -11,8 +11,8 @@ public class CodeMLCompilerTest
 	
 	public void testAllMarks()
 	{
-		String allMarksDoc =
-		"{+$scriptName()+}" + N +// instanceof AddScriptResult );
+            String allMarksDoc =
+	"{+$scriptName()+}" + N +// instanceof AddScriptResult );
         "{+$scriptName()*+}" + N +// instanceof AddScriptResult ); //REQUIRED
         "/*{(( 3 + 5 ))}*/" + N +// instanceof EvalExpression
         "{+((3 + 5))+}" + N +  //AddExpressionResult
@@ -30,6 +30,11 @@ public class CodeMLCompilerTest
         "/*{+?varName:conditionalText+}*/" + N + //instanceof AddIfVar );
         "/*{+?varName=1:conditionalText+}*/" + N + //instanceof AddIfVar );
         "/*{+?varName==1:conditionalText+}*/" + N + //instanceof AddIfVar );
+                    
+        "/*{+?varName:$>(conditionalText)+}*/" + N + //instanceof AddScriptResultIfVar );
+        "/*{+?varName=1:$>(conditionalText)+}*/" + N + //instanceof AddScriptResultIfVar );
+        "/*{+?varName==1:$>(conditionalText)+}*/" + N + //instanceof AddScriptResultIfVar );
+                    
         "/*{+varName*/replace/*+}*/" + N + //instanceof ReplaceWithVar );
         "/*{+varName|*/replace default /*+}*/" + N + //instanceof ReplaceWithVar );
         "/*{+varName**/   replace   /*+}*/" + N + //instanceof ReplaceWithVar );

@@ -16,8 +16,8 @@ public class /*{+className*/_3_CodeML_JavaClass/*+}*/ /*{-*/extends TestCase/*-}
     //everything inside of this markis Not part of the template
     public void testCodeML()
     {
-        JavaCase thisCase = JavaCase.of(_3_CodeML_JavaClass.class, 
-            "tutorial.varcode.chap2.markup.AddNestedClass", 
+        JavaCase thisCase = JavaCase.of( _3_CodeML_JavaClass.class, 
+            getClass().getPackage().getName() + ".AddNestedClass",    
             "className", "AddNestedClass",
             "genId", UUID.randomUUID() );
         

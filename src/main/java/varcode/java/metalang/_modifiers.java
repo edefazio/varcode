@@ -399,11 +399,12 @@ public class _modifiers
 			throw new ModelException( "cannot be both abstract and final" );
 		}
 		
-		if( ( modifiersBits & Modifier.ABSTRACT ) > 0  &&
-			( modifiersBits & Modifier.STATIC ) > 0  )
-		{
-			throw new ModelException( "cannot be both abstract and static" );
-		}
+                //this is NOT true for Classes
+		//if( ( modifiersBits & Modifier.ABSTRACT ) > 0  &&
+		//	( modifiersBits & Modifier.STATIC ) > 0  )
+		//{
+		//	throw new ModelException( "cannot be both abstract and static" );
+		//}
 		
 		if( ( modifiersBits & Modifier.ABSTRACT ) > 0  &&
 			( modifiersBits & Modifier.SYNCHRONIZED ) > 0  )

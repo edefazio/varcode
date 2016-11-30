@@ -23,6 +23,7 @@ import varcode.markup.mark.ReplaceWithForm;
 import varcode.markup.mark.ReplaceWithScriptResult;
 import varcode.markup.mark.ReplaceWithVar;
 import junit.framework.TestCase;
+import varcode.markup.mark.AddScriptResultIfVar;
 
 /**   
  * Tests that given Strings I can parse and return the appropriate 
@@ -39,6 +40,40 @@ public class CodeMLParserMarkTest
     /** A lineFeed String */
     public static final String N = System.lineSeparator();
     
+    public void testAddScriptResultIfVar()
+    {
+        Mark m = CodeML.parseMark(
+            "/*{+?varName:$>(input)+}*/" );
+        assertTrue( m instanceof AddScriptResultIfVar );
+        AddScriptResultIfVar asr = (AddScriptResultIfVar)m;
+        
+        assertEquals( "varName", asr.getVarName() );
+        assertEquals( ">", asr.getScriptName() );
+        assertEquals( "input", asr.getScriptInput() );
+        assertEquals( null, asr.getTargetValue() );
+        
+        
+        m = CodeML.parseMark(
+            "/*{+?varName=1:$>(input)+}*/");
+        assertTrue( m instanceof AddScriptResultIfVar );
+        asr = (AddScriptResultIfVar)m;
+                
+        assertEquals( "varName", asr.getVarName() );
+        assertEquals( ">", asr.getScriptName() );
+        assertEquals( "input", asr.getScriptInput() );
+        assertEquals( "1", asr.getTargetValue() );
+        
+        m = CodeML.parseMark(
+            "/*{+?varName==1:$>(input)+}*/");
+        assertTrue( m instanceof AddScriptResultIfVar );
+        asr = (AddScriptResultIfVar)m;
+        
+        assertEquals( "varName", asr.getVarName() );
+        assertEquals( ">", asr.getScriptName() );
+        assertEquals( "input", asr.getScriptInput() );
+        assertEquals( "1", asr.getTargetValue() );
+                
+    }
 	public void testAddFormIfExpression()
 	{
 		String mark = "/*{{+?(( logLevel > debug )):LOG.debug({+a+} + {+b+});+}}*/";
@@ -301,6 +336,7 @@ public class CodeMLParserMarkTest
         
         //IfAddCode
         CodeML.parseMark( "/*{+?log=trace:LOG.trace(\"Rate loop [\"\"+i+\"\"])+}*/" );
+        
         //IfAddCodeForm
         CodeML.parseMark( 
             "/*{{+?log:" + N

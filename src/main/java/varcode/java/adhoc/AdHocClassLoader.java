@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import varcode.VarException;
-import varcode.java.metalang._component;
+import varcode.java.metalang._javaComponent;
 
 /**
  * A ClassLoader that maintains a cache Map of {@code InMemoryJavaClass}es by name
@@ -104,7 +104,7 @@ public class AdHocClassLoader
     	return defineClass( className, byteCode, 0, byteCode.length );    	
     }
 
-    public Class<?> find( _component component )
+    public Class<?> find( _javaComponent component )
     {
         return findBySimpleName( component.getName() );
     }

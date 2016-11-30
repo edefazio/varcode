@@ -9,10 +9,8 @@ import varcode.java.metalang.auto._autoDto;
 import varcode.java.metalang.auto._autoExternalizable;
 
 /**
- * _auto... provide create another model abstraction layer on top of existing
- * langmodel (_class, _enum, _interface)entities. This simplifies the amount of
- * wiring code needed to model and author "stereotype"-type classes like "DTOs"
- * or data transfer objects.
+ * _auto... abstractions are "macro"-like abstractions used to "automate"  
+ * more complex interactions within MetaLang models (_class, _enum, _interface). 
  * 
  * _auto... classes obviate the need for repetitive (boilerplate) type coding.
  * <UL>

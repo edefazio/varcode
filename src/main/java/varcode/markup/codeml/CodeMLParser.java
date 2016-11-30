@@ -19,6 +19,7 @@ import varcode.markup.mark.AddFormIfVar;
 import varcode.markup.mark.AddScriptResult;
 import varcode.markup.mark.AddScriptResultIfExpression;
 import varcode.markup.mark.AddIfVar;
+import varcode.markup.mark.AddScriptResultIfVar;
 import varcode.markup.mark.AddVarIsExpression;
 import varcode.markup.mark.AddVarOneOf;
 import varcode.markup.mark.Cut;
@@ -463,12 +464,19 @@ public class CodeMLParser
                 }
                 if( charIs( text, 4, '?' ) )
                 {   //"/*{+?",    "}*/"  ); //AddIf
-                	if( charIs( text, 5, '(' ) )
-                	{
-                		//"/*{+?(( expression )):$scriptName(params)+}*/"
-                		return AddScriptResultIfExpressionMark.of( text, lineNumber );
-                	}
-                	return AddIfVarMark.of( text, lineNumber, nameAudit );
+                    if( charIs( text, 5, '(' ) )
+                    {
+                	//"/*{+?(( expression )):$scriptName(params)+}*/"
+                	return AddScriptResultIfExpressionMark.of( text, lineNumber );
+                    }
+                    if( text.endsWith( AddScriptResultIfVarMark.CLOSE_TAG ) &&
+                        text.contains( AddScriptResultIfVarMark.MID_TAG ) ) 
+                    {
+                        //"/*{+?var:$scriptName(params)+}*/"
+                        //"/*{+?var=value:$scriptName(params)+}*/"
+                	return AddScriptResultIfVarMark.of( text, lineNumber );
+                    }
+                    return AddIfVarMark.of( text, lineNumber, nameAudit );
                 }
                 if( text.endsWith( "/*+}*/" ) )
                 {
@@ -1178,6 +1186,112 @@ public class CodeMLParser
                     lineNumber, e );
             }
             return new AddFormIfVar( text, lineNumber, name, targetValue, form );
+        }        
+    }
+    
+    
+    /**
+     *  /*{+?var:$>(var)+}* /
+     *  /*{+?var==3:$>(var)+}* /
+     * 
+     *  STARTS WITH "{+?"
+     *  CONTAINS    ":$"
+     *  ENDS WITH   ")+}"
+     */
+    public static class AddScriptResultIfVarMark
+    {
+        public static final String OPEN_TAG = "/*{+?";  
+        public static final String MID_TAG = ":$"; 
+        public static final String CLOSE_TAG = ")+}*/"; 
+        
+        
+        public static AddScriptResultIfVar of( 
+            String text, 
+            int lineNumber )
+            throws MarkupException
+        {
+            if( !text.startsWith( OPEN_TAG ) )
+            {
+                throw new MarkupException(
+                    "Invalid AddScriptResultIfVarMark : " + N
+                    + text + N
+                    + "  ... on line [" + lineNumber + "] must start with "
+                    + " \"" + OPEN_TAG + "\" ",
+                    text, 
+                    lineNumber );                
+            }
+            if( !text.endsWith( CLOSE_TAG ) )
+            {
+                throw new MarkupException(
+                    "Invalid AddScriptResultIfVarMark : " + N 
+                   + text + N
+                   + "  ... on line [" + lineNumber + "] must end with CLOSE MARK"
+                   + " \"" + CLOSE_TAG + "\" ",
+                   text, 
+                   lineNumber );   
+            }
+            int midIndex = text.indexOf( MID_TAG );
+            if( midIndex < 0 )
+            {
+                throw new MarkupException(
+                    "Invalid AddScriptResultIfVarMark : " + N 
+                   + text + N
+                   + "  ... on line [" + lineNumber + "] must contain INTERIOR"
+                   + " \"" + MID_TAG + "\" ",
+                   text, 
+                   lineNumber );   
+            }
+            int openParamIndex = text.lastIndexOf( '(' );
+            
+            if( openParamIndex < 0 )
+            {
+                throw new MarkupException(
+                    "Invalid AddScriptResultIfVarMark : " + N 
+                   + text + N
+                   + "  ... on line [" + lineNumber + "] must contain (",
+                   text, 
+                   lineNumber );   
+            }
+
+            // /*{+?var:$>(var)+}*/
+            // -----   -- -   ----- 
+            // -----                OPEN_TAG
+            //         --           MID_TAG
+            //            -         OPEN_PARAM_INDEX            
+            //                ----- CLOSE_TAG 
+            
+            // /*{+?var=true:$>(var)+}*/
+            // -----        -- -   ----- 
+            // -----                     OPEN_TAG
+            //              --           MID_TAG
+            //                 -         OPEN_PARAM_INDEX            
+            //                     ----- CLOSE_TAG 
+            
+            String expression = text.substring( OPEN_TAG.length(), midIndex );
+            String scriptName = text.substring( midIndex + MID_TAG.length(), openParamIndex );
+            
+            int eqIndex = expression.indexOf( "=" );
+            String varName = null;
+            String targetValue = null;
+            if( eqIndex > 0 )
+            { 
+                varName = expression.substring( 0, expression.indexOf( "=" ) ).trim();
+                targetValue = expression.substring( expression.lastIndexOf( "=" ) + 1 ).trim();
+            }
+            else
+            {
+                varName = expression.trim();
+            }
+            String paramContents = 
+                text.substring( openParamIndex + 1, text.length() - CLOSE_TAG.length() );
+
+            return new AddScriptResultIfVar( 
+                text, 
+                lineNumber, 
+                varName,
+                targetValue,
+                scriptName, 
+                paramContents );            
         }        
     }
     

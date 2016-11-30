@@ -170,46 +170,6 @@ public class _autoDto
      */
     public _class toClassModel()
     {
-        //we need a constructor with all the uninitialized final fields
-        //verify that all fields are either
-        // nonfinal and they are final With an initializer
-        /*
-        List<_field>uninitializedFinalFields = new ArrayList<_field>();
-        
-        _fields fs = this.theClass.getFields();
-        String[] fieldNames = fs.getFieldNames();
-        
-        for( int i = 0; i < fieldNames.length; i++ )
-        {
-            _field f = fs.getByName( fieldNames[ i ] );
-            if( f.getModifiers().contains( Modifier.FINAL ) && 
-                !f.hasInit() )
-            {
-                uninitializedFinalFields.add( f );
-            }
-        }
-        
-        String paramList = "";
-        _code finalInitCode = new _code();
-        
-        for( int i = 0; i < uninitializedFinalFields.size(); i++ )
-        {
-            _field f = uninitializedFinalFields.get( i );
-            if( i > 0 )
-            {
-                paramList += ", ";
-            }
-            paramList +=  f.getType() + " " + f.getName();
-            
-            finalInitCode.addTailCode( 
-                "this." + f.getName() + " = " + f.getName()+";" );
-        }
-        
-            
-        String constructorSig = 
-            "public " + this.theClass.getSignature().getName() 
-                + "( " + paramList + " )";
-        */
         _constructor constructor = _autoConstructor.of( theClass );
         
         _class dtoClass = _class.cloneOf( this.theClass );

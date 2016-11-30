@@ -94,6 +94,7 @@ public class AddIfVar
         buffer.append( derive( context ) );
     }
     
+    @Override
     public Object derive( VarContext context )
     {
         Object resolved = context.resolveVar( varName );

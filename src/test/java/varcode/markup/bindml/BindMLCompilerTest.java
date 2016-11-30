@@ -28,6 +28,7 @@ import varcode.markup.mark.Mark;
 import varcode.markup.mark.SetMetadata;
 import varcode.markup.mark.DocDirective;
 import junit.framework.TestCase;
+import varcode.markup.mark.AddScriptResultIfVar;
 
 public class BindMLCompilerTest 
 	extends TestCase
@@ -49,6 +50,32 @@ public class BindMLCompilerTest
 	    assertEquals( "capture", mr.getScriptName() );	    
 	}
 	
+    public void testAddScriptResultIfVar()
+    {
+        String mark = "{+?env:$>(input)+}";
+        Mark m = BindML.parseMark(mark );
+        assertTrue( m instanceof AddScriptResultIfVar );
+        
+        AddScriptResultIfVar asr = (AddScriptResultIfVar)m;
+        
+        assertEquals( "env", asr.getVarName() );
+        assertEquals( ">", asr.getScriptName() );
+        assertEquals( "input", asr.getScriptInput() );
+        assertEquals( null, asr.getTargetValue() );
+        //String s = Compose.asString( d, "env", "YES" );
+        //assertEquals( "    YES", s );
+        
+        
+        String mark2 = "{+?env==test:$>(input)+}";
+        Mark m2 = BindML.parseMark( mark2 );
+        assertTrue( m2 instanceof AddScriptResultIfVar );
+        asr = (AddScriptResultIfVar)m2;
+        
+        assertEquals( "env", asr.getVarName() );
+        assertEquals( ">", asr.getScriptName() );
+        assertEquals( "input", asr.getScriptInput() );
+        assertEquals( "test", asr.getTargetValue() );
+    }
     public void testAddForm()
     {
         String form = "{{+:{+type+} {+value+}, +}}";

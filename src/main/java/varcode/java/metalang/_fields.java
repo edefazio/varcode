@@ -118,6 +118,21 @@ public class _fields
         return null;        
     }
     
+    
+    
+    public List<_field> getByType( String typeName )
+    {
+        List<_field> found = new ArrayList<_field>();
+        for( int i = 0; i < this.fields.size(); i++ )
+        {
+            if( this.fields.get( i ).getType().equals( typeName ) )
+            {
+                found.add(this.fields.get( i ) ); 
+            }
+        }
+        return found;
+    }
+    
     /**
      * replaces the target string with the replacement String
      * @param target
@@ -127,11 +142,11 @@ public class _fields
     @Override
     public _fields replace( String target, String replacement )
     {
-		for( int i = 0; i < fields.size(); i++ )
-		{		            
-			_fields._field f = this.fields.get( i );
+        for( int i = 0; i < fields.size(); i++ )
+	{		            
+            _field f = this.fields.get( i );
             f.replace( target, replacement );
-		}
+	}
         return this;
     }
     
@@ -263,11 +278,11 @@ public class _fields
         @Override
         public _field replace( String target, String replacement )
         {
-            javadoc.replace( target, replacement );
-            init.replace( target, replacement );
-            fieldAnnotations.replace( target, replacement );
-            name = name.replace( target, replacement );
-            type = type.replace( target, replacement );
+            this.javadoc = javadoc.replace( target, replacement );
+            this.init = init.replace( target, replacement );
+            this.fieldAnnotations = fieldAnnotations.replace( target, replacement );
+            this.name = name.replace( target, replacement );
+            this.type = type.replace( target, replacement );
             return this;
         }        
         
@@ -605,13 +620,14 @@ public class _fields
 		}
 
         @Override
-		public _init replace( String target, String replacement ) 
-		{
+	public _init replace( String target, String replacement ) 
+	{
             if( this.initCode != null )
             {
-                return new _init ( this.initCode.replace( target, replacement ) );			
+                return new _init( 
+                    this.initCode.replace( target, replacement ) );			
             }
             return this;
-		}
-	}	
+	}
+    }	
 }

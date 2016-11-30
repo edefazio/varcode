@@ -13,7 +13,7 @@ import varcode.java.metalang._enum;
 import varcode.java.metalang._interface;
 
 /**
- * Create _class, _enum, _interface langmodels and "author" 
+ * Create _class, _enum, _interface metalang models and "author" 
  * its .java source code.
  * (_class,_interface, and _enum) entities are models for the Java  
  * source language itself.  They provide APIs for manipulating 

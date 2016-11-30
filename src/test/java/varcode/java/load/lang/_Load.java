@@ -26,13 +26,13 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import varcode.Model.ModelLoadException;
 import varcode.java.metalang._class;
-import varcode.java.metalang._component;
 import varcode.java.metalang._enum;
 import varcode.java.metalang._interface;
 import varcode.java.ast.JavaASTParser;
 import varcode.java.load.JavaSourceLoader;
 import varcode.load.SourceLoader;
 import varcode.load.SourceLoader.SourceStream;
+import varcode.java.metalang._javaComponent;
 
 /**
  *
@@ -76,7 +76,7 @@ public class _Load
         return AST.ofClass( sourceLoader, clazz );          
     }
     
-    public _component modelOf( Class clazz )
+    public _javaComponent modelOf( Class clazz )
     {
         if( clazz.isInterface() )
         {

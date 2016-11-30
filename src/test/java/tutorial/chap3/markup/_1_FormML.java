@@ -3,7 +3,9 @@ package tutorial.chap3.markup;
 import java.util.Date;
 import junit.framework.TestCase;
 import varcode.VarException;
+import varcode.doc.Dom;
 import varcode.doc.form.Form;
+import varcode.markup.bindml.BindML;
 import varcode.markup.forml.ForML;
 
 /**
@@ -34,9 +36,34 @@ import varcode.markup.forml.ForML;
  *
  * @author Eric DeFazio eric@varcode.io
  */
-public class _1_FormMarkup
+public class _1_FormML
     extends TestCase
 {
+     static Form SimpleMarksForm = ForML.compile( 
+        "{+a+}" //print value of var a (or "" if a is null)                
+      + "{+a*+}" //print required* var a (or throw MarkupException if a is null)
+      + "{+b|default+}" //print b if non-null, otherwise print "default"                           
+                
+      + "{+$>(a)+}" //print result of calling ">" (indent) script with a
+                
+      + "{+?a:some text+}" //if( a is non null ) print "some text"
+      + "{+?a:$>(a)+}" //if( a is non null) print result of calling ">" indent with a 
+                
+      + "{+?a==1:a is 1+}" //if a == 1, print "a is 1"          
+      + "{+?a==1:$>(a)+}" //if a == 1, result of calling ">" (indent) script with a
+                
+      + "{+(( 5 + 3 ))+}" //evaluate the expression ( 5 + 3 ) and print                  
+    );
+     
+    public void testAllForMLMarks()
+    {
+        String doc = SimpleMarksForm.compose(
+            "a", 1, 
+            "b", 2 );
+        
+        System.out.println( doc );
+    }
+    
     public void testAddMarks()
     {
         Form ADD_MARKS = ForML.compile( 
@@ -139,7 +166,7 @@ public class _1_FormMarkup
         assertEquals( "LOG.debug( \"got here\" );", 
             IF_IS_CONDITIONAL.compose( "condition", true ) );
         
-        assertEquals( "", 
+        assertEquals( "LOG.debug( \"got here\" );", 
             IF_IS_CONDITIONAL.compose( "condition", "true" ) );
         
         //condition is false (which is NOT-null), output...

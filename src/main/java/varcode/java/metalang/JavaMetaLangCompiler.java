@@ -40,7 +40,7 @@ import varcode.java.metalang._fields._field;
 import varcode.java.metalang._methods._method;
 
 /**
- * "Compiles" the AST (Node-based) representation of Java Code into  
+ * "Compiles" the Java AST (Node-based) representation of Code into  
  * MetaLang {@code _class, _interface, _enum } models.
  *
  * @author Eric DeFazio eric@varcode.io
@@ -433,13 +433,20 @@ public class JavaMetaLangCompiler
                 
                 if( astMethodDecl.getJavaDoc() == null )
                 {
-                    _method _meth = _method.of( methd, _code.of( body ) );     
-                        
+                    _method _meth = null;
+                    if( body != null )
+                    {
+                        _meth = _method.of( methd, _code.of( body ) );     
+                    }
+                    else
+                    {
+                        _meth = _method.of( methd );
+                    }                        
                     for( int k = 0; k < astMethodAnnots.size(); k++ )
                     {
                         _meth.annotate( astMethodAnnots.get( k ).toString() );
                     }
-                    _c.method(_meth );
+                    _c.method( _meth );
                 }
                 else
                 {
@@ -453,7 +460,7 @@ public class JavaMetaLangCompiler
                     {
                         _meth.annotate( astMethodAnnots.get( k ).toString() );
                     }
-                    _c.method(_meth );
+                    _c.method(  _meth );
                 }                    
             }
             else if( astMember instanceof FieldDeclaration ) 

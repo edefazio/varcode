@@ -19,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import varcode.java.metalang._class;
 import varcode.java.metalang._code;
-import varcode.java.metalang._component;
 import varcode.java.metalang._enum;
 import varcode.java.metalang._fields;
 import varcode.java.metalang._fields._field;
@@ -27,8 +26,9 @@ import varcode.java.metalang._imports;
 import varcode.java.metalang._interface;
 import varcode.java.metalang._methods;
 import varcode.java.metalang._methods._method;
-import varcode.java.metalang._nesteds;
+import varcode.java.metalang._nests;
 import varcode.java.load.JavaMetaLangLoader;
+import varcode.java.metalang._javaComponent;
 
 /**
  * Simple example for a "mixin" like metaprogram which takes
@@ -43,7 +43,7 @@ public class _1_AddMethodLogging
      * add the appropriate Logger imports
      * @param _component a (_class, _enum, _interface)
      */
-    public static void addImport( _component _component )
+    public static void addImport( _javaComponent _component )
     {        
         _imports imports = _component.getImports();
         imports.addImports( Logger.class, LoggerFactory.class );        
@@ -54,7 +54,7 @@ public class _1_AddMethodLogging
      * if a LOG static field if it doesn't exist, create one
      * @param _component a (_class, _enum, _interface)
      */
-    public static void addLOGField( _component _component )
+    public static void addLOGField( _javaComponent _component )
     {
         _fields _fs = _component.getFields();
         _field _f = _fs.getByName( "LOG" );
@@ -66,7 +66,7 @@ public class _1_AddMethodLogging
         }
     }
     
-    public static _component addMethodLogging( _component _component )
+    public static _javaComponent addMethodLogging( _javaComponent _component )
     {
         return addMethodLogging(_component, true );
     }
@@ -76,12 +76,12 @@ public class _1_AddMethodLogging
      * @param _component the component to add method logging to
      * @return the modified component
      */
-    public static _component addMethodLogging( 
-        _component _component, boolean applyToAllNestedComponents )
+    public static _javaComponent addMethodLogging( 
+        _javaComponent _component, boolean applyToAllNestedComponents )
     {   
         if( applyToAllNestedComponents )
         {
-            _nesteds nests = _component.getNesteds();    
+            _nests nests = _component.getNesteds();    
             for( int i = 0; i < nests.count();i++ )
             {
                 addMethodLogging( nests.getAt( i ), true );

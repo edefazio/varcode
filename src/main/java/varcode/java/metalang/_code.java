@@ -152,11 +152,15 @@ public class _code
 		StringBuilder sb = new StringBuilder();
 		for( int i = 0; i < codeComponents.size(); i++ )
 		{
-			if( i > 0 )
-			{
-				sb.append( "\r\n" );
-			}
-			sb.append( codeComponents.get( i ).toString() );			
+                    if( i > 0 )
+                    {
+			sb.append( "\r\n" );
+                    }
+                    Object o = codeComponents.get( i );
+                    if( o != null )
+                    {
+                        sb.append( o.toString() );			
+                    }
 		}
 		return sb.toString();
 	}

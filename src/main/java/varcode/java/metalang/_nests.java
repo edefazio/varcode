@@ -24,17 +24,17 @@ import varcode.Model.MetaLang;
  * 
  * @author M. Eric DeFazio eric@varcode.io
  */
-public class _nesteds 
+public class _nests 
     implements MetaLang
 {	
     //all nested components of a declaring class (_class, _enum, _interface)
-    public List<_component>components = new ArrayList<_component>();
+    public List<_javaComponent>components = new ArrayList<_javaComponent>();
 
-	public _nesteds()
-	{			
-	}
+    public _nests()
+    {			
+    }
 		
-    public _component getByName( String name )
+    public _javaComponent getByName( String name )
     {
         for( int i = 0; i < components.size(); i++ )
         {
@@ -46,7 +46,7 @@ public class _nesteds
         return null;
     }
     
-    public _component getAt( int index )
+    public _javaComponent getAt( int index )
     {
         if( index >= 0 && index < components.size() )
         {
@@ -56,7 +56,7 @@ public class _nesteds
             " index [" + index + "] not in range [0..." + ( components.size() -1 ) + "]" );
     }
     
-	public _nesteds add( _component component )
+	public _nests add( _javaComponent component )
 	{
         //first verify that no other component has the same name
         for( int i = 0; i < this.components.size(); i++ )
@@ -73,7 +73,7 @@ public class _nesteds
     }
 		
     @Override
-    public _nesteds bind( VarContext context )
+    public _nests bind( VarContext context )
     {
         for( int i = 0; i < components.size(); i++ )
         {
@@ -83,7 +83,7 @@ public class _nesteds
     }
         
     @Override
-    public _nesteds replace( String target, String replacement )
+    public _nests replace( String target, String replacement )
     {
         for( int i = 0; i < components.size(); i++ )
         {
@@ -130,18 +130,18 @@ public class _nesteds
 		return author();
 	}
     
-	public static _nesteds cloneOf( _nesteds nests ) 
+	public static _nests cloneOf( _nests nests ) 
 	{
 		if( nests == null || nests.count() == 0 )
 		{
-			return new _nesteds();
+			return new _nests();
 		}
-		List<_component> components = nests.components;
-		_nesteds clone = new _nesteds();
+		List<_javaComponent> components = nests.components;
+		_nests clone = new _nests();
 			
 		for( int i = 0; i < nests.count(); i++ )
 		{
-			_component thisComp = components.get( i ); 
+			_javaComponent thisComp = components.get( i ); 
 			if( thisComp instanceof _class )
 			{
 				clone.add( _class.cloneOf( (_class)thisComp ) );
