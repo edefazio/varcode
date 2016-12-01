@@ -15,6 +15,7 @@
  */
 package varcode.java.load;
 
+import varcode.load.LoadException;
 import varcode.java.metalang.JavaMetaLangCompiler;
 import varcode.java.ast.JavaASTParser;
 import com.github.javaparser.ParseException;
@@ -24,7 +25,6 @@ import com.github.javaparser.ast.body.EnumDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import varcode.Model.ModelLoadException;
 import varcode.java.metalang._class;
 import varcode.java.metalang._enum;
 import varcode.java.metalang._interface;
@@ -61,7 +61,7 @@ import varcode.load.SourceLoader.SourceStream;
 public class JavaMetaLangLoader
 {    
     private static final Logger LOG = 
-        LoggerFactory.getLogger(JavaMetaLangLoader.class );
+        LoggerFactory.getLogger( JavaMetaLangLoader.class );
  
     public static class _Interface
     {        
@@ -71,10 +71,11 @@ public class JavaMetaLangLoader
         }
         
         public static _interface from( SourceLoader sourceLoader, Class clazz )
+            throws LoadException
         {
             if( !clazz.isInterface() )
             {
-                throw new ModelLoadException( 
+                throw new LoadException( 
                     clazz.getCanonicalName() +" is NOT an Interface " );
             }
             if( clazz.isMemberClass() )
@@ -91,7 +92,7 @@ public class JavaMetaLangLoader
                     
                     if( sourceStream == null )
                     {
-                        throw new ModelLoadException(
+                        throw new LoadException(
                             "Unable to find source for \"" + declaringClass + 
                             "\" with " + sourceLoader.describe() );
                     }
@@ -113,12 +114,12 @@ public class JavaMetaLangLoader
                                 astRoot, astInterfaceDecl );
                         }                        
                     }
-                    throw new ModelLoadException( 
+                    throw new LoadException( 
                         clazz + " source not an interface " );                    
                 }
                 catch( ParseException pe )
                 {
-                    throw new ModelLoadException(
+                    throw new LoadException(
                         "Error Parsing Source "+ sourceStream.describe(), pe );
                 }                
             }
@@ -141,7 +142,7 @@ public class JavaMetaLangLoader
             }    
             catch( ParseException pe )
             {
-                throw new ModelLoadException(
+                throw new LoadException(
                     "Unable to parse Interface Source for \"" + clazz + "\" from " 
                     + sourceLoader.describe(), pe );
             }        
@@ -187,7 +188,7 @@ public class JavaMetaLangLoader
          */
         public static _class from( Class clazz )
         {
-            return _Class.from(JavaSourceLoader.INSTANCE, clazz );
+            return _Class.from( JavaSourceLoader.INSTANCE, clazz );
         }
         
         public static _class from( CompilationUnit astRoot, Class clazz )
@@ -206,7 +207,7 @@ public class JavaMetaLangLoader
         
         
         public static _class from( CharSequence javaSourceCode )
-            throws ModelLoadException
+            throws LoadException
         {
             try
             {
@@ -222,15 +223,15 @@ public class JavaMetaLangLoader
                     {
                         return from( astRoot, classDecl.getName() );
                     }
-                    throw new ModelLoadException( 
+                    throw new LoadException( 
                         className + " is an interface; expected a class" );
                 }
-                throw new ModelLoadException(
+                throw new LoadException(
                     "could not find class " + className + " in source " );
             }
             catch( ParseException pe )
             {
-                throw new ModelLoadException(
+                throw new LoadException(
                     "Error Parsing AST from Java Source :" + System.lineSeparator() +
                     javaSourceCode, pe );
             }
@@ -247,7 +248,7 @@ public class JavaMetaLangLoader
             }
             catch( ParseException pe )
             {
-                throw new ModelLoadException(
+                throw new LoadException(
                     "Error Parsing AST from Java Source :" + System.lineSeparator() +
                     javaSourceCode, pe );
             }
@@ -258,10 +259,10 @@ public class JavaMetaLangLoader
          * @param sourceLoader
          * @param clazz
          * @return
-         * @throws varcode.Model.ModelLoadException 
+         * @throws LoadException 
          */
         public static _class from( SourceLoader sourceLoader, Class clazz )
-            throws ModelLoadException
+            throws LoadException
         {
             if( clazz.isMemberClass() )
             {
@@ -276,7 +277,7 @@ public class JavaMetaLangLoader
                         declaringClass.getCanonicalName() + ".java" );                          
                     if( ss == null )
                     {
-                        throw new ModelLoadException(
+                        throw new LoadException(
                             "Unable to find source for \"" + declaringClass + 
                             "\" with " + sourceLoader.describe() );
                     }
@@ -289,7 +290,7 @@ public class JavaMetaLangLoader
                 }
                 catch( ParseException pe )
                 {
-                    throw new ModelLoadException(
+                    throw new LoadException(
                         "Error Parsing Source "+ ss.describe(), pe );
                 }
             }
@@ -306,7 +307,7 @@ public class JavaMetaLangLoader
             }    
             catch( ParseException pe )
             {
-                throw new ModelLoadException(
+                throw new LoadException(
                     "Unable to parse Source for \"" + clazz + "\" from " 
                     + sourceLoader.describe(), pe );
             }        
@@ -336,7 +337,7 @@ public class JavaMetaLangLoader
                         declaringClass.getCanonicalName() + ".java" );                          
                     if( ss == null )
                     {
-                        throw new ModelLoadException(
+                        throw new LoadException(
                             "Unable to find source for \"" + declaringClass + 
                             "\" with " + sourceLoader.describe() );
                     }
@@ -353,7 +354,7 @@ public class JavaMetaLangLoader
                 }
                 catch( ParseException pe )
                 {
-                    throw new ModelLoadException(
+                    throw new LoadException(
                         "Error Parsing Source "+ ss.describe(), pe );
                 }
             }
@@ -371,7 +372,7 @@ public class JavaMetaLangLoader
             }    
             catch( ParseException pe )
             {
-                throw new ModelLoadException(
+                throw new LoadException(
                     "Unable to parse Source for \"" + clazz + "\" from " 
                     + sourceLoader.describe(), pe );
             }        

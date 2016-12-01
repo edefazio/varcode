@@ -40,6 +40,7 @@ import varcode.java.metalang._enum;
 import varcode.java.metalang._interface;
 import varcode.java.load.JavaSourceLoader;
 import varcode.java.load.JavaMetaLangLoader;
+import varcode.load.LoadException;
 import varcode.load.SourceLoader;
 
 /**
@@ -169,10 +170,10 @@ public class _Java
      * Returns the ASTRoot {@code CompilationUnit}
      * @param javaSourceCode
      * @return 
-     * @throws ModelLoadException if unable to  load the AST from the javaSourceCode
+     * @throws Model.LoadException if unable to  load the AST from the javaSourceCode
      */
     public static CompilationUnit astFrom( CharSequence javaSourceCode )
-        throws Model.ModelLoadException 
+        throws LoadException 
     {
         try
         {
@@ -180,7 +181,7 @@ public class _Java
         }
         catch( ParseException pe )
         {
-             throw new Model.ModelLoadException(
+             throw new LoadException(
                 "Unable to parse AST from Java Source :" 
                 + System.lineSeparator() + javaSourceCode, pe );
         }
@@ -190,10 +191,10 @@ public class _Java
      * Loads the astRootNode {@code CompilationUnit} for a 
      * @param topLevelClass a Top Level Java class
      * @return the {@code CompilationUnit} (root AST node)
-     * @throws ModelLoadException if unable to parse the {@code CompilationUnit} 
+     * @throws Model.LoadException if unable to parse the {@code CompilationUnit} 
      */
     public static CompilationUnit astFrom( Class topLevelClass )
-        throws Model.ModelLoadException
+        throws LoadException
     {
         try
         {
@@ -202,7 +203,7 @@ public class _Java
         }
         catch( ParseException pe )
         {
-            throw new Model.ModelLoadException(
+            throw new LoadException(
                 "Unable to parse Model from " + topLevelClass, pe );
         }
     }
@@ -228,7 +229,7 @@ public class _Java
      * <CODE>CompilationUnit</CODE>
      * @param clazz a Class to read the 
      * @return the {@code TypeDeclaration} ast node
-     * @throws ModelLoadException if unable to parse the {@code TypeDeclaration} 
+     * @throws LoadException if unable to parse the {@code TypeDeclaration} 
      */
     public static TypeDeclaration astTypeDeclarationFrom( Class clazz )
     {
@@ -242,7 +243,7 @@ public class _Java
         }
         catch( ParseException ex )
         {
-            throw new Model.ModelLoadException(
+            throw new LoadException(
                 "Unable to Parse " + topLevelClass + " to extract source for " 
                 + clazz, ex );
         }
@@ -251,34 +252,28 @@ public class _Java
     public static CompilationUnit astFrom( 
         SourceLoader sourceLoader, Class clazz )
     {
-        if( clazz.getDeclaringClass() != null )
+        Class topLevelClass = getTopLevelClass( clazz ); 
+        try
         {
-            try
-            {
-                return JavaASTParser.astFrom( 
-                    sourceLoader.sourceStream( clazz.getName() + ".java" )
-                    .getInputStream() );
-            }
-            catch( ParseException pe )
-            {
-                throw new Model.ModelLoadException( 
-                    "Unable to parse contents of class "+ clazz+" ", pe );
-            }
+            return JavaASTParser.astFrom( 
+                sourceLoader.sourceStream( topLevelClass.getName() + ".java" )
+                .getInputStream() );
         }
-        throw new Model.ModelLoadException( 
-            "Class " + clazz + " is NOT a declaring class, "+ System.lineSeparator() +
-            "either load source for the declaring class, or call getASTNode( " +
-            clazz + " )" );        
+        catch( ParseException pe )
+        {
+            throw new LoadException( 
+                "Unable to parse contents of class "+ clazz+" ", pe );
+        }        
     }
     
      /**
      * Parse and return the _class (lang_model) from the source code
      * @param javaSourceCode the Java source code to parse and compile into a _class
      * @return a _class (lang_model) representing the java source
-     * @throws ModelLoadException if unable to load the _class 
+     * @throws LoadException if unable to load the _class 
      */
     public static _class _classFrom( CharSequence javaSourceCode )
-        throws Model.ModelLoadException
+        throws LoadException
     {
         return JavaMetaLangLoader._Class.from( javaSourceCode );
     }
@@ -287,9 +282,10 @@ public class _Java
      * Parse and return the _class (lang_model) from the source code
      * @param clazz a Java class
      * @return a _class (lang_model) representing the java source
-     * @throws ModelLoadException if unable to load the _class 
+     * @throws LoadException if unable to load the _class 
      */
     public static _class _classFrom( Class clazz )
+        throws LoadException
     {
         return JavaMetaLangLoader._Class.from( clazz );
     }
@@ -299,7 +295,7 @@ public class _Java
      * @param sourceLoader the loader for resolving the source for the class
      * @param clazz a Java class
      * @return a _class (lang_model) representing the java source
-     * @throws ModelLoadException if unable to load the _class 
+     * @throws LoadException if unable to load the _class 
      */
     public static _class _classFrom( SourceLoader sourceLoader, Class clazz )
     {

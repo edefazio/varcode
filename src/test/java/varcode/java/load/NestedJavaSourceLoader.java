@@ -21,7 +21,7 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import varcode.Model.ModelLoadException;
+import varcode.load.LoadException;
 import varcode.java.ast.JavaASTParser;
 import varcode.java.ast.JavaASTParser;
 import varcode.load.SourceLoader;
@@ -113,7 +113,7 @@ public class NestedJavaSourceLoader
         }
         catch( ParseException pe )
         {
-            throw new ModelLoadException(
+            throw new LoadException(
                 "could not load model for "+ nestedClass, pe );
         }
     }
@@ -146,7 +146,7 @@ public class NestedJavaSourceLoader
             }
             catch( ParseException pe )
             {
-                throw new ModelLoadException(
+                throw new LoadException(
                     "could not load model for "+ sourceId, pe );
             }
         }

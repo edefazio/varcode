@@ -24,7 +24,7 @@ import com.github.javaparser.ast.body.EnumDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import varcode.Model.ModelLoadException;
+import varcode.load.LoadException;
 import varcode.java.metalang._class;
 import varcode.java.metalang._enum;
 import varcode.java.metalang._interface;
@@ -141,7 +141,7 @@ public class _Load
             }
             catch( ParseException pe )
             {
-                throw new ModelLoadException(
+                throw new LoadException(
                     "could not load model for "+ memberClass, pe );
             }
         }
@@ -176,7 +176,7 @@ public class _Load
                 }
                 catch( ParseException pe )
                 {
-                    throw new ModelLoadException(
+                    throw new LoadException(
                         "could not load model for "+ sourceId, pe );
                 }
             }
@@ -274,7 +274,7 @@ public class _Load
             }
             catch( ParseException pe )
             {
-                throw new ModelLoadException(
+                throw new LoadException(
                     "could not load model for " + clazz, pe );
             }
         }    
@@ -297,11 +297,11 @@ public class _Load
                 }
                 else
                 {
-                    throw new ModelLoadException(
+                    throw new LoadException(
                         interfaceClass + " AST modeled as an class" );
                 }
             }
-            throw new ModelLoadException(
+            throw new LoadException(
                 "Type declaration is not a ClassOrInterface " );
         }
         
@@ -334,11 +334,11 @@ public class _Load
                 }
                 else
                 {
-                    throw new ModelLoadException(
+                    throw new LoadException(
                         clazz + " AST modeled as an interface" );
                 }
             }
-            throw new ModelLoadException(
+            throw new LoadException(
                "Type declaration is not a ClassOrInterface " );
         }   
     
@@ -347,7 +347,7 @@ public class _Load
         {
             if( !enumClazz.isEnum() )
             {
-                throw new ModelLoadException( 
+                throw new LoadException( 
                     "Class " + enumClazz + " is not an enum" );
             }
             TypeDeclaration td = AST.ofClass(sourceLoader, enumClazz );
@@ -358,7 +358,7 @@ public class _Load
                 //return JavaASTParser._Enum.fromEnumNode( _e, coid ); 
                 return JavaMetaLangCompiler._enumFromAST( _e, coid );
             }
-            throw new ModelLoadException(
+            throw new LoadException(
                 "Type declaration is not an EnumDeclaration" );
         }
     }

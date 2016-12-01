@@ -34,7 +34,7 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import varcode.Model.ModelLoadException;
+import varcode.load.LoadException;
 import varcode.java.metalang._constructors._constructor;
 import varcode.java.metalang._fields._field;
 import varcode.java.metalang._methods._method;
@@ -66,7 +66,7 @@ public class JavaMetaLangCompiler
     {   
         if( !astInterfaceDecl.isInterface() )
         {
-            throw new ModelLoadException( 
+            throw new LoadException( 
                 astInterfaceDecl.getName() + " NOT an interface" );
         }
         _interface _int = null;

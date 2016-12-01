@@ -48,38 +48,37 @@ import varcode.VarException;
 public class DirectorySourceLoader
 	implements SourceLoader
 {	
-    /*{-?(log==false):*/private static final Logger LOG = 
-        LoggerFactory.getLogger(DirectorySourceLoader.class );/*-}*/
+    private static final Logger LOG = 
+        LoggerFactory.getLogger( DirectorySourceLoader.class );
     
-	/** the "base" directory where "varcode" files reside */
-	private final String baseDirectory;
+    /** the "base" directory where "varcode" files reside */
+    private final String baseDirectory;
 	
-	public static DirectorySourceLoader of( String baseDirectory )
-	{
-		return new DirectorySourceLoader( baseDirectory );
-	}
+    public static DirectorySourceLoader of( String baseDirectory )
+    {
+	return new DirectorySourceLoader( baseDirectory );
+    }
 	
-	public DirectorySourceLoader( String baseDirectory )
-	{
-	    this( baseDirectory, false, false );
-	}
+    public DirectorySourceLoader( String baseDirectory )
+    {
+	this( baseDirectory, false, false );
+    }
 	
-	public DirectorySourceLoader( 
-	    String baseDirectory, 
-	    boolean createIfNeccessary, 
-	    boolean exceptionOnCantCreate )
+    public DirectorySourceLoader( 
+	String baseDirectory, 
+	boolean createIfNeccessary, 
+	boolean exceptionOnCantCreate )
+    {
+	File f = new File( baseDirectory );			
+	if( !f.exists() || !f.isDirectory() || !f.canRead() )
 	{
-		File f = new File( baseDirectory );			
-		if( !f.exists() || !f.isDirectory() || !f.canRead() )
-		{
-		    if( createIfNeccessary )
-		    {
-		        boolean madeDirs = f.mkdirs();
-		        
-		        if(! madeDirs )
-		        {
-		            throw new VarException(
-		                "Source Base Directory \"" + baseDirectory 
+            if( createIfNeccessary )
+            {
+                boolean madeDirs = f.mkdirs();
+		if(! madeDirs )
+                {
+                    throw new VarException(
+		        "Source Base Directory \"" + baseDirectory 
 		                + "\" does not exist, is not a Directory or cannot be read from " );
 		        }
 		        LOG.debug( "Creating Markup Directory Repo at \"" + f.getAbsolutePath() + "\"");

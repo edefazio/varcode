@@ -15,11 +15,11 @@
  */
 package varcode.java.load;
 
+import varcode.load.LoadException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import varcode.VarException;
 import varcode.load.SourceLoader.SourceStream;
 
 /**
@@ -63,6 +63,7 @@ public class FileInJarSourceStream
 
     @Override
     public String asString()
+        throws LoadException
     {
         try
         {
@@ -70,12 +71,12 @@ public class FileInJarSourceStream
         }
         catch( IOException ioe ) 
         {
-            throw new VarException(
+            throw new LoadException(
                 "Unable to return the content of the stream as a String", ioe );
         }
     }
     
-    public static String getFileContent( InputStream fis, String encoding ) 
+    private static String getFileContent( InputStream fis, String encoding ) 
         throws IOException
     {
         try
@@ -94,7 +95,7 @@ public class FileInJarSourceStream
         }
         catch( IOException ioe )
         {
-            throw new VarException( 
+            throw new LoadException( 
                 "Unable to get the String from the Stream", ioe );
         }        
     }

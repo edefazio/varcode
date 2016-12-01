@@ -18,8 +18,6 @@ package varcode.java.ast;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseException;
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.Node;
-import com.github.javaparser.ast.NodeWithModifiers;
 import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.EnumDeclaration;
@@ -29,7 +27,7 @@ import java.io.InputStream;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
-import varcode.Model.ModelLoadException;
+import varcode.load.LoadException;
 
 /**
  * Reads in Java Source as text and converts the text into an AST 
@@ -88,11 +86,11 @@ public enum JavaASTParser
      * the "Top Level" type
      * @param astRoot the AST root Node
      * @return the top Level {@code TypeDeclaration}
-     * @throws ModelLoadException if unable to find the root type declaration
+     * @throws LoadException if unable to find the root type declaration
      */
     public static TypeDeclaration findRootTypeDeclaration( 
         CompilationUnit astRoot )
-        throws ModelLoadException
+        throws LoadException
     {
         List<TypeDeclaration> astTypes =  astRoot.getTypes();
         
@@ -119,7 +117,7 @@ public enum JavaASTParser
         
         if( astTypes.isEmpty() )
         {
-            throw new ModelLoadException( 
+            throw new LoadException( 
                 "No Type Declarations in AST : "+ System.lineSeparator() + 
                 astRoot );
         }
@@ -132,18 +130,18 @@ public enum JavaASTParser
      * @param astRoot the root AST node
      * @param enumName the name of the Enum
      * @return the EnumDeclaration astNode
-     * @throws ModelLoadException if unable to find the enum declaration
+     * @throws LoadException if unable to find the enum declaration
      */
     public static EnumDeclaration findEnumDeclaration(
         CompilationUnit astRoot, String enumName )
-        throws ModelLoadException    
+        throws LoadException    
     {
         TypeDeclaration astTypeDecl = findTypeDeclaration( astRoot, enumName );
         if( astTypeDecl instanceof EnumDeclaration )
         {
             return (EnumDeclaration)astTypeDecl;            
         }
-        throw new ModelLoadException( 
+        throw new LoadException( 
             "Could not find interface declaration for \""
                 + enumName + "\"" );
     }
@@ -153,18 +151,18 @@ public enum JavaASTParser
      * @param astRoot the CompilationRoot AST Node
      * @param clazz the clazz to resolve the EnumDeclaration from
      * @return the EnumTypeDeclaration AST node
-     * @throws ModelLoadException if unable to find the enum declaration
+     * @throws LoadException if unable to find the enum declaration
      */
     public static EnumDeclaration findEnumDeclaration( 
         CompilationUnit astRoot, Class clazz )
-        throws ModelLoadException
+        throws LoadException
     {
         TypeDeclaration astTypeDecl = findTypeDeclaration( astRoot, clazz );
         if( astTypeDecl instanceof EnumDeclaration )
         {
             return (EnumDeclaration) astTypeDecl;
         }
-        throw new ModelLoadException( 
+        throw new LoadException( 
             "Could not find class declaration for \""
             + clazz.getCanonicalName() + "\"" );
     }
@@ -175,11 +173,11 @@ public enum JavaASTParser
      * @param astRoot the CompilationRoot AST Node
      * @param interfaceName the name of the interface
      * @return the ClassOrInterfaceDeclaration AST node
-     * @throws ModelLoadException if unable to find the interface declaration
+     * @throws LoadException if unable to find the interface declaration
      */
     public static ClassOrInterfaceDeclaration findInterfaceDeclaration( 
         CompilationUnit astRoot, String interfaceName )
-        throws ModelLoadException
+        throws LoadException
     {
         TypeDeclaration astTypeDecl = findTypeDeclaration( astRoot, interfaceName );
         if( astTypeDecl instanceof ClassOrInterfaceDeclaration )
@@ -192,7 +190,7 @@ public enum JavaASTParser
                 return astClassDecl;
             }
         }
-        throw new ModelLoadException( 
+        throw new LoadException( 
             "Could not find interface declaration for \""
             + interfaceName + "\"" );
     }
@@ -202,11 +200,11 @@ public enum JavaASTParser
      * @param astRoot the CompilationRoot AST Node
      * @param clazz the clazz to resolve the EnumDeclaration from
      * @return the EnumTypeDeclaration AST node
-     * @throws ModelLoadException if unable to find the interface declaration
+     * @throws LoadException if unable to find the interface declaration
      */
     public static ClassOrInterfaceDeclaration findInterfaceDeclaration( 
         CompilationUnit astRoot, Class clazz )
-        throws ModelLoadException
+        throws LoadException
     {
         TypeDeclaration astTypeDecl = findTypeDeclaration( astRoot, clazz );
         if( astTypeDecl instanceof ClassOrInterfaceDeclaration )
@@ -219,7 +217,7 @@ public enum JavaASTParser
                 return astClassDecl;
             }
         }
-        throw new ModelLoadException( 
+        throw new LoadException( 
             "Could not find class declaration for \""
             + clazz.getCanonicalName() + "\"" );
     }
@@ -230,11 +228,11 @@ public enum JavaASTParser
      * @param className the (simple) class Name ClassOrInterfaceDeclaration 
      * AST Node from
      * @return the EnumTypeDeclaration AST node
-     * @throws ModelLoadException if unable to resolve the class declaration
+     * @throws LoadException if unable to resolve the class declaration
      */
     public static ClassOrInterfaceDeclaration findClassDeclaration( 
         CompilationUnit astRoot, String className )
-        throws ModelLoadException
+        throws LoadException
     {
         TypeDeclaration astTypeDecl = findTypeDeclaration( astRoot, className );
         if( astTypeDecl instanceof ClassOrInterfaceDeclaration )
@@ -247,7 +245,7 @@ public enum JavaASTParser
                 return astClassDecl;
             }
         }
-        throw new ModelLoadException( 
+        throw new LoadException( 
             "Could not find class declaration for \""
             + className + "\"" );
     }
@@ -258,11 +256,11 @@ public enum JavaASTParser
      * @param astRoot the CompilationRoot AST Node
      * @param clazz the clazz to resolve the EnumDeclaration from
      * @return the ClassOrInterfaceTypeDeclaration AST node     
-     * @throws ModelLoadException if unable to find the class declaration
+     * @throws LoadException if unable to find the class declaration
      */
     public static ClassOrInterfaceDeclaration findClassDeclaration( 
         CompilationUnit astRoot, Class clazz )
-        throws ModelLoadException
+        throws LoadException
     {
         TypeDeclaration astTypeDecl = findTypeDeclaration( astRoot, clazz );
         if( astTypeDecl instanceof ClassOrInterfaceDeclaration )
@@ -274,7 +272,7 @@ public enum JavaASTParser
                 return astClassDecl;
             }
         }
-        throw new ModelLoadException( 
+        throw new LoadException( 
             "Could not find class declaration for \""
             + clazz.getCanonicalName() + "\"" );
     }
@@ -286,11 +284,11 @@ public enum JavaASTParser
      * @param astRoot the CompilationUnit (top Level AST node)
      * @param typeName the name of the TypeDeclaration to find
      * @return the TypeDeclaration node (and its children)
-     * @throws ModelLoadException if unable to find a TypeDeclaration
+     * @throws LoadException if unable to find a TypeDeclaration
      */
     public static TypeDeclaration findTypeDeclaration( 
         CompilationUnit astRoot, String typeName )
-        throws ModelLoadException
+        throws LoadException
     {
         List<TypeDeclaration> astTypes =  astRoot.getTypes();
         //System.out.println( "LOOKING FOR \"" + name + "\"" );
@@ -329,7 +327,7 @@ public enum JavaASTParser
             }
         }        
         //List<Node> nodes = cu.getChildrenNodes();
-        throw new ModelLoadException( 
+        throw new LoadException( 
             "Could not find type declaration for \"" + typeName + "\"" );
     }
     

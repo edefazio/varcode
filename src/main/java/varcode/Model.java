@@ -111,7 +111,13 @@ public interface Model
     }
     
     /**
-     * An exception in modeling an entity
+     * An exception in the creation, mutation or modeling of an entity,
+     * 
+     * Examples: 
+     * <UL>
+     *   <LI>trying to set the Class Name of a _class to "*&*^$&*^@#$")
+     *   <LI>trying to create a _class that extends from more than one baseClass
+     * </UL>
      */
     public static class ModelException
         extends VarException
@@ -130,27 +136,5 @@ public interface Model
         {
             super( throwable );
         }
-    }
-    
-    /** 
-     * Signifies an error when attempting to Load a Model
-     */
-    public class ModelLoadException 
-        extends ModelException
-    {        
-        public ModelLoadException( String message, Throwable throwable ) 
-        {
-            super( message, throwable );
-        }
-        
-        public ModelLoadException( String message ) 
-        {
-            super( message );
-        }
-        
-        public ModelLoadException( Throwable throwable ) 
-        {
-            super( throwable );
-        }
-    }    
+    } 
 }
