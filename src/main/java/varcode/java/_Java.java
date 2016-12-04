@@ -223,6 +223,13 @@ public class _Java
         return getTopLevelClass( clazz.getDeclaringClass() );
     }
     
+    public static TypeDeclaration astTypeDeclarationFrom( 
+        CompilationUnit astRoot,
+        Class clazz )
+    {
+        return JavaASTParser.findTypeDeclaration( astRoot, clazz );
+    }
+    
     /**
      * returns the AST TypeDeclaration node that represents the clazz
      * the TypeDeclaration instance is a child node of a ast Root 
@@ -238,8 +245,8 @@ public class _Java
             JavaSourceLoader.INSTANCE.sourceStream( topLevelClass );
         try
         {
-            CompilationUnit cu = JavaASTParser.astFrom( ss.getInputStream() );
-            return JavaASTParser.findTypeDeclaration( cu, clazz );
+            CompilationUnit astRoot = JavaASTParser.astFrom( ss.getInputStream() );
+            return astTypeDeclarationFrom( astRoot, clazz );
         }
         catch( ParseException ex )
         {
@@ -248,7 +255,12 @@ public class _Java
                 + clazz, ex );
         }
     }
-    
+    /**
+     * 
+     * @param sourceLoader
+     * @param clazz
+     * @return 
+     */
     public static CompilationUnit astFrom( 
         SourceLoader sourceLoader, Class clazz )
     {
@@ -312,11 +324,39 @@ public class _Java
         return JavaMetaLangLoader._Interface.from( clazz );
     }
     
+    public static _interface _interfaceFrom( 
+         SourceLoader sourceLoader, Class clazz )
+    {
+        return JavaMetaLangLoader._Interface.from( 
+            sourceLoader, clazz );
+    }
+    
+     /**
+     * Parse and return the _class (lang_model) from the source code
+     * @param javaSourceCode the Java source code to parse and compile into a _class
+     * @return a _class (lang_model) representing the java source
+     * @throws LoadException if unable to load the _class 
+     */
+    public static _interface _interfaceFrom( CharSequence javaSourceCode )
+        throws LoadException
+    {
+        return JavaMetaLangLoader._Interface.from( javaSourceCode );
+    }
+    
+    
     public static _enum _enumFrom( Class clazz )
     {
         return JavaMetaLangLoader._Enum.from( clazz );
     }
     
+    public static _enum _enumFrom( SourceLoader sourceLoader, Class clazz )
+    {
+        return JavaMetaLangLoader._Enum.from( sourceLoader, clazz);
+    }
+    public static _enum _enumFrom( CharSequence enumSourceCode )
+    {
+        return JavaMetaLangLoader._Enum.from( enumSourceCode );
+    }
     // * * * REFLECTION RELATED * * * 
     /** 
      * <UL>

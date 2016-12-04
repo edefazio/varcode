@@ -150,6 +150,15 @@ public class _fields
         return this;
     }
     
+    public _fields addFields( _fields fields )
+    {
+        for( int i = 0; i < fields.count(); i++ )
+        {
+            this.addFields( fields.getAt( i ) );
+        }
+        return this;
+    }
+    
     /** Adds one or more _field to the _fields
      * @param fields fields to add
      * @return this (modified)

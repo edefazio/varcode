@@ -24,8 +24,8 @@ import java.util.Map;
 import junit.framework.TestCase;
 import varcode.java.adhoc.AdHocObjectInputStream;
 import varcode.java.metalang._class;
-import varcode.java.metalang.auto._autoDto;
-import varcode.java.metalang.auto._autoExternalizable;
+import varcode.java.metalang.macro._autoDto;
+import varcode.java.metalang.macro._autoExternalizable;
 import varcode.java.lang.cs._autoToString;
 
 /**

@@ -22,8 +22,8 @@ import varcode.Model.MetaLang;
 public class _methods
     implements MetaLang
 {        
-	private Map<String, List<_method>>methodsByName = 
-		new HashMap<String, List<_method>>();
+    private Map<String, List<_method>>methodsByName = 
+	new HashMap<String, List<_method>>();
 	
     public _method getAt( int index )
     {
@@ -46,34 +46,33 @@ public class _methods
             "unable to get method at ["+index+"], out of range" );
     }
     
-	public static _methods cloneOf( _methods prototype )
+    public static _methods cloneOf( _methods prototype )
+    {
+	_methods m = new _methods();
+        String[] methodNames = 
+            prototype.methodsByName.keySet().toArray( new String[ 0 ] );
+        for( int i = 0; i < methodNames.length; i++)
 	{
-		_methods m = new _methods();
-		String[] methodNames = 
-			prototype.methodsByName.keySet().toArray( new String[ 0 ] );
-		for( int i = 0; i < methodNames.length; i++)
-		{
-			List<_method> methodsWithName = 
-				prototype.methodsByName.get( methodNames[ i ] );
+            List<_method> methodsWithName = 
+		prototype.methodsByName.get( methodNames[ i ] );
 			
-			for( int j = 0; j < methodsWithName.size(); j++ )
-			{
-				m.addMethod( _method.cloneOf( methodsWithName.get( j ) ) );				
-			}			
-		}
-		return m;
+            for( int j = 0; j < methodsWithName.size(); j++ )
+            {
+		m.addMethod( _method.cloneOf( methodsWithName.get( j ) ) );				
+            }			
 	}
+	return m;
+    }
 	
-	public _methods()
-	{				
-	}
+    public _methods()
+    {				
+    }
 
-	public static final Dom METHODS = BindML.compile( 
-		"{{+?staticMethods:" + N + "{+staticMethods+}+}}" + 
-		"{{+?nonStaticMethods:" + N + "{+nonStaticMethods+}+}}" +
-		"{{+?abstractMethods:" + N + "{+abstractMethods+};+}}" );
+    public static final Dom METHODS = BindML.compile( 
+	"{{+?staticMethods:" + N + "{+staticMethods+}+}}" + 
+	"{{+?nonStaticMethods:" + N + "{+nonStaticMethods+}+}}" +
+	"{{+?abstractMethods:" + N + "{+abstractMethods+};+}}" );
 	
-    
     public String[] getNames()
     {
         return methodsByName.keySet().toArray( new String[ 0 ] );
@@ -86,75 +85,75 @@ public class _methods
     }
         
     @Override
-	public String author( Directive... directives ) 
+    public String author( Directive... directives ) 
+    {
+	List<_method>nonStaticMethods = new ArrayList<_method>();
+	List<_method>staticMethods = new ArrayList<_method>();
+	List<_method._signature>abstractMethods = new ArrayList<_method._signature>();
+		
+	String[] methodNames = methodsByName.keySet().toArray( new String[ 0 ] );
+		
+	for( int i = 0; i < methodNames.length; i++ )
 	{
-		List<_method>nonStaticMethods = new ArrayList<_method>();
-		List<_method>staticMethods = new ArrayList<_method>();
-		List<_method._signature>abstractMethods = new ArrayList<_method._signature>();
-		
-		String[] methodNames = methodsByName.keySet().toArray( new String[ 0 ] );
-		
-		for( int i = 0; i < methodNames.length; i++ )
+            List<_method> oMethods = methodsByName.get( methodNames[ i ] );
+            for( int j = 0; j < oMethods.size(); j++ )
+            {
+		if( oMethods.get( j ).signature.modifiers.contains( Modifier.ABSTRACT ) )
 		{
-			List<_method> oMethods = methodsByName.get( methodNames[ i ] );
-			for( int j = 0; j < oMethods.size(); j++ )
-			{
-				if( oMethods.get( j ).signature.modifiers.contains( Modifier.ABSTRACT ) )
-				{
-					abstractMethods.add(oMethods.get( j ).signature );
-				}					
-				else if( oMethods.get( j ).signature.modifiers.contains( Modifier.STATIC ) )
-				{
-					staticMethods.add( oMethods.get( j ) ); 
-				}
-				else
-				{
-					nonStaticMethods.add( oMethods.get( j ) );
-				}
-			}			
+                    abstractMethods.add(oMethods.get( j ).signature );
+		}					
+		else if( oMethods.get( j ).signature.modifiers.contains( Modifier.STATIC ) )
+		{
+                    staticMethods.add( oMethods.get( j ) ); 
 		}
-		return Compose.asString( 
-			METHODS, 
-			VarContext.of( 
-				"staticMethods", staticMethods,
-				"nonStaticMethods", nonStaticMethods,
-				"abstractMethods", abstractMethods ), 
-			directives );		
+		else
+		{
+                    nonStaticMethods.add( oMethods.get( j ) );
+		}
+            }			
 	}
+	return Compose.asString( 
+            METHODS, 
+            VarContext.of( 
+            "staticMethods", staticMethods,
+            "nonStaticMethods", nonStaticMethods,
+            "abstractMethods", abstractMethods ), 
+            directives );		
+    }
 	
     @Override
-	public String toString()
-	{
-		return author();
-	}
+    public String toString()
+    {
+	return author();
+    }
 	
     public boolean isEmpty()
     {
         return count() == 0;
     }
     
-	public int count()
-	{
-		return methodsByName.size();
-	}
+    public int count()
+    {
+	return methodsByName.size();
+    }
 	
-	public _methods addMethod( _method method )
-	{
-		verifyAndAddMethod( method );
-		return this;
-	}
+    public _methods addMethod( _method method )
+    {
+	verifyAndAddMethod( method );
+	return this;
+    }
 	
-	public _methods addMethod( String signature )
-	{
-		return addMethod( signature, (Object[])null );
-	}
+    public _methods addMethod( String signature )
+    {
+	return addMethod( signature, (Object[])null );
+    }
 	
-	public _methods addMethod( String signature, Object... body )
-	{
-		_method m = _method.of( null, signature, (Object[]) body );
-		verifyAndAddMethod( m );
-		return this;
-	}
+    public _methods addMethod( String signature, Object... body )
+    {
+	_method m = _method.of( null, signature, (Object[]) body );
+	verifyAndAddMethod( m );
+	return this;
+    }
 	
     /** returns all of the methods by the name
      * @param name the name of the method
@@ -165,23 +164,23 @@ public class _methods
         return this.methodsByName.get( name );
     }
     
-	private void verifyAndAddMethod( _method m )
+    private void verifyAndAddMethod( _method m )
+    {
+	List<_method> methodsWithTheSameName = 
+            methodsByName.get( m.signature.methodName );
+	if( methodsWithTheSameName == null )
 	{
-		List<_method> methodsWithTheSameName = 
-				methodsByName.get( m.signature.methodName );
-		if( methodsWithTheSameName == null )
-		{
-			List<_method> methods = new ArrayList<_method>();
-			methods.add( m );
-			methodsByName.put( m.signature.methodName, methods );
-		}
-		else
-		{   //removed check for method of the same name... it's actually
+            List<_method> methods = new ArrayList<_method>();
+            methods.add( m );
+            methodsByName.put( m.signature.methodName, methods );
+	}
+	else
+	{   //removed check for method of the same name... it's actually
             // a little involved, and it was generating false positives (ouch)
             // this seems to be a job the Javac compiler will help with anyways
-			methodsWithTheSameName.add( m );
-		}
+            methodsWithTheSameName.add( m );
 	}
+    }
 
     @Override
     public _methods replace( String target, String replacement )
@@ -241,6 +240,15 @@ public class _methods
         return this;
     }
 
+    public _methods addMethods( _method...methods )
+    {
+        for( int i = 0; i < methods.length; i++ )
+        {
+            addMethod( methods[ i ] );
+        }
+        return this;
+    }
+    
     public _methods addMethods( _methods methods )
     {
         String[] methodNames = methods.getNames();
@@ -260,27 +268,27 @@ public class _methods
     public static class _method		
         implements MetaLang, _facet
     {              
-		public static final Dom METHOD = 
-			BindML.compile(
-				"{+javadocComment+}" +	
+	public static final Dom METHOD = 
+            BindML.compile(
+		"{+javadocComment+}" +	
                 "{+methodAnnotations+}" +        
-				"{+methodSignature*+}" + N +
-				"{" + N +
-				"{+$indent4Spaces(methodBody)+}" + N +
-				"}" );
+		"{+methodSignature*+}" + N +
+		"{" + N +
+		"{+$indent4Spaces(methodBody)+}" + N +
+		"}" );
 
         //abstract, native methods with no body
-		public static final Dom NO_BODY_METHOD = 
-			BindML.compile(
-                "{+javadocComment+}" +
-                "{+methodAnnotations+}" +    
-				"{+methodSignature*+};" + N );
+	public static final Dom NO_BODY_METHOD = 
+            BindML.compile(
+            "{+javadocComment+}" +
+            "{+methodAnnotations+}" +    
+            "{+methodSignature*+};" + N );
 	
-		public static _method of( String methodSignature )
-		{
-			_method m = new _method( methodSignature );
-			return m;
-		}
+	public static _method of( String methodSignature )
+	{
+            _method m = new _method( methodSignature );
+            return m;
+	}
         
         public static _method of( String methodSignature, _code body )
         {
@@ -330,63 +338,62 @@ public class _methods
 	}
 
 	public _signature getSignature()
-		{
-			return signature;
-		}
+	{
+            return signature;
+	}
 		
-		public static _method of( String comment, String signature, Object... body )
-		{
-			_method m = new _method( signature );
-			if( body != null && body.length > 0 )
-			{
+	public static _method of( String comment, String signature, Object... body )
+	{
+            _method m = new _method( signature );
+            if( body != null && body.length > 0 )
+            {
                 m.body( body );
-			}			
-			if( comment != null && comment.trim().length() > 0 )
-			{
-				m.javadoc( comment );
-			}			
-			return m;
-		}
+            }			
+            if( comment != null && comment.trim().length() > 0 )
+            {
+		m.javadoc( comment );
+            }			
+            return m;
+	}
 
-		private _javadoc javadoc;
+	private _javadoc javadoc;
         private _annotations annotations;
-		private _signature signature;
-		private _code methodBody;
+	private _signature signature;
+	private _code methodBody;
 	
-	
-		public boolean isAbstract()
-		{
-			return this.signature.modifiers.containsAny( Modifier.ABSTRACT );
-		}
+        public boolean isAbstract()
+	{
+            return this.signature.modifiers.containsAny( Modifier.ABSTRACT );
+	}
 		
-		public _method( 
-			_modifiers modifiers, 
-			String returnType, 
-			String methodName, 
-			_parameters params,
-			_throws throwsExceptions )
-		{
-			this( new _signature( modifiers, returnType, methodName, params, throwsExceptions ) );		            
-		}
+	public _method( 
+            _modifiers modifiers, 
+            String returnType, 
+            String methodName, 
+            _parameters params,
+            _throws throwsExceptions )
+	{
+            this( new _signature( modifiers, returnType, methodName, params, throwsExceptions ) );		            
+	}
 	
-		public _method( _signature sig )
-		{
-			this.signature = sig;
+	public _method( _signature sig )
+	{
+            this.signature = sig;
             this.annotations = new _annotations();
             this.methodBody = new _code();
             this.javadoc = new _javadoc();
-		}
+	}
 		
-		public _method( String methodSignature, Object...bodyLines )
-		{
+	public _method( String methodSignature, Object...bodyLines )
+	{
             this( _signature.of( methodSignature ) );
             this.methodBody = _code.of( bodyLines );
-		}
+	}
 	
-		public _code getBody()
-		{
-			return this.methodBody;
-		}
+	public _code getBody()
+	{
+            return this.methodBody;
+	}
 		
         public _method annotate( Object...annotations )
         {
@@ -410,28 +417,31 @@ public class _methods
             return this;
         }
         
-		public _method body( Object... linesOfCode )
-		{
-			if( this.isAbstract() && methodBody != null && linesOfCode != null && linesOfCode.length > 0)
-			{
-				throw new ModelException(
-					"Abstract methods : "+ N + signature + N + "cannot have a method body" );
-			}
-			this.methodBody = _code.of( linesOfCode );
-			return this;
-		}
+	public _method body( Object... linesOfCode )
+	{
+            if( this.isAbstract() && methodBody != null 
+                    && linesOfCode != null 
+                    && linesOfCode.length > 0 )
+            {
+		throw new ModelException(
+                    "Abstract methods : "+ N + signature + N 
+                  + "cannot have a method body" );
+            }
+            this.methodBody = _code.of( linesOfCode );
+            return this;
+	}
 	
-		public _method javadoc( String javadocComment )
-		{            
-			this.javadoc = new _javadoc( javadocComment );
-			return this;
-		}
+	public _method javadoc( String javadocComment )
+	{            
+            this.javadoc = new _javadoc( javadocComment );
+            return this;
+	}
 	
         @Override
-		public String toString()
-		{
-			return author();
-		}
+	public String toString()
+	{
+            return author();
+	}
 
         public VarContext getContext()
         {
@@ -490,35 +500,36 @@ public class _methods
 	public static class _signature
             implements MetaLang
         {                    
-			public static _signature cloneOf( _signature prototype )
-			{
-				return new _signature(
-				    _modifiers.cloneOf( prototype.modifiers),
-					prototype.returnType + "",
-					prototype.methodName + "",
-					_parameters.cloneOf( prototype.params ),
-					_throws.cloneOf( prototype.throwsExceptions )
-					);
-			}
-			private _modifiers modifiers;
-			private String returnType;
-			private String methodName;
-			private _parameters params;
-			private _throws throwsExceptions;
+            public static _signature cloneOf( _signature prototype )
+            {
+		return new _signature(
+                    _modifiers.cloneOf( prototype.modifiers),
+                    prototype.returnType + "",
+                    prototype.methodName + "",
+                    _parameters.cloneOf( prototype.params ),
+                    _throws.cloneOf( prototype.throwsExceptions )
+		);
+            }
+            
+            private _modifiers modifiers;
+            private String returnType;
+            private String methodName;
+            private _parameters params;
+            private _throws throwsExceptions;
 	
-			public _signature(
-				_modifiers modifiers, 
+            public _signature(
+		_modifiers modifiers, 
                 String returnType, 
                 String methodName, 
                 _parameters params,
-				_throws throwsExceptions )
-			{
-				this.modifiers = modifiers;
-				this.returnType = returnType;
-				this.methodName = methodName;
-				this.params = params;
-				this.throwsExceptions = throwsExceptions;
-			}
+		_throws throwsExceptions )
+            {
+		this.modifiers = modifiers;
+		this.returnType = returnType;
+		this.methodName = methodName;
+                this.params = params;
+		this.throwsExceptions = throwsExceptions;
+            }
 	
             public _signature setName( String name )
             {
@@ -557,15 +568,15 @@ public class _methods
                 return this;
             }
             
-			public _modifiers getModifiers()
-			{
-				return this.modifiers;
-			}
+            public _modifiers getModifiers()
+            {
+		return this.modifiers;
+            }
 			
-			public String getReturnType()
-			{
-				return returnType;
-			}
+            public String getReturnType()
+            {
+		return returnType;
+            }
             
             @Override
             public _signature replace( String target, String replacement )
@@ -579,10 +590,10 @@ public class _methods
             }
             
             @Override
-			public _signature bind( VarContext context )
+            public _signature bind( VarContext context )
             {
                 this.methodName = Compose.asString( 
-                    BindML.compile( this.methodName ), 
+                BindML.compile( this.methodName ), 
                     context );
                                 
                 this.returnType = Compose.asString( 
@@ -595,29 +606,29 @@ public class _methods
                 return this;                
             }
             
-			public String getName()
-			{
-				return methodName;
-			}
+            public String getName()
+            {
+		return methodName;
+            }
 			
-			public _parameters getParameters()
-			{
-				return params;
-			}
+            public _parameters getParameters()
+            {
+		return params;
+            }
 			
-			public _throws getThrownExceptions()
-			{
-				return this.throwsExceptions;
-			}
+            public _throws getThrownExceptions()
+            {
+		return this.throwsExceptions;
+            }
 			
-			public static _signature of( String methodSpec )
-			{
-				methodSpec = methodSpec.trim();
+            public static _signature of( String methodSpec )
+            {
+		methodSpec = methodSpec.trim();
 		
-				// Get the parameters
-				int openParenIndex = methodSpec.indexOf( "(" );
+		// Get the parameters
+		int openParenIndex = methodSpec.indexOf( "(" );
 
-				int closeParenIndex = methodSpec.lastIndexOf( ")" );
+		int closeParenIndex = methodSpec.lastIndexOf( ")" );
 
                 _parameters params = new _parameters( );
                 if( openParenIndex < 0 && closeParenIndex < 0 )
@@ -628,7 +639,8 @@ public class _methods
                 }                
                 else
                 {
-                    String paramInside = methodSpec.substring( openParenIndex + 1 , closeParenIndex );
+                    String paramInside = methodSpec.substring( 
+                        openParenIndex + 1 , closeParenIndex );
                     
                     if( paramInside.trim().length() > 0 )
                     {
@@ -636,11 +648,11 @@ public class _methods
                     }
                 }
 		
-				String sig = methodSpec.substring( 0, openParenIndex );
+		String sig = methodSpec.substring( 0, openParenIndex );
 			
-				String[] tokens = sig.split( " " );
+		String[] tokens = sig.split( " " );
 	
-				_throws throwsExceptions = _throws.NONE;
+		_throws throwsExceptions = _throws.NONE;
 				
                 if( openParenIndex != closeParenIndex)
                 {
@@ -672,55 +684,53 @@ public class _methods
                 {
                     returnType = tokens[ tokens.length - 2 ];
                 }
-                
-                
-				//String 
-				_modifiers mods = new _modifiers();
-				if( tokens.length > 2 )
-				{
-					String[] modi = new String[ tokens.length - 2 ];
-					System.arraycopy( tokens, 0, modi, 0, modi.length );
-					mods = _modifiers.of( modi ); 
-				}
+                //String 
+		_modifiers mods = new _modifiers();
+		if( tokens.length > 2 )
+		{
+                    String[] modi = new String[ tokens.length - 2 ];
+                    System.arraycopy( tokens, 0, modi, 0, modi.length );
+                    mods = _modifiers.of( modi ); 
+		}
 			
-				if( mods.containsAny( Modifier.TRANSIENT, Modifier.VOLATILE ) )
-				{
-					throw new ModelException(
-						"Invalid Modifiers for method; (cannot be transient or volatile)" );
-				}
-				if( mods.containsAll( Modifier.ABSTRACT, Modifier.FINAL ) )
-				{
-					throw new ModelException( 
-						"Invalid Modifiers for method; (cannot be BOTH abstract and final )" );
-				}
-				if( mods.containsAll( Modifier.ABSTRACT, Modifier.NATIVE ) )
-				{
-					throw new ModelException( 
-						"Invalid Modifiers for method; (cannot be BOTH abstract and native )" );				
-				}
-				if( mods.containsAll( Modifier.ABSTRACT, Modifier.PRIVATE ) )
-				{
-					throw new ModelException( 
-						"Invalid Modifiers for method; (cannot be BOTH abstract and private )" );				
-				}
-				if( mods.containsAll( Modifier.ABSTRACT, Modifier.STATIC ) )
-				{
-					throw new ModelException( 
-						"Invalid Modifiers for method; (cannot be BOTH abstract and static )" );				
-				}
-				if( mods.containsAll( Modifier.ABSTRACT, Modifier.STRICT ) )
-				{
-					throw new ModelException( 
-						"Invalid Modifiers for method; (cannot be BOTH abstract and strictfp )" );				
-				}
-				if( mods.containsAll( Modifier.ABSTRACT, Modifier.SYNCHRONIZED ) )
-				{
-					throw new ModelException( 
-						"Invalid Modifiers for method; (cannot be BOTH abstract and synchronized )" );				
-				}
-				return new _signature( 
+		if( mods.containsAny( Modifier.TRANSIENT, Modifier.VOLATILE ) )
+		{
+                    throw new ModelException(
+			"Invalid Modifiers for method; (cannot be transient or volatile)" );
+		}
+		if( mods.containsAll( Modifier.ABSTRACT, Modifier.FINAL ) )
+		{
+                    throw new ModelException( 
+			"Invalid Modifiers for method; (cannot be BOTH abstract and final )" );
+		}
+		if( mods.containsAll( Modifier.ABSTRACT, Modifier.NATIVE ) )
+		{
+                    throw new ModelException( 
+			"Invalid Modifiers for method; (cannot be BOTH abstract and native )" );				
+		}
+		if( mods.containsAll( Modifier.ABSTRACT, Modifier.PRIVATE ) )
+		{
+                    throw new ModelException( 
+			"Invalid Modifiers for method; (cannot be BOTH abstract and private )" );				
+		}
+		if( mods.containsAll( Modifier.ABSTRACT, Modifier.STATIC ) )
+		{
+                    throw new ModelException( 
+			"Invalid Modifiers for method; (cannot be BOTH abstract and static )" );				
+		}
+		if( mods.containsAll( Modifier.ABSTRACT, Modifier.STRICT ) )
+		{
+                    throw new ModelException( 
+			"Invalid Modifiers for method; (cannot be BOTH abstract and strictfp )" );				
+		}
+		if( mods.containsAll( Modifier.ABSTRACT, Modifier.SYNCHRONIZED ) )
+		{
+                    throw new ModelException( 
+			"Invalid Modifiers for method; (cannot be BOTH abstract and synchronized )" );				
+		}
+		return new _signature( 
                     mods, returnType, methodName, params, throwsExceptions );			
-			}
+            }
 	
             /**
              * Does this method signature "match" this other method signature?
@@ -729,31 +739,31 @@ public class _methods
              * @return true if the signatures match (meaning these two methods
              * cannot exist on the same (enum, class)
              */
-			protected boolean matchesSignature( _signature sig )
+            public boolean matchesSignature( _signature sig )
+            {
+		if( sig.methodName.equals( this.methodName ) )
+		{
+                    if( sig.params.count() == this.params.count() )
+                    {
+			for( int i = 0; i < sig.params.count(); i++ )
 			{
-				if( sig.methodName.equals( this.methodName ) )
-				{
-					if( sig.params.count() == this.params.count() )
-					{
-						for( int i = 0; i < sig.params.count(); i++ )
-						{
                             //System.out.println( "TYPE 1:"+sig.params.getAt( i ).toString() );
                             //System.out.println( "TYPE 2:"+this.params.getAt( i ).toString() );
-							if( !sig.params.getAt( i ).getType().equals( 
-								this.params.getAt( i ).getType() ) )
-							{
-								return false;
-							}
-						}
-						return true;
-					}
-					return false;
-				}
+                            if( !sig.params.getAt( i ).getType().equals( 
+				this.params.getAt( i ).getType() ) )
+                            {
 				return false;
-			}
+                            }
+                        }
+                    	return true;
+                    }
+                    return false;
+		}
+		return false;
+            }
 		
-			public static final Dom METHOD_SIGNATURE = 
-				BindML.compile(
+            public static final Dom METHOD_SIGNATURE = 
+		BindML.compile(
                     "{+modifiers+}{+returnType+} {+methodName+}{+params+}{+throwsExceptions+}");
 	
             @Override
@@ -763,37 +773,37 @@ public class _methods
             }
         
             @Override
-			public String author( Directive... directives ) 
-			{
-				return Compose.asString( METHOD_SIGNATURE, 
-					VarContext.of(
-						"modifiers", modifiers,
-						"returnType", returnType,
-						"methodName", methodName,
-						"params", params,
-						"throwsExceptions", throwsExceptions ),
-					directives );
-			}
+            public String author( Directive... directives ) 
+            {
+		return Compose.asString( METHOD_SIGNATURE, 
+                    VarContext.of(
+			"modifiers", modifiers,
+			"returnType", returnType,
+			"methodName", methodName,
+			"params", params,
+			"throwsExceptions", throwsExceptions ),
+			directives );
+            }
 	
             @Override
-			public String toString()
-			{
-				return author();
-			}		
-		}
+            public String toString()
+            {
+		return author();
+            }		
+	}
         
-		/** searches through the contents to find target and replaces with replacement */
+	/** searches through the contents to find target and replaces with replacement */
         @Override
-		public _method replace( String target, String replacement ) 
-		{
-			this.javadoc.replace( target, replacement );
+	public _method replace( String target, String replacement ) 
+	{
+            this.javadoc.replace( target, replacement );
             
             this.annotations.replace( target, replacement );
             this.methodBody.replace( target, replacement );            
             this.signature.replace( target, replacement );
             
             return this;
-		}	
+	}	
         
         @Override
         public _method bind( VarContext context )
@@ -804,5 +814,5 @@ public class _methods
             this.signature.bind( context );
             return this;
         }
-	}
+    }
 }

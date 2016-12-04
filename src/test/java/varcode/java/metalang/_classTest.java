@@ -219,20 +219,21 @@ public class _classTest
 	
 	public void testClassWithJavaDoc()
 	{
-		_class c = _class.of(
-			"this is a class Javadoc", 
-			"ex.varcode", 
-			"public class MyClass" );
-		assertEquals(
-			"package ex.varcode;" + N +
-			N +
-			"/**" + N +
-			" * this is a class Javadoc" + N +
-			" */" + N +
-			"public class MyClass" + N +
-			"{" + N +
-			"}",  
-			c.toString() );
+            _class c = _class.of(
+                "ex.varcode", 
+		"public class MyClass" );
+                
+            c.javadoc("this is a class Javadoc");
+            assertEquals(
+		"package ex.varcode;" + N +
+		N +
+		"/**" + N +
+		" * this is a class Javadoc" + N +
+		" */" + N +
+		"public class MyClass" + N +
+		"{" + N +
+		"}",  
+		c.toString() );
 	}
 	
 	

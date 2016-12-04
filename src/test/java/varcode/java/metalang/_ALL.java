@@ -5,7 +5,7 @@
  */
 package varcode.java.metalang;
 
-import varcode.java.metalang.auto._autoDtoTest;
+import varcode.java.metalang.macro._autoDtoTest;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 

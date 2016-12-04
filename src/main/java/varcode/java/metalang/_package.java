@@ -26,9 +26,26 @@ public class _package
 	}
 	
 	public static _package of( Object packageName )	
-	{		
-		return new _package( packageName );
+	{
+            
+            return new _package( packageName );
 	}
+        public static _package of( String packageName )
+        {
+            if( packageName == null )
+            {
+                return new _package( null );
+            }
+            if( packageName.startsWith( "package " ) )
+            {
+                packageName = packageName.substring( "package ".length() );                
+            }
+            if( packageName.endsWith( ";" ) )
+            {
+                packageName = packageName.substring( 0, packageName.length() - 1 );                
+            }
+            return new _package( packageName );
+        }
 	
 	private String name;
 	

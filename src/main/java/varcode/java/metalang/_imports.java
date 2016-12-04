@@ -23,7 +23,7 @@ import varcode.Model.MetaLang;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _imports
-    implements MetaLang
+    implements MetaLang, _facet
 {           
     /** 
      * Create and return a mutable clone given the imports
@@ -124,6 +124,11 @@ public class _imports
 	return importClasses.size() + staticImports.size();
     }
 	
+    public boolean isEmpty()
+    {
+        return count() == 0;
+    }
+    
     public boolean contains( Class clazz )
     {
         return this.importClasses.contains( clazz.getCanonicalName() );
@@ -182,6 +187,13 @@ public class _imports
 	return addImport( staticImports, importStatic, true );
     }
 	
+    public _imports addImport( _imports imports )
+    {
+        this.importClasses.addAll( imports.importClasses );
+        this.staticImports.addAll( imports.staticImports );
+        return this;
+    }
+    
     public _imports addImport( Object importClass )
     {
 	return addImport( importClasses, importClass , false );
@@ -219,6 +231,7 @@ public class _imports
 
             Class.class, Class.class.getName(),
             ClassNotFoundException.class, ClassNotFoundException.class.getName(),            
+            "void",
         }; 
         EXCLUDE_IMPORTS.addAll( Arrays.asList( exclude ) );
     }
@@ -226,6 +239,14 @@ public class _imports
     private _imports addImport( 
         Set<String>imports, Object importClass, boolean isStatic )
     {
+        if( importClass instanceof _imports )
+        {
+            this.importClasses.addAll( 
+                    ( ((_imports)importClass).importClasses ) );
+            this.staticImports.addAll( 
+                    ( ((_imports)importClass).staticImports ) );
+            return this;
+        }
 	if( importClass instanceof Class )
 	{
             Class<?> clazz = (Class<?>)importClass;

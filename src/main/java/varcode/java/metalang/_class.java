@@ -32,24 +32,24 @@ import varcode.markup.bindml.BindML;
 public class _class    
     implements JavaCaseAuthor, _javaComponent
 {	
-	private _package classPackage;
-	private _imports imports;
-	private _javadoc javadoc;
-	private _signature signature;
-	private _annotations annotations;
+    private _package classPackage;
+    private _imports imports;
+    private _javadoc javadoc;
+    private _signature signature;
+    private _annotations annotations;
     
-	private _constructors constructors;
-	private _fields fields;
-	private _methods methods;
-	private _staticBlock staticBlock;
+    private _constructors constructors;
+    private _fields fields;
+    private _methods methods;
+    private _staticBlock staticBlock;
 	
-	/** Nested inner classes, static nested classes, interfaces, enums */
-	private _nests nesteds;
+    /** Nested inner classes, static nested classes, interfaces, enums */
+    private _nests nesteds;
 	
-	public static _class cloneOf( _class prototype )
-	{
-		return new _class( prototype );
-	}
+    public static _class cloneOf( _class prototype )
+    {
+	return new _class( prototype );
+    }
 	
     /** Creates and returns a clone of this component 
      * @return a deep clone of this component
@@ -102,16 +102,30 @@ public class _class
     
     public _class add( _facet facet )
     {
+        if( facet instanceof _imports )
+        {
+            this.imports.addImports( (_imports)facet );
+            return this;
+        }
+        if( facet instanceof _fields )
+        {
+            this.fields.addFields( (_fields)facet );
+            return this;
+        }
+        
         if( facet instanceof _annotation )
         {
             this.annotations.add( facet );
             return this;
         }
+        
+        
         if( facet instanceof _constructor )
         {
             this.constructors.addConstructor( (_constructor)facet );
             return this;
         }
+        
         if( facet instanceof _field )
         {
             this.fields.addFields( (_field)facet );
@@ -139,10 +153,10 @@ public class _class
      * @param classSignature the signature of the class to add
      * @return _class a class with the signature
      */
-	public static _class of( String classSignature )
-	{
-		return new _class( null, classSignature ); 
-	}
+    public static _class of( String classSignature )
+    {
+	return new _class( null, classSignature ); 
+    }
 	
     /** 
      * Create and return a langmodel for a new class<PRE> 
@@ -176,114 +190,93 @@ public class _class
      * ("private static class MyClass extends BaseClass implements Callable<Integer>")
      * @return a new _class
      */
-	public static _class of( String packageName, String classSignature )
-	{
-		return new _class( packageName, classSignature ); 
-	}
+    public static _class of( String packageName, String classSignature )
+    {
+	return new _class( packageName, classSignature ); 
+    }
 	
     @Override
     public String getName()
     {
         return this.signature.getName();
     }
-    
-    /** Create and the model for a new class<PRE> 
-     * i.e. _class.of( 
-     * "A Sample Ad Hoc Class", 
-     * "ex.varcode", 
-     * "public class MyClass extends BaseClass" );</PRE>
-     * 
-     * creates and returns a public _class "MyClass" in package "ex.varcode"
-     * that extends from BaseClass and that has a JavaDocComment
-     * 
-     * @param javadoc the javadoc comment at the top of the class
-     * @param packageName the name of the package the class belongs in (i.e. "ex.app")
-     * @param classSignature the signature of the class
-     * @return a new _class
+    	
+    /**
+     * Parse the classSignature and return a new class 
+     * ex:<PRE>
+     * _class c = _class("public static class MyClass extends YadaYada, implements Blah");
+     * _class abs = _class("protected abstract class MyClass extends YadaYada, implements Blah");
+     * </PRE>
+     *  
+     * @param classSignature
      */
-	public static _class of( 
-        String javadoc, String packageName, String classSignature )
-	{
-		_class c = new _class( packageName, classSignature );
-		c.javadoc( javadoc );
-		return c;
-	}
+    public _class( String classSignature )
+    {
+        this( null, classSignature );
+    }
 	
-	/**
-	 * Parse the classSignature and return a new class 
-	 * ex:<PRE>
-	 * _class c = _class("public static class MyClass extends YadaYada, implements Blah");
-	 * _class abs = _class("protected abstract class MyClass extends YadaYada, implements Blah");
-	 * </PRE>
-	 *  
-	 * @param classSignature
-	 */
-	public _class( String classSignature )
-	{
-		this( null, classSignature );
-	}
-	
-	public _class( String packageName, String classSignature )
-	{
+    public _class( String packageName, String classSignature )
+    {
+        
         this.annotations = new _annotations();
-		this.classPackage = _package.of( packageName );
-		this.javadoc = new _javadoc();
-		this.signature = _signature.of( classSignature );
-		this.imports = new _imports();	
-		this.fields = new _fields();
-		this.methods = new _methods();
-		this.staticBlock = new _staticBlock();
-		this.constructors = new _constructors();
-		this.nesteds = new _nests();
-	}
+	this.classPackage = _package.of( packageName );
+	this.javadoc = new _javadoc();
+	this.signature = _signature.of( classSignature );
+	this.imports = new _imports();	
+	this.fields = new _fields();
+	this.methods = new _methods();
+	this.staticBlock = new _staticBlock();
+	this.constructors = new _constructors();
+	this.nesteds = new _nests();
+    }
 	
-	/**
-	 * Create and return a mutable clone given the prototype
-	 * @param prototype the prototype
-	 */
-	public _class( _class prototype )
-	{
+    /**
+     * Create and return a mutable clone given the prototype
+     * @param prototype the prototype
+     */
+    public _class( _class prototype )
+    {
         this.annotations = _annotations.cloneOf( prototype.annotations );
-		this.classPackage = _package.cloneOf( prototype.classPackage );
-		this.imports = _imports.cloneOf( prototype.imports );
-		this.signature = _signature.cloneOf(prototype.signature  );
+        this.classPackage = _package.cloneOf( prototype.classPackage );
+        this.imports = _imports.cloneOf( prototype.imports );
+	this.signature = _signature.cloneOf(prototype.signature  );
 		
-		this.javadoc = _javadoc.cloneOf( prototype.javadoc );
-		this.methods = _methods.cloneOf( prototype.methods );
-		this.fields = _fields.cloneOf( prototype.fields );
-		if( prototype.staticBlock != null && ! prototype.staticBlock.isEmpty() )
-		{
-			this.staticBlock = _staticBlock.of( prototype.staticBlock.getBody() );
-		}
-		else
-		{
-			this.staticBlock = new _staticBlock();
-		}
-		this.constructors = _constructors.cloneOf( prototype.constructors );
-		
-		//NESTEDS
-		this.nesteds = _nests.cloneOf(prototype.nesteds );
+	this.javadoc = _javadoc.cloneOf( prototype.javadoc );
+	this.methods = _methods.cloneOf( prototype.methods );
+	this.fields = _fields.cloneOf( prototype.fields );
+	if( prototype.staticBlock != null && ! prototype.staticBlock.isEmpty() )
+	{
+            this.staticBlock = _staticBlock.of( prototype.staticBlock.getBody() );
+        }
+	else
+	{
+            this.staticBlock = new _staticBlock();
 	}
+	this.constructors = _constructors.cloneOf( prototype.constructors );
+		
+	//NESTEDS
+	this.nesteds = _nests.cloneOf( prototype.nesteds );
+    }
 	
-	public static final Dom CLASS = 
-		BindML.compile( 
-			"{+pckage+}" +
-			"{{+?imports:{+imports+}" + N +"+}}" +
-			"{+classJavaDoc+}" +
+    public static final Dom CLASS = 
+	BindML.compile( 
+            "{+pckage+}" +
+            "{{+?imports:{+imports+}" + N +"+}}" +
+            "{+classJavaDoc+}" +
             "{+classAnnotation+}" +        
-			"{+classSignature*+}" + N +
-			"{" + N +			
-			"{{+?members:{+$>(members)+}" + N +
-			"+}}" +
-			"{{+?constructors:{+$>(constructors)+}" + N +
-			"+}}" +
-			"{{+?methods:{+$>(methods)+}" + N + 
-			"+}}" +
-			"{{+?staticBlock:{+$>(staticBlock)+}" + N +
-			"+}}" +
-			"{{+?nests:{+$>(nests)+}" + N +
-			"+}}" +
-			"}" );
+            "{+classSignature*+}" + N +
+            "{" + N +			
+            "{{+?members:{+$>(members)+}" + N +
+            "+}}" +
+            "{{+?constructors:{+$>(constructors)+}" + N +
+            "+}}" +
+            "{{+?methods:{+$>(methods)+}" + N + 
+            "+}}" +
+            "{{+?staticBlock:{+$>(staticBlock)+}" + N +
+            "+}}" +
+            "{{+?nests:{+$>(nests)+}" + N +
+            "+}}" +
+            "}" );
 			
     
     @Override
@@ -293,10 +286,10 @@ public class _class
     }
     
     @Override
-	public String author( Directive... directives ) 
-	{
+    public String author( Directive... directives ) 
+    {
         return Compose.asString( CLASS, getContext(), directives );			
-	}
+    }
 	
     /**
      * sets the modifiers using the int notation (i.e.
@@ -686,11 +679,24 @@ public class _class
         return this;
     }
     
-	public _class method( String methodSignature )
-	{
-		return method( _method.of( null, methodSignature, new Object[ 0 ] ) );
-	}
-	  
+    public _class method( String methodSignature )
+    {
+        return method( _method.of( null, methodSignature, new Object[ 0 ] ) );
+    }
+	
+        /** 
+         * Builds and adds a main method to this _class (with the bodyLines) 
+         * and returns the modified _class
+         */
+        public _class mainMethod( Object...bodyLines )
+        {
+            return method( 
+                _method.of( 
+                    null, 
+                    "public static void main(String[] args)", 
+                    bodyLines ) );
+        }
+        
 	public _class method( String methodSignature, Object... bodyLines )
 	{
 		return method( _method.of( null, methodSignature, bodyLines ) );
@@ -719,21 +725,24 @@ public class _class
         return this;
     }
     
-    public _class method( _method m )
+    public _class method( _method _m )
     {
-	if( m.isAbstract() && !this.isAbstract() )
+	if( _m.isAbstract() && !this.isAbstract() )
 	{
             throw new ModelException(
-		"Cannot add an abstract method " + N + m + N + " to a non-abstract class " );
+		"Cannot add an abstract method " + N + _m + N + " to a non-abstract class " );
 	}
-	if( m.isAbstract() && !m.getBody().isEmpty() )
+	if( _m.isAbstract() && !_m.getBody().isEmpty() )
 	{
             throw new ModelException( 
-		"abstract method :" + N + m + N + "cannot have a method body:" + N + m.getBody() );
+		"abstract method :" + N + _m + N + "cannot have a method body:" + N + _m.getBody() );
 	}
-	this.methods.addMethod( m );
-		return this;
-	}
+        
+        //let me automatically "look through" the method signature and ensure
+        // I am importing the appropriate types        
+        this.methods.addMethod( _m );
+        return this;
+    }
 	
     /** 
      * Adds a field to the class and returns the _class
@@ -883,14 +892,14 @@ public class _class
     
     public _class field( String field )
     {
-		fields.addFields( _fields._field.of( field ) );		
-		return this;
-	}
+	fields.addFields( _fields._field.of( field ) );		
+	return this;
+    }
 	
-	public _class fields( String...fields )
+    public _class fields( String...fields )
+    {
+	for( int i = 0; i < fields.length; i++ )
 	{
-		for( int i = 0; i < fields.length; i++ )
-		{
 			this.fields.addFields( _fields._field.of( fields[ i ] ) );
 		}
 		return this;

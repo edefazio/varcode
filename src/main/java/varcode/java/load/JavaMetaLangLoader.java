@@ -67,7 +67,7 @@ public class JavaMetaLangLoader
     {        
         public static _interface from( Class clazz )
         {
-            return from(JavaSourceLoader.INSTANCE, clazz );
+            return from( JavaSourceLoader.INSTANCE, clazz );
         }
         
         public static _interface from( SourceLoader sourceLoader, Class clazz )
@@ -146,7 +146,54 @@ public class JavaMetaLangLoader
                     "Unable to parse Interface Source for \"" + clazz + "\" from " 
                     + sourceLoader.describe(), pe );
             }        
-        }                
+        }              
+        
+        public static _interface from( CompilationUnit astRoot, Class clazz )
+        {
+            return from( astRoot, clazz.getSimpleName() );
+        }
+        
+        public static _interface from( CompilationUnit astRoot, String typeName )
+        {
+            ClassOrInterfaceDeclaration astClassDecl = 
+                JavaASTParser.findInterfaceDeclaration( astRoot, typeName );
+            return JavaMetaLangCompiler._interfaceFrom( astRoot, astClassDecl );
+        }
+        
+        public static _interface from( CharSequence javaSourceCode )
+            throws LoadException
+        {
+            try
+            {
+                CompilationUnit astRoot = JavaASTParser.astFrom( javaSourceCode );
+                TypeDeclaration astTypeDecl = 
+                    JavaASTParser.findRootTypeDeclaration( astRoot );
+                String typeName = astTypeDecl.getName();
+                return from( astRoot, typeName );
+                /*
+                if( astTypeDecl instanceof ClassOrInterfaceDeclaration )
+                {
+                    ClassOrInterfaceDeclaration interfaceDecl = 
+                        (ClassOrInterfaceDeclaration)astTypeDecl;
+                    if( ! interfaceDecl.isInterface() )
+                    {
+                        return from( astRoot, interfaceDecl.getName() );
+                    }
+                    throw new LoadException( 
+                        className + " is an interface; expected a class" );
+                }
+                throw new LoadException(
+                    "could not find class " + className + " in source " );
+                */
+            }
+            catch( ParseException pe )
+            {
+                throw new LoadException(
+                    "Error Parsing AST from Java Source :" + System.lineSeparator() +
+                    javaSourceCode, pe );
+            }
+        }
+        
     }
     
     /**
@@ -198,10 +245,11 @@ public class JavaMetaLangLoader
             return JavaMetaLangCompiler._classFrom( astRoot, astClassDecl );
         }
         
-        public static _class from( CompilationUnit astRoot, String className )
+        public static _class from( 
+            CompilationUnit astRoot, String simpleClassName )
         {
             ClassOrInterfaceDeclaration astClassDecl = 
-                JavaASTParser.findClassDeclaration( astRoot, className );
+                JavaASTParser.findClassDeclaration( astRoot, simpleClassName );
             return JavaMetaLangCompiler._classFrom( astRoot, astClassDecl );
         }
         
@@ -237,13 +285,14 @@ public class JavaMetaLangLoader
             }
         }
         
-        public static _class from( CharSequence javaSourceCode, String className )
+        public static _class from( 
+            CharSequence javaSourceCode, String simpleClassName )
         {
             try
             {
                 CompilationUnit astRoot = JavaASTParser.astFrom( javaSourceCode );
                 ClassOrInterfaceDeclaration astClassDecl = 
-                    JavaASTParser.findClassDeclaration( astRoot, className );
+                    JavaASTParser.findClassDeclaration(astRoot, simpleClassName );
                 return JavaMetaLangCompiler._classFrom( astRoot, astClassDecl );                
             }
             catch( ParseException pe )
@@ -321,6 +370,12 @@ public class JavaMetaLangLoader
         {
             return _Enum.from(JavaSourceLoader.INSTANCE, clazz );
         }
+        public static _enum from( CompilationUnit astRoot, Class clazz )
+        {
+            EnumDeclaration astEnumDecl = 
+                JavaASTParser.findEnumDeclaration( astRoot, clazz );
+            return JavaMetaLangCompiler._enumFrom( astRoot, astEnumDecl );
+        }
         
         public static _enum from( SourceLoader sourceLoader, Class clazz )
         {
@@ -376,7 +431,52 @@ public class JavaMetaLangLoader
                     "Unable to parse Source for \"" + clazz + "\" from " 
                     + sourceLoader.describe(), pe );
             }        
-        }                
+        }              
+        
+        public static _enum from( CharSequence javaSourceCode )
+            throws LoadException
+        {
+            try
+            {
+                CompilationUnit astRoot = JavaASTParser.astFrom( javaSourceCode );
+                TypeDeclaration astTypeDecl = 
+                    JavaASTParser.findRootTypeDeclaration( astRoot );
+                String enumName = astTypeDecl.getName();
+                return from( astRoot, enumName );
+            }
+            catch( ParseException pe )
+            {
+                throw new LoadException(
+                    "Error Parsing AST from Java Source :" + System.lineSeparator() +
+                    javaSourceCode, pe );
+            }
+        }
+        
+        public static _enum from( 
+            CompilationUnit astRoot, String simpleClassName )
+        {
+            EnumDeclaration astEnumDecl = 
+                JavaASTParser.findEnumDeclaration( astRoot, simpleClassName );
+            return JavaMetaLangCompiler._enumFrom( astRoot, astEnumDecl );
+        }
+        
+        
+        public static _enum from( CharSequence javaSourceCode, String className )
+        {
+            try
+            {
+                CompilationUnit astRoot = JavaASTParser.astFrom( javaSourceCode );
+                EnumDeclaration astEnumDecl = 
+                    JavaASTParser.findEnumDeclaration( astRoot, className );
+                return JavaMetaLangCompiler._enumFrom(astRoot, astEnumDecl );                
+            }
+            catch( ParseException pe )
+            {
+                throw new LoadException(
+                    "Error Parsing AST from Java Source :" + System.lineSeparator() +
+                    javaSourceCode, pe );
+            }
+        }        
     }
     
     public static final String N = System.lineSeparator();

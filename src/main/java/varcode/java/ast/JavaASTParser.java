@@ -225,16 +225,16 @@ public enum JavaASTParser
     /**
      * finds and returns the EnumTypeDeclaration (AST node) for the clazz 
      * @param astRoot the CompilationRoot AST Node
-     * @param className the (simple) class Name ClassOrInterfaceDeclaration 
+     * @param simpleClassName the (simple) class Name ClassOrInterfaceDeclaration 
      * AST Node from
      * @return the EnumTypeDeclaration AST node
      * @throws LoadException if unable to resolve the class declaration
      */
     public static ClassOrInterfaceDeclaration findClassDeclaration( 
-        CompilationUnit astRoot, String className )
+        CompilationUnit astRoot, String simpleClassName )
         throws LoadException
     {
-        TypeDeclaration astTypeDecl = findTypeDeclaration( astRoot, className );
+        TypeDeclaration astTypeDecl = findTypeDeclaration(astRoot, simpleClassName );
         if( astTypeDecl instanceof ClassOrInterfaceDeclaration )
         {
             ClassOrInterfaceDeclaration astClassDecl = 
@@ -247,7 +247,7 @@ public enum JavaASTParser
         }
         throw new LoadException( 
             "Could not find class declaration for \""
-            + className + "\"" );
+            + simpleClassName + "\"" );
     }
     
     /**

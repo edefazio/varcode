@@ -85,7 +85,7 @@ public class KnowThyself
     /**
      * loads the _class LangModel from the Class at runtime
      */
-    public void testLoad_LangModel()
+    public void testLoad_class()
     {   
         //Load a _LangModel based on the code (from the AST)
         _class _c = _Java._classFrom( KnowThyself.class );
