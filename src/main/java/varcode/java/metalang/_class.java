@@ -217,7 +217,6 @@ public class _class
 	
     public _class( String packageName, String classSignature )
     {
-        
         this.annotations = new _annotations();
 	this.classPackage = _package.of( packageName );
 	this.javadoc = new _javadoc();
@@ -687,6 +686,8 @@ public class _class
         /** 
          * Builds and adds a main method to this _class (with the bodyLines) 
          * and returns the modified _class
+         * @param bodyLines
+         * @return the modified _class
          */
         public _class mainMethod( Object...bodyLines )
         {
@@ -699,7 +700,7 @@ public class _class
         
 	public _class method( String methodSignature, Object... bodyLines )
 	{
-		return method( _method.of( null, methodSignature, bodyLines ) );
+	    return method( _method.of( null, methodSignature, bodyLines ) );
 	}
     
     public _class method( String comment, String methodSignature, _code body )

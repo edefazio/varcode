@@ -36,6 +36,7 @@ import varcode.java.metalang._methods._method;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _autoExternalizable
+    implements _javaMacro
 {
     public static _class of( _class c )
     {

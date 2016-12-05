@@ -19,11 +19,14 @@ import com.github.javaparser.ParseException;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.logging.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import varcode.Model;
+import varcode.VarException;
 import varcode.context.VarContext;
 import varcode.context.VarScope;
 import varcode.doc.Compose;
@@ -372,6 +375,16 @@ public class _Java
         Class<?> theClass, Object... constructorArgs )
     {
         return JavaReflection.instance( theClass, constructorArgs );
+    }
+    
+    public static void invokeMain( Class targetClass, String... arguments )
+    {
+       
+    }
+    
+    public static void invokeMain( Object target, String...arguments )
+    {        
+        invokeMain( target.getClass(), arguments );        
     }
     
     /**

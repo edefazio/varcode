@@ -69,7 +69,7 @@ import varcode.java.metalang._modifiers;
  * @author M. Eric DeFazio eric@carcode.io
  */
 public class _autoEnum
-    implements JavaCase.JavaCaseAuthor    
+    implements JavaCase.JavaCaseAuthor, _javaMacro
 { 
     private final String packageName;
     private final String className;

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package tutorial.chap6.auto;
+package tutorial.chap5.macro;
 
 import java.util.UUID;
 import junit.framework.TestCase;

@@ -567,22 +567,22 @@ public class _enum
         return this;
     }
     
-	public _enum javadoc( String... comment )
-	{
-		this.javadoc = new _javadoc( comment );
-		return this;
-	}
+    public _enum javadoc( String... comment )
+    {
+        this.javadoc = new _javadoc( comment );
+        return this;    
+    }
 	
-	public _enum value( String name, Object...arguments )
-	{
-		return value(_constant.of( name, arguments ) );
-	}
+    public _enum value( String name, Object...arguments )
+    {
+        return value( _constant.of( name, arguments ) );
+    }
 	
-	public _enum value( _constant valueConstruct )
-	{
-		this.constants.addConstant( valueConstruct );
-		return this;
-	}
+    public _enum value( _constant valueConstruct )
+    {
+	this.constants.addConstant( valueConstruct );
+	return this;
+    }
     
     public _enum values( _constants values )
     {

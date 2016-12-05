@@ -15,7 +15,7 @@
  */
 package varcode.java.metalang.macro;
 
-import varcode.java.metalang.macro._autoSetter;
+import varcode.java.metalang.macro._autoSetterMethod;
 import junit.framework.TestCase;
 import varcode.java.metalang._fields._field;
 import varcode.java.metalang._methods._method;
@@ -32,7 +32,7 @@ public class _autoSetterTest
     public void testField()
     {
         _field f = _field.of("public int count");
-        _method m = _autoSetter.of( f );
+        _method m = _autoSetterMethod.of( f );
         assertEquals( "setCount", m.getName() );
         assertTrue( m.getSignature().getModifiers().contains( "public" ) );
         assertEquals( 1, m.getSignature().getParameters().count() );
@@ -49,7 +49,7 @@ public class _autoSetterTest
     
     public void testFluent()
     {
-        _method m = _autoSetter.Fluent.of( "MyBean", "name", String.class );
+        _method m = _autoSetterMethod.Fluent.of( "MyBean", "name", String.class );
         assertEquals( "setName", m.getName() );
         assertTrue( m.getSignature().getModifiers().contains( "public" ) );
         assertEquals( "MyBean", m.getSignature().getReturnType() );

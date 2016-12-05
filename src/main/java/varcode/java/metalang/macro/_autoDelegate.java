@@ -18,7 +18,6 @@ package varcode.java.metalang.macro;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-import varcode.java.JavaCase;
 import varcode.java.metalang._code;
 import varcode.java.metalang._fields;
 import varcode.java.metalang._fields._field;
@@ -26,6 +25,8 @@ import varcode.java.metalang._implements;
 import varcode.java.metalang._imports;
 
 /**
+ * Maybe I rename this _autoMethodWrapper
+ * 
  * Creates a Delegate Class that implements all of the interfaces
  * of the target class, and delegates all methods to it.
  * 
@@ -33,6 +34,7 @@ import varcode.java.metalang._imports;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _autoDelegate
+    implements _javaMacro
 {    
     private Class[] implementedInterfaces;
     

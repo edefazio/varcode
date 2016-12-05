@@ -7,21 +7,21 @@ import varcode.java.metalang._class;
 import varcode.java.metalang._code;
 import varcode.java.metalang._fields._field;
 import varcode.java.metalang._imports;
-import varcode.java.metalang.macro._methodTranspose;
+import varcode.java.metalang.macro._portableMethod;
 import varcode.java.metalang._methods._method;
+import varcode.java.metalang.macro._portMethod;
 
 /**
  *
  * @author Eric
  */
-public class Use_transposeMethod 
+public class Use_portableMethod 
     extends TestCase
 {
-
-    _methodTranspose _GET_PREFIX_ID = 
-        _methodTranspose.of( 
+    _portableMethod _GET_PREFIX_ID = 
+        _portableMethod.of( 
             _method.of( "public String getId()", 
-                    _code.of( "return prefix + UUID.randomUUID().toString();") ) )
+                _code.of( "return prefix + UUID.randomUUID().toString();") ) )
             .addRequiredFields( _field.of( "public String prefix;" ) ) 
             .addRequiredImports( _imports.of( UUID.class ) );
     
@@ -31,7 +31,7 @@ public class Use_transposeMethod
             "howto.java.refeactor", "public class EmptyClass" );
         
         //write the method and any dependencies into the _simple method
-        _simple = _GET_PREFIX_ID.transposeTo( _simple );
+        _simple = _portMethod.portTo( _GET_PREFIX_ID, _simple );
         
         //System.out.println( _simple );
         Object instance = _simple.instance();

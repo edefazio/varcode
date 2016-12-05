@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 M. Eric DeFazio.
+ * Copyright 2016 Eric.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,89 +18,32 @@ package varcode.java.metalang.macro;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import varcode.Model.ModelException;
-import varcode.java.metalang._class;
+import varcode.Model;
 import varcode.java.metalang._class;
 import varcode.java.metalang._fields;
-import varcode.java.metalang._fields;
-import varcode.java.metalang._fields._field;
-import varcode.java.metalang._imports;
-import varcode.java.metalang._imports;
 import varcode.java.metalang._methods;
-import varcode.java.metalang._methods;
-import varcode.java.metalang._methods._method;
-import varcode.java.metalang._methods._method._signature;
 
 /**
- * Aggregates a method and all of it's dependencies 
- * (_imports, _fields, other _methods) to allow the method to be transposed 
- * to another _javaComponent (_class, _enum)
- * <PRE>
- *  //here is a simple method definition
- * _method _m = _method.of( 
- *     "public static String getId()",
- *     "return prefix + UUID.randomUUID().toString();");
+ * PERHAPS, what I do here is populate a ChangeLIst of the Work I accomplished
+ * and also the work I did not accomplish within the macro
  * 
- * _methodTranspose _getId = _methodTranspose.of
- *    ( _m, 
- *      _fields.of( "Object prefix" ),  // requires a _field "prefix" to work
- *      _imports.of( UUID.class ) );    // requires the UUID.class to be import 
- * </PRE>
- * assuming we have 
- * 
- * @author M. Eric DeFazio eric@varcode.io
+ * So, any 
+ * @author Eric
  */
-public class _methodTranspose 
+public class _portMethod
+    implements _javaMacro
 {
-    public static _methodTranspose of( _method method )
-    {
-        return new _methodTranspose( method );
-    }
-    
     public static final Logger LOG = 
-        LoggerFactory.getLogger(_methodTranspose.class );
-    
-    //this is the method signature and body to be transposed (to some other
-    // _class, _enum, _staticBlock)
-    private final _method _m;
-    
-    // the main method _m (above) can express some "external dependencies"
-    // on some other things (imports, methods, fields)
-    private final _methods _requiredMethods = new _methods();
-    private final _fields _requiredFields = new _fields();
-    private final _imports _requiredImports = new _imports();
-    
-    public _methodTranspose( _method _m )
-    {
-        this._m = _m;
-    }
-    
-    public _methodTranspose addRequiredMethods( _method... methods )
-    {
-        this._requiredMethods.addMethods( methods );
-        return this;
-    }
-    
-    public _methodTranspose addRequiredImports( Object...imports )
-    {
-        this._requiredImports.addImports( imports );
-        return this;
-    }
-    
-    public _methodTranspose addRequiredFields( _field... fields )
-    {
-        this._requiredFields.addFields( fields );
-        return this;
-    }
+        LoggerFactory.getLogger( _portMethod.class );
     
     public static final String N = System.lineSeparator();
     
     /**
-     * 
-     * @param _c
+     * @param _pMethod the method to "port" to the _class
+     * @param _c the class (receiver) of the method
      * @return 
      */
-    public _class transposeTo( _class _c )
+    public static _class portTo( _portableMethod _pMethod, _class _c )
     {
         //first, create a clone of the _class, so we dont have to roll back
         _class _clone = _c.clone();
@@ -108,14 +51,14 @@ public class _methodTranspose
         //now apply changes to the _clone, if we fail... don't mutate _c
         
         //add the method
-        _clone.add( _m );
+        _clone.add(_pMethod.getMethod() );
         
         //add imports (merge to current imports)
-        _clone.add( _requiredImports );
+        _clone.add(_pMethod.getRequiredImports() );
         
-        for( int i = 0; i < _requiredFields.count(); i++ )
+        for( int i = 0; i < _pMethod.getRequiredFields().count(); i++ )
         {
-            _field _f = _requiredFields.getAt( i );
+            _fields._field _f = _pMethod.getRequiredFields().getAt( i );
             if( _clone.getFields().canAddFieldName( 
                 _f.getName() ) )
             {
@@ -129,16 +72,16 @@ public class _methodTranspose
             }
         }
         
-        for( int i = 0; i < _requiredMethods.count(); i++ )
+        for( int i = 0; i < _pMethod.getRequiredMethods().count(); i++ )
         {
             //if the required method is abstract, make sure there is
             // a "SIMILAR ENOUGH" method (with same name and param Count)
             // 
-            _method _rm = _requiredMethods.getAt( i );
+            _methods._method _rm = _pMethod.getRequiredMethods().getAt( i );
             if( _rm.isAbstract() )
             {   //THERE MUST BE A CORRESPONDING METHOD DEFINED in clone
                 // IF NOT THROW EXCEPTION
-                List<_method> candidates = 
+                List<_methods._method> candidates = 
                     _clone.getMethodsByName(_rm.getName() );
                 
                 boolean foundImpl = false;
@@ -155,8 +98,8 @@ public class _methodTranspose
                 }
                 if( ! foundImpl )
                 {
-                    throw new ModelException(
-                        "Unable to transpose method :" + N + _m + N 
+                    throw new Model.ModelException(
+                        "Unable to transpose method :" + N + _pMethod.getMethod() + N 
                       + "...to _class :" + N + _c + N 
                       + "...missing implementation of required method " + N + 
                       _rm.getSignature() );
@@ -165,7 +108,7 @@ public class _methodTranspose
             else
             {
                 //if they dont already HAVE this method, I need to add it
-                List<_method> candidates = 
+                List<_methods._method> candidates = 
                     _clone.getMethodsByName(_rm.getName() );
                 
                 boolean needToAdd = true;
@@ -186,8 +129,7 @@ public class _methodTranspose
                     _clone.method( _rm );
                 }
             }
-        }
-        
+        }        
         return _clone;
-    }
+    }    
 }

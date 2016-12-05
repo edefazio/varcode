@@ -1,6 +1,6 @@
 package varcode.java.metalang.macro;
 
-import varcode.java.metalang.macro._autoGetter;
+import varcode.java.metalang.macro._autoGetterMethod;
 import junit.framework.TestCase;
 import varcode.java.metalang._fields._field;
 import varcode.java.metalang._methods._method;
@@ -17,7 +17,7 @@ public class _autoGetterTest
     
     public void testA()
     {        
-        _method m = _autoGetter.of( _field.of( "public String name;" ) );
+        _method m = _autoGetterMethod.of( _field.of( "public String name;" ) );
         
         assertEquals( 
             "public String getName(  )" + N +
@@ -29,7 +29,7 @@ public class _autoGetterTest
     
     public void testNameType()
     {
-        _method m = _autoGetter.of( int.class,  "count" );
+        _method m = _autoGetterMethod.of( int.class,  "count" );
         
          assertEquals( 
             "public int getCount(  )" + N +

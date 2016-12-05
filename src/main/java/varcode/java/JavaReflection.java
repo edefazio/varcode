@@ -101,6 +101,46 @@ public class JavaReflection
         throw new VarException( "Could not find a matching constructor for input" );
     }
     
+    public static void invokeMain( Class targetClass, String...arguments  )
+    {
+        Method mainMethod = JavaReflection.getMainMethod( targetClass );
+        if( mainMethod == null )
+        {
+            throw new VarException( "Could not find main(String[] args) method " );
+        }
+        try
+        {        
+            if( arguments.length == 0 )
+            {
+                mainMethod.invoke( null, (Object)new String[ 0 ] );    
+            }
+            else
+            {
+                mainMethod.invoke( null, (Object)arguments );
+            }
+        }
+        catch( IllegalAccessException iae )
+        {
+            System.out.println( iae );
+            throw new VarException( 
+                "Illegal Access calling \"" + targetClass 
+                + ".main( String[] args );\"", iae );
+        }
+        catch( IllegalArgumentException iae )
+        {
+            throw new VarException( 
+                "Illegal Access calling \"" + targetClass 
+                + ".main( String[] args );\"", iae );
+        }
+        catch( InvocationTargetException ite )
+        {   
+            throw new VarException( 
+        	ite.getTargetException().getMessage() + " calling \"" 
+                + targetClass.getName() + ".main( String[] args )", 
+                ite.getTargetException() );            
+        }     
+    }
+    
     /**
      * Invokes the instance method and returns the result
      * @param target the target instance to invoke the method on
@@ -319,6 +359,24 @@ public class JavaReflection
                 + clazz.getName() + "." + methodName + "();\"", 
                 ite.getTargetException() );            
         }
+    }
+    
+    public static Method getMainMethod( Class clazz )
+    {
+        Method[] methods  = clazz.getMethods();
+        for( int i = 0; i < methods.length; i++ )
+        {
+            if( Modifier.isStatic( methods[ i ].getModifiers() )
+                && methods[ i ].getName().equals( "main" ) 
+                && methods[ i ].getParameterCount() == 1  
+                && methods[ i ].getParameterTypes()[ 0 ].isArray()
+                && methods[ i ].getParameterTypes()[ 0 ].getComponentType().equals( String.class )
+               )
+            {
+                return methods[ i ];
+            }
+        }
+        return null;
     }
     
     /**

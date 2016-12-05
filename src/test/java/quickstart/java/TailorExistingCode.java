@@ -15,13 +15,13 @@ public class TailorExistingCode
 
     public static void main( String[] args )
     {
-        /* load the _class metalang model from the Existing java nested class */
+        /* load the _class model from the Existing java nested class */
         _class _c = _Java._classFrom( Existing.class );
         
-        /* change the _class metalang model */
+        /* change the _class model */
         _c.setName( "Tailored" ); //rename class from "Existing" to "Tailored"
         _c.setModifiers( "public" ); //set Tailored as public, non-static
-        _c.getField( "count" ) //change count field ... 
+        _c.getField( "count" ) //change the count field ... 
             .setModifiers( "private", "final" ) //to be private and final
             .setName( "message" ) //rename "count" to "message"    
             .setType( "String" ); //change "message" type to be type String                

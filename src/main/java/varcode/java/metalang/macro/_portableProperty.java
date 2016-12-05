@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package tutorial.chap6.auto;
+package varcode.java.metalang.macro;
 
 /**
  *
- * @author Eric
  */
-public class PreAndPostDirectives {
+public class _portableProperty 
+    implements _javaMacro
+{
     
 }

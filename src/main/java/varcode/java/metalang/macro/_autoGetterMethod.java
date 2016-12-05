@@ -23,7 +23,8 @@ import varcode.java.metalang._methods._method;
  *
  * @author M. Eric DeFazio eric@varcode.io
  */
-public class _autoGetter
+public class _autoGetterMethod
+    implements _javaMacro
 {   
     /**
      * Creates and returns a _method based on a _field

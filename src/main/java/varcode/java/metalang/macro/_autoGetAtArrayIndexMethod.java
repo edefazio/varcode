@@ -11,7 +11,8 @@ import varcode.java.load.JavaMetaLangLoader;
  * 
  * @author Eric DeFazio
  */
-public class _autoGetAtArrayIndex
+public class _autoGetAtArrayIndexMethod
+    implements _javaMacro
 {
      /**
      * Creates "getXXXXAt()" _method for an element of a member field array
