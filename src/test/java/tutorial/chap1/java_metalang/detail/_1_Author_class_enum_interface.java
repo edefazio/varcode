@@ -1,5 +1,4 @@
-
-package tutorial.chap1.java_metalang;
+package tutorial.chap1.java_metalang.detail;
 
 import java.io.Serializable;
 import java.lang.reflect.Modifier;
@@ -22,11 +21,11 @@ import varcode.java.metalang._interface;
  * 
  * @author Eric DeFazio eric@varcode.io
  */
-public class _1_AuthorCode
+public class _1_Author_class_enum_interface
     extends TestCase
 {    
     private static final Logger LOG = 
-        LoggerFactory.getLogger(_1_AuthorCode.class );
+        LoggerFactory.getLogger(_1_Author_class_enum_interface.class );
     
     
     static _interface _idInterface = _interface.of(

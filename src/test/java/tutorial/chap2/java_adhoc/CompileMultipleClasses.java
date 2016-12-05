@@ -1,4 +1,4 @@
-package use.java.lang;
+package tutorial.chap2.java_adhoc;
 
 import java.io.Serializable;
 import java.util.Random;

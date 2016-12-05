@@ -1,4 +1,4 @@
-package tutorial.chap3.markup;
+package tutorial.varcode.chapx.appendix;
 
 /*{-*/
 import java.util.UUID;

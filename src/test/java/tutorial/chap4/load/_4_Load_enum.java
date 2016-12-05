@@ -25,7 +25,7 @@ import varcode.java.load.JavaMetaLangLoader;
  *
  * @author eric
  */
-public class _4_LoadModel_enum
+public class _4_Load_enum
     extends TestCase
 {
     public void testLoadEnum()

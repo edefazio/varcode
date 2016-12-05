@@ -3,6 +3,7 @@ package varcode.java.metalang;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
+import varcode.context.Resolve;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
@@ -185,7 +186,8 @@ public class _javadoc
             JAVADOC_DOM, 
             VarContext.of( 
                 "comment", comment, 
-                "markup.class", _javadoc.class ), 
+                Resolve.BASECLASS_PROPERTY, _javadoc.class),
+                // OLD "markup.class", _javadoc.class ), 
 		directives );
         
     }

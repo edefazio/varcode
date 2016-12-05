@@ -1,4 +1,4 @@
-package use.java.lang;
+package tutorial.chap1.java_metalang;
 
 import junit.framework.TestCase;
 import varcode.java._Java;

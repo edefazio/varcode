@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import varcode.VarException;
+import varcode.context.Resolve;
 import varcode.doc.translate.TranslateBuffer;
 import varcode.context.VarContext;
 import varcode.doc.Directive.PostProcessor;
@@ -75,7 +76,8 @@ public class DocState
      */
     public Class<?> getMarkupClass()
     {
-    	Object markupClass = this.docContext.get( "markup.class" );
+        //Object markupClass = this.docContext.get( "markup.class" );
+    	Object markupClass = this.docContext.get( Resolve.BASECLASS_PROPERTY );
     	return (Class<?>)markupClass;    		
     }
     

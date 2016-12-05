@@ -8,6 +8,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import varcode.VarException;
+import varcode.context.Resolve;
 import varcode.context.Var;
 import varcode.context.VarBindings;
 import varcode.context.VarContext;
@@ -69,7 +70,7 @@ public class JavaCase
 	};
 	
     /** The name of the */
-    public static final String MARKUP_CLASS_VAR_NAME = "markup.class";
+    //public static final String MARKUP_CLASS_VAR_NAME = "markup.class";
     
 	/**
      * When Tailoring from a Class, populate the VarContext
@@ -89,8 +90,9 @@ public class JavaCase
     	Class<?> markupClass, VarContext context )
     {
     	VarBindings staticBindings = context.getOrCreateBindings( VarScope.STATIC );
-    	staticBindings.put( MARKUP_CLASS_VAR_NAME, markupClass );
-    	
+    	//staticBindings.put( MARKUP_CLASS_VAR_NAME, markupClass );
+    	staticBindings.put( Resolve.BASECLASS_PROPERTY, markupClass );
+        
     	List<Directive> directives = new ArrayList<Directive>();
         
     	Field[] fields = markupClass.getFields();

@@ -1,12 +1,8 @@
-package use.java.lang;
+package tutorial.chap1.java_metalang;
 
 import junit.framework.TestCase;
 import varcode.java.metalang._interface;
 
-/**
- *
- * @author Eric
- */
 public class Author_interface 
     extends TestCase
 {

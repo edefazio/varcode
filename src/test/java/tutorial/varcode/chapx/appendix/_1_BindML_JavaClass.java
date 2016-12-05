@@ -1,4 +1,4 @@
-package tutorial.varcode.chap4.markup;
+package tutorial.varcode.chapx.appendix;
 
 import junit.framework.TestCase;
 import varcode.doc.Dom;

@@ -1,4 +1,4 @@
-package tutorial.chap1.java_metalang;
+package tutorial.chap5.macro;
 
 import java.util.Date;
 import junit.framework.TestCase;

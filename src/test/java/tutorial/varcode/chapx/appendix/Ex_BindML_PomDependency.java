@@ -1,4 +1,4 @@
-package tutorial.varcode.chap4.markup;
+package tutorial.varcode.chapx.appendix;
 
 import junit.framework.TestCase;
 import varcode.doc.Compose;
@@ -12,7 +12,7 @@ import varcode.markup.bindml.BindML;
  * 
  * @author Eric DeFazio eric@varcode.io
  */
-public class _2_BindML_PomDependency
+public class Ex_BindML_PomDependency
     extends TestCase
 {
     public static String N = System.lineSeparator();

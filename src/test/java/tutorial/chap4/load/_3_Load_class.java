@@ -28,11 +28,11 @@ import varcode.java.load.JavaMetaLangLoader;
  * 
  * @author M. Eric
  */
-public class _2_LoadModel_class
+public class _3_Load_class
     extends TestCase
 {
     private static final Logger LOG = 
-        LoggerFactory.getLogger(_2_LoadModel_class.class );
+        LoggerFactory.getLogger(_3_Load_class.class );
     
     //load a "top level class" (stored in "VarException.java")
     public void testLoad_class()

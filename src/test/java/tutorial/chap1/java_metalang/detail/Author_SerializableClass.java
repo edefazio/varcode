@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package use.java.lang;
+package tutorial.chap1.java_metalang.detail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -35,7 +35,7 @@ import varcode.java.metalang._fields._field;
  *
  * @author M. Eric DeFazio eric@varcode.io
  */
-public class Example1
+public class Author_SerializableClass
     extends TestCase
 {
     public void testHello()

@@ -13,6 +13,12 @@ import varcode.java._Java;
 import varcode.load.SourceLoader.SourceStream;
 
 /**
+ * Test case which does "code introspection" on this class at runtime
+ * <UL>
+ *   <LI>loads the source code (.java file) that is used to represent the Class at runtime
+ *   <LI>loads the AST (Abstract Syntax Tree) from the source code at runtime
+ *   <LI>loads the _class (JavaMetaLang) model from the AST at runtime 
+ * </UL>
  * 
  * @author Eric DeFazio eric@varcode.io
  */
@@ -23,7 +29,12 @@ public class KnowThyself
     public void testLoadSource()
     {        
         SourceStream ss = _Java.sourceFrom( KnowThyself.class );
-        //System.out.println( ss.asString() );
+        //String sourceFrom = ss.describe();
+        //System.out.println( sourceFrom );
+        assertNotNull( ss.describe() );
+        assertEquals( 
+            KnowThyself.class.getCanonicalName()+".java", 
+            ss.getSourceId() );
     }
     
     /** 
@@ -93,7 +104,7 @@ public class KnowThyself
         assertEquals( "tutorial.chap4.load", _c.getClassPackage().getName() );
         assertTrue( _c.getModifiers().contains( "public" ) );
         
-        _method _m = _c.getMethodNamed( "testLoad_LangModel" );
+        _method _m = _c.getMethodNamed( "testLoad_class" );
         assertNotNull( _m );
         
         assertTrue( _m.getModifiers().contains( "public" ) );

@@ -23,27 +23,72 @@ import varcode.context.eval.VarScript;
  */
 public enum Resolve 
 {
-	;
+    ; //singleton enum idiom
 	
-	private static final Logger LOG = 
+    private static final Logger LOG = 
         LoggerFactory.getLogger( Resolve.class );
 	
-	public static Method tryAndGetMethod( 
-			Class<?> clazz, String name, Class<?>...params )
+    /** 
+     * name of a Property in the {@code VarContext} that specifies a Class that 
+     * can define: 
+     * <UL>
+     *   <LI>vars (static variables linked/used in Compose(ing) documents
+     *   <LI>methods (static methods used in Compose(ing) documents
+     *   <LI>directives (static classes used in Compos(ing) documents
+     * </UL>
+     * for example:
+     * 
+     * public class TheResolveClass 
+     * {
+     *     public static final String someVar = "Eric";
+     * 
+     *     public static final String salutation( VarContext context, String varName )
+     *     {
+     *         //this doesnt "really" make sense, we are just getting the
+     *         // value of someVar, ("Eric") here, but I'm just trying to illustrate 
+     *         // how to Resolve uses the "resolve.baseclass" property to 
+     *         // resolve BOTH methods and variable values
+     *         // i.e. for : "{+salutation(someVar)+}" 
+     *         String theValue = (String)context.getValue( varName );         
+     *         return "Dear Mr. " + theValue.trim();
+     *     }
+     * 
+     *     public static void main( String[] args )
+     *     {
+     *         Dom d = BindML.compile( "{+salutation(someVar)+}" );
+     *         
+     *         //here we set the resolve.baseclass, which signifies
+     *         // that I can uses static variables, methods and class instances
+     *         // that are resident on the TheResolveClass.class 
+     *         // when processing the mark "{+salutation(someVar)+}" 
+     *         //    I need to resolve a method/script named : "salutation"
+     *         //    I need to resolve a var named "someVar"     
+     *         // ...both are found as static fields /methods on TheResolveClass
+     *         VarContext vc = VarContext.of( 
+     *             "resolve.baseclass", TheResolveClass.class );
+     * 
+     *         System.out.println( Compose.toString( d, vc ) );
+     *     }
+     * }
+     */
+    public static final String BASECLASS_PROPERTY = "resolve.baseclass";
+    
+    public static Method tryAndGetMethod( 
+        Class<?> clazz, String name, Class<?>...params )
+    {
+	try 
 	{
-		try 
-		{
-			return clazz.getMethod( name, params );
-		} 
-		catch( NoSuchMethodException e ) 
-		{
-			return null;
-		} 
-		catch( SecurityException e ) 
-		{
-			return null;
-		}
+            return clazz.getMethod( name, params );
+	} 
+	catch( NoSuchMethodException e ) 
+	{
+            return null;
+	} 
+	catch( SecurityException e ) 
+	{
+            return null;
 	}
+    }
 	
 	public static Class<?> getClassForName( String className )
 	{
@@ -223,7 +268,7 @@ public enum Resolve
 					}
 					catch( InstantiationException e )
 					{
-						LOG.trace( "  failed creating a (no-arg) instance of \"" + clazz  + "\" as VarScript" );
+						LOG.trace( "  instantiation method failed creating a (no-arg) instance of \"" + clazz  + "\" as VarScript" );
 						return null;
 					}
                     catch (IllegalAccessException e) {
@@ -448,7 +493,8 @@ public enum Resolve
 			
 			//2) check if there is a Markup Class Registered that has a method of this name
 			
-			Object markupClass = context.get( "markup.class" );
+                        Object markupClass = context.get( BASECLASS_PROPERTY );
+			//Object markupClass = context.get( "markup.class" );
 			
 			if( markupClass != null )
 			{
@@ -474,7 +520,10 @@ public enum Resolve
 			}
 			else
 			{
-				if( LOG.isTraceEnabled() ) { LOG.trace( "   2) no \"markup.class\" in context provided in context"  ); }
+                            if( LOG.isTraceEnabled() ) 
+                            { 
+                                LOG.trace( "   2) no \"resolve.baseclass\" in context provided in context"  ); 
+                            }
 			}
 			
 			//I COULD have ScriptBindings where I "manually" Register/

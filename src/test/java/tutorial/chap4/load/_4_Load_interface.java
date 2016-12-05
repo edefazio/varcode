@@ -25,7 +25,7 @@ import varcode.java.load.JavaMetaLangLoader;
  *
  * @author eric
  */
-public class _3_LoadModel_interface
+public class _4_Load_interface
     extends TestCase
 {
      public void testLoad_interface()

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package use.java.lang;
+package tutorial.chap1.java_metalang.detail;
 
 import java.lang.reflect.Modifier;
 import junit.framework.TestCase;
