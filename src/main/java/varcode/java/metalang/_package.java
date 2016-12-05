@@ -5,7 +5,6 @@ import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.Dom;
 import varcode.markup.bindml.BindML;
-import varcode.Model.MetaLang;
 
 /**
  * package representation
@@ -13,16 +12,16 @@ import varcode.Model.MetaLang;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _package
-    implements MetaLang
+    implements JavaMetaLang
 {
-	public static final Dom PACKAGE = 
-		BindML.compile( 
-            "{{+?name:package {+name+};" + N + N +
-			"+}}" );
+    public static final Dom PACKAGE = 
+	BindML.compile( 
+        "{{+?name:package {+name+};" + N + N +
+	"+}}" );
 	
 	public static _package cloneOf( _package prototype )
 	{		
-		return of( prototype.name );
+            return of( prototype.name );
 	}
 	
 	public static _package of( Object packageName )	

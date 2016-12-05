@@ -18,14 +18,13 @@ package varcode.java.metalang;
 import java.util.List;
 import varcode.context.VarContext;
 import varcode.doc.Dom;
-import varcode.Model.MetaLang;
 
 /**
- * A Component that can be nested (_class, _enum, _interface) within a top level
- * model (_class, _enum, _interface)
+ * Java Component that can be nested (_class, _enum, _interface) 
+ * within a top level model (_class, _enum, _interface)
  */
 public interface _javaComponent
-    extends MetaLang
+    extends JavaMetaLang
 {
     /** @return a clone of this component */
     _javaComponent clone();

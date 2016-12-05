@@ -8,7 +8,6 @@ import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.Dom;
 import varcode.markup.bindml.BindML;
-import varcode.Model.MetaLang;
 
 /**
  * Models 
@@ -35,7 +34,7 @@ import varcode.Model.MetaLang;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _arguments 
-	implements MetaLang
+    implements JavaMetaLang
 {
 
     /** creates a new _arguments as a clone of prototype

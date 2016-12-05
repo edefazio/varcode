@@ -20,16 +20,16 @@ import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.Dom;
 import varcode.doc.translate.JavaTranslate;
+import varcode.java.metalang.JavaMetaLang;
 import varcode.java.metalang._code;
 import varcode.markup.bindml.BindML;
-import varcode.Model.MetaLang;
 
 /**
  *
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _forEach
-    implements MetaLang
+    implements JavaMetaLang
 {        
     /**
      * builds a forEach statement with body: <PRE>

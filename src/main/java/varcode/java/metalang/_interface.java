@@ -452,7 +452,7 @@ public class _interface
 	
     public _interface staticMethod( String signature, Object...linesOfCode )
     {
-        _method method = _method.of( null, signature, linesOfCode);
+        _method method = _method.of( (_javadoc)null, signature, linesOfCode);
 	_methods._method._signature sig = method.getSignature();
         if( !sig.getModifiers().contains( Modifier.STATIC ) )
         {
@@ -485,7 +485,7 @@ public class _interface
     
     public _interface defaultMethod( String signature, Object...linesOfCode )
     {
-        _method method = _method.of( null, signature, linesOfCode);
+        _method method = _method.of( (_javadoc)null, signature, linesOfCode);
 		
         _methods._method._signature sig = method.getSignature();
         if( !sig.getModifiers().contains( 
@@ -558,7 +558,7 @@ public class _interface
 	
     /** interface signature */
     public static class _signature
-        implements MetaLang
+        implements JavaMetaLang
     {                
         private _modifiers modifiers = new _modifiers();
         private String interfaceName;		

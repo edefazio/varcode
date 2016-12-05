@@ -32,6 +32,7 @@ import varcode.markup.bindml.BindML;
 public class _class    
     implements JavaCaseAuthor, _javaComponent
 {	
+    private String license;
     private _package classPackage;
     private _imports imports;
     private _javadoc javadoc;
@@ -235,6 +236,7 @@ public class _class
      */
     public _class( _class prototype )
     {
+        this.license = prototype.license;
         this.annotations = _annotations.cloneOf( prototype.annotations );
         this.classPackage = _package.cloneOf( prototype.classPackage );
         this.imports = _imports.cloneOf( prototype.imports );
@@ -259,6 +261,7 @@ public class _class
 	
     public static final Dom CLASS = 
 	BindML.compile( 
+            "{+license+}" +    
             "{+pckage+}" +
             "{{+?imports:{+imports+}" + N +"+}}" +
             "{+classJavaDoc+}" +
@@ -290,6 +293,22 @@ public class _class
         return Compose.asString( CLASS, getContext(), directives );			
     }
 	
+    /**
+     * 
+     * @param license
+     * @return the _class model
+     */
+    public _class codeLicense( String codeLicense )
+    {
+        this.license = license;
+        return this;
+    }
+    
+    public String getCodeLicense()
+    {
+        return this.license;
+    }
+    
     /**
      * sets the modifiers using the int notation (i.e.
      * <CODE>setModifiers( Modifier.PUBLIC | Modifier.STATIC );</CODE> )
@@ -330,71 +349,74 @@ public class _class
     }
     
     @Override
-	public VarContext getContext()
-	{
-		String[] n = null;
-		if( nesteds.count() > 0 )
-		{
-			//I need to go to each of the nested classes/ interfaces/ etc.
-			// and read what thier imports are, then add these imports to my imports
-			String[] nested = new String[ nesteds.count() ];
-			for( int i = 0; i < nesteds.count(); i++ )
-			{
-				_javaComponent comp = nesteds.components.get( i );
-				VarContext vc = comp.getContext();
+    public VarContext getContext()
+    {
+        String[] n = null;
+        if( nesteds.count() > 0 )
+        {
+            //I need to go to each of the nested classes/ interfaces/ etc.
+            // and read what thier imports are, then add these imports to my imports
+            String[] nested = new String[ nesteds.count() ];
+            for( int i = 0; i < nesteds.count(); i++ )
+            {
+		_javaComponent comp = nesteds.components.get( i );
+		VarContext vc = comp.getContext();
+		
+                vc.getScopeBindings().remove( "license" );
+		//inner classes inherit package, so remove the package
+		vc.getScopeBindings().remove( "pckage" );
 				
-				//inner classes inherit package, so remove the package
-				vc.getScopeBindings().remove( "pckage" );
-				
-				//inner classes have imports at top level so remove imports
-				vc.getScopeBindings().remove( "imports" );
+		//inner classes have imports at top level so remove imports
+		vc.getScopeBindings().remove( "imports" );
                 
                 //author the member class/enum/interface w/o package or imports
-				nested[ i ] = Compose.asString( comp.getDom(), vc );				
-			}
-			n = nested;			
-		}
-		_imports imp = null;
-		if( this.getImports().count() > 0 )
-		{
-			imp = this.getImports();
-		}
-		_staticBlock sb = null;
-		if( !this.staticBlock.isEmpty() )
-		{
-			sb = this.staticBlock; 
-		}		
-		_fields mem = null;
-		if( this.fields.count() > 0 )
-		{
-			mem = this.fields;
-		}
-		_methods meth = null;
-		if( this.methods.count() > 0 )
-		{
-			meth = this.methods;
-		}
-		_constructors cs = null;
-		if( this.constructors != null && this.constructors.count() > 0 )
-		{
-			cs = this.constructors;
-		}
-		return 
-			VarContext.of("pckage", classPackage,
-				"imports", imp,
-				"classJavaDoc", javadoc,
-                "classAnnotation", this.annotations,
-				"classSignature", signature,
-				"members", mem,
-				"methods", meth,
-				"staticBlock", sb, 
-				"constructors", cs,
-				"nests", n );
+		nested[ i ] = Compose.asString( comp.getDom(), vc );				
+            }
+            n = nested;			
 	}
+	_imports imp = null;
+	if( this.getImports().count() > 0 )
+	{
+            imp = this.getImports();
+	}
+	_staticBlock sb = null;
+	if( !this.staticBlock.isEmpty() )
+	{
+            sb = this.staticBlock; 
+	}		
+	_fields mem = null;
+	if( this.fields.count() > 0 )
+	{
+            mem = this.fields;
+	}
+	_methods meth = null;
+	if( this.methods.count() > 0 )
+	{
+            meth = this.methods;
+	}
+	_constructors cs = null;
+	if( this.constructors != null && this.constructors.count() > 0 )
+	{
+            cs = this.constructors;
+	}
+	return VarContext.of(
+            "license", this.license,    
+            "pckage", classPackage,
+            "imports", imp,
+            "classJavaDoc", javadoc,
+            "classAnnotation", this.annotations,
+            "classSignature", signature,
+            "members", mem,
+            "methods", meth,
+            "staticBlock", sb, 
+            "constructors", cs,
+            "nests", n );
+    }
 	
     @Override
     public _class bind( VarContext context )
     {
+        //this.license = this.license
         this.classPackage = this.classPackage.bind( context );
         this.imports = this.imports.bind( context );
         this.javadoc = this.javadoc.bind( context );
@@ -409,26 +431,26 @@ public class _class
     }
         
     @Override
-	public Dom getDom()
-	{
-		return CLASS;
-	}
+    public Dom getDom()
+    {
+        return CLASS;
+    }
 	
     /**
      * Gets the Fully Qualified Class Name for the Top Level Class
      * @return 
      */
-	public String getFullyQualifiedClassName()
-	{		
-		if( this.classPackage != null && ! this.classPackage.isEmpty() )
-		{
-			return this.classPackage.getName() + "." + this.signature.getName();
-		}
-		else
-		{
-			return this.signature.className;
-		}
+    public String getFullyQualifiedClassName()
+    {		
+        if( this.classPackage != null && ! this.classPackage.isEmpty() )
+        {
+            return this.classPackage.getName() + "." + this.signature.getName();
 	}
+	else
+	{
+            return this.signature.className;
+	}
+    }
     
     /** 
      * Returns a String[] representing all class Names (for the top level
@@ -568,13 +590,13 @@ public class _class
     
     @Override
     public JavaCase toJavaCase( Directive... directives) 
-	{	
-		return JavaCase.of(
-			getFullyQualifiedClassName(),
-			CLASS, 
-			getContext(),
-			directives );
-	} 
+    {	
+	return JavaCase.of(
+            getFullyQualifiedClassName(),
+            CLASS, 
+            getContext(),
+            directives );
+    } 
     
     @Override
 	public JavaCase toJavaCase( VarContext context, Directive...directives ) 
@@ -680,28 +702,43 @@ public class _class
     
     public _class method( String methodSignature )
     {
-        return method( _method.of( null, methodSignature, new Object[ 0 ] ) );
+        return method( _method.of( (_javadoc)null, methodSignature, new Object[ 0 ] ) );
     }
 	
-        /** 
-         * Builds and adds a main method to this _class (with the bodyLines) 
-         * and returns the modified _class
-         * @param bodyLines
-         * @return the modified _class
-         */
-        public _class mainMethod( Object...bodyLines )
+    /** 
+     * Builds and adds a main method to this _class (with the bodyLines) 
+     * and returns the modified _class
+     * @param bodyLines
+     * @return the modified _class
+     */
+    public _class mainMethod( Object...bodyLines )
+    {        
+        if( bodyLines.length > 0 )
         {
-            return method( 
-                _method.of( 
-                    null, 
+            if( bodyLines[ 0 ] instanceof _javadoc )
+            {
+                Object[] lines = new Object[ bodyLines.length - 1 ];
+                System.arraycopy(bodyLines, 1, lines, 0, bodyLines.length -1 );
+                
+                return method( _method.of( 
+                    (_javadoc)bodyLines[ 0 ],
                     "public static void main(String[] args)", 
-                    bodyLines ) );
+                    lines ) );
+            }
+            //String firstLines = bodyLines
+            //&& bodyLines[0].toString().startsWith("/*")
+            //    })
         }
+        return method( _method.of( 
+            (_javadoc)null, 
+            "public static void main(String[] args)", 
+            bodyLines ) );
+    }
         
-	public _class method( String methodSignature, Object... bodyLines )
-	{
-	    return method( _method.of( null, methodSignature, bodyLines ) );
-	}
+    public _class method( String methodSignature, Object... bodyLines )
+    {
+	return method( _method.of( (_javadoc)null, methodSignature, bodyLines ) );
+    }
     
     public _class method( String comment, String methodSignature, _code body )
     {
@@ -1110,8 +1147,8 @@ public class _class
     /**
      * signature of the _class
      */
-	public static class _signature
-        implements MetaLang
+    public static class _signature
+        implements JavaMetaLang
     {   
    		private _modifiers modifiers;
 		private String className;

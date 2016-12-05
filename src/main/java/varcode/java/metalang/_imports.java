@@ -9,7 +9,6 @@ import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.Dom;
 import varcode.markup.bindml.BindML;
-import varcode.Model.MetaLang;
 
 /**
  * Handles imports
@@ -23,7 +22,7 @@ import varcode.Model.MetaLang;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _imports
-    implements MetaLang, _facet
+    implements JavaMetaLang, _facet
 {           
     /** 
      * Create and return a mutable clone given the imports

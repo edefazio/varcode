@@ -19,16 +19,16 @@ import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.Dom;
+import varcode.java.metalang.JavaMetaLang;
 import varcode.java.metalang._code;
 import varcode.markup.bindml.BindML;
-import varcode.Model.MetaLang;
 
 /**
  * model for a do while loop
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _do
-    implements MetaLang
+    implements JavaMetaLang
 {
     public static _do whileIs( Object condition, Object... bodyLines )
     {

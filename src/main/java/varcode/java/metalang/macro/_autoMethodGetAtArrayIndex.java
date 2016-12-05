@@ -11,7 +11,7 @@ import varcode.java.load.JavaMetaLangLoader;
  * 
  * @author Eric DeFazio
  */
-public class _autoGetAtArrayIndexMethod
+public class _autoMethodGetAtArrayIndex
     implements _javaMacro
 {
      /**

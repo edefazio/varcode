@@ -5,7 +5,6 @@ import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.Dom;
 import varcode.markup.bindml.BindML;
-import varcode.Model.MetaLang;
 
 
 /**
@@ -14,25 +13,24 @@ import varcode.Model.MetaLang;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _staticBlock
-    implements MetaLang
-{        
-    
-	public static final Dom STATIC_BLOCK = 
-		BindML.compile(
-			"static" + N +	
-			"{" + N + 
-			"{+$indent4(body)+}" + N +
-			"}" );
+    implements JavaMetaLang
+{            
+    public static final Dom STATIC_BLOCK = 
+	BindML.compile(
+            "static" + N +	
+            "{" + N + 
+            "{+$indent4(body)+}" + N +
+            "}" );
 
-	public static _staticBlock of( Object... linesOfCode )
-	{
-		return new _staticBlock( linesOfCode );
-	}
+    public static _staticBlock of( Object... linesOfCode )
+    {
+	return new _staticBlock( linesOfCode );
+    }
 	
-	public static _staticBlock of( _code code )
-	{
-		return new _staticBlock( code );
-	}
+    public static _staticBlock of( _code code )
+    {
+	return new _staticBlock( code );
+    }
     
     public static _staticBlock cloneOf( _staticBlock prototype )
     {
@@ -43,39 +41,39 @@ public class _staticBlock
         return _staticBlock.of( _code.cloneOf( prototype.body) );
     }
 	
-	private _code body;
+    private _code body;
 	
-	public _staticBlock( )
-	{
-		this.body = new _code();
-	}
+    public _staticBlock( )
+    {
+	this.body = new _code();
+    }
 	
-	public _staticBlock( Object... linesOfCode )
-	{		
-		this.body = _code.of( linesOfCode );
-	}
+    public _staticBlock( Object... linesOfCode )
+    {		
+	this.body = _code.of( linesOfCode );
+    }
 	
-	public boolean isEmpty()
-	{
-		return body == null || body.isEmpty();		
-	}
+    public boolean isEmpty()
+    {
+	return body == null || body.isEmpty();		
+    }
 	
-	public _code getBody()
-	{
-		return this.body;
-	}
+    public _code getBody()
+    {
+	return this.body;
+    }
 	
-	public _staticBlock addTailCode( Object... codeSequence )
-	{
-		body.addTailCode( codeSequence );		
-		return this;
-	}
+    public _staticBlock addTailCode( Object... linesOfCode )
+    {
+	body.addTailCode( linesOfCode );		
+	return this;
+    }
 	
-	public _staticBlock addHeadCode( Object... codeSequence )
-	{
-		body.addHeadCode( codeSequence );		
-		return this;
-	}
+    public _staticBlock addHeadCode( Object... codeSequence )
+    {
+	body.addHeadCode( codeSequence );		
+	return this;
+    }
 	
     @Override
     public _staticBlock replace( String target, String replacement )
@@ -101,19 +99,19 @@ public class _staticBlock
     }
     
     @Override
-	public String author( Directive... directives ) 
+    public String author( Directive... directives ) 
+    {
+	if( !body.isEmpty() )
 	{
-		if( !body.isEmpty() )
-		{
-			return Compose.asString( 
+            return Compose.asString( 
                 STATIC_BLOCK, VarContext.of( "body", body ), directives );
-		}
-		return "";
 	}
+	return "";
+    }
 
     @Override
-	public String toString()
-	{
-		return author(); 
-	}
+    public String toString()
+    {
+	return author(); 
+    }
 }

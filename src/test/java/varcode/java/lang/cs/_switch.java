@@ -23,9 +23,9 @@ import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.Dom;
 import varcode.doc.translate.JavaTranslate;
+import varcode.java.metalang.JavaMetaLang;
 import varcode.java.metalang._code;
 import varcode.markup.bindml.BindML;
-import varcode.Model.MetaLang;
 
 /**
  *
@@ -45,7 +45,7 @@ import varcode.Model.MetaLang;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _switch
-    implements MetaLang
+    implements JavaMetaLang
 {   
     public static _switch of( String variable )
     {
@@ -63,14 +63,14 @@ public class _switch
 
     public _code varName;
     
-    public List<MetaLang>cases;
+    public List<JavaMetaLang>cases;
     
     public DefaultCase defaultCase;
     
     public _switch( String varName )
     {
         this.varName = _code.of( varName );
-        this.cases = new ArrayList<MetaLang>();
+        this.cases = new ArrayList<JavaMetaLang>();
     }
     
     public VarContext getContext()
@@ -191,7 +191,7 @@ public class _switch
     }
     
     public static class DefaultCase
-        implements MetaLang
+        implements JavaMetaLang
     {   
         public _code code;
          
@@ -246,7 +246,7 @@ public class _switch
     
     /** Individual case within a Switch statement */
     public static class Case
-        implements MetaLang
+        implements JavaMetaLang
     {                
         public _code caseEqual;
         public _code code;
@@ -325,7 +325,7 @@ public class _switch
      * </PRE>
      */
     public static class MultiCase
-        implements MetaLang
+        implements JavaMetaLang
     {                
         public _code[] caseEquals;
         public _code code;

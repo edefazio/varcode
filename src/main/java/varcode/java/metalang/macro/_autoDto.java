@@ -130,8 +130,8 @@ public class _autoDto
             _modifiers.of( "private" ), clazz.getCanonicalName(), name ); 
         this.theClass.getFields().addFields( f );  
         
-        this.theClass.method( _autoGetterMethod.of( f ) ); 
-        this.theClass.method( _autoSetterMethod.of( f ) ); 
+        this.theClass.method( _autoMethodGetter.of( f ) ); 
+        this.theClass.method( _autoMethodSetter.of( f ) ); 
         return this;        
     }
     
@@ -149,10 +149,10 @@ public class _autoDto
         _field f = _field.of( fieldDef );
         this.theClass.field( f );
         
-        this.theClass.method( _autoGetterMethod.of( f ) ); 
+        this.theClass.method( _autoMethodGetter.of( f ) ); 
         if( ! f.getModifiers().contains( Modifier.FINAL ) ) 
         {
-            this.theClass.method( _autoSetterMethod.of( f ) ); 
+            this.theClass.method( _autoMethodSetter.of( f ) ); 
         }
         return this;        
     }

@@ -7,37 +7,36 @@ import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.Dom;
 import varcode.markup.bindml.BindML;
-import varcode.Model.MetaLang;
 
 public class _implements
-    implements MetaLang, _facet
+    implements JavaMetaLang, _facet
 {            
-	public static final _implements NONE = new _implements();
+    public static final _implements NONE = new _implements();
 	
-	public static _implements cloneOf( _implements prototype ) 
+    public static _implements cloneOf( _implements prototype ) 
+    {
+	_implements impl = new _implements();
+	if( prototype != null )
 	{
-		_implements impl = new _implements();
-		if( prototype != null )
-		{
-			for( int i = 0; i < prototype.count(); i++ )
-			{
-				impl.impls.add(  prototype.impls.get( i )  );
-			}
-		}
-		return impl;
+            for( int i = 0; i < prototype.count(); i++ )
+            {
+		impl.impls.add(  prototype.impls.get( i )  );
+            }
 	}
+	return impl;
+    }
 	
-	private List<String> impls;
+    private List<String> impls;
 	
-	public static Dom IMPLEMENTS = BindML.compile(
-		"{{#implementsList:{+impls+}, #}}" +	
-		"{{+?implementsList:" + N +
-	    "    implements {+implementsList+}+}}" );
+    public static Dom IMPLEMENTS = BindML.compile(
+	"{{#implementsList:{+impls+}, #}}" +	
+	"{{+?implementsList:" + N +
+	"    implements {+implementsList+}+}}" );
 	
-	public _implements()
-	{
-		impls = new ArrayList<String>();
-	}
+    public _implements()
+    {
+	impls = new ArrayList<String>();
+    }
 	
     @Override
     public _implements bind( VarContext context )
@@ -45,34 +44,35 @@ public class _implements
         List<String>replaced = new ArrayList<String>();
         for( int i = 0; i < impls.size(); i++ )
         {
-            replaced.add(Compose.asString(BindML.compile( impls.get( i ) ) , context ) );
+            replaced.add(
+                Compose.asString( BindML.compile( impls.get( i ) ) , context ) );
         }
         this.impls = replaced;
         return this;
     }
         
     public _implements implement( Class... interfaceClass )
-	{
+    {
         for( int i = 0; i < interfaceClass.length; i++ )
         {
             impls.add( interfaceClass[ i ].getCanonicalName() );
         }
-		return this;
-	}
+	return this;
+    }
     
-	public _implements implement( String... interfaceClass )
-	{
-		for( int i = 0; i < interfaceClass.length; i++ )
+    public _implements implement( String... interfaceClass )
+    {
+	for( int i = 0; i < interfaceClass.length; i++ )
         {
             impls.add( interfaceClass[ i ] );
         }
-		return this;
-	}
+	return this;
+    }
 	
-	public int count()
-	{
-		return impls.size();
-	}
+    public int count()
+    {
+	return impls.size();
+    }
     
     public boolean isEmpty()
     {
@@ -104,26 +104,26 @@ public class _implements
     }
     
     public static _implements of( Class...classes )
+    {
+	//className[] classNames = new className[tokens.length];
+	_implements impl = new _implements();
+	for( int i = 0; i < classes.length; i++ )
 	{
-		//className[] classNames = new className[tokens.length];
-		_implements impl = new _implements();
-		for( int i = 0; i < classes.length; i++ )
-		{
-			impl.implement( classes[ i ] );
-		}
-		return impl;
+            impl.implement( classes[ i ] );
 	}
+	return impl;
+    }
     
-	public static _implements of( String... tokens )
+    public static _implements of( String... tokens )
+    {
+	//className[] classNames = new className[tokens.length];
+	_implements impl = new _implements();
+	for( int i = 0; i < tokens.length; i++ )
 	{
-		//className[] classNames = new className[tokens.length];
-		_implements impl = new _implements();
-		for( int i = 0; i < tokens.length; i++ )
-		{
-			impl.implement( tokens[ i ] );
-		}
-		return impl;
+            impl.implement( tokens[ i ] );
 	}
+	return impl;
+    }
 	
     @Override
     public String author( )
@@ -132,10 +132,10 @@ public class _implements
     }
         
     @Override
-	public String author( Directive... directives ) 
-	{
-		VarContext vc = VarContext.of( "impls", impls );
-		return Compose.asString( IMPLEMENTS, vc, directives );
+    public String author( Directive... directives ) 
+    {
+	VarContext vc = VarContext.of( "impls", impls );
+	return Compose.asString( IMPLEMENTS, vc, directives );
 	}
 	
     @Override

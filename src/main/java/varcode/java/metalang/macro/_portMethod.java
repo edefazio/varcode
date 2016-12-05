@@ -18,10 +18,10 @@ package varcode.java.metalang.macro;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import varcode.Model;
+import varcode.Model.ModelException;
 import varcode.java.metalang._class;
-import varcode.java.metalang._fields;
-import varcode.java.metalang._methods;
+import varcode.java.metalang._fields._field;
+import varcode.java.metalang._methods._method;
 
 /**
  * PERHAPS, what I do here is populate a ChangeLIst of the Work I accomplished
@@ -58,7 +58,7 @@ public class _portMethod
         
         for( int i = 0; i < _pMethod.getRequiredFields().count(); i++ )
         {
-            _fields._field _f = _pMethod.getRequiredFields().getAt( i );
+            _field _f = _pMethod.getRequiredFields().getAt( i );
             if( _clone.getFields().canAddFieldName( 
                 _f.getName() ) )
             {
@@ -70,19 +70,18 @@ public class _portMethod
                 LOG.debug( "class already has field named " + _f.getName() 
                     + " for requirecd field " + _f );
             }
-        }
-        
+        }         
         for( int i = 0; i < _pMethod.getRequiredMethods().count(); i++ )
         {
             //if the required method is abstract, make sure there is
             // a "SIMILAR ENOUGH" method (with same name and param Count)
             // 
-            _methods._method _rm = _pMethod.getRequiredMethods().getAt( i );
+            _method _rm = _pMethod.getRequiredMethods().getAt( i );
             if( _rm.isAbstract() )
             {   //THERE MUST BE A CORRESPONDING METHOD DEFINED in clone
                 // IF NOT THROW EXCEPTION
-                List<_methods._method> candidates = 
-                    _clone.getMethodsByName(_rm.getName() );
+                List<_method> candidates = 
+                    _clone.getMethodsByName( _rm.getName() );
                 
                 boolean foundImpl = false;
                 
@@ -98,8 +97,8 @@ public class _portMethod
                 }
                 if( ! foundImpl )
                 {
-                    throw new Model.ModelException(
-                        "Unable to transpose method :" + N + _pMethod.getMethod() + N 
+                    throw new ModelException(
+                        "Unable to port method :" + N + _pMethod.getMethod() + N 
                       + "...to _class :" + N + _c + N 
                       + "...missing implementation of required method " + N + 
                       _rm.getSignature() );
@@ -108,7 +107,7 @@ public class _portMethod
             else
             {
                 //if they dont already HAVE this method, I need to add it
-                List<_methods._method> candidates = 
+                List<_method> candidates = 
                     _clone.getMethodsByName(_rm.getName() );
                 
                 boolean needToAdd = true;

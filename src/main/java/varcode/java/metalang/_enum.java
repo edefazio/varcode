@@ -525,7 +525,7 @@ public class _enum
 	
 	public _enum method( String methodSignature, String... bodyLines )
 	{
-		return method( _method.of( null, methodSignature, (Object[]) bodyLines ) );
+		return method( _method.of( (_javadoc)null, methodSignature, (Object[]) bodyLines ) );
 	}
 
 	public _enum method( _method m )
@@ -686,7 +686,7 @@ public class _enum
 	 *    
 	 */
     public static class _constants
-        implements Model.MetaLang
+        implements JavaMetaLang
     {
         /** TODO, cant I just iterate through each time w/o having to keep this around??*/		
 	private List<_constant> constants = 
@@ -770,7 +770,7 @@ public class _enum
          * Individual Enum value const constructor
          */
 	public static class _constant
-            implements MetaLang
+            implements JavaMetaLang
 	{
             private String name;
             private _arguments args;
@@ -884,7 +884,7 @@ public class _enum
      * Enum Constructor signature
      */
     public static class _signature
-	implements MetaLang
+	implements JavaMetaLang
     {
 	private String enumName = "";		
 	private _implements implementsFrom = new _implements();

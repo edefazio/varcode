@@ -8,7 +8,6 @@ import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.Dom;
 import varcode.markup.bindml.BindML;
-import varcode.Model.MetaLang;
 
 /**
  * 
@@ -19,7 +18,7 @@ import varcode.Model.MetaLang;
  *  
  */
 public class _fields
-    implements MetaLang
+    implements JavaMetaLang
 {            
     public static final Dom FIELDS = 
         BindML.compile( 
@@ -201,10 +200,10 @@ public class _fields
      * model for a field 
      */
 	public static class _field
-		implements MetaLang, _facet
+            implements JavaMetaLang, _facet
 	{
-		public static final Dom FIELD = BindML.compile(
-			"{+javadoc+}{+fieldAnnotations+}{+modifiers+}{+type+} {+varName+}{+init+};" ); 
+	public static final Dom FIELD = BindML.compile(
+            "{+javadoc+}{+fieldAnnotations+}{+modifiers+}{+type+} {+varName+}{+init+};" ); 
 		
         /**
          * Creates and returns a clone of the prototype field
@@ -557,7 +556,7 @@ public class _fields
 	 * </PRE>        
 	 */
 	public static class _init 
-		implements MetaLang
+            implements JavaMetaLang
 	{
         public static _init of( String code )
         {

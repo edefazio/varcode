@@ -15,7 +15,7 @@
  */
 package varcode.java.metalang.macro;
 
-import varcode.java.metalang.macro._autoGetAtArrayIndexMethod;
+import varcode.java.metalang.macro._autoMethodGetAtArrayIndex;
 import junit.framework.TestCase;
 import varcode.java._Java;
 import varcode.java.metalang._class;

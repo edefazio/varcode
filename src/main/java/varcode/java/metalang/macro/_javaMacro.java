@@ -20,12 +20,20 @@ import varcode.java.metalang._javaComponent;
 import varcode.java.metalang._methods._method;
 
 /**
- *
+ * 
  * @author M. Eric DeFazio eric@varcode.io
  */
 public interface _javaMacro 
 {
-    /** a Change that is applied to a _javaComponent */ 
+    /** 
+     * Change that is applied to a _javaComponent via a Macro
+     * 
+     * We *COULD* maintain a changelist of what a macro did
+     * since we often apply multiple macros to a given model...
+     * 
+     * This allows traceability into what happened, so if
+     * something failed, we can still generate Partial results.
+     */ 
     public interface _edit
     {
         

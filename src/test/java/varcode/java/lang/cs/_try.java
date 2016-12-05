@@ -21,16 +21,16 @@ import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.Dom;
+import varcode.java.metalang.JavaMetaLang;
 import varcode.java.metalang._code;
 import varcode.markup.bindml.BindML;
-import varcode.Model.MetaLang;
 
 /**
  *
  * @author eric
  */
 public class _try
-    implements MetaLang
+    implements JavaMetaLang
 {        
     /**
 	 * Any try(withResources)...catch()...finally() block of code
@@ -201,7 +201,7 @@ public class _try
      * 
      */
     public static class _catchHandleBlock
-        implements MetaLang
+        implements JavaMetaLang
     {    
         private String exception;
         private _code handleBlock;

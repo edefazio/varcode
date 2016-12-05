@@ -16,14 +16,12 @@
 package varcode.java.metalang;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.Dom;
 import varcode.markup.bindml.BindML;
-import varcode.Model.MetaLang;
 
 /**
  * This represents the act of annotating within a Java Class File
@@ -43,7 +41,7 @@ import varcode.Model.MetaLang;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _annotations
-    implements MetaLang, _facet
+    implements JavaMetaLang, _facet
 {    
     public static _annotations cloneOf( _annotations annotations )
     {
@@ -122,10 +120,10 @@ public class _annotations
         for( int i = 0; i < this.listOfAnnotations.size(); i++ )
         {
             Object thisAnn = this.listOfAnnotations.get( i );
-            if( thisAnn instanceof MetaLang )
+            if( thisAnn instanceof JavaMetaLang )
             {
                 this.listOfAnnotations.set(i, 
-                    ((MetaLang)thisAnn).bind( context ) );
+                    ((JavaMetaLang)thisAnn).bind( context ) );
             }
             else if( thisAnn instanceof String )
             {
@@ -139,7 +137,19 @@ public class _annotations
     
     public _annotations add( Object...annotations )
     {
-        this.listOfAnnotations.addAll( Arrays.asList( annotations ) );
+        for(int i=0; i< annotations.length; i++ )
+        {
+            Object ann = annotations[ i ];
+            if( ann instanceof Class )
+            {
+                this.listOfAnnotations.add( "@" + ((Class) ann).getCanonicalName() );
+            }
+            else
+            {
+                this.listOfAnnotations.add( ann );
+            }
+            //this.listOfAnnotations.addAll( Arrays.asList( annotations ) );
+        }
         return this;
     }
     
@@ -169,9 +179,9 @@ public class _annotations
             {
                 repList.add( ((String)o).replace( target, replacement ) );
             }
-            else if( o instanceof MetaLang )
+            else if( o instanceof JavaMetaLang )
             {
-                repList.add(( (MetaLang)o ).replace( target, replacement ) );
+                repList.add(( (JavaMetaLang)o ).replace( target, replacement ) );
             }
             else
             {
@@ -236,7 +246,7 @@ public class _annotations
      * 
      */
     public static class _attributes
-        implements MetaLang
+        implements JavaMetaLang
     {        
         public static _attributes of( Object... nameValues )
         {
@@ -262,9 +272,9 @@ public class _annotations
             for( int i = 0; i < names.size(); i++ )
             {
                 Object thisName = names.get( i );
-                if( thisName instanceof MetaLang  )
+                if( thisName instanceof JavaMetaLang  )
                 {
-                    names.set(i, ((MetaLang)thisName).bind( context ) );
+                    names.set(i, ((JavaMetaLang)thisName).bind( context ) );
                 }
                 else if( thisName instanceof String )
                 {
@@ -275,9 +285,9 @@ public class _annotations
             for( int i = 0; i < values.size(); i++ )
             {
                 Object thisValue = values.get( i );
-                if( thisValue instanceof MetaLang )
+                if( thisValue instanceof JavaMetaLang )
                 {
-                    values.set(i, ((MetaLang)thisValue).bind( context ) );
+                    values.set(i, ((JavaMetaLang)thisValue).bind( context ) );
                 }
                 else if( thisValue instanceof String )
                 {
@@ -406,7 +416,7 @@ public class _annotations
      * A single annotation
      */
     public static class _annotation
-        implements MetaLang, _facet
+        implements JavaMetaLang, _facet
     {        
         /** Create and return a clone of this annotation
          * @param prototype the prototype annotation
@@ -439,7 +449,16 @@ public class _annotations
             {
                 return new _annotation( null );
             }
-            _annotation ann = new _annotation( tokens[ 0 ] );
+            _annotation ann = null;
+            if( tokens[ 0 ] instanceof Class )
+            {
+                ann = new _annotation( "@"+ ((Class)tokens[ 0 ]).getCanonicalName() );
+            }
+            else
+            {
+                ann = new _annotation( tokens[ 0 ] );
+            }
+            //_annotation ann = new _annotation( tokens[ 0 ] );
             if( tokens.length > 1 )
             {
                 Object[] attributes = new Object[ tokens.length -1 ];

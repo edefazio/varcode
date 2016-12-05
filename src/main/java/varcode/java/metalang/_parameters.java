@@ -8,7 +8,6 @@ import varcode.doc.Directive;
 import varcode.doc.Dom;
 import varcode.java.metalang._annotations._annotation;
 import varcode.markup.bindml.BindML;
-import varcode.Model.MetaLang;
 
 /**
  * Models 
@@ -21,7 +20,7 @@ import varcode.Model.MetaLang;
  *
  */
 public class _parameters
-    implements MetaLang
+    implements JavaMetaLang
 {            
 	public static final Dom PARAMS_LIST = 
         BindML.compile( "( {{+:{+params+}, +}} )" );
@@ -261,7 +260,7 @@ public class _parameters
 	
     /** a single name-value parameter to a method, constructor, etc. */
     public static class _parameter
-        implements MetaLang
+        implements JavaMetaLang
     {                
 	public static _parameter cloneOf( _parameter prototype ) 
 	{

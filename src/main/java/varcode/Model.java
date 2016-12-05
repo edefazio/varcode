@@ -101,13 +101,7 @@ public interface Model
          */ 
 	String author( Directive... directives );
         
-        /**
-         * A "Brute Force" replace for the content within the MetaLanguage Model
-         * @param target the target string to look for
-         * @param replacement the replacement string
-         * @return the modified Model, (if it is mutable) or a modified clone
-         */
-        Model replace( String target, String replacement ); 
+
     }
     
     /**

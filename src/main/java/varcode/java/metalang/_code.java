@@ -9,7 +9,6 @@ import varcode.doc.Directive;
 import varcode.doc.Dom;
 import varcode.java.CloneInstance;
 import varcode.markup.bindml.BindML;
-import varcode.Model.MetaLang;
 
 /**
  * TODO I'm considering whether I should be able to "register Dependency"
@@ -27,7 +26,7 @@ import varcode.Model.MetaLang;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _code
-    implements MetaLang
+    implements JavaMetaLang
 {    
 	/**
 	 * Creates a code from the objects (Strings, _code) for instance:<PRE>
@@ -124,10 +123,10 @@ public class _code
         {
             Object o = codeSequence.get( i );
             
-            if( o instanceof MetaLang )
+            if( o instanceof JavaMetaLang )
             {   //try, do, while, if, for, _thread, 
                 codeSequence.set(i, 
-                   ((MetaLang)o).bind( context ) );
+                   ((JavaMetaLang)o).bind( context ) );
             }
             else if( o instanceof String )
             {
@@ -248,9 +247,9 @@ public class _code
 			{
 				replace.add( ((String)obj).replace( target, replacement) ); 
 			}
-			else if( obj instanceof MetaLang )
+			else if( obj instanceof JavaMetaLang )
 			{
-				replace.add(((MetaLang)obj ).replace( target, replacement ) );
+				replace.add(((JavaMetaLang)obj ).replace( target, replacement ) );
 			}
 			else
 			{

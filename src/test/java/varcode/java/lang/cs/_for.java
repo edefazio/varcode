@@ -6,7 +6,7 @@ import varcode.doc.Directive;
 import varcode.doc.Dom;
 import varcode.java.metalang._code;
 import varcode.markup.bindml.BindML;
-import varcode.Model.MetaLang;
+import varcode.java.metalang.JavaMetaLang;
 
 /**
  * Construct Simple for... loops with a _code body
@@ -27,7 +27,7 @@ import varcode.Model.MetaLang;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _for 
-    implements MetaLang
+    implements JavaMetaLang
 {        
     public static _forCount count( int count )
     {

@@ -19,9 +19,9 @@ import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.Dom;
+import varcode.java.metalang.JavaMetaLang;
 import varcode.java.metalang._code;
 import varcode.markup.bindml.BindML;
-import varcode.Model.MetaLang;
 
 /**
  * model of a while loop
@@ -29,7 +29,7 @@ import varcode.Model.MetaLang;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _while
-    implements MetaLang
+    implements JavaMetaLang
 {        
     public static _while is( Object condition, Object... bodyLines )
     {

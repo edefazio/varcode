@@ -12,7 +12,6 @@ import varcode.doc.Directive;
 import varcode.doc.Dom;
 import varcode.doc.translate.JavaTranslate;
 import varcode.markup.bindml.BindML;
-import varcode.Model.MetaLang;
 
 /**
  * Grouping of methods belonging to an entity (class, enum, interface)
@@ -20,7 +19,7 @@ import varcode.Model.MetaLang;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _methods
-    implements MetaLang
+    implements JavaMetaLang
 {        
     private Map<String, List<_method>>methodsByName = 
 	new HashMap<String, List<_method>>();
@@ -150,8 +149,8 @@ public class _methods
 	
     public _methods addMethod( String signature, Object... body )
     {
-	_method m = _method.of( null, signature, (Object[]) body );
-	verifyAndAddMethod( m );
+	_method _m = _method.of( (_javadoc)null, signature, (Object[]) body );
+	verifyAndAddMethod( _m );
 	return this;
     }
 	
@@ -266,7 +265,7 @@ public class _methods
     
     /** model of a method */
     public static class _method		
-        implements MetaLang, _facet
+        implements JavaMetaLang, _facet
     {              
 	public static final Dom METHOD = 
             BindML.compile(
@@ -342,6 +341,20 @@ public class _methods
             return signature;
 	}
 		
+        public static _method of( _javadoc javadoc, String signature, Object...body )
+        {
+            _method m = new _method( signature );
+            if( body != null && body.length > 0 )
+            {
+                m.body( body );
+            }
+            if( javadoc != null )
+            {
+                m.javadoc( javadoc );
+            }
+            return m;
+        }
+        
 	public static _method of( String comment, String signature, Object... body )
 	{
             _method m = new _method( signature );
@@ -431,6 +444,12 @@ public class _methods
             return this;
 	}
 	
+        public _method javadoc( _javadoc javadoc )
+        {
+            this.javadoc = javadoc;
+            return this;
+        }
+        
 	public _method javadoc( String javadocComment )
 	{            
             this.javadoc = new _javadoc( javadocComment );
@@ -498,7 +517,7 @@ public class _methods
         }
         
 	public static class _signature
-            implements MetaLang
+            implements JavaMetaLang
         {                    
             public static _signature cloneOf( _signature prototype )
             {

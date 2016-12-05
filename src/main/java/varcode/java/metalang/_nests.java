@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import varcode.context.VarContext;
 import varcode.doc.Directive;
-import varcode.Model.MetaLang;
 
 /**
  * Components (classes, interfaces, enums) 
@@ -25,7 +24,7 @@ import varcode.Model.MetaLang;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _nests 
-    implements MetaLang
+    implements JavaMetaLang
 {	
     //all nested components of a declaring class (_class, _enum, _interface)
     public List<_javaComponent>components = new ArrayList<_javaComponent>();

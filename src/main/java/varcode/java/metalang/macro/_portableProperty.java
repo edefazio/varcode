@@ -15,11 +15,48 @@
  */
 package varcode.java.metalang.macro;
 
+import varcode.java.metalang._fields._field;
+
 /**
- *
+ * Models a java "property" which is a field definition:
+ * <PRE>
+ * _field _f = _field.of( "private int a;")
+ * </PRE>
+ * ...And corresponding get() and set() methods
+ * <PRE>
+ * public int getA()
+ * {
+ *     return this.a;
+ * }
+ * 
+ * public void setA( int a )
+ * {
+ *     this.a = a;
+ * }
+ * </PRE>
+ * 
+ * NOTE: If the field is defined as final, then no setter method is available.
+ * <PRE>
+ * _field _f = _field.of( "private final int b = 100;")
+ * </PRE>
+ * <PRE>
+ * public int getB()
+ * {
+ *     return this.b;
+ * }
+ * </PRE>
+ * 
+ * @author M. Eric DeFazio eric@varcode.io
  */
 public class _portableProperty 
     implements _javaMacro
 {
+    public _field field;
+    
+    public _portableProperty( _field field )
+    {
+        this.field = field;
+    }
+    
     
 }

@@ -19,9 +19,9 @@ import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.Dom;
+import varcode.java.metalang.JavaMetaLang;
 import varcode.java.metalang._code;
 import varcode.markup.bindml.BindML;
-import varcode.Model.MetaLang;
 
 /**
  * Thread template idioms which benefit from editor-based code completion
@@ -70,7 +70,7 @@ public class _thread
             
     /** Creates an anonymous runnable for threading */
     public static class _runnable
-        implements MetaLang
+        implements JavaMetaLang
     {                
         private _code body; 
         private boolean start = false;

@@ -15,8 +15,6 @@
  */
 package varcode.java.metalang.macro;
 
-import java.util.ArrayList;
-import java.util.List;
 import varcode.doc.Compose;
 import varcode.doc.Dom;
 import varcode.java.metalang._class;
@@ -39,7 +37,7 @@ import varcode.markup.bindml.BindML;
  * </PRE>
  * @author M. Eric DeFazio eric@varcode.io
  */
-public class _autoSetterMethod
+public class _autoMethodSetter
     implements _javaMacro
 {
     /** composes the signature for the setter*/

@@ -7,7 +7,6 @@ import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.Dom;
 import varcode.markup.bindml.BindML;
-import varcode.Model.MetaLang;
 
 /**
  * extends Keyword used on Classes and interfaces
@@ -15,7 +14,7 @@ import varcode.Model.MetaLang;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _extends
-    implements MetaLang        
+    implements JavaMetaLang        
 {
 	public static final _extends NONE = new _extends();
 	

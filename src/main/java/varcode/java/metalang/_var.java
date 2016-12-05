@@ -12,7 +12,7 @@ import varcode.doc.Dom;
 import varcode.markup.bindml.BindML;
 
 public class _var
-	implements SelfBinding
+    implements SelfBinding
 {
 	public static final Dom DOM = BindML.compile( "{+type*+} {+varName*+}" );
 	

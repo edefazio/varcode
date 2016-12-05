@@ -21,9 +21,9 @@ import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.Dom;
+import varcode.java.metalang.JavaMetaLang;
 import varcode.java.metalang._code;
 import varcode.markup.bindml.BindML;
-import varcode.Model.MetaLang;
 
 /**
  * Model of an if statement 
@@ -31,7 +31,7 @@ import varcode.Model.MetaLang;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _if
-    implements MetaLang
+    implements JavaMetaLang
 {        
     
     public static _if is( Object condition, Object... bodyLines )
@@ -142,7 +142,7 @@ public class _if
         
     /** Model of an else if statement */
     public static class _elseIf
-        implements MetaLang
+        implements JavaMetaLang
     {                
         public static final Dom ELSEIF = BindML.compile( 
             "else if( {+condition*+} )" + N +  

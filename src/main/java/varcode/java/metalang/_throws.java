@@ -8,7 +8,6 @@ import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.Dom;
 import varcode.markup.bindml.BindML;
-import varcode.Model.MetaLang;
 
 /**
  * Declaration on a method the throwing of exception
@@ -16,26 +15,26 @@ import varcode.Model.MetaLang;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _throws
-    implements MetaLang
+    implements JavaMetaLang
 {            
-	public static final _throws NONE = new _throws();
+    public static final _throws NONE = new _throws();
 	
-	private List<String> throwsException;
+    private List<String> throwsException;
 	
-	public static _throws cloneOf( _throws prototype )
+    public static _throws cloneOf( _throws prototype )
+    {
+	_throws t = new _throws();
+	for( int i = 0; i < prototype.count(); i++ )
 	{
-		_throws t = new _throws();
-		for( int i = 0; i < prototype.count(); i++ )
-		{
-			t.addThrows( prototype.throwsException.get( i ) );
-		}
-		return t;
+            t.addThrows( prototype.throwsException.get( i ) );
 	}
+	return t;
+    }
 	
-	public static Dom THROWS = BindML.compile(
-		"{{#throwsList:{+throwsException+}, #}}" +	
-		"{{+?throwsList:" + N +
-	    "    throws {+throwsList+}+}}" );
+    public static Dom THROWS = BindML.compile(
+	"{{#throwsList:{+throwsException+}, #}}" +	
+	"{{+?throwsList:" + N +
+	"    throws {+throwsList+}+}}" );
 	
     
     @Override
@@ -57,11 +56,11 @@ public class _throws
     }
     
     @Override
-	public String author( Directive... directives ) 
-	{
-		VarContext vc = VarContext.of( "throwsException", throwsException );
-		return Compose.asString( THROWS, vc, directives );
-	}
+    public String author( Directive... directives ) 
+    {
+	VarContext vc = VarContext.of( "throwsException", throwsException );
+	return Compose.asString( THROWS, vc, directives );
+    }
 	
     
     public String getAt( int index )
@@ -73,29 +72,29 @@ public class _throws
         throw new VarException(" invalid index ["+index+"]");
     }
     
-	public _throws()
-	{
-		 throwsException = new ArrayList<String>();
-	}
+    public _throws()
+    {
+	throwsException = new ArrayList<String>();
+    }
 	
-	public _throws( String throwsClass )
-	{
-		 throwsException = new ArrayList<String>();
-		 throwsException.add( throwsClass );
-	}
+    public _throws( String throwsClass )
+    {
+	throwsException = new ArrayList<String>();
+	throwsException.add( throwsClass );
+    }
 	
-	public _throws addThrows( Object throwsClass )
+    public _throws addThrows( Object throwsClass )
+    {
+	if( throwsClass instanceof String )
 	{
-		if( throwsClass instanceof String )
-		{
-			addThrows( (String)throwsClass );
-		}
-		else if (throwsClass instanceof Class )
-		{
-			addThrows( ( (Class<?>)throwsClass ).getCanonicalName() );			
-		}		
-		return this;
-	}
+            addThrows( (String)throwsClass );
+        }
+	else if (throwsClass instanceof Class )
+	{
+            addThrows( ( (Class<?>)throwsClass ).getCanonicalName() );			
+        }		
+	return this;
+    }
     
     @Override
     public _throws replace( String target, String replacement )
@@ -126,15 +125,15 @@ public class _throws
 		return throwsExceptions;
 	}
 		
-	public List<String> getThrows()
-	{
-		return this.throwsException;
-	}
+    public List<String> getThrows()
+    {
+	return this.throwsException;
+    }
 	
-	public int count()
-	{
-		return this.throwsException.size();	
-	}
+    public int count()
+    {
+	return this.throwsException.size();	
+    }
     
     public boolean isEmpty()
     {
@@ -142,8 +141,8 @@ public class _throws
     }
 	
     @Override
-	public String toString()
-	{
-		return author();
-	}
+    public String toString()
+    {
+	return author();
+    }
 }

@@ -10,7 +10,6 @@ import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.markup.bindml.BindML;
-import varcode.Model.MetaLang;
 
 /**
  * Group of modifiers applied to classes, fields, methods, etc.)
@@ -19,12 +18,12 @@ import varcode.Model.MetaLang;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _modifiers
-    implements MetaLang
+    implements JavaMetaLang
 {        
-	public static _modifiers cloneOf( _modifiers mods )
-	{
-		return of( mods.getBits() );
-	}
+    public static _modifiers cloneOf( _modifiers mods )
+    {
+	return of( mods.getBits() );
+    }
 	
     public static _modifiers of( int...modifiers )
     {

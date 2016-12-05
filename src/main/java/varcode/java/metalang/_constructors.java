@@ -9,7 +9,6 @@ import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.Dom;
 import varcode.markup.bindml.BindML;
-import varcode.Model.MetaLang;
 
 /**
  * Model for building one or more constructors 
@@ -21,9 +20,9 @@ import varcode.Model.MetaLang;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _constructors
-    implements MetaLang
+    implements JavaMetaLang
 {
-	private List<_constructor>constructors = new ArrayList<_constructor>();
+    private List<_constructor>constructors = new ArrayList<_constructor>();
 
     /**
      * Builds and returns a clone of the prototype constructors
@@ -148,7 +147,7 @@ public class _constructors
 	
 	/** Individual constructor model */
 	public static class _constructor
-		implements MetaLang, _facet
+            implements JavaMetaLang, _facet
 	{
         public static _constructor of( String constructorSig, Object... body )
         {
@@ -389,7 +388,7 @@ public class _constructors
 	
         /** constructor signature */
 		public static class _signature
-			implements MetaLang
+                    implements JavaMetaLang
 		{
 			private String className;
 			private _modifiers modifiers; //public protected private

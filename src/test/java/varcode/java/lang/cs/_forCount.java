@@ -19,9 +19,9 @@ import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.Dom;
+import varcode.java.metalang.JavaMetaLang;
 import varcode.java.metalang._code;
 import varcode.markup.bindml.BindML;
-import varcode.Model.MetaLang;
 
 /**
  * This will be a static inner class inside _for
@@ -31,7 +31,7 @@ import varcode.Model.MetaLang;
  * @author M. Eric DeFazio eric@
  */
 public class _forCount
-    implements MetaLang
+    implements JavaMetaLang
 {        
     public static _forCount up( int count )
     {
@@ -140,9 +140,9 @@ public class _forCount
         {
             return Compose.asString( BindML.compile((String)element), context );
         }
-        if( element instanceof MetaLang )
+        if( element instanceof JavaMetaLang )
         {
-            return ((MetaLang)element).bind( context );
+            return ((JavaMetaLang)element).bind( context );
         }
         return element;
     }
@@ -218,9 +218,9 @@ public class _forCount
         {
             return ((String) o).replace(target, replacement);
         }
-        if( o instanceof MetaLang )
+        if( o instanceof JavaMetaLang )
         {
-            return ((MetaLang)o).replace(target, replacement);
+            return ((JavaMetaLang)o).replace(target, replacement);
         }
         return o.toString().replace( target, replacement );
     }
