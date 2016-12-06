@@ -552,14 +552,15 @@ public class _enum
 	}
 	
     @Override
-	public _imports getImports()
+    public _imports getImports()
+    {
+	for( int i = 0; i < nesteds.count(); i++ )
 	{
-		for( int i = 0; i < nesteds.count(); i++ )
-		{
-			this.imports.merge(nesteds.components.get( i ).getImports() );
-		}
-		return this.imports;
+            this.imports.merge( 
+                nesteds.components.get( i ).getImports() );
 	}
+	return this.imports;
+    }
 	
     public _enum annotate( Object... annotations )
     {
@@ -573,22 +574,23 @@ public class _enum
         return this;    
     }
 	
-    public _enum value( String name, Object...arguments )
+    
+    public _enum constant( String name, Object...arguments )
     {
-        return value( _constant.of( name, arguments ) );
+        return constant( _constant.of( name, arguments ) );
     }
 	
-    public _enum value( _constant valueConstruct )
+    public _enum constant( _constant constants )
     {
-	this.constants.addConstant( valueConstruct );
+	this.constants.addConstant( constants );
 	return this;
     }
     
-    public _enum values( _constants values )
+    public _enum constants( _constants constants )
     {
-        for( int i = 0; i < values.count(); i++ )
+        for( int i = 0; i < constants.count(); i++ )
         {
-            this.value( values.getAt( i ) );
+            this.constant( constants.getAt( i ) );
         }
         return this;
     }
