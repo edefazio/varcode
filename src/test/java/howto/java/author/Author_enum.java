@@ -1,4 +1,4 @@
-package tutorial.chap1.java_metalang;
+package howto.java.author;
 
 import junit.framework.TestCase;
 import varcode.java._Java;

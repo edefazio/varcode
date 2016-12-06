@@ -4,7 +4,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 import use.java.lang.chap1.AuthorNewCode_Describe;
 import use.java.lang.chap1.TailorExistingCode_Describe;
-import tutorial.chap1.java_metalang.detail._1_Author_class_enum_interface;
+import howto.java.author.detail._1_Author_class_enum_interface;
 import tutorial.chap5.macro._2_AutoDto;
 import tutorial.chap2.java_adhoc._1_AdHocInvoke;
 import tutorial.varcode.chapx.appendix.Chap1_ModelDefaultMethods;

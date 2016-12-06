@@ -27,11 +27,13 @@ import varcode.markup.bindml.BindML;
  * 
  * Other classes, interfaces, enums can be nested within a single class
  * 
+ * 
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _class    
     implements JavaCaseAuthor, _javaComponent
 {	
+    //the 
     private String license;
     private _package classPackage;
     private _imports imports;
@@ -295,12 +297,12 @@ public class _class
 	
     /**
      * 
-     * @param license
+     * @param codeLicense
      * @return the _class model
      */
     public _class codeLicense( String codeLicense )
     {
-        this.license = license;
+        this.license = codeLicense;
         return this;
     }
     
@@ -362,7 +364,9 @@ public class _class
 		_javaComponent comp = nesteds.components.get( i );
 		VarContext vc = comp.getContext();
 		
+                //remove license from being printed on inner class
                 vc.getScopeBindings().remove( "license" );
+                
 		//inner classes inherit package, so remove the package
 		vc.getScopeBindings().remove( "pckage" );
 				
@@ -550,7 +554,7 @@ public class _class
      * the template
      * @param directives pre-and post document directives 
      * @return the populated Template bound with Data from the context
-     */
+     
     public final JavaCase bindCase( VarContext context, Directive...directives )
     {
         String FullClassName = this.getFullyQualifiedClassName();
@@ -563,6 +567,7 @@ public class _class
         return JavaCase.of(
             theClassName, dom, context, directives);
     }
+    */
         
     /**
      * <UL> 
@@ -575,18 +580,21 @@ public class _class
      * @param context the context for filling in Marks within the Class
      * @param directives directives for 
      * @return 
-     */
+     
     public final Class bindClass( VarContext context, Directive...directives )
     {
         JavaCase jc = bindCase( context, directives );
         return jc.loadClass();
     }
+    */ 
     
+    /*
     public final Object bindInstance( VarContext context, Object...parameters )
     {
         JavaCase jc = bindCase( context );
         return jc.instance( parameters );
     }
+    */
     
     @Override
     public JavaCase toJavaCase( Directive... directives) 
@@ -599,8 +607,8 @@ public class _class
     } 
     
     @Override
-	public JavaCase toJavaCase( VarContext context, Directive...directives ) 
-	{
+    public JavaCase toJavaCase( VarContext context, Directive...directives ) 
+    {
         String FullClassName = this.getFullyQualifiedClassName();
         Dom classNameDom = BindML.compile( FullClassName );
         
@@ -613,15 +621,15 @@ public class _class
             getContext() ).toString();
         
         //now compile the marks and fill them in with the context
-		return JavaCase.of(
-			theClassName,
-			BindML.compile( authored ), 
-			context,
-			directives );			
-	}
+        return JavaCase.of(
+            theClassName,
+            BindML.compile( authored ), 
+            context,
+            directives );			
+    }
 	
 	/**
-     * Adds a new constructor
+         * Adds a new constructor
 	 * <PRE>{@code 
 	 * _class MyAClass = new _class("public A")
 	 *     .addConstructor("public A( String name )", "this.name = name;");}</PRE>
@@ -745,22 +753,28 @@ public class _class
         return method( _method.of( comment, methodSignature, body ) );
     }
 
-	public boolean isAbstract()
-	{
-		return this.signature.modifiers.contains( Modifier.ABSTRACT );
-	}
+    public boolean isAbstract()
+    {
+	return this.signature.modifiers.contains( Modifier.ABSTRACT );
+    }
 	
-	public _class staticBlock( Object... code )
-	{
-		this.staticBlock.addTailCode( (Object[])code );
-		return this;
-	}
+    public _class staticBlock( Object... code )
+    {
+	this.staticBlock.addTailCode( (Object[])code );
+	return this;
+    }
 	
+    public _class method( _javadoc javadoc, String signature, Object...bodyLines )
+    {
+        _method _m = _method.of( javadoc, signature, bodyLines );
+        return method( _m );        
+    }   
+    
     public _class method( String javadoc, _method method )
     {
+        //add the javadoc to the method
         method.javadoc( javadoc );
-        method( method );
-        return this;
+        return method( method );        
     }
     
     public _class method( _method _m )

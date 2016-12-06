@@ -5,7 +5,7 @@ import varcode.java._Java;
 import varcode.load.DirectorySourceLoader;
 import varcode.load.SourceLoader.SourceStream;
 
-public class LoadJavaSource 
+public class LoadSource 
     extends TestCase
 {
     /**
@@ -17,16 +17,15 @@ public class LoadJavaSource
      */
     public void testLoadSourceFromDefaultLoader()
     {
-        SourceStream ss = _Java.sourceFrom( LoadJavaSource.class );
+        SourceStream ss = _Java.sourceFrom(LoadSource.class );
         String theSourceAsAString = ss.asString();
         assertTrue( theSourceAsAString.contains( "theSourceAsAString" ) );
     }
     
     public void testLoadSourceFromCustomLoader()
     {
-        SourceStream ss = _Java.sourceFrom( 
-            new DirectorySourceLoader( 
+        SourceStream ss = _Java.sourceFrom(new DirectorySourceLoader( 
                 System.getProperty( "user.dir" ) + "/src/test/java/" ),    
-            LoadJavaSource.class );
+            LoadSource.class );
     }
 }

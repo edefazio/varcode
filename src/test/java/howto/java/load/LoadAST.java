@@ -11,7 +11,7 @@ import varcode.load.DirectorySourceLoader;
  * Different options for loading 
  * @author Eric
  */
-public class LoadJavaAST 
+public class LoadAST 
     extends TestCase
 {
     public void testLoadASTFromString()
@@ -32,7 +32,7 @@ public class LoadJavaAST
      */
     public void testLoadASTDefaultLoader()
     {
-        CompilationUnit astRoot = _Java.astFrom( LoadJavaAST.class );
+        CompilationUnit astRoot = _Java.astFrom(LoadAST.class );
 
         assertEquals( "howto.java_metalang", 
             astRoot.getPackage().getName().toString());        
@@ -53,17 +53,17 @@ public class LoadJavaAST
     {
         CompilationUnit astRoot = _Java.astFrom(new DirectorySourceLoader( 
                 System.getProperty( "user.dir" ) + "/src/test/java/" ),
-                howto.java.load.LoadJavaAST.class);
+                howto.java.load.LoadAST.class);
         
         assertEquals( "howto.java_metalang", 
             astRoot.getPackage().getName().toString());
         
         //under the AST CompilationUnit node is the TypeDeclaration of the class
-        TypeDeclaration typeDec = _Java.astTypeDeclarationFrom( astRoot,  
-            LoadJavaAST.class );
+        TypeDeclaration typeDec = _Java.astTypeDeclarationFrom(astRoot,  
+            LoadAST.class );
         
         assertEquals( Modifier.PUBLIC, typeDec.getModifiers() );
-        assertEquals( LoadJavaAST.class.getSimpleName(), 
+        assertEquals(LoadAST.class.getSimpleName(), 
             typeDec.getName() );
         
     }    

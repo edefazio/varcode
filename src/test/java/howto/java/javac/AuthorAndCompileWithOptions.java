@@ -26,7 +26,7 @@ import varcode.java.metalang._class;
  *
  * @author Eric
  */
-public class CompileWithOptions
+public class AuthorAndCompileWithOptions
     extends TestCase
 {
     public void testCompilerFlags()

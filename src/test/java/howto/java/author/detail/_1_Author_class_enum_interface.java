@@ -1,4 +1,4 @@
-package tutorial.chap1.java_metalang.detail;
+package howto.java.author.detail;
 
 import java.io.Serializable;
 import java.lang.reflect.Modifier;
@@ -12,7 +12,7 @@ import varcode.java.metalang._enum;
 import varcode.java.metalang._interface;
 
 /**
- * Create _class, _enum, _interface metalang models and "author" 
+ * Create _class, _enum, _interface models and "author" 
  * its .java source code.
  * (_class,_interface, and _enum) entities are models for the Java  
  * source language itself.  They provide APIs for manipulating 

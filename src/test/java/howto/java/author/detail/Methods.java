@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package tutorial.chap1.java_metalang;
+package howto.java.author.detail;
 
 import junit.framework.TestCase;
 import varcode.java.metalang._methods._method;

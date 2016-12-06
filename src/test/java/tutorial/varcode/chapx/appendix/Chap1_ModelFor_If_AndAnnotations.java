@@ -82,8 +82,12 @@ public class Chap1_ModelFor_If_AndAnnotations
         
         assertEquals( 45, _Java.invoke( _Count.instance( ), "count" ) );
         
+        /*
         Object inst = 
             _NumberUtil.bindInstance( VarContext.of( "methodName", "doubleNumber" ) );
+        */
+        Object inst = 
+            _NumberUtil.bind( VarContext.of( "methodName", "doubleNumber" ) ).instance( );
         
         assertEquals( 4L, _Java.invoke( inst, "doubleNumber", 2 ) );
         _Java.invoke( inst, "printDoubleNumber", 2 );        

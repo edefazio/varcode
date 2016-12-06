@@ -13,12 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package howto.java.javac;
+package howto.java.author.detail;
+
+import junit.framework.TestCase;
 
 /**
  *
- * @author Eric
+ * @author M. Eric DeFazio
  */
-public class CompileWorkspaceOfManyClasses {
-    
+public class AuthorClassImplements 
+    extends TestCase
+{
+    public void testClassImplements()
+    {
+        
+    }
 }

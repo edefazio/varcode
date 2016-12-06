@@ -3,8 +3,9 @@ package howto.java.load;
 import java.util.UUID;
 
 /**
- *
- * @author Eric
+ * Top Level Enum for testing the Load functionality
+ * 
+ * @author M. Eric DeFazio eric@varcode.io
  */
 public enum TopLevelEnum 
 {

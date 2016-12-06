@@ -1,15 +1,9 @@
-package howto.java.author;
+package howto.java.author.detail;
 
-import java.lang.reflect.Modifier;
 import junit.framework.TestCase;
-import varcode.java.adhoc.AdHocClassLoader;
-import varcode.java.adhoc.Workspace;
 import varcode.java.metalang._class;
 import varcode.java.metalang._code;
-import varcode.java.metalang._interface;
-import varcode.java.metalang._methods;
 import varcode.java.metalang._methods._method;
-import varcode.java.metalang._modifiers;
 
 /**
  *

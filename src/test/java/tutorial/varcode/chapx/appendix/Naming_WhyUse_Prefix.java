@@ -1,4 +1,4 @@
-package howto.java.load;
+package tutorial.varcode.chapx.appendix;
 
 import varcode.java.metalang._class;
 
