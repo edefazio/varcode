@@ -16,8 +16,8 @@
 package varcode.java.metalang;
 
 import varcode.java.metalang._class;
-import varcode.java.lang.cs._forCount;
-import varcode.java.lang.cs._for;
+import varcode.java.metalang.cs._forCount;
+import varcode.java.metalang.cs._for;
 import java.util.Random;
 import junit.framework.TestCase;
 import varcode.java._Java;

@@ -75,12 +75,12 @@ public class _autoEnumTest
     {
         _autoEnum ae = _autoEnum.of( "MyEnum" );
         
-        _enum e = ae.getEnum();
+        _enum e = ae.as_enum();
         e.field("public static final int ID = 100;");
         assertEquals( 1, e.getFields().count() );
         
         //updating the clone DOES NOT change the original _autoEnum
-        assertEquals( 0, ae.getEnum().getFields().count() );
+        assertEquals( 0, ae.as_enum().getFields().count() );
     }
     
     public void testAutoEnum()

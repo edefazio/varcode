@@ -58,6 +58,16 @@ public class AdHocClassLoader
     }
     
     /**
+     * returns the count of Declared Classes (loaded directly
+     * in this ClassLoader)
+     * @return the number of Loaded Classes in this classLoader
+     */
+    public int countLoadedClasses()
+    {
+        return this.classNameToAdHocClass.size();
+    }
+    
+    /**
      * Loads the class if need be and returns
      * (Unlike loadClass, throws an UNCHECKED VarException and not a 
      * CheckedException if the class is not found)

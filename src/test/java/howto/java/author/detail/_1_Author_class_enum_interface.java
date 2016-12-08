@@ -26,8 +26,7 @@ public class _1_Author_class_enum_interface
 {    
     private static final Logger LOG = 
         LoggerFactory.getLogger(_1_Author_class_enum_interface.class );
-    
-    
+       
     static _interface _idInterface = _interface.of(
         "tutorial.chap1.java_lang",
         "public interface CreatesId extends Serializable" )
@@ -59,7 +58,7 @@ public class _1_Author_class_enum_interface
         "tutorial.varcode.chap1.model", 
         "public enum IdEnum implements CreatesId" )
         .field( "public static final Random RANDOM = new Random();" )                
-        .value( "INSTANCE" )
+        .constant( "INSTANCE" )
         .method( "public String createId()",
             "UUID.randomUUID().toString();" ) 
         .method( "public static final int randomInt()", 

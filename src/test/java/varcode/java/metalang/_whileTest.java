@@ -15,7 +15,7 @@
  */
 package varcode.java.metalang;
 
-import varcode.java.lang.cs._while;
+import varcode.java.metalang.cs._while;
 import junit.framework.TestCase;
 
 /**

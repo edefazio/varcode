@@ -635,7 +635,7 @@ public class JavaMetaLangCompiler
         for( int i = 0; i < astEnumConstants.size(); i++ )
         {
             EnumConstantDeclaration astConstDecl = astEnumConstants.get( i );
-            _e.value( astConstDecl.getName(), astConstDecl.getArgs().toArray() );
+            _e.constant( astConstDecl.getName(), astConstDecl.getArgs().toArray() );
         }
             
         List<BodyDeclaration>astMembers = astEnumDecl.getMembers();

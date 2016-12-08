@@ -15,7 +15,7 @@
  */
 package varcode.java.metalang;
 
-import varcode.java.lang.cs._switch;
+import varcode.java.metalang.cs._switch;
 import junit.framework.TestCase;
 
 /**

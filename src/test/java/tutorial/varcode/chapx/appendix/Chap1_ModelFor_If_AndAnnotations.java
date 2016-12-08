@@ -7,9 +7,9 @@ import org.slf4j.LoggerFactory;
 import varcode.context.VarContext;
 import varcode.java._Java;
 import varcode.java.metalang._class;
-import varcode.java.lang.cs._for;
-import varcode.java.lang.cs._thread;
-import varcode.java.lang.cs._while;
+import varcode.java.metalang.cs._for;
+import varcode.java.metalang.cs._thread;
+import varcode.java.metalang.cs._while;
 
 /**
  *

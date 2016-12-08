@@ -15,7 +15,7 @@
  */
 package varcode.java.metalang;
 
-import varcode.java.lang.cs._if;
+import varcode.java.metalang.cs._if;
 import junit.framework.TestCase;
 import varcode.context.VarContext;
 

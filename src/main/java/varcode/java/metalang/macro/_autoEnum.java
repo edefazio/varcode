@@ -245,15 +245,14 @@ public class _autoEnum
         return this;
     }
     
-    
     /**
-     * Gets a clone of the internal Enum that is being built
+     * Gets a clone of the internal _enum that is being built
      * (REMINDER: if you change things in the clone they will 
      * NOT be reflected in this _auto_enum)
      * 
      * @return a constructed deep clone of the enum
      */
-    public _enum getEnum()
+    public _enum as_enum()
     {
         //_fields fields = this.iEnum.getFields();
         //String[] fieldNames = fields.getFieldNames();
@@ -299,7 +298,7 @@ public class _autoEnum
         String constructorSig = 
             "private " + this.className + "( " + paramList + " )";
         derived.constructor( constructorSig, finalInitCode );
-        derived.values( this.valueConstructs );
+        derived.constants( this.valueConstructs );
         
         return derived;
     }
@@ -317,7 +316,7 @@ public class _autoEnum
     
     public String author( Directive...directives )
     {
-        return getEnum().author( directives );
+        return as_enum().author( directives );
     }
     
     @Override
@@ -330,7 +329,7 @@ public class _autoEnum
     public JavaCase toJavaCase( VarContext context, Directive... directives )
     {
         //build a clone of the enum (adding in any constructors)
-        _enum derived = getEnum();  
+        _enum derived = as_enum();  
         
         if( context == null )
         {

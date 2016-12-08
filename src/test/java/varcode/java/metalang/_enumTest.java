@@ -68,7 +68,7 @@ public class _enumTest
 
     public void testSingleValue()
     {
-        _enum e = _enum.of("enum One").value( "IT" );
+        _enum e = _enum.of("enum One").constant( "IT" );
         
         System.out.println( e.toString() );
         assertEquals(
@@ -115,8 +115,8 @@ public class _enumTest
         .field( "private final String name;" )        
         .staticBlock( "System.out.println(ID);" )        
         .constructor( "private FullEnum(String name)", "this.name = name;" )
-        .value( "A", _literal.of( "a" ) )
-        .value( "B", _literal.of( "b" ) )
+        .constant( "A", _literal.of( "a" ) )
+        .constant( "B", _literal.of( "b" ) )
         .method( "public String getName()", "return this.name;" )
         .nest(
             _interface.of( "public interface Marker" )
@@ -313,7 +313,7 @@ public class _enumTest
 	{
 		_enum e = _enum.of( "public enum E" );
 		e.packageName("varcode.ex");
-		e.value( "A" );
+		e.constant( "A" );
 		e.field("public final String rid = \"5\";");
 		JavaCase jc = e.toJavaCase( );
 		//System.out.println( jc );
@@ -340,7 +340,7 @@ public class _enumTest
 			"}", e.toString() );
 		e.field( "final String message;" );
 		e.constructor("E(String e)", "this.message = e;" );
-		e.value( "_1", "\"One\"" );
+		e.constant( "_1", "\"One\"" );
 		
 		//System.out.println( e );
 		
@@ -354,7 +354,7 @@ public class _enumTest
 		//Note: here we are "updating" the enum (adduing a value)
 		// AFTER we already loaded it once, (so we are loading a new 
 		// Enum Class.
-		e.value( "_2", "\"Two\"" );
+		e.constant( "_2", "\"Two\"" );
 		
 		enumClass = e.toJavaCase().loadClass(); //load the new class with changes
 		assertTrue( enumClass.isEnum() ); 
@@ -387,9 +387,9 @@ public class _enumTest
 			"this.name = name;",
 			"this.age = age;");
 		
-		e.value("ERIC", "\"Eric\"", 42 );
-		e.value("MARK", "\"Mark\"", 54 );
-		e.value("SALLY", "\"Sally\"", 34 );
+		e.constant("ERIC", "\"Eric\"", 42 );
+		e.constant("MARK", "\"Mark\"", 54 );
+		e.constant("SALLY", "\"Sally\"", 34 );
 		e.method("public String getName()", 
 			"return this.name;");
 		e.method("public int getAge()", 
@@ -413,7 +413,7 @@ public class _enumTest
 		_enum e = _enum.of("public enum WithPackageAndStaticBlock");
 		e.staticBlock( "System.out.println(\"In Static block\");");
 		e.packageName("ex.varcode.e");
-		e.value( "A" );
+		e.constant( "A" );
 		System.out.println( e.toJavaCase() );
 		Class<?>enumClass = e.toJavaCase().loadClass();
 		

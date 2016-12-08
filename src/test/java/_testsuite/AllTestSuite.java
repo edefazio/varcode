@@ -5,8 +5,8 @@ import junit.framework.TestSuite;
 import use.java.lang.chap1.AuthorNewCode_Describe;
 import use.java.lang.chap1.TailorExistingCode_Describe;
 import howto.java.author.detail._1_Author_class_enum_interface;
-import tutorial.chap5.macro._2_AutoDto;
-import tutorial.chap2.java_adhoc._1_AdHocInvoke;
+import howto.java.macro.AutoDto;
+import tutorial.varcode.chapx.appendix._1_AdHocInvoke;
 import tutorial.varcode.chapx.appendix.Chap1_ModelDefaultMethods;
 import tutorial.varcode.chapx.appendix.CodeMLMarkupModelTest;
 
@@ -133,7 +133,7 @@ public class AllTestSuite
         suite.addTestSuite(TailorExistingCode_Describe.class );
         
         suite.addTestSuite(_1_Author_class_enum_interface.class );
-        suite.addTestSuite( _2_AutoDto.class );
+        suite.addTestSuite(AutoDto.class );
         
         suite.addTestSuite(_1_AdHocInvoke.class );
         

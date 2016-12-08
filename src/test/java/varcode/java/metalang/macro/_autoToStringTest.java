@@ -16,7 +16,7 @@
 package varcode.java.metalang.macro;
 
 import varcode.java.metalang.macro._autoDto;
-import varcode.java.lang.cs._autoToString;
+import varcode.java.metalang.cs._autoToString;
 import junit.framework.TestCase;
 import varcode.java.metalang._class;
 
@@ -31,7 +31,7 @@ public class _autoToStringTest
     public void testNoFieldsToString()
     {
         _autoDto a = _autoDto.of("ex.varcode.NoFields");
-        _class toStrung = _autoToString.of( a.toClassModel() );
+        _class toStrung = _autoToString.of( a.as_class() );
         assertEquals( "ex.varcode.NoFields"+ System.lineSeparator(), 
             toStrung.instance( ).toString() );
     }
@@ -43,7 +43,7 @@ public class _autoToStringTest
             .property("long b = 2;")    
             .property("float f = 3.0f;");
         
-        _class toStrung = _autoToString.of( a.toClassModel() );
+        _class toStrung = _autoToString.of( a.as_class() );
         
         assertEquals( 
             "ex.varcode.Primitives" + System.lineSeparator()  +
@@ -59,7 +59,7 @@ public class _autoToStringTest
             .property( "public String name = \"Default\";" )
             .property( "public int[] values = new int[]{1,2,3,4}");
         
-        _class toStrung = _autoToString.of( a.toClassModel() );
+        _class toStrung = _autoToString.of( a.as_class() );
         
         System.out.println( toStrung );
         

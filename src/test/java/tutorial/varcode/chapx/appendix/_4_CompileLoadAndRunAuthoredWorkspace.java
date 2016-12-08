@@ -35,7 +35,7 @@ public class _4_CompileLoadAndRunAuthoredWorkspace
     
     static JavaCase _GuidEnum = _enum.of( "tutorial.varcode.c1.author",
         "public enum SimpleGuid implenments GuidGen" )
-        .value( "INSTANCE" )
+        .constant( "INSTANCE" )
         .imports( UUID.class )    
         .method( "public String createGuid()",
             "return UUID.randomUUID().toString();" )

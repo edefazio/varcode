@@ -6,9 +6,9 @@
 package varcode.java.metalang;
 
 import varcode.java.metalang._code;
-import varcode.java.lang.cs._if;
-import varcode.java.lang.cs._try;
-import varcode.java.lang.cs._for;
+import varcode.java.metalang.cs._if;
+import varcode.java.metalang.cs._try;
+import varcode.java.metalang.cs._for;
 import java.io.IOException;
 import junit.framework.TestCase;
 import varcode.context.VarContext;
@@ -19,7 +19,17 @@ import varcode.context.VarContext;
  */
 public class _codeTest
     extends TestCase
-{
+{    
+    public void toStringTest()
+    {
+        _code code = _code.of( "a" );
+        assertEquals( "a", code.toString() );
+        
+        code.addTailCode( "b" );
+        assertEquals( "a" + System.lineSeparator() + "b", 
+            code.toString() );        
+    }
+    
     public void cloneTest()
     {
         _code c = _code.of();

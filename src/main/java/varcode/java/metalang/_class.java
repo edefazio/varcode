@@ -57,42 +57,11 @@ public class _class
     /** Creates and returns a clone of this component 
      * @return a deep clone of this component
      */
+    @Override
     public _class clone()
     {
         return cloneOf( this );
     }
-    
-    /**
-     * 
-     * @param type
-     * @return 
-     */
-    public List<_field> getFieldsByType( Class type )
-    {
-        List<_field> bySimpleName = new ArrayList<_field>();
-        if( this.imports.contains( type ) )
-        {   //is this type imported? 
-            // this means they CAN use the Simple Type Name
-            //i.e. they can use:
-            // _field _x = _field.of( "public Map m;" ); 
-            // - instead of -
-            // _field _y = _field.of( "public java.util.Map m;");
-            // and BOTH _x and _y are returned from :
-            // _c.getFieldsOfType( Map.class );
-            bySimpleName = 
-                this.fields.getByType( type.getSimpleName() );
-        }
-        List<_field> byFullName = 
-            this.fields.getByType( type.getCanonicalName() );
-        byFullName.addAll( bySimpleName );
-        return byFullName;
-    }
-    
-    public List<_field> getFieldsByType( String typeName )
-    {
-        return this.fields.getByType( typeName );
-    }
-    
     
     public _class add( _facet... facets )
     {
@@ -115,20 +84,16 @@ public class _class
             this.fields.addFields( (_fields)facet );
             return this;
         }
-        
         if( facet instanceof _annotation )
         {
             this.annotations.add( facet );
             return this;
         }
-        
-        
         if( facet instanceof _constructor )
         {
             this.constructors.addConstructor( (_constructor)facet );
             return this;
-        }
-        
+        }        
         if( facet instanceof _field )
         {
             this.fields.addFields( (_field)facet );
@@ -218,12 +183,22 @@ public class _class
         this( null, classSignature );
     }
 	
+    public _class( _signature sig )
+    {
+        this( _package.of( null ), sig ); 
+    }
+    
     public _class( String packageName, String classSignature )
     {
+        this( _package.of( packageName), _signature.of( classSignature ) );
+    }
+    
+    public _class( _package pack, _signature sig )        
+    {
         this.annotations = new _annotations();
-	this.classPackage = _package.of( packageName );
+	this.classPackage = pack; //_package.of( packageName );
 	this.javadoc = new _javadoc();
-	this.signature = _signature.of( classSignature );
+	this.signature = sig; //_signature.of( classSignature );
 	this.imports = new _imports();	
 	this.fields = new _fields();
 	this.methods = new _methods();
@@ -543,59 +518,7 @@ public class _class
     {
         return toJavaCase().instance( classLoader, constructorArgs );
     }
-    
-    /**
-     * <UL>
-     *  <LI>Binds in the context into the _class and (optional) directives
-     *  <LI>Build the (.java) source of the {@code _class} model
-     *  <LI>return the JavaCase
-     * </UL>
-     * @param context contains bound variables and scripts to bind data into
-     * the template
-     * @param directives pre-and post document directives 
-     * @return the populated Template bound with Data from the context
-     
-    public final JavaCase bindCase( VarContext context, Directive...directives )
-    {
-        String FullClassName = this.getFullyQualifiedClassName();
-        Dom classNameDom = BindML.compile( FullClassName );
-        String theClassName = Compose.asString( classNameDom, context ); 
-        
-        Dom dom = BindML.compile( author() ); 
-        
-        //String boundCode = Author.code( dom, context, directives );
-        return JavaCase.of(
-            theClassName, dom, context, directives);
-    }
-    */
-        
-    /**
-     * <UL> 
-     *  <LI>Bind in the context into the _class and (optional) directives
-     *  <LI>Build the (.java) source of the {@code _class} model
-     *  <LI>compile the source using Javac to create .class
-     *  <LI>load the .class in the {@code adHocClassLoader}
-     *  <LI>return a reference to the loaded class
-     * </UL>
-     * @param context the context for filling in Marks within the Class
-     * @param directives directives for 
-     * @return 
-     
-    public final Class bindClass( VarContext context, Directive...directives )
-    {
-        JavaCase jc = bindCase( context, directives );
-        return jc.loadClass();
-    }
-    */ 
-    
-    /*
-    public final Object bindInstance( VarContext context, Object...parameters )
-    {
-        JavaCase jc = bindCase( context );
-        return jc.instance( parameters );
-    }
-    */
-    
+       
     @Override
     public JavaCase toJavaCase( Directive... directives) 
     {	
@@ -628,40 +551,46 @@ public class _class
             directives );			
     }
 	
-	/**
-         * Adds a new constructor
-	 * <PRE>{@code 
-	 * _class MyAClass = new _class("public A")
-	 *     .addConstructor("public A( String name )", "this.name = name;");}</PRE>
-	 *     
-	 * @param constructorSignature the signature of the constructor
-	 * @param body the body of the constructor
-	 * @return this
-	 */
-	public _class constructor( String constructorSignature, Object... body )
-	{
-		_constructors._constructor construct = 
-            new _constructors._constructor( constructorSignature ).body( body );
-		return constructor( construct );
-	}
-    
-    public _class constructor( _constructor construct )
+    /**
+     * Adds a new constructor
+     * <PRE>{@code 
+     * _class MyAClass = new _class("public A")
+     *     .constructor("public A( String name )", "this.name = name;");}</PRE>
+     *     
+     * @param ctorSignature the signature of the constructor
+     * @param body the body of the constructor
+     * @return this
+     */
+    public _class constructor( String ctorSignature, Object... body )
     {
-        constructors.addConstructor( construct );
+	_constructors._constructor construct = 
+            new _constructors._constructor( ctorSignature ).body( body );
+		return constructor( construct );
+    }
+    
+    public _class constructor( _constructor _ctor )
+    {
+        constructors.addConstructor(_ctor );
 		return this;
     }
-	/** 
+    
+    /** 
      * Sets the Javadoc comment for the class
      * 
      * @param javadoc the Javadoc comment
      * @return this
      */
-	public _class javadoc( String javadoc )
-	{
-		this.javadoc = new _javadoc( javadoc );
-		return this;
-	}
+    public _class javadoc( String javadoc )
+    {
+	return javadoc( new _javadoc( javadoc ) );        
+    }
 
+    public _class javadoc( _javadoc javadoc )
+    {
+        this.javadoc = javadoc;
+	return this;
+    }
+    
     public _class implement( String... interfaces )
     {
         if( signature.implementsFrom == null )
@@ -752,11 +681,6 @@ public class _class
     {
         return method( _method.of( comment, methodSignature, body ) );
     }
-
-    public boolean isAbstract()
-    {
-	return this.signature.modifiers.contains( Modifier.ABSTRACT );
-    }
 	
     public _class staticBlock( Object... code )
     {
@@ -779,7 +703,7 @@ public class _class
     
     public _class method( _method _m )
     {
-	if( _m.isAbstract() && !this.isAbstract() )
+	if( _m.isAbstract() && !this.getSignature().getModifiers().contains("abstract"))
 	{
             throw new ModelException(
 		"Cannot add an abstract method " + N + _m + N + " to a non-abstract class " );
@@ -965,8 +889,8 @@ public class _class
 	
 	public _class imports( Object... imports )
 	{
-		this.imports.addImports( imports );
-		return this;
+            this.imports.addImports( imports );
+            return this;
 	}
 	
     /** nest an ( _enum, _interface, _class ) inside this _class 

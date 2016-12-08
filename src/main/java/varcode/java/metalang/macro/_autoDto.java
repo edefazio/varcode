@@ -158,7 +158,7 @@ public class _autoDto
     }
     
     /**
-     * Constructs and returns a new "clone" dto class
+     * Constructs and returns a new "clone" dto _class
      * based on the current state of the _dto
      * (NOTE: the clone is Mutable, but changes to the
      * _class will not be reflected in the _dto)
@@ -168,7 +168,7 @@ public class _autoDto
      * 
      * @return a constructed clone of the internal _class
      */
-    public _class toClassModel()
+    public _class as_class()
     {
         _constructor constructor = _autoConstructor.of( theClass );
         
@@ -208,7 +208,7 @@ public class _autoDto
     @Override
     public JavaCase toJavaCase( VarContext context, Directive... directives )
     {
-        _class dtoClass = toClassModel();
+        _class dtoClass = as_class();
         if( context == null )
         {
             return dtoClass.toJavaCase( directives );

@@ -113,9 +113,9 @@ public class /*{+className*/CodeMLMarkupModelTest/*+}*/ /*{-*/extends TestCase/*
                 .constructor(
                     "Colors( int argb )", 
                     "this.argb = argb;" )
-                .value("RED",   0xFF0000 )
-                .value("GREEN", 0x00FF00 )
-                .value("BLUE",  0x0000FF );
+                .constant("RED",   0xFF0000 )
+                .constant("GREEN", 0x00FF00 )
+                .constant("BLUE",  0x0000FF );
         JavaCase jc = JavaCase.of(CodeMLMarkupModelTest.class,                 
             "tutorial.varcode.chapx.appendix.NestedEnumClass",            
             "addNestedEnumHere", _nestedEnum );

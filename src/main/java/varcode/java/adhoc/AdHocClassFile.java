@@ -67,7 +67,9 @@ public class AdHocClassFile
         return adHocClassBytecode;
     }
 
-    /** gets the Class bytecodes as an array of bytes */
+    /** gets the Class bytecodes as an array of bytes
+     * @return the byte array
+     */
     public byte[] toByteArray() 
     {
         //return adHocClassBytecode.toByteArray();
@@ -122,6 +124,7 @@ public class AdHocClassFile
         * @exception  IOException  if an I/O error occurs.
             * @see        java.io.OutputStream#write(byte[], int, int)
         */
+        @Override
         public void write(byte b[]) throws IOException 
         {
             classBytecodeOutputStream.write( b, 0, b.length );
@@ -155,6 +158,7 @@ public class AdHocClassFile
         *             an <code>IOException</code> is thrown if the output
         *             stream is closed.
         */
+        @Override
         public void write(byte b[], int off, int len) 
             throws IOException 
         {
@@ -175,6 +179,7 @@ public class AdHocClassFile
          * Closes the stream and registers the Class with the ClassLoader
          * @throws IOException 
          */
+        @Override
         public void close()
             throws IOException
         {

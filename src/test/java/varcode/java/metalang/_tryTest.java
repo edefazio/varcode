@@ -16,7 +16,7 @@
 package varcode.java.metalang;
 
 import varcode.java.metalang._code;
-import varcode.java.lang.cs._try;
+import varcode.java.metalang.cs._try;
 import java.io.IOException;
 import junit.framework.TestCase;
 import static varcode.java.metalang._codeTest.N;

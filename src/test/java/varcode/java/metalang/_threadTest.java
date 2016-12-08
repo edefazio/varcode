@@ -15,9 +15,9 @@
  */
 package varcode.java.metalang;
 
-import varcode.java.lang.cs._thread;
+import varcode.java.metalang.cs._thread;
 import junit.framework.TestCase;
-import varcode.java.lang.cs._thread._runnable;
+import varcode.java.metalang.cs._thread._runnable;
 
 /**
  *

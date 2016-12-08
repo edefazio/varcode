@@ -18,19 +18,131 @@ package varcode.java.metalang;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.HashMap;
+import java.util.Map;
 import varcode.Model;
 import varcode.context.VarContext;
+import varcode.doc.Compose;
+import varcode.doc.Directive;
 import varcode.doc.lib.text.EscapeString;
+import varcode.markup.bindml.BindML;
 
 /**
  *
- * @author Eric
+ * @author 
+ * @deprecated 
+ * @param 
+ * @see 
+ * @serial 
+ * @since 
+ * @version 
+ * 
+ * @author M. Eric DeFazio eric@varcode.io
  */
 public abstract class _jdoc 
+    implements JavaMetaLang
 {
     
+    /* one of these */
+    public class _inlineComment
+        extends _jdoc
+    {
+        public String comment;
+        
+        public _inlineComment( String commentContents )
+        {
+            commentContents = commentContents.trim();
+            if( commentContents.startsWith( "/**" ) )
+            {
+                commentContents = commentContents.substring( 3 );
+            }
+            if( commentContents.startsWith( "/*" ) )
+            {
+                commentContents = commentContents.substring( 2 );
+            }
+            if( commentContents.endsWith( "*/" )  )
+            {
+                commentContents = commentContents.substring(
+                    0, commentContents.length() - 2 );
+            }
+            this.comment = commentContents;
+        }
+
+        @Override
+        public JavaMetaLang replace( String target, String replacement ) 
+        {
+            this.comment = this.comment.replace(target, replacement);
+            return this;
+        }
+
+        @Override
+        public String author() 
+        {
+            return author( new Directive[ 0 ] );
+        }
+
+        @Override
+        public String author( Directive... directives ) 
+        {
+            return "/* " + 
+                Compose.asString( BindML.compile( comment ), 
+                    VarContext.of(), 
+                    directives ) +
+                " */";                    
+        }
+
+        @Override
+        public Model bind( VarContext context ) 
+        {
+            if( this.comment != null )
+            {
+                this.comment = "/*" + 
+                    Compose.asString( BindML.compile( this.comment ), context )
+                    + "*/" ;
+            }
+            return this;
+        }                       
+    }/* _inlinecomment */
+    
+    
+        // method.annDeprecate();
+    // method.annOverride();
+    // method.annGenerated();
+    // method.annSuppressWarnings(...);
+    
+    //method.docLink(...) {@link varcode.
+    //method.docSince()
+    //method.docVersion()
+    //method.docAuthor()
+    //method.docParam( String paramName, String...documentation)
+    //method.docReturn( String...documentation )
+    //method.docSeeLocalMethod( methodName ) //@see #customizeProxyFactory
+    //method.docLink
+    //method.docThrows(
+    //method.doc
+    //method.seeDoc( ... )
+    //method.paramDoc( String paramName, String...documentation)
+    //method.returnDoc( String..documentation )
+    //method.throwsDoc( String exception, String comment)
+    
+    public static class _detailComment
+    {
+        protected Map<String, Object>javadocProperties = 
+            new HashMap<String, Object>();
+        
+    }
+    
+
+        /*
+    public _jdoc setAuthor( String author )
+    {
+        
+    }
+    */
+    
     /**
-     * This method is called / used when authoring the javadoc comments
+     * This method is called as a Directive 
+     * and / used when authoring the javadoc comments
      * 
      * @param ctx the varcontext
      * @param varName the name of the var that contains the Javadoc contents

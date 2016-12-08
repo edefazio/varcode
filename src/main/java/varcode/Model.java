@@ -71,12 +71,7 @@ public interface Model
      */
     public static final String STRING_LITERAL_PREFIX = "$$";
     
-    /**
-     * Binds values from the context into BindML marks within the model
-     * @param context providing bindings to be bound within the model
-     * @return the mutated model
-     */
-    Model bind( VarContext context );
+
             
     /** 
      * MetaLanguage Model of a program language entites.
@@ -85,6 +80,13 @@ public interface Model
     public interface MetaLang
         extends Model
     {
+        /**
+         * Binds values from the context into BindML marks within the model
+         * @param context providing bindings to be bound within the model
+         * @return the mutated model
+         */
+        Model bind( VarContext context );
+    
         /** 
          * Authors the code as a String the in the target language 
          * @return document representation of the model 

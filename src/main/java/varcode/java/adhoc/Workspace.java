@@ -1,15 +1,19 @@
 package varcode.java.adhoc;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.tools.DiagnosticCollector;
 import javax.tools.FileObject;
 import javax.tools.ForwardingJavaFileManager;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileManager;
 import javax.tools.JavaFileObject;
+import javax.tools.JavaFileObject.Kind;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
 import org.slf4j.Logger;
@@ -170,9 +174,9 @@ public class Workspace
      * at runtime */
     private final AdHocClassLoader adHocClassLoader;
     	
-	/** Java source files of the Workspace */
-	private final Map<String, AdHocJavaFile> classNameToAdHocJavaFileMap = 
-		new HashMap<String, AdHocJavaFile>();
+    /** Java source files of the Workspace */
+    private final Map<String, AdHocJavaFile> classNameToAdHocJavaFileMap = 
+	new HashMap<String, AdHocJavaFile>();
     
     private final WorkspaceFileManager workspaceFileManager;
     
@@ -219,21 +223,21 @@ public class Workspace
      * @param adHocClassLoader classLoader to contain the compiled .classes
      * @param adHocJavaFiles source .java files to be compiled and loaded
      */
-	public Workspace(
+    public Workspace(
         StandardJavaFileManager fileManager,    
         AdHocClassLoader adHocClassLoader, 
         AdHocJavaFile...adHocJavaFiles )
-	{
+    {
         this.workspaceFileManager = 
             new WorkspaceFileManager( fileManager, adHocClassLoader );
         //super( fileManager );
         
         this.adHocClassLoader = adHocClassLoader;     
-	    for( int i = 0; i < adHocJavaFiles.length; i++ )
-		{
-	    	addCode( adHocJavaFiles[ i ] );								
+	for( int i = 0; i < adHocJavaFiles.length; i++ )
+	{
+	    addCode( adHocJavaFiles[ i ] );								
         }        
-	}
+    }
     
     /**
 	 * Adds a class with code to the workspace
@@ -273,10 +277,10 @@ public class Workspace
      * @param javaCode
      * @return  the Workspace
      */
-	public final Workspace addCode( AdHocJavaFile... javaCode )
-	{        
+    public final Workspace addCode( AdHocJavaFile... javaCode )
+    {        
         for( int i = 0; i < javaCode.length; i++ )
-		{
+	{
             if( this.adHocClassLoader.getAdHocClassMap().containsKey(
                 javaCode[ i ].getClassName() ) )
             {
@@ -285,12 +289,15 @@ public class Workspace
                    +"\" to workspace; a Class by this name already exists "
                   + "in this workspace" );
             }
-            if( LOG.isTraceEnabled() ){ LOG.trace( "Adding code \"" + javaCode[ i ].getClassName() + "\" to workspace" ); }
-			classNameToAdHocJavaFileMap.put( 
+            if( LOG.isTraceEnabled() )
+            { 
+                LOG.trace( "Adding code \"" + javaCode[ i ].getClassName() + "\" to workspace" ); 
+            }
+	    classNameToAdHocJavaFileMap.put( 
                 javaCode[ i ].getClassName(), javaCode[ i ] );           
-		}
-		return this;
 	}
+	return this;
+    }
     
     /**
      * File Manager for the AdHoc Workspace
@@ -309,7 +316,86 @@ public class Workspace
             super( fileManager );
             this.adHocClassLoader = adHocClassLoader;
         }
+        
+        //MED ADED
+        /**
+        * @throws SecurityException {@inheritDoc}
+        * @throws IllegalStateException {@inheritDoc}
+        */
+        @Override
+        public ClassLoader getClassLoader( Location location ) 
+        {
+            LOG.debug("trying to get classLoader ");
+            return this.adHocClassLoader; //fileManager.getClassLoader(location);
+        }
+    
+        //MED Added
+        /**
+        * @throws IllegalArgumentException {@inheritDoc}
+        * @throws IllegalStateException {@inheritDoc}
+        */
+        @Override
+        public JavaFileObject getJavaFileForInput( Location location,
+            String className,
+            JavaFileObject.Kind kind)
+            throws IOException
+        {
+            LOG.debug( "trying to get input " + className + " of " + kind );
+            return fileManager.getJavaFileForInput(location, className, kind);
+        }
+        
+        /**
+        * @throws IOException {@inheritDoc}
+        * @throws IllegalStateException {@inheritDoc}
+        */
+        public Iterable<JavaFileObject> list( Location location,
+            String packageName,
+            Set<JavaFileObject.Kind> kinds,
+            boolean recurse)
+            throws IOException
+        {
+            //LOG.debug( "****** LISTING ****** " + location );
+            Iterable<JavaFileObject> theList = 
+                fileManager.list( location, packageName, kinds, recurse );
+            if( "CLASS_PATH".equals( location.getName() ) 
+                && kinds.contains( Kind.CLASS ) 
+                && recurse )
+            {   //if they want the classpath, then Include the 
+                LOG.debug( "Supplementing the FileManager with ClassPath "
+                    + packageName + " " + recurse );
+                List<JavaFileObject> javaFiles = 
+                    new ArrayList<JavaFileObject>();
+                //adds all the Class files in the AdHocClassLoader
+                javaFiles.addAll( this.adHocClassLoader.getAdHocClassMap().values() );
+                System.out.println( javaFiles );
+                Iterator<JavaFileObject> it = theList.iterator();
+                while( it.hasNext() )
+                {
+                    javaFiles.add( it.next() );
+                }
                 
+                //for( int i = 0; i < )
+                //javaFiles.addAll( theList. );
+                
+                return javaFiles;                
+            }
+            return theList;
+        }
+        
+        /**
+         * @throws IllegalArgumentException {@inheritDoc}
+         * @throws IllegalStateException {@inheritDoc}
+         */
+        @Override
+        public FileObject getFileForInput( Location location,
+            String packageName,
+            String relativeName)
+            throws IOException
+        {
+            LOG.debug("trying to get input "+ packageName +"."+relativeName );
+            return fileManager.getFileForInput(location, packageName, relativeName);
+        }
+    
         @Override
         public JavaFileObject getJavaFileForOutput(
             JavaFileManager.Location location, 
@@ -317,6 +403,10 @@ public class Workspace
             JavaFileObject.Kind kind, 
             FileObject sibling ) 
         {    	
+            if( LOG.isDebugEnabled( ) )
+            {
+                LOG.debug( "Looking for " + className +" kind "+ kind);
+            }
             // check if we already loaded this class
             AdHocClassFile adHocClass =
                 this.adHocClassLoader.getAdHocClassMap().get( className );	
@@ -350,29 +440,30 @@ public class Workspace
     {
         Iterable<String> options = JavacOptions.optionsFrom( compilerOptions );
 			
-		DiagnosticCollector<JavaFileObject> diagnostics = 
-			new DiagnosticCollector<JavaFileObject>();
+	DiagnosticCollector<JavaFileObject> diagnostics = 
+            new DiagnosticCollector<JavaFileObject>();
 			
-		JavaCompiler.CompilationTask task = 
+	JavaCompiler.CompilationTask task = 
             JAVAC.getTask(
                 null, //use System.err if the tool fails 
                 this.workspaceFileManager,
                 diagnostics, 
                 options, 
-			null, // NO annotation processors classes (at this time) 
-            this.classNameToAdHocJavaFileMap.values() );
+		null, // NO annotation processors classes (at this time) 
+                this.classNameToAdHocJavaFileMap.values() ); //files to compile
 			
 		boolean compiledNoErrors = task.call();
 			
-	    if( !compiledNoErrors )
-	    {
-                throw new JavacException( 
-                    this.classNameToAdHocJavaFileMap.values(),  
-                    diagnostics );
-	    }	        	
+        if( !compiledNoErrors )
+	{                
+            //LOG.debug( diagnostics.toString() );
+            throw new JavacException( 
+                this.classNameToAdHocJavaFileMap.values(),  
+                diagnostics );
+	}	        	
         try
         {
-        	this.workspaceFileManager.close();
+            this.workspaceFileManager.close();
         }
         catch( IOException ioe )
         {

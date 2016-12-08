@@ -128,7 +128,7 @@ public class _autoConstructorTest
             .field( "public int a;") 
             .field( "private final int b = 100;")
             .field( "private final int c;")
-            .value( "VALUE", 100 );
+            .constant( "VALUE", 100 );
             
  
         _e.constructor( _autoConstructor.of( _e ) );
