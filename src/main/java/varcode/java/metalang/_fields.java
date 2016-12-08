@@ -186,22 +186,22 @@ public class _fields
      * @param fields each _field to be included in the _fields
      * @return a new _fields including fields
      */
-	public static _fields of( String...fields )
+    public static _fields of( String...fields )
+    {
+	_fields _fs = new _fields();
+	for( int i = 0; i < fields.length; i++ )
 	{
-		_fields memberFields = new _fields();
-		for( int i = 0; i < fields.length; i++ )
-		{
-			memberFields.addFields( _field.of( fields[ i ] ) );			
-		}
-		return memberFields;
+            _fs.addFields( _field.of( fields[ i ] ) );			
 	}
+	return _fs;
+    }
 	
     /**
      * model for a field 
      */
-	public static class _field
-            implements JavaMetaLang, _facet
-	{
+    public static class _field
+        implements JavaMetaLang, _facet
+    {
 	public static final Dom FIELD = BindML.compile(
             "{+javadoc+}{+fieldAnnotations+}{+modifiers+}{+type+} {+varName+}{+init+};" ); 
 		
@@ -210,30 +210,32 @@ public class _fields
          * @param prototype
          * @return 
          */
-		public static _field cloneOf( _field prototype )
-		{
-			_field clone = new _field( 
-				_modifiers.of( prototype.mods.getBits() ),
-				prototype.type + "",
-				prototype.name + "" );
+	public static _field cloneOf( _field prototype )
+	{
+            _field clone = new _field( 
+		_modifiers.of( 
+                    prototype.mods.getBits() ),
+                    prototype.type + "",
+                    prototype.name + "" );
             
-			if( prototype.init != null && !prototype.init.isEmpty() )
-			{
-				clone.setInit( prototype.init.initCode );
-			}
-			if( prototype.javadoc != null 
-				&& !( prototype.javadoc.getComment() == null ) 
-				&& ( prototype.javadoc.getComment().trim().length() > 0 ) )
-			{
-				clone.javadoc( prototype.javadoc.getComment() );
-			}
+            if( prototype.init != null && !prototype.init.isEmpty() )
+            {
+                clone.setInit( prototype.init.initCode );
+            }
+            
+            if( prototype.javadoc != null 
+              && !( prototype.javadoc.getComment() == null ) 
+              && ( prototype.javadoc.getComment().trim().length() > 0 ) )
+	    {
+                clone.javadoc( prototype.javadoc.getComment() );
+            }
             if( prototype.fieldAnnotations != null 
-                && !prototype.fieldAnnotations.isEmpty() )
+              && !prototype.fieldAnnotations.isEmpty() )
             {
                 clone.annotate( prototype.fieldAnnotations );
             }
-			return clone;
-		}
+            return clone;
+	}
 		
         /**
          * set the initialization for this field on declaration) <PRE> 
@@ -244,13 +246,13 @@ public class _fields
          * @param initialization
          * @return this (modified)
          */
-		public _field init( _init initialization )
-		{
-			this.init = initialization;
-			return this;
-		}
+	public _field init( _init initialization )
+	{
+            this.init = initialization;
+            return this;
+	}
         
-		public _field annotate( Object...annotations )
+	public _field annotate( Object...annotations )
         {
             this.fieldAnnotations.add( annotations );
             return this;
@@ -306,53 +308,53 @@ public class _fields
             return this;
         }
         
-		public String getName()
-		{
-			return this.name;
-		}
+	public String getName()
+	{
+            return this.name;
+	}
 		
-		public _javadoc getJavadoc()
-		{
-			return this.javadoc;
-		}
+	public _javadoc getJavadoc()
+	{
+            return this.javadoc;
+	}
 		
-		public _init getInit()
-		{
-			return this.init;
-		}
+	public _init getInit()
+	{
+            return this.init;
+	}
 		
-		public static _field of( String fieldDeclaration )
-		{
-			return of(null, fieldDeclaration );
-		}
+	public static _field of( String fieldDeclaration )
+	{
+            return of( null, fieldDeclaration );
+	}
 		
-		public static _field of( String javadoc, String fieldDeclaration )
-		{
-			if( fieldDeclaration.endsWith( ";" ) )
-			{
-				fieldDeclaration = fieldDeclaration.substring( 
+	public static _field of( String javadoc, String fieldDeclaration )
+	{
+            if( fieldDeclaration.endsWith( ";" ) )
+            {
+		fieldDeclaration = fieldDeclaration.substring( 
                     0, fieldDeclaration.length() -1 );			
-			}
-			int indexOfEquals = fieldDeclaration.indexOf( '=' );
+            }
+            int indexOfEquals = fieldDeclaration.indexOf( '=' );
 			
-			if( indexOfEquals > 0 )
-			{   //there is an init AND a member 
-				String member = fieldDeclaration.substring( 0, indexOfEquals );
-				String init = fieldDeclaration.substring( indexOfEquals + 1 );
-				_field f = parseField( member );
-				if( javadoc != null )
-				{
-					f.javadoc( javadoc );
-				}
-				return f.setInit( init );
-			}
-			_field f = parseField(fieldDeclaration );
-			if( javadoc != null )
-			{
-				f.javadoc( javadoc );
-			}
-			return f;
+            if( indexOfEquals > 0 )
+            {   //there is an init AND a member 
+		String member = fieldDeclaration.substring( 0, indexOfEquals );
+		String init = fieldDeclaration.substring( indexOfEquals + 1 );
+		_field f = parseField( member );
+		if( javadoc != null )
+		{
+                    f.javadoc( javadoc );
 		}
+		return f.setInit( init );
+            }
+            _field f = parseField(fieldDeclaration );
+            if( javadoc != null )
+            {
+		f.javadoc( javadoc );
+            }
+            return f;
+	}
 		
         /**
          * DOES NOT Handle parsing Field Annotations (only field signatures)
@@ -360,48 +362,48 @@ public class _fields
          * @param fieldDef the definition of the field (sans annotations)
          * @return a _field based on the field
          */
-		private static _field parseField( String fieldDef )
-		{
-			String[] tokens = _var.normalizeTokens( fieldDef );
-			if( tokens.length < 2 )
-			{
-				throw new ModelException( 
+	private static _field parseField( String fieldDef )
+	{
+            String[] tokens = _var.normalizeTokens( fieldDef );
+            if( tokens.length < 2 )
+            {
+		throw new ModelException( 
                     "Expected at least (2) tokens for field <type> <name>" );
-			}
-			String name = tokens[ tokens.length - 1 ];
+            }
+            String name = tokens[ tokens.length - 1 ];
             
             String t = tokens[ tokens.length - 2 ];
-			if( tokens.length > 2 )
-			{
-				String[] arr = new String[ tokens.length - 2 ];
-				System.arraycopy( tokens, 0, arr, 0, arr.length );
-				_modifiers mods = _modifiers.of( arr ); 
-				if( mods.containsAny( 
-					Modifier.ABSTRACT, Modifier.NATIVE, Modifier.SYNCHRONIZED, 
+            if( tokens.length > 2 )
+            {
+		String[] arr = new String[ tokens.length - 2 ];
+		System.arraycopy( tokens, 0, arr, 0, arr.length );
+		_modifiers mods = _modifiers.of( arr ); 
+		if( mods.containsAny( 
+                    Modifier.ABSTRACT, Modifier.NATIVE, Modifier.SYNCHRONIZED, 
                     Modifier.STRICT ) )
-				{
-					throw new ModelException( 
+		{
+                    throw new ModelException( 
                         "field contains invalid modifier " + N + mods.toString() );
-				}
-				if( mods.containsAll( Modifier.FINAL, Modifier.VOLATILE ) ) 
-				{
-					throw new ModelException( 
-                        "field cannot be BOTH final AND volatile" );
-				}
-				return new _field( mods, t, name );
-			}
-			return new _field( new _modifiers(), t, name );
 		}
+		if( mods.containsAll( Modifier.FINAL, Modifier.VOLATILE ) ) 
+		{
+                    throw new ModelException( 
+                        "field cannot be BOTH final AND volatile" );
+		}
+		return new _field( mods, t, name );
+            }
+            return new _field( new _modifiers(), t, name );
+	}
 		
         public VarContext getContext()
         {
             return VarContext.of(
                 "javadoc", this.javadoc,
                 "fieldAnnotations", this.fieldAnnotations,    
-				"modifiers", this.mods,
-				"type", this.type,
-				"varName", this.name,
-				"init", this.init );
+		"modifiers", this.mods,
+		"type", this.type,
+		"varName", this.name,
+		"init", this.init );
         }
         
         @Override
@@ -411,25 +413,25 @@ public class _fields
         }
         
         @Override
-		public String author( Directive... directives ) 
-		{
-			return Compose.asString( FIELD, 
-				getContext(),
-				directives );
-		}
+	public String author( Directive... directives ) 
+	{
+            return Compose.asString( FIELD, 
+		getContext(),
+		directives );
+	}
 		
         @Override
-		public String toString()
-		{
-			return author();
-		}
+	public String toString()
+	{
+            return author();
+	}
 		
         private _annotations fieldAnnotations;
-		private _javadoc javadoc;
-		private _modifiers mods;
-		private String type; 
-		private String name;
-		private _init init;
+	private _javadoc javadoc;
+	private _modifiers mods;
+	private String type; 
+	private String name;
+	private _init init;
 		
         public static _field of( int modifiers, String type, String name )
         {
@@ -451,79 +453,79 @@ public class _fields
             this( _modifiers.of( modifiers ), type, name, _init.of( init ) );            
         }
         
-		public _field( _modifiers modifiers, String type, String name )
-		{
-			this.mods = modifiers;
-			this.type = type;
-			this.name = name;
+	public _field( _modifiers modifiers, String type, String name )
+	{
+            this.mods = modifiers;
+            this.type = type;
+            this.name = name;
             this.javadoc = new _javadoc();
             this.init = new _init();
             this.fieldAnnotations = new _annotations();
-		}
+	}
 		
-		public _field( _modifiers modifiers, String type, String varName, _init init )
-		{
-			this.mods = modifiers;
-			this.type = type;
-			this.name = varName;
-			this.init = init;			
+	public _field( _modifiers modifiers, String type, String varName, _init init )
+	{
+            this.mods = modifiers;
+            this.type = type;
+            this.name = varName;
+            this.init = init;			
             this.javadoc = new _javadoc();
             this.fieldAnnotations = new _annotations();
-		}
+	}
 		
-		public _field setInit( String init )
-		{
-			this.init = new _init( init );
-			return this;
-		}
+	public _field setInit( String init )
+	{
+            this.init = new _init( init );
+            return this;
+	}
 		
-		public _field javadoc( String javadoc )
-		{
-			this.javadoc = new _javadoc( javadoc );
-			return this;
-		}
+	public _field javadoc( String javadoc )
+	{
+            this.javadoc = new _javadoc( javadoc );
+            return this;
+	}
 
-		/** does this field have an initial value
+	/** does this field have an initial value
          * @return  true if the field has initialization, false otherwise
          */
-		public boolean hasInit() 
-		{
-			return init != null && !init.isEmpty();
-		}
-
-		public _field setType( String newType )  
-		{
-                    this.type = newType;
-                    return this;
-		}
-                
-                public _field setName( String newName )
-                {
-                    this.name = newName;
-                    return this;
-                }
+	public boolean hasInit() 
+	{
+            return init != null && !init.isEmpty();
 	}
+
+	public _field setType( String newType )  
+	{
+            this.type = newType;
+            return this;
+	}
+                
+        public _field setName( String newName )
+        {
+            this.name = newName;
+            return this;
+        }
+    }
 	
     public VarContext getContext()
     {
         List<_field> staticFields = new ArrayList<_field>();
-		List<_field> instanceFields = new ArrayList<_field>();
-		for( int i = 0; i < fields.size(); i++ )
-		{
-			_field mem = fields.get( i );
-			if( mem.mods.containsAny( Modifier.STATIC ) )
-			{
-				staticFields.add( mem );
-			}
-			else
-			{
-				instanceFields.add( mem );
-			}
-		}
+	List<_field> instanceFields = new ArrayList<_field>();
+	for( int i = 0; i < fields.size(); i++ )
+	{
+            _field mem = fields.get( i );
+            if( mem.mods.containsAny( Modifier.STATIC ) )
+            {
+		staticFields.add( mem );
+            }
+            else
+            {
+		instanceFields.add( mem );
+            }
+	}
         
         return VarContext.of( 
             "staticFields", staticFields,
-			"instanceFields", instanceFields ); 
+            "instanceFields", instanceFields ); 
     }
     
     @Override
@@ -536,66 +538,68 @@ public class _fields
     public String author( Directive...directives )
     {             
         return Compose.asString( 
-			FIELDS, 
+            FIELDS, 
             getContext(),			
-			directives );	
+            directives );	
     }
     
     @Override
-	public String toString()
-	{
-		return author( );
-	}
+    public String toString()
+    {
+	return author( );
+    }
 	
-	/** Field Initialization
-	 * <PRE>
-	 * i.e. public int x = 100;
-	 *                   ^^^^^
-	 *      public static final String NAME = "Eric";
-	 *                                      ^^^^^^^^
-	 * </PRE>        
-	 */
-	public static class _init 
-            implements JavaMetaLang
-	{
+    /** Field Initialization
+     * <PRE>
+     * i.e. public int x = 100;
+     *                   ^^^^^
+     *      public static final String NAME = "Eric";
+     *                                      ^^^^^^^^
+     * </PRE>        
+     */
+    public static class _init 
+        implements JavaMetaLang
+    {
         public static _init of( String code )
         {
             return new _init( code );
         }
         
-		private String initCode;
+	private String initCode;
 	
         
-		public _init()
-		{
-			this.initCode = null;
-		}
+	public _init()
+	{
+            this.initCode = null;
+	}
 	
-		public boolean isEmpty()
-		{
-			return initCode == null || initCode.trim().length() == 0;
-		}
+	public boolean isEmpty()
+	{
+            return initCode == null || initCode.trim().length() == 0;
+	}
 		
-		public _init( String code )
-		{
-			if( code.trim().startsWith( "=" ) )
-			{
-				this.initCode = code.substring( code.indexOf( "=" ) + 1 ).trim();
-			}
-			else
-			{
-				this.initCode = code;
-			}
-		}
+	public _init( String code )
+	{
+            if( code.trim().startsWith( "=" ) )
+            {
+		this.initCode = code.substring( code.indexOf( "=" ) + 1 ).trim();
+            }
+            else
+            {
+		this.initCode = code;
+            }
+	}
 
-		public static final Dom INIT = BindML.compile( " ={+initCode*+}" );
+	public static final Dom INIT = BindML.compile( " ={+initCode*+}" );
         
         @Override
         public _init bind( VarContext context )
         {
             if( this.initCode != null )
             {
-                this.initCode = Compose.asString( BindML.compile( this.initCode ), context );
+                this.initCode = Compose.asString( 
+                    BindML.compile( this.initCode ), 
+                    context );
             }
             return this;
         }
@@ -607,25 +611,28 @@ public class _fields
         }
         
         @Override
-		public String author( Directive... directives ) 
-		{
-			if( initCode != null )
-			{
-				return Compose.asString( INIT, VarContext.of( "initCode", initCode ), directives );
-			}
-			return "";
-		}
+	public String author( Directive... directives ) 
+	{
+            if( initCode != null )
+            {
+		return Compose.asString( 
+                    INIT, 
+                    VarContext.of( "initCode", initCode ), 
+                    directives );
+            }
+            return "";
+	}
 	
         @Override
-		public String toString()
-		{
-			return author();
-		}
+	public String toString()
+	{
+            return author();
+	}
 		
-		public String getCode()
-		{
-			return initCode;
-		}
+	public String getCode()
+	{
+            return initCode;
+	}
 
         @Override
 	public _init replace( String target, String replacement ) 
