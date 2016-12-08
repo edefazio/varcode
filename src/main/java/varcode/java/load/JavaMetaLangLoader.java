@@ -368,7 +368,7 @@ public class JavaMetaLangLoader
     {   
         public static _enum from( Class clazz )
         {
-            return _Enum.from(JavaSourceLoader.INSTANCE, clazz );
+            return _Enum.from( JavaSourceLoader.INSTANCE, clazz );
         }
         public static _enum from( CompilationUnit astRoot, Class clazz )
         {

@@ -451,7 +451,7 @@ public class JavaMetaLangCompiler
                 else
                 {
                     _method _meth = _method.of(
-                        astMethodDecl.getJavaDoc().getContent(), methd );
+                        _javadoc.of(astMethodDecl.getJavaDoc().getContent()), methd );
                     if( body != null )
                     {
                         _meth.body( body );
@@ -713,7 +713,7 @@ public class JavaMetaLangCompiler
                 else
                 {
                     _methods._method _meth = _methods._method.of(
-                        astMethodDecl.getJavaDoc().getContent(), methd, body );      
+                        _javadoc.of( astMethodDecl.getJavaDoc().getContent() ), methd, body );      
                     for( int k = 0; k < astMethodAnnots.size(); k++ )
                     {
                         _meth.annotate( astMethodAnnots.get( k ).toString() );

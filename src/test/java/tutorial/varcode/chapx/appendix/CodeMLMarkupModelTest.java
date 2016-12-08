@@ -26,9 +26,10 @@ public class /*{+className*/CodeMLMarkupModelTest/*+}*/ /*{-*/extends TestCase/*
     public void testAddMethod()
     {
         _method _m = _method.of(
-            "Simple ToString method ", 
+            "/* Simple ToString method*/", 
             "public String toString()", 
-            _code.of( "return this.getClass().getName().toString();" ) );
+            "return this.getClass().getName().toString();" );
+            //_code.of( "return this.getClass().getName().toString();" ) );
             
         JavaCase thisCase = JavaCase.of(CodeMLMarkupModelTest.class, 
             "tutorial.varcode.chapx.appendix.AddMethodClass", 

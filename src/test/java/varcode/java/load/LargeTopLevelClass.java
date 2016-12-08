@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 /**
  * The purpose of this class is to push the boundaries and ensure
  * that all Facets of Reading in the AST / LangModel (_class) works
-
  * @author Eric DeFazio
  */
 @Deprecated

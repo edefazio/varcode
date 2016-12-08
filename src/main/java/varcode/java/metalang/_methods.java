@@ -1,5 +1,6 @@
 package varcode.java.metalang;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -283,28 +284,124 @@ public class _methods
             "{+methodAnnotations+}" +    
             "{+methodSignature*+};" + N );
 	
-	public static _method of( String methodSignature )
-	{
-            _method m = new _method( methodSignature );
-            return m;
-	}
-        
-        public static _method of( String methodSignature, _code body )
+    
+        /**
+         * Holds builder params to simplify construction / initialization
+         * (we use the static of(...) "builder" method.)
+         */
+        private static class MethodParams
         {
-            _method m = new _method( methodSignature );
-            if( body != null && !body.isEmpty() )
-            {
-                return m.body( body );
+            _javadoc javadoc; // starts with /* ends with */
+            _annotations annots = new _annotations(); //starts with @
+            String signature;
+            List<Object> body = new ArrayList<Object>(); //anything AFTER signature is populated
+        }
+    
+        
+        private static void addBody( MethodParams mp, Object body )
+        {
+            if( body.getClass().isArray() )
+            {            
+                for( int i = 0; i < Array.getLength( body ); i++ )      
+                {
+                    mp.body.add( Array.get( body, i ) );
+                }
             }
-            return m;
+            else if( body.getClass().isAssignableFrom( List.class ) )
+            {
+                List lBody = (List) body;
+                mp.body.addAll( lBody );
+            }
+            else
+            {
+                mp.body.add( body );
+            }        
         }
-		
-        public static _method of( String signature, Object... body )
+    
+        /**
+         * A flexible fluent API for allowing the client 
+         * to create _methods i.e.<PRE>
+         * public static final _method _m = _method.of( 
+         *     "/*comment* /",  //provide the javadoc comment for the method
+         *     "@Deprecated",   //provide one or more annotations to the method
+         *     "public static final String createId()", //the method signature
+         *     "return UUID.randomUUID().toString();"   //the method body
+         * );
+         * 
+         * //the idea is to provide the ability to declare the _method 
+         * (metalanguage model) as succinctly as possible.
+         * 
+         * @param parts the parts of a method 
+         * @return a _method
+        */
+        public static _method of( Object...parts )
         {
-            _method m = new _method( signature );
-            return m.body( body );            
-        }
+            MethodParams mp = new MethodParams();
+            for( int i = 0; i < parts.length; i++ )
+            {
+                if( parts[ i ] == null )
+                {
+                    continue;
+                }
+                else if( mp.signature != null )
+                {   //ANYTHING i pass in AFTER the signature
+                    // is assumed to be the BODY of the method
+                    addBody(mp, parts[ i ] );
+                }
+                else if( parts[ i ] instanceof String )
+                {
+                    partFromString(mp, (String)parts[ i ] );
+                }            
+                else if( parts[ i ] instanceof _javadoc )
+                {
+                    mp.javadoc = (_javadoc)parts[ i ];
+                }
+                else if( parts[ i ] instanceof _annotations._annotation )
+                {
+                    mp.annots.add((_annotations._annotation)parts[ i ] );
+                }
+                else if( parts[ i ] instanceof _annotations )
+                {
+                    mp.annots = (_annotations)parts[ i ];
+                }            
+            }
         
+            _method _f = new _method( mp.signature );
+            for( int i = 0; i < mp.annots.count(); i++ )
+            {
+                _f.annotate( mp.annots.getAt( i ) );
+            }
+            if( mp.javadoc != null && !mp.javadoc.isEmpty())
+            {
+                _f.javadoc(  mp.javadoc.getComment() );
+            }        
+            if( mp.body != null && !mp.body.isEmpty() )
+            {
+                _f.body( mp.body.toArray() );
+            }
+            return _f;
+        }
+    
+        private static void partFromString( MethodParams mp, String component )
+        {
+            if( component.startsWith( "/**" ))
+            {
+                mp.javadoc = _javadoc.of( component.substring( 3, component.length() -2 ) );            
+            }
+            else if( component.startsWith( "/*" ))
+            {
+                mp.javadoc = _javadoc.of( component.substring( 2, component.length() -2 ) );            
+            }
+            else if( component.startsWith( "@" ) )
+            {
+                mp.annots.add( _annotations._annotation.of( component ) );
+            }        
+            else
+            {
+                mp.signature =  (String)component;             
+            }        
+        }
+
         public String getName()
         {
             return this.signature.getName();
@@ -341,6 +438,7 @@ public class _methods
             return signature;
 	}
 		
+        /*
         public static _method of( _javadoc javadoc, String signature, Object...body )
         {
             _method m = new _method( signature );
@@ -354,7 +452,8 @@ public class _methods
             }
             return m;
         }
-        
+        */
+        /*
 	public static _method of( String comment, String signature, Object... body )
 	{
             _method m = new _method( signature );
@@ -368,6 +467,7 @@ public class _methods
             }			
             return m;
 	}
+        */
 
 	private _javadoc javadoc;
         private _annotations annotations;

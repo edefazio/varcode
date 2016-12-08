@@ -76,6 +76,7 @@ import varcode.java.metalang.JavaMetaLangCompilerTest;
 import varcode.java.load.lang.JavaMetaLangLoaderNestedTest;
 import varcode.java.load.lang.JavaMetaLangLoaderTest;
 import varcode.java.load.lang._LoadTest;
+import varcode.java.metalang._methodTest;
 import varcode.markup.MarkupParserTest;
 import varcode.markup.VarNameAuditTest;
 import varcode.markup.bindml.BindMLCompilerTest;
@@ -258,6 +259,7 @@ public class AllTestSuite
         suite.addTestSuite( _interfaceTest.class );        
         suite.addTestSuite( _javadocTest.class );
         
+        suite.addTestSuite( _methodTest.class );
         suite.addTestSuite( _methodsTest.class );
         suite.addTestSuite( _modifiersTest.class );
         

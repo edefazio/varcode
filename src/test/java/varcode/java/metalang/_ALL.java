@@ -22,7 +22,7 @@ public class _ALL
         suite.addTestSuite( _classTest.class );
         suite.addTestSuite( _codeTest.class );
         suite.addTestSuite( _constructorsTest.class );
-        suite.addTestSuite(_autoDtoTest.class );
+        suite.addTestSuite( _autoDtoTest.class );
         suite.addTestSuite( _enumTest.class );
         suite.addTestSuite( _extendsTest.class );        
         suite.addTestSuite( _fieldsTest.class );
@@ -34,6 +34,7 @@ public class _ALL
         suite.addTestSuite( _javadocTest.class );
         
         suite.addTestSuite( _methodsTest.class );
+        suite.addTestSuite( _methodTest.class );
         suite.addTestSuite( _modifiersTest.class );
         
         suite.addTestSuite( _packageTest.class );
