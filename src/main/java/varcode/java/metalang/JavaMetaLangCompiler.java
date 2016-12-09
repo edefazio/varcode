@@ -565,7 +565,7 @@ public class JavaMetaLangCompiler
      *
      * @param astRoot the Root AST node for the declaring class
      * @param astEnumDecl the AST node containing the Enum Declaration
-     * @return an updated _enum MetaLang model
+     * @return an updated _enum MetaLang model  
      */
     public static _enum _enumFrom( 
         CompilationUnit astRoot, EnumDeclaration astEnumDecl )

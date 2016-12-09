@@ -6,7 +6,7 @@ import varcode.doc.translate.JavaTranslate;
 import varcode.java.metalang._fields._field;
 import varcode.java.metalang._methods._method;
 import varcode.java.metalang._parameters;
-import varcode.java.metalang._javaComponent;
+import varcode.java.metalang.JavaMetaLang._model;
 
 /**
  * Automate adding Logging for _method(s) within a _class
@@ -15,7 +15,7 @@ import varcode.java.metalang._javaComponent;
  */
 public class AutoLogMethodParams 
 {
-    public static _javaComponent forMethod( _javaComponent _c, String methodName )
+    public static _model forMethod( _model _c, String methodName )
     {
         List<_method> methods = _c.getMethods().getByName( methodName );
         for( int i = 0; i < methods.size(); i++ )
@@ -31,7 +31,7 @@ public class AutoLogMethodParams
      * @param _m the method MetaLang model (assumed to be a method OF _c)
      * @return the modified _class
      */
-    public static _javaComponent forMethod( _javaComponent _c, _method _m )
+    public static _model forMethod( _model _c, _method _m )
     {
         //dont attempt to do this for abstract or native methods
         if( _m.getModifiers().containsAny( "abstract", "native" ) || 

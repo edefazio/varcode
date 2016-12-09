@@ -20,17 +20,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import junit.framework.TestCase;
+import varcode.java.metalang.JavaMetaLang._facet;
 import varcode.java.metalang._annotations;
 import varcode.java.metalang._annotations._annotation;
 import varcode.java.metalang._class;
 import varcode.java.metalang._class._signature;
-import varcode.java.metalang._facet;
 import varcode.java.metalang._fields._field;
 import varcode.java.metalang._imports;
 import varcode.java.metalang._javadoc;
-import varcode.java.metalang._license;
 import varcode.java.metalang._methods._method;
-import varcode.java.metalang._modifiers;
 import varcode.java.metalang._package;
 
 /**
@@ -136,7 +134,7 @@ public class _classDeclare
     
     private static class ClassParams
     {
-        _license license;
+        //_license license;
         _package pack;    /* package io.varcode....*/
         _imports imports = new _imports(); // "import Java.lang", Class
         _javadoc javadoc; // starts with /* ends with */
@@ -166,10 +164,12 @@ public class _classDeclare
                     cd.imports.addImport( components[ i ] );
                 }
             }
+            /*
             else if( components[ i ] instanceof _license )
             {
                 cd.license = (_license)components[ i ];
             }
+            */
             else if( components[ i ] instanceof _package )
             {
                 cd.pack = (_package)components[ i ];
@@ -212,10 +212,12 @@ public class _classDeclare
         {
             _c.javadoc( cd.javadoc.getComment() );
         }
+        /*
         if( cd.license != null ) //TODO fix
         {
             _c.codeLicense( cd.license.author() );
         }
+        */
         if( cd.pack != null && !cd.pack.isEmpty() )
         {
             _c.packageName( cd.pack.getName() );

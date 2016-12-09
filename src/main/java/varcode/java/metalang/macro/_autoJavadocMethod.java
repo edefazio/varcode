@@ -16,11 +16,9 @@
 package varcode.java.metalang.macro;
 
 import varcode.java.metalang._class;
-import varcode.java.metalang._javaComponent;
 import varcode.java.metalang._methods;
 import varcode.java.metalang._methods._method;
 import varcode.java.metalang._parameters._parameter;
-import varcode.java.metalang._throws;
 
 /**
  * pass in any _class, _interface, or _enum

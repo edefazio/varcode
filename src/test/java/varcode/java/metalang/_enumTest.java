@@ -246,24 +246,23 @@ public class _enumTest
     }    
     
     public void testNest()  
-	{
-		//NOTE: the nested class imports UUID
-		// which is
-		_enum e = _enum.of(
-			"ex.varcode.model", 
-			"public enum TopLevel")
-				.field("public int index;")
-		        .nest( 
-		        	_class.of(
-		        		"some.ignored.pack.age", 
-		        		"public static class InnerClass")		        	    
-		        		.field( "public String ID = UUID.randomUUID().toString()" )
-		        		.imports(UUID.class)
-		        	);
-		JavaCase js = e.toJavaCase( );
-		System.out.println( js );
-		js.loadClass();		
-	}
+    {
+	//NOTE: the nested class imports UUID
+	// which is "propagated" to TopLevel class
+	_enum e = _enum.of( "ex.varcode.model", 
+            "public enum TopLevel")
+            .field("public int index;")
+            .nest( 
+		_class.of(
+                    "some.ignored.pack.age", 
+		    "public static class InnerClass")		        	    
+		    .field( "public String ID = UUID.randomUUID().toString()" )
+		    .imports(UUID.class)
+            );
+        JavaCase js = e.toJavaCase( );
+        System.out.println( js );
+        js.loadClass();		
+    }
 	
     
     public void testConstructors()

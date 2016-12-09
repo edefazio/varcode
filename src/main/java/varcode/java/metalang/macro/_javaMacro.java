@@ -16,8 +16,8 @@
 package varcode.java.metalang.macro;
 
 import varcode.java.metalang._constructors._constructor;
-import varcode.java.metalang._javaComponent;
 import varcode.java.metalang._methods._method;
+import varcode.java.metalang.JavaMetaLang._model;
 
 /**
  * 
@@ -42,10 +42,10 @@ public interface _javaMacro
     public static class AddConstructorEdit
         implements _edit
     {
-        public final _javaComponent component;
+        public final _model component;
         public final _constructor constructor;
         
-        public AddConstructorEdit( _javaComponent component, _constructor constructor )
+        public AddConstructorEdit( _model component, _constructor constructor )
         {
             this.component = component;
             this.constructor = constructor;
@@ -55,10 +55,10 @@ public interface _javaMacro
     public static class AddMethodEdit
         implements _edit
     {
-        public final _javaComponent component;
+        public final _model component;
         public final _method method;
         
-        public AddMethodEdit( _javaComponent component, _method method )
+        public AddMethodEdit( _model component, _method method )
         {
             this.component = component;
             this.method = method;

@@ -32,7 +32,7 @@ import varcode.java.ast.JavaASTParser;
 import varcode.java.load.JavaSourceLoader;
 import varcode.load.SourceLoader;
 import varcode.load.SourceLoader.SourceStream;
-import varcode.java.metalang._javaComponent;
+import varcode.java.metalang.JavaMetaLang._model;
 
 /**
  *
@@ -76,7 +76,7 @@ public class _Load
         return AST.ofClass( sourceLoader, clazz );          
     }
     
-    public _javaComponent modelOf( Class clazz )
+    public _model modelOf( Class clazz )
     {
         if( clazz.isInterface() )
         {

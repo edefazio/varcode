@@ -13,10 +13,11 @@ import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.metalang._fields._field;
 import varcode.java.metalang._methods._method;
 import varcode.markup.bindml.BindML;
+import varcode.java.metalang.JavaMetaLang._model;
 
 //allow default methods
 public class _interface 
-    implements JavaCaseAuthor, _javaComponent
+    implements JavaCaseAuthor, _model
 {    
     public static final Dom INTERFACE = 
 	BindML.compile( 
@@ -45,7 +46,7 @@ public class _interface
             String[] nested = new String[ nesteds.count() ];
             for( int i = 0; i < nesteds.count(); i++ )
             {
-                _javaComponent comp = nesteds.components.get( i );
+                _model comp = nesteds.components.get( i );
                 VarContext vc = comp.getContext();
                 vc.getScopeBindings().remove( "pckage" );
                 vc.getScopeBindings().remove( "imports" );
@@ -447,7 +448,7 @@ public class _interface
     {         
         for( int i = 0; i < this.nesteds.count(); i++ )
         {
-            _javaComponent nest = this.nesteds.getAt( i );
+            _model nest = this.nesteds.getAt( i );
             String nestedClassName = nest.getName();
             String thisNestClassName = containerClassName + "$" + nestedClassName;
             nestedClassNames.add(  thisNestClassName );
@@ -467,12 +468,12 @@ public class _interface
         return this.nesteds.count();
     }
         
-    public _javaComponent getNestedByName( String name )
+    public _model getNestedByName( String name )
     {
         return this.nesteds.getByName( name ); 
     }
     
-    public _javaComponent getNestedAt( int index )
+    public _model getNestedAt( int index )
     {
         return this.nesteds.getAt(  index );
     }
@@ -685,7 +686,7 @@ public class _interface
         return this;
     }
 
-    public _interface nest( _javaComponent component )
+    public _interface nest( _model component )
     {
         this.nesteds.add( component );
         return this;

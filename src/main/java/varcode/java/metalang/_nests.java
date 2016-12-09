@@ -27,13 +27,13 @@ public class _nests
     implements JavaMetaLang
 {	
     //all nested components of a declaring class (_class, _enum, _interface)
-    public List<_javaComponent>components = new ArrayList<_javaComponent>();
+    public List<_model>components = new ArrayList<_model>();
 
     public _nests()
     {			
     }
 		
-    public _javaComponent getByName( String name )
+    public _model getByName( String name )
     {
         for( int i = 0; i < components.size(); i++ )
         {
@@ -45,7 +45,7 @@ public class _nests
         return null;
     }
     
-    public _javaComponent getAt( int index )
+    public _model getAt( int index )
     {
         if( index >= 0 && index < components.size() )
         {
@@ -55,7 +55,7 @@ public class _nests
             " index [" + index + "] not in range [0..." + ( components.size() -1 ) + "]" );
     }
     
-	public _nests add( _javaComponent component )
+	public _nests add( _model component )
 	{
         //first verify that no other component has the same name
         for( int i = 0; i < this.components.size(); i++ )
@@ -135,12 +135,12 @@ public class _nests
 		{
 			return new _nests();
 		}
-		List<_javaComponent> components = nests.components;
+		List<_model> components = nests.components;
 		_nests clone = new _nests();
 			
 		for( int i = 0; i < nests.count(); i++ )
 		{
-			_javaComponent thisComp = components.get( i ); 
+			_model thisComp = components.get( i ); 
 			if( thisComp instanceof _class )
 			{
 				clone.add( _class.cloneOf( (_class)thisComp ) );

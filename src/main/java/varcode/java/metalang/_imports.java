@@ -8,6 +8,7 @@ import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.Dom;
+import varcode.java.metalang.JavaMetaLang._facet;
 import varcode.markup.bindml.BindML;
 
 /**

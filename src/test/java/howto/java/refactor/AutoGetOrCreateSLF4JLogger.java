@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import varcode.java.metalang._fields;
 import varcode.java.metalang._fields._field;
-import varcode.java.metalang._javaComponent;
+import varcode.java.metalang.JavaMetaLang._model;
 
 /**
  * looks at the contents of a _class MetaLang Model and either
@@ -31,7 +31,7 @@ import varcode.java.metalang._javaComponent;
  */
 public class AutoGetOrCreateSLF4JLogger 
 {
-    public static _field getOrCreate( _javaComponent _c )
+    public static _field getOrCreate( _model _c )
     {
         return AutoGetOrCreateSLF4JLogger.getOrCreate( _c, "LOG" );        
     }
@@ -41,7 +41,7 @@ public class AutoGetOrCreateSLF4JLogger
      * @param _c
      * @return 
      */
-    private static List<_field> getLoggerFields( _javaComponent _c )
+    private static List<_field> getLoggerFields( _model _c )
     {
         List<_field> fields = new ArrayList<_field>();
         _fields _fs = _c.getFields();
@@ -65,7 +65,7 @@ public class AutoGetOrCreateSLF4JLogger
      * @return the _field that was found or created on the _class
      */
     public static _field getOrCreate( 
-        _javaComponent _c, 
+        _model _c, 
         String loggerFieldName )
     {        
         List<_field>loggerFields = getLoggerFields( _c ); //( Logger.class );

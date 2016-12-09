@@ -24,7 +24,6 @@ import varcode.java.metalang._constructors._constructor;
 import varcode.java.metalang._enum;
 import varcode.java.metalang._fields;
 import varcode.java.metalang._fields._field;
-import varcode.java.metalang._javaComponent;
 
 /**
  * Given fields on an Object, creates a constructor
