@@ -16,7 +16,7 @@
 package varcode.java.load;
 
 import varcode.load.LoadException;
-import varcode.java.metalang.JavaMetaLangCompiler;
+import varcode.java.lang.JavaMetaLangCompiler;
 import varcode.java.ast.JavaASTParser;
 import com.github.javaparser.ParseException;
 import com.github.javaparser.ast.CompilationUnit;
@@ -25,9 +25,9 @@ import com.github.javaparser.ast.body.EnumDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import varcode.java.metalang._class;
-import varcode.java.metalang._enum;
-import varcode.java.metalang._interface;
+import varcode.java.lang._class;
+import varcode.java.lang._enum;
+import varcode.java.lang._interface;
 import varcode.load.SourceLoader;
 import varcode.load.SourceLoader.SourceStream;
 

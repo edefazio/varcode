@@ -7,9 +7,9 @@ import java.util.UUID;
 import junit.framework.TestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import varcode.java.metalang._class;
-import varcode.java.metalang._enum;
-import varcode.java.metalang._interface;
+import varcode.java.lang._class;
+import varcode.java.lang._enum;
+import varcode.java.lang._interface;
 
 /**
  * Create _class, _enum, _interface models and "author" 

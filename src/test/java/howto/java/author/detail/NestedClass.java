@@ -5,8 +5,8 @@ import java.util.Date;
 import java.util.UUID;
 import junit.framework.TestCase;
 import varcode.java._Java;
-import varcode.java.metalang._class;
-import varcode.java.metalang._interface;
+import varcode.java.lang._class;
+import varcode.java.lang._interface;
 
 /**
  * Create a Nested _class as a member of an _interface

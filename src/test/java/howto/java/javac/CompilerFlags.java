@@ -20,7 +20,7 @@ import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.adhoc.JavacException;
 import varcode.java.adhoc.JavacOptions;
 import varcode.java.adhoc.Workspace;
-import varcode.java.metalang._class;
+import varcode.java.lang._class;
 
 /**
  *

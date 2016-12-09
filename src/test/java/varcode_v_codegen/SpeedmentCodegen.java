@@ -16,7 +16,7 @@
 package varcode_v_codegen;
 
 import varcode.java._Java;
-import varcode.java.metalang._class;
+import varcode.java.lang._class;
 
 /**
  *

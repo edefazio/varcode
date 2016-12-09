@@ -2,7 +2,7 @@ package howto.java.author;
 
 import junit.framework.TestCase;
 import varcode.java._Java;
-import varcode.java.metalang._class;
+import varcode.java.lang._class;
 
 public class Author_class
     extends TestCase

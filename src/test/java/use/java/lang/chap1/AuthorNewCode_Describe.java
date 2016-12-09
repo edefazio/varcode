@@ -2,7 +2,7 @@ package use.java.lang.chap1;
 
 import junit.framework.TestCase;
 import varcode.java._Java;
-import varcode.java.metalang._class;
+import varcode.java.lang._class;
 
 /**
  * "Authoring" Java code in varcode is building the .java source code

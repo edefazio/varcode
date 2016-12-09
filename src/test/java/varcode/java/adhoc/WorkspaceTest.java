@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import junit.framework.TestCase;
 import varcode.VarException;
 import varcode.java._Java;
-import varcode.java.metalang._class;
-import varcode.java.metalang.macro._autoEnum;
+import varcode.java.lang._class;
+import varcode.java.macro._autoEnum;
 
 public class WorkspaceTest
 	extends TestCase

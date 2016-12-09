@@ -18,7 +18,7 @@ package tutorial.varcode.chapx.appendix;
 import java.io.Serializable;
 import junit.framework.TestCase;
 import varcode.Model;
-import varcode.java.metalang._interface;
+import varcode.java.lang._interface;
 import varcode.java.load.JavaMetaLangLoader;
 
 /**

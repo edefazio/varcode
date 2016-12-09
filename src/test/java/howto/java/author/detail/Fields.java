@@ -17,10 +17,10 @@ package howto.java.author.detail;
 
 import java.lang.reflect.Modifier;
 import junit.framework.TestCase;
-import varcode.java.metalang._class;
-import varcode.java.metalang._enum;
-import varcode.java.metalang._fields._field;
-import varcode.java.metalang._modifiers;
+import varcode.java.lang._class;
+import varcode.java.lang._enum;
+import varcode.java.lang._fields._field;
+import varcode.java.lang._modifiers;
 
 /**
  *

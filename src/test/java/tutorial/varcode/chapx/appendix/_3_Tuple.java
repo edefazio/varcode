@@ -18,8 +18,8 @@ package tutorial.varcode.chapx.appendix;
 import java.util.UUID;
 import junit.framework.TestCase;
 import varcode.java._Java;
-import varcode.java.metalang._class;
-import varcode.java.metalang._code;
+import varcode.java.lang._class;
+import varcode.java.lang._code;
 
 /**
  *

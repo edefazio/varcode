@@ -19,7 +19,7 @@ import junit.framework.TestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import varcode.VarException;
-import varcode.java.metalang._class;
+import varcode.java.lang._class;
 import varcode.java.load.JavaMetaLangLoader;
 
 /**

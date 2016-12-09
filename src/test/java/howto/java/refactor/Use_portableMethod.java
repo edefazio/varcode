@@ -3,13 +3,13 @@ package howto.java.refactor;
 import java.util.UUID;
 import junit.framework.TestCase;
 import varcode.java._Java;
-import varcode.java.metalang._class;
-import varcode.java.metalang._code;
-import varcode.java.metalang._fields._field;
-import varcode.java.metalang._imports;
-import varcode.java.metalang.macro._portableMethod;
-import varcode.java.metalang._methods._method;
-import varcode.java.metalang.macro._portMethod;
+import varcode.java.lang._class;
+import varcode.java.lang._code;
+import varcode.java.lang._fields._field;
+import varcode.java.lang._imports;
+import varcode.java.macro._portableMethod;
+import varcode.java.lang._methods._method;
+import varcode.java.macro._portMethod;
 
 /**
  *

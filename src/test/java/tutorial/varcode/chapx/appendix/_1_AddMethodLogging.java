@@ -17,18 +17,18 @@ package tutorial.varcode.chapx.appendix;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import varcode.java.metalang._class;
-import varcode.java.metalang._code;
-import varcode.java.metalang._enum;
-import varcode.java.metalang._fields;
-import varcode.java.metalang._fields._field;
-import varcode.java.metalang._imports;
-import varcode.java.metalang._interface;
-import varcode.java.metalang._methods;
-import varcode.java.metalang._methods._method;
-import varcode.java.metalang._nests;
+import varcode.java.lang._class;
+import varcode.java.lang._code;
+import varcode.java.lang._enum;
+import varcode.java.lang._fields;
+import varcode.java.lang._fields._field;
+import varcode.java.lang._imports;
+import varcode.java.lang._interface;
+import varcode.java.lang._methods;
+import varcode.java.lang._methods._method;
+import varcode.java.lang._nests;
 import varcode.java.load.JavaMetaLangLoader;
-import varcode.java.metalang.JavaMetaLang._model;
+import varcode.java.lang.JavaMetaLang._model;
 
 /**
  * Simple example for a "mixin" like metaprogram which takes

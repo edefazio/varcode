@@ -2,7 +2,7 @@ package tutorial.varcode.chapx.appendix;
 
 import junit.framework.TestCase;
 import varcode.java._Java;
-import varcode.java.metalang._class;
+import varcode.java.lang._class;
 
 /**
  * varcode makes generating Java source code easy with the metalang API.

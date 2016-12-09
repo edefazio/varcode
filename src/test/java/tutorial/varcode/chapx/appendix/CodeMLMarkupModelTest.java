@@ -3,12 +3,12 @@ package tutorial.varcode.chapx.appendix;
 import junit.framework.TestCase;
 import varcode.java._Java;
 import varcode.java.JavaCase;
-import varcode.java.metalang._class;
-import varcode.java.metalang._code;
-import varcode.java.metalang._enum;
-import varcode.java.metalang._fields._field;
-import varcode.java.metalang._interface;
-import varcode.java.metalang._methods._method;/*-}*/
+import varcode.java.lang._class;
+import varcode.java.lang._code;
+import varcode.java.lang._enum;
+import varcode.java.lang._fields._field;
+import varcode.java.lang._interface;
+import varcode.java.lang._methods._method;/*-}*/
 /*{$$condenseBlankLines$$}*/
 
 /*{- uses a class marked up with CodeML and 

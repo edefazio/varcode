@@ -18,9 +18,9 @@ package howto.java.refactor;
 import howto.java.refactor.AutoLogMethodParams;
 import junit.framework.TestCase;
 import varcode.java._Java;
-import varcode.java.metalang._class;
-import varcode.java.metalang._enum;
-import varcode.java.metalang._methods;
+import varcode.java.lang._class;
+import varcode.java.lang._enum;
+import varcode.java.lang._methods;
 
 /**
  * This is 

@@ -20,8 +20,8 @@ import java.util.UUID;
 import junit.framework.TestCase;
 import static junit.framework.TestCase.assertEquals;
 import varcode.java._Java;
-import varcode.java.metalang._class;
-import varcode.java.metalang._fields;
+import varcode.java.lang._class;
+import varcode.java.lang._fields;
 
 /**
  *

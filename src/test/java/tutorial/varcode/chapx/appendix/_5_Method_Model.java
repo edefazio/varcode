@@ -2,8 +2,8 @@ package tutorial.varcode.chapx.appendix;
 
 import junit.framework.TestCase;
 import varcode.java._Java;
-import varcode.java.metalang._class;
-import varcode.java.metalang._methods._method;
+import varcode.java.lang._class;
+import varcode.java.lang._methods._method;
 import varcode.java.load.JavaMetaLangLoader;
 //import varcode.markup.codeml.code._Method;
 public class _5_Method_Model

@@ -20,9 +20,9 @@ import java.util.Map;
 import junit.framework.TestCase;
 import varcode.context.VarContext;
 import varcode.doc.Dom;
-import varcode.java.metalang._methods._method;
-import varcode.java.metalang._modifiers;
-import varcode.java.metalang._throws;
+import varcode.java.lang._methods._method;
+import varcode.java.lang._modifiers;
+import varcode.java.lang._throws;
 
 /**
  *  

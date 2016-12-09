@@ -16,7 +16,7 @@
 package howto.java.author.detail;
 
 import junit.framework.TestCase;
-import varcode.java.metalang._methods._method;
+import varcode.java.lang._methods._method;
 
 /**
  *

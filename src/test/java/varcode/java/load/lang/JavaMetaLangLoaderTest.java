@@ -10,18 +10,18 @@ import static junit.framework.TestCase.assertTrue;
 import varcode.Lang;
 import varcode.Model;
 import varcode.VarException;
-import varcode.java.metalang._class;
-import varcode.java.metalang._constructors;
-import varcode.java.metalang._constructors._constructor;
-import varcode.java.metalang._enum;
-import varcode.java.metalang._fields;
-import varcode.java.metalang._fields._field;
-import varcode.java.metalang._imports;
-import varcode.java.metalang._interface;
-import varcode.java.metalang._javadoc;
-import varcode.java.metalang._methods;
-import varcode.java.metalang._methods._method;
-import varcode.java.metalang._parameters;
+import varcode.java.lang._class;
+import varcode.java.lang._constructors;
+import varcode.java.lang._constructors._constructor;
+import varcode.java.lang._enum;
+import varcode.java.lang._fields;
+import varcode.java.lang._fields._field;
+import varcode.java.lang._imports;
+import varcode.java.lang._interface;
+import varcode.java.lang._javadoc;
+import varcode.java.lang._methods;
+import varcode.java.lang._methods._method;
+import varcode.java.lang._parameters;
 
 /**
  * 

@@ -1,6 +1,6 @@
 package tutorial.varcode.chapx.appendix;
 
-import varcode.java.metalang._class;
+import varcode.java.lang._class;
 
 /**
  * Just a discussion on why we made the decision to defy Oracle/Java coding 

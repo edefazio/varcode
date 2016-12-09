@@ -2,7 +2,7 @@ package howto.java.load;
 
 import junit.framework.TestCase;
 import varcode.java._Java;
-import varcode.java.metalang._enum;
+import varcode.java.lang._enum;
 import varcode.load.DirectorySourceLoader;
 
 /**

@@ -3,7 +3,7 @@ package howto.java.tailor;
 import java.lang.reflect.Modifier;
 import junit.framework.TestCase;
 import varcode.java._Java;
-import varcode.java.metalang._class;
+import varcode.java.lang._class;
 
 /**
  * varcode can load and change the .java source code for existing Classes at 

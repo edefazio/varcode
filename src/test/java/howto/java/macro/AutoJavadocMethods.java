@@ -16,8 +16,8 @@
 package howto.java.macro;
 
 import junit.framework.TestCase;
-import varcode.java.metalang._class;
-import varcode.java.metalang.macro._autoJavadocMethod;
+import varcode.java.lang._class;
+import varcode.java.macro._autoJavadocMethod;
 
 /**
  * {@link _class}

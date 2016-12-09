@@ -3,10 +3,10 @@ package howto.java.refactor;
 import howto.java.refactor.AutoGetOrCreateSLF4JLogger;
 import java.util.List;
 import varcode.doc.translate.JavaTranslate;
-import varcode.java.metalang._fields._field;
-import varcode.java.metalang._methods._method;
-import varcode.java.metalang._parameters;
-import varcode.java.metalang.JavaMetaLang._model;
+import varcode.java.lang._fields._field;
+import varcode.java.lang._methods._method;
+import varcode.java.lang._parameters;
+import varcode.java.lang.JavaMetaLang._model;
 
 /**
  * Automate adding Logging for _method(s) within a _class

@@ -2,7 +2,7 @@ package howto.java.author;
 
 import junit.framework.TestCase;
 import varcode.java._Java;
-import varcode.java.metalang._enum;
+import varcode.java.lang._enum;
 
 public class Author_enum
     extends TestCase

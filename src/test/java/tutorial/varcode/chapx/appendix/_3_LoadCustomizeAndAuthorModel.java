@@ -23,9 +23,9 @@ import java.util.UUID;
 import junit.framework.TestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import varcode.java.metalang._class;
-import varcode.java.metalang._code;
-import varcode.java.metalang._methods._method;
+import varcode.java.lang._class;
+import varcode.java.lang._code;
+import varcode.java.lang._methods._method;
 import varcode.java.load.JavaMetaLangLoader;
 
 /**

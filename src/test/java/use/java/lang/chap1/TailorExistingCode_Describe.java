@@ -3,7 +3,7 @@ package use.java.lang.chap1;
 import junit.framework.TestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import varcode.java.metalang._class;
+import varcode.java.lang._class;
 import varcode.java._Java;
 
 /**

@@ -2,7 +2,7 @@ package howto.java.tailor;
 
 import java.util.UUID;
 import junit.framework.TestCase;
-import varcode.java.metalang._class;
+import varcode.java.lang._class;
 import varcode.java._Java;
 
 /**

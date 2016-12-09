@@ -1,7 +1,7 @@
 package howto.java.author;
 
 import junit.framework.TestCase;
-import varcode.java.metalang._interface;
+import varcode.java.lang._interface;
 
 public class Author_interface 
     extends TestCase

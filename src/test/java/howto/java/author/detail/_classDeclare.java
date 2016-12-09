@@ -20,16 +20,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import junit.framework.TestCase;
-import varcode.java.metalang.JavaMetaLang._facet;
-import varcode.java.metalang._annotations;
-import varcode.java.metalang._annotations._annotation;
-import varcode.java.metalang._class;
-import varcode.java.metalang._class._signature;
-import varcode.java.metalang._fields._field;
-import varcode.java.metalang._imports;
-import varcode.java.metalang._javadoc;
-import varcode.java.metalang._methods._method;
-import varcode.java.metalang._package;
+import varcode.java.lang.JavaMetaLang._facet;
+import varcode.java.lang._annotations;
+import varcode.java.lang._annotations._annotation;
+import varcode.java.lang._class;
+import varcode.java.lang._class._signature;
+import varcode.java.lang._fields._field;
+import varcode.java.lang._imports;
+import varcode.java.lang._javadoc;
+import varcode.java.lang._methods._method;
+import varcode.java.lang._package;
 
 /**
  *

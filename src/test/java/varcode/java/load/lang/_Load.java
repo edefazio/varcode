@@ -15,7 +15,7 @@
  */
 package varcode.java.load.lang;
 
-import varcode.java.metalang.JavaMetaLangCompiler;
+import varcode.java.lang.JavaMetaLangCompiler;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseException;
 import com.github.javaparser.ast.CompilationUnit;
@@ -25,14 +25,14 @@ import com.github.javaparser.ast.body.TypeDeclaration;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import varcode.load.LoadException;
-import varcode.java.metalang._class;
-import varcode.java.metalang._enum;
-import varcode.java.metalang._interface;
+import varcode.java.lang._class;
+import varcode.java.lang._enum;
+import varcode.java.lang._interface;
 import varcode.java.ast.JavaASTParser;
 import varcode.java.load.JavaSourceLoader;
 import varcode.load.SourceLoader;
 import varcode.load.SourceLoader.SourceStream;
-import varcode.java.metalang.JavaMetaLang._model;
+import varcode.java.lang.JavaMetaLang._model;
 
 /**
  *

@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import varcode.VarException;
-import varcode.java.metalang.JavaMetaLang._model;
+import varcode.java.lang.JavaMetaLang._model;
 
 /**
  * A ClassLoader that maintains a cache Map of {@code InMemoryJavaClass}es by name

@@ -18,7 +18,7 @@ package tutorial.varcode.chapx.appendix;
 import junit.framework.TestCase;
 import varcode.context.Bootstrap;
 import varcode.java._Java;
-import varcode.java.metalang._enum;
+import varcode.java.lang._enum;
 import varcode.java.load.JavaMetaLangLoader;
 
 /**

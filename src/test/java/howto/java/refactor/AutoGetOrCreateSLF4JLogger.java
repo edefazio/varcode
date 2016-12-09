@@ -19,9 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import varcode.java.metalang._fields;
-import varcode.java.metalang._fields._field;
-import varcode.java.metalang.JavaMetaLang._model;
+import varcode.java.lang._fields;
+import varcode.java.lang._fields._field;
+import varcode.java.lang.JavaMetaLang._model;
 
 /**
  * looks at the contents of a _class MetaLang Model and either

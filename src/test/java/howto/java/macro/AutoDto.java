@@ -4,9 +4,9 @@ import java.util.Date;
 import junit.framework.TestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import varcode.java.metalang._class;
-import varcode.java.metalang.macro._autoDto;
-import varcode.java.metalang.macro._autoExternalizable;
+import varcode.java.lang._class;
+import varcode.java.macro._autoDto;
+import varcode.java.macro._autoExternalizable;
 
 /**
  * _auto... abstractions are "macro"-like abstractions used to "automate"  

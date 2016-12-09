@@ -1,7 +1,7 @@
 package howto.java.macro;
 
-import varcode.java.metalang._enum;
-import varcode.java.metalang.macro._autoEnum;
+import varcode.java.lang._enum;
+import varcode.java.macro._autoEnum;
 
 /**
  * 

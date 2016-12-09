@@ -3,10 +3,10 @@ package varcode.java.load;
 import java.util.ArrayList;
 import java.util.List;
 import junit.framework.TestCase;
-import varcode.java.metalang._class;
-import varcode.java.metalang._enum;
-import varcode.java.metalang._interface;
-import varcode.java.metalang._nests;
+import varcode.java.lang._class;
+import varcode.java.lang._enum;
+import varcode.java.lang._interface;
+import varcode.java.lang._nests;
 
 /**
  *

@@ -2,8 +2,8 @@ package tutorial.varcode.chapx.appendix;
 
 import junit.framework.TestCase;
 import varcode.java.adhoc.AdHocClassLoader;
-import varcode.java.metalang._class;
-import varcode.java.metalang._interface;
+import varcode.java.lang._class;
+import varcode.java.lang._interface;
 
 /**
  * TODO At the moment, this  FAILS
