@@ -12,8 +12,12 @@ import varcode.java.metalang._class;
 import varcode.java.metalang._interface;
 import java.io.Serializable;
 import java.lang.reflect.Modifier;
+import java.util.Date;
+import java.util.Map;
 import java.util.UUID;
 import junit.framework.TestCase;
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertTrue;
 import varcode.VarException;
 import varcode.java._Java;
 import varcode.java.JavaCase;
@@ -66,6 +70,85 @@ public class _enumTest
         assertEquals( "Empty", enumClazz.getCanonicalName() );        
     }
 
+      public void testStringInit()
+    {
+        _enum _e = _enum.of( "public enum A" );
+        assertEquals( "A", _e.getName());
+        assertTrue( _e.getModifiers().contains("public" ) );        
+        
+        _e = _enum.of( "io.varcode", "public enum A" );
+        assertEquals( "A", _e.getName());
+        assertTrue( _e.getModifiers().contains("public" ) );        
+        assertEquals( "io.varcode", _e.getPackageName() );
+        
+        _e = _enum.of( "/*comment*/", "public enum A" );
+        assertEquals( "A", _e.getName());
+        assertTrue( _e.getModifiers().contains( "public" ) );        
+        assertEquals( "comment", _e.getJavadoc().getComment() ); 
+        
+        _e = _enum.of( "/*comment*/", "io.varcode", "public enum A" );
+        assertEquals( "A", _e.getName());
+        assertTrue( _e.getModifiers().contains("public" ) );        
+        assertEquals( "io.varcode", _e.getPackageName() );
+        assertEquals( "comment", _e.getJavadoc().getComment() ); 
+        
+        
+        _e = _enum.of( "/*comment*/", "@Deprecated", "io.varcode", "public enum A" );
+        assertEquals( "A", _e.getName());
+        assertTrue( _e.getModifiers().contains("public" ) );        
+        assertEquals( "io.varcode", _e.getPackageName() );
+        assertEquals( "comment", _e.getJavadoc().getComment() ); 
+        assertEquals( "@Deprecated ", _e.getAnnotations().getAt( 0 ).toString() );
+        
+        _e = _enum.of( "/*comment*/", "@Deprecated", "io.varcode", 
+            "public enum A", 
+            Map.class, Date.class );
+        
+        assertEquals( "A", _e.getName());
+        assertTrue( _e.getModifiers().containsAll( "public" ) );        
+        assertEquals( "io.varcode", _e.getPackageName() );
+        assertEquals( "comment", _e.getJavadoc().getComment() ); 
+        assertEquals( "@Deprecated ", _e.getAnnotations().getAt( 0 ).toString() );
+        assertTrue( _e.getImports().containsAll( Map.class, Date.class ) ); 
+        
+        _e = _enum.of( 
+            "/**comment*/", 
+            "@Deprecated", 
+            "io.varcode", 
+            "public enum A", 
+            Map.class, Date.class,
+            _fields._field.of( "public static final int ID = 100;" )
+                .javadoc( "comment" ),
+            _methods._method.of( "public String doIt" )    
+            );
+        
+        assertEquals( "A", _e.getName());
+        assertTrue( _e.getModifiers().containsAll( "public" ) );        
+        assertEquals( "io.varcode", _e.getPackageName() );
+        assertEquals( "comment", _e.getJavadoc().getComment() ); 
+        assertEquals( "@Deprecated ", _e.getAnnotations().getAt( 0 ).toString() );
+        assertTrue( _e.getImports().containsAll( Map.class, Date.class ) ); 
+        assertEquals( 1, _e.getFields().count() );
+        assertEquals( 1, _e.getMethods().count() );        
+    } 
+    
+    public void testJDocClass()
+    {
+        _enum _c = _enum.of( 
+            _package.of( "io.varcode" ),
+            _imports.of( Map.class, Date.class ),
+            _javadoc.of( "comment" ),             
+            _annotations._annotation.of( "@Deprecated" ),            
+            "public enum A"                         
+            );
+        assertEquals( "A", _c.getName());
+        assertTrue( _c.getModifiers().contains( "public" ) );        
+        assertEquals( "io.varcode", _c.getPackageName() );
+        assertEquals( "comment", _c.getJavadoc().getComment() ); 
+        assertEquals( "@Deprecated ", _c.getAnnotations().getAt( 0 ).toString() );
+        assertTrue( _c.getImports().containsAll( Map.class, Date.class ) );
+    }
+    
     public void testSingleValue()
     {
         _enum e = _enum.of("enum One").constant( "IT" );

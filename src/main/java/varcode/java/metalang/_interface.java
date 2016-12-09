@@ -88,11 +88,12 @@ public class _interface
 	 * </PRE>    
 	 * @param interfaceSignature the signature of the interface
 	 * @return the interface
-	 */
+	 
 	public static _interface of( String interfaceSignature )
 	{
 	    return of( "", interfaceSignature );
 	}
+        */
 	
 	public static _interface cloneOf( _interface prototype )
 	{
@@ -157,12 +158,129 @@ public class _interface
 	 * @param packageName
 	 * @param interfaceSignature
 	 * @return
-	 */
+	 
 	public static _interface of( String packageName, String interfaceSignature )
 	{
 	    return new _interface( packageName, interfaceSignature );
 	}
+        */
 
+    private static class InterfaceParams
+    {
+        //_license license;
+        _package pack;    /* package io.varcode....*/
+        _imports imports = new _imports(); // "import Java.lang", Class
+        _javadoc javadoc; // starts with /* ends with */
+        _annotations annots = new _annotations(); //starts with @
+        _interface._signature signature; //starts with 
+        List<_facet> facets = new ArrayList<_facet>();        
+    }
+    
+    public static _interface of( Object... components )
+    {
+        InterfaceParams cd = new InterfaceParams();
+        for( int i = 0; i < components.length; i++ )
+        {
+            if( components[ i ] instanceof String )
+            {
+                fromString( cd, (String)components[ i ] );
+            }
+            else if( components[ i ] instanceof Class )
+            {
+                if( ((Class)components[i]).isAnnotation() )
+                {
+                    cd.annots.add( components[ i ] );
+                    cd.imports.addImport( components[ i ] );
+                }
+                else
+                {
+                    cd.imports.addImport( components[ i ] );
+                }
+            }
+            else if( components[ i ] instanceof _package )
+            {
+                cd.pack = (_package)components[ i ];
+            }
+            else if( components[ i ] instanceof _imports )
+            {
+                cd.imports = (_imports)components[ i ];
+            }
+            else if( components[ i ] instanceof _javadoc )
+            {
+                cd.javadoc = (_javadoc)components[ i ];
+            }
+            else if( components[ i ] instanceof _annotations )
+            {
+                cd.annots = (_annotations)components[ i ];
+            }
+            else if( components[ i ] instanceof _interface._signature )
+            {
+                cd.signature = (_interface._signature)components[ i ];
+            }
+            else if( components[ i ] instanceof _facet )
+            {
+                cd.facets.add( (_facet)components[ i ] );
+            }
+        }
+        _interface _e = new _interface( null, cd.signature );
+        for( int i = 0; i < cd.annots.count(); i++ )
+        {
+            _e.annotate( cd.annots.getAt( i ) );
+        }
+        for( int i = 0; i < cd.imports.count(); i++ )
+        {
+            _e.imports( cd.imports.getImports().toArray( new Object[ 0 ] ) );
+        }
+        for( int i = 0; i < cd.facets.size(); i++ )
+        {
+            _e.add( cd.facets.get( i ) );
+        }
+        if( cd.javadoc != null && !cd.javadoc.isEmpty())
+        {
+            _e.javadoc( cd.javadoc.getComment() );
+        }
+        if( cd.pack != null && !cd.pack.isEmpty() )
+        {
+            _e.packageName( cd.pack.getName() );
+        }
+        return _e;
+    }
+    
+    private static void fromString( InterfaceParams cd, String component )
+    {
+        if( component.startsWith( "/**" ))
+        {
+            cd.javadoc = _javadoc.of( component.substring(3, component.length() -2 ) );            
+        }
+        else if( component.startsWith( "/*" ))
+        {
+            cd.javadoc = _javadoc.of( component.substring(2, component.length() -2 ) );            
+        }
+        else if( component.startsWith( "package ") )
+        {
+            cd.pack = _package.of( component );
+        }        
+        else if( component.startsWith( "@" ) )
+        {
+            cd.annots.add( _annotations._annotation.of( component ) );
+        }        
+        else
+        {
+            String[] tokens = component.split( " " );
+            if( tokens.length == 1 )
+            {
+                if( tokens[ 0 ].indexOf( "." ) > 0 )
+                {
+                    cd.pack = _package.of( tokens[ 0 ] );
+                }
+            } 
+            else
+            {
+                cd.signature = _interface._signature.of( component ); 
+            }
+        }        
+    }
+    
     private _package interfacePackage;
     private _javadoc javadoc;
     private _annotations annotations;
@@ -201,10 +319,11 @@ public class _interface
         return this;
     }
     
-	/**
-	 * Create and return a mutable clone given the prototype
-	 * @param prototype the prototype
-	 */
+    
+    /**
+     * Create and return a mutable clone given the prototype
+     * @param prototype the prototype
+     */
     public _interface( _interface prototype )
     {
         this.interfacePackage = _package.cloneOf( prototype.interfacePackage );
@@ -221,26 +340,36 @@ public class _interface
 	
     public _interface( String packageName, String interfaceSignature )
     {
+        this( packageName, _signature.of( interfaceSignature ) );
+    }
+
+    public _interface ( String packageName, _signature signature )
+    {
         this.interfacePackage = _package.of( packageName );
         this.annotations = new _annotations();
-        this.interfaceSignature = _signature.of( interfaceSignature );
+        this.interfaceSignature = signature; //_signature.of( interfaceSignature );
         this.javadoc = new _javadoc();
         this.methods = new _methods();
         this.fields = new _fields();
         this.imports = new _imports();
         this.nesteds = new _nests();
     }
-
     public _interface packageName( String packageName )
     {
         this.interfacePackage = _package.of( packageName );
         return this;
     }
-	
+
+    public _package getPackage()
+    {
+        return this.interfacePackage;
+    }
+    /*
     public String getPackageName()
     {
         return this.interfacePackage.getName();
     }
+    */
 	
     @Override
     public String getName()
@@ -258,9 +387,9 @@ public class _interface
         return this.interfaceSignature;
     }
 	
-    public String getJavadoc()
+    public _javadoc getJavadoc()
     {
-        return this.javadoc.getComment();
+        return this.javadoc;
     }
 	
     @Override
@@ -447,6 +576,12 @@ public class _interface
     public _interface annotate( String... annotations )
     {
         this.annotations.add(  (Object[])annotations );
+        return this;
+    }
+    
+    public _interface annotate( Object annotation )
+    {
+        this.annotations.add( annotation );
         return this;
     }
 	

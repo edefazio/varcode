@@ -75,6 +75,10 @@ public class _enum
     {
         if( facet instanceof _annotations._annotation )
         {
+            if(this.annotations == null)
+            {
+                this.annotations = new _annotations();
+            }
             this.annotations.add( facet );
             return this;
         }
@@ -411,7 +415,137 @@ public class _enum
     {
 	return author();
     }
-	
+
+    private static class EnumParams
+    {
+        _license license;
+        _package pack;    /* package io.varcode....*/
+        _imports imports = new _imports(); // "import Java.lang", Class
+        _javadoc javadoc; // starts with /* ends with */
+        _annotations annots = new _annotations(); //starts with @
+        _enum._signature signature; //starts with 
+        List<_facet> facets = new ArrayList<_facet>();        
+    }
+    
+    public static _enum of( Object... components )
+    {
+        EnumParams eParams = new EnumParams();
+        for( int i = 0; i < components.length; i++ )
+        {
+            if( components[ i ] instanceof String )
+            {
+                fromString(eParams, (String)components[ i ] );
+            }
+            else if( components[ i ] instanceof Class )
+            {
+                if( ((Class)components[i]).isAnnotation() )
+                {
+                    eParams.annots.add( components[ i ] );
+                    eParams.imports.addImport( components[ i ] );
+                }
+                else
+                {
+                    eParams.imports.addImport( components[ i ] );
+                }
+            }
+            else if( components[ i ] instanceof _license )
+            {
+                eParams.license = (_license)components[ i ];
+            }
+            else if( components[ i ] instanceof _package )
+            {
+                eParams.pack = (_package)components[ i ];
+            }
+            else if( components[ i ] instanceof _imports )
+            {
+                eParams.imports = (_imports)components[ i ];
+            }
+            else if( components[ i ] instanceof _javadoc )
+            {
+                eParams.javadoc = (_javadoc)components[ i ];
+            }
+            else if( components[ i ] instanceof _annotations )
+            {
+                eParams.annots = (_annotations)components[ i ];
+            }
+            else if( components[ i ] instanceof _class._signature )
+            {
+                eParams.signature = (_enum._signature)components[ i ];
+            }
+            else if( components[ i ] instanceof _facet )
+            {
+                eParams.facets.add( (_facet)components[ i ] );
+            }
+        }
+        _enum _e = new _enum( eParams.signature );
+        for( int i = 0; i < eParams.annots.count(); i++ )
+        {
+            _e.annotate(eParams.annots.getAt( i ) );
+        }
+        for( int i = 0; i < eParams.imports.count(); i++ )
+        {
+            _e.imports(eParams.imports.getImports().toArray( new Object[ 0 ] ) );
+        }
+        for( int i = 0; i < eParams.facets.size(); i++ )
+        {
+            _e.add(eParams.facets.get( i ) );
+        }
+        if( eParams.javadoc != null && !eParams.javadoc.isEmpty())
+        {
+            _e.javadoc(eParams.javadoc.getComment() );
+        }
+        /*
+        if( cd.license != null ) //TODO fix
+        {
+            _e.codeLicense( cd.license.author() );
+        }
+        */
+        if( eParams.pack != null && !eParams.pack.isEmpty() )
+        {
+            _e.packageName(eParams.pack.getName() );
+        }
+        return _e;
+    }
+    
+    private static void fromString( EnumParams cd, String component )
+    {
+        if( component.startsWith( "/**" ))
+        {
+            cd.javadoc = _javadoc.of( component.substring(3, component.length() -2 ) );            
+        }
+        else if( component.startsWith( "/*" ))
+        {
+            cd.javadoc = _javadoc.of( component.substring(2, component.length() -2 ) );            
+        }
+        else if( component.startsWith( "package ") )
+        {
+            cd.pack = _package.of( component );
+        }        
+        else if( component.startsWith( "@" ) )
+        {
+            cd.annots.add( _annotations._annotation.of( component ) );
+        }        
+        else
+        {
+            String[] tokens = component.split( " " );
+            if( tokens.length == 1 )
+            {
+                if( tokens[ 0 ].indexOf( "." ) > 0 )
+                {
+                    cd.pack = _package.of( tokens[ 0 ] );
+                }
+                else                
+                {
+                    cd.signature = _enum._signature.of( component ); 
+                }
+            } 
+            else
+            {
+                cd.signature = _enum._signature.of( component ); 
+            }
+        }        
+    }
+    /*
     public static _enum of( String enumSignature )
     {
         _signature sig = _signature.of( enumSignature );
@@ -444,7 +578,8 @@ public class _enum
         e.javadoc( javadoc );
             return e;
     }
-	
+    */
+    
     public _enum( _signature signature )
     {
 	this.signature = signature;
@@ -564,6 +699,10 @@ public class _enum
 	
     public _enum annotate( Object... annotations )
     {
+        if( this.annotations == null )
+        {
+            this.annotations = new _annotations();
+        }
         this.annotations.add( annotations );
         return this;
     }
@@ -644,7 +783,7 @@ public class _enum
 	
 	public _enum fields( String...fields )
 	{
-		for( int i = 0; i < fields.length; i++ )
+            for( int i = 0; i < fields.length; i++ )
 		{
 			this.fields.addFields( _fields._field.of( fields[ i ] ) );
 		}
@@ -659,6 +798,14 @@ public class _enum
 
     public _enum setModifiers( _modifiers mods )
     {
+        if( this.signature == null )
+        {
+            System.out.println( "WE got real problems" );
+        }
+        if( this.signature.modifiers == null )
+        {
+            this.signature.modifiers = new _modifiers();
+        }
         this.signature.modifiers = mods;
         return this;
     }

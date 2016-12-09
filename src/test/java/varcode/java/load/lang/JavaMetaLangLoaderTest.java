@@ -34,7 +34,7 @@ public class JavaMetaLangLoaderTest
     {
         _interface _i = JavaMetaLangLoader._Interface.from( Model.class );
         
-        assertEquals( "varcode", _i.getPackageName() );
+        assertEquals( "varcode", _i.getPackage().getName() );
         
         //import varcode.context.VarContext;
         //import varcode.doc.Directive;        

@@ -251,7 +251,7 @@ public class AllTestSuite
         suite.addTestSuite( _doTest.class );
         suite.addTestSuite( _enumTest.class );                
         suite.addTestSuite( _extendsTest.class );        
-        suite.addTestSuite( _fieldTest.class );
+        suite.addTestSuite( _fieldTest.class ); 
         suite.addTestSuite( _fieldsTest.class );
         suite.addTestSuite( _forTest.class );
         suite.addTestSuite( _ifTest.class );

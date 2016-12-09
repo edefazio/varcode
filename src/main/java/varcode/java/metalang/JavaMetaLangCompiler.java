@@ -72,7 +72,8 @@ public class JavaMetaLangCompiler
         _interface _int = null;
         if( astRoot.getPackage() != null )
         {
-            _int = _interface.of( astRoot.getPackage().getPackageName(), 
+            _int = _interface.of( 
+                _package.of( astRoot.getPackage().getPackageName() ), 
                 "interface " + astInterfaceDecl.getName() );
         }
         else
@@ -573,7 +574,7 @@ public class JavaMetaLangCompiler
         if( astRoot.getPackage() != null )
         {
             _e = _enum.of( 
-                astRoot.getPackage().getPackageName(), 
+                _package.of( astRoot.getPackage().getPackageName() ), 
                 astEnumDecl.getName() );
         }
         else

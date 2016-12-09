@@ -45,7 +45,7 @@ public class minTest
     
     public void testMin_enum()
     {
-        _enum e = _enum.of( "EMin" );
+        _enum e = _enum.of( "public enum EMin" );
         Class cl = e.toJavaCase( ).loadClass();
         assertEquals( "EMin", cl.getCanonicalName() );
         assertTrue( Modifier.isPublic( cl.getModifiers() ) );

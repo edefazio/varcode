@@ -42,7 +42,7 @@ public class Load_interface
     public void test_interfaceFromRuntimeClass()
     {
         _interface _i = _Java._interfaceFrom( TopLevelInterface.class );
-        assertEquals( _i.getPackageName(), 
+        assertEquals( _i.getPackage().getName(), 
             TopLevelInterface.class.getPackage().getName() );
     }
     /** Load a _interface from runtime class using a custom SourceLoader */ 
@@ -53,7 +53,7 @@ public class Load_interface
                 System.getProperty( "user.dir" ) + "/src/test/java" ),
             TopLevelInterface.class );
         
-        assertEquals( _i.getPackageName(), getClass().getPackage().getName() );
+        assertEquals( _i.getPackage().getName(), getClass().getPackage().getName() );
     }
     
     /** Interface Javadoc comment */
@@ -70,7 +70,7 @@ public class Load_interface
         assertTrue( _i.getModifiers().containsAll( "public" ) );
         // NOTE: when you load a nested/inner class 
         // it retains the package and ALL imports from the top-level class
-        assertEquals( _i.getPackageName(), getClass().getPackage().getName() );
+        assertEquals( _i.getPackage().getName(), getClass().getPackage().getName() );
         assertTrue( _i.getImports().containsAll( 
             TestCase.class, _Java.class, _class.class ) );
     }

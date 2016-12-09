@@ -370,6 +370,7 @@ public class JavaMetaLangLoader
         {
             return _Enum.from( JavaSourceLoader.INSTANCE, clazz );
         }
+        
         public static _enum from( CompilationUnit astRoot, Class clazz )
         {
             EnumDeclaration astEnumDecl = 
@@ -398,14 +399,14 @@ public class JavaMetaLangLoader
                     }
                     
                     //Parse the Declaring Class into an AST
-                    CompilationUnit cu = 
+                    CompilationUnit astRoot = 
                         JavaASTParser.astFrom( ss.getInputStream() );
                     
-                    EnumDeclaration classDecl = 
-                        JavaASTParser.findEnumDeclaration( cu, clazz );
+                    EnumDeclaration enumDecl = 
+                        JavaASTParser.findEnumDeclaration( astRoot, clazz );
                     
                     //return JavaASTParser._Enum.fromCompilationUnit( cu, classDecl );
-                    return JavaMetaLangCompiler._enumFrom( cu, classDecl );
+                    return JavaMetaLangCompiler._enumFrom( astRoot, enumDecl );
                 }
                 catch( ParseException pe )
                 {
@@ -418,12 +419,13 @@ public class JavaMetaLangLoader
             try 
             {
                 // parse the file
-                CompilationUnit cu = 
+                CompilationUnit astRoot = 
                     JavaASTParser.astFrom( ss.getInputStream() );
                 
                 EnumDeclaration enumDecl = 
-                    JavaASTParser.findEnumDeclaration( cu, clazz );
-                return JavaMetaLangCompiler._enumFrom( cu, enumDecl );
+                    JavaASTParser.findEnumDeclaration( astRoot, clazz );
+                
+                return JavaMetaLangCompiler._enumFrom( astRoot, enumDecl );
             }    
             catch( ParseException pe )
             {

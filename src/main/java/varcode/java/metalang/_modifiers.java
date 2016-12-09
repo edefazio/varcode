@@ -42,10 +42,10 @@ public class _modifiers
 	}
 	
 	public static _modifiers of( String...keywords )
-	{
-		_modifiers m = new _modifiers();
-		m.set( keywords );
-		return m;
+	{   
+            _modifiers m = new _modifiers();
+            m.set( keywords );
+            return m;
 	}
 	
 	private int mods = 0;
@@ -99,22 +99,23 @@ public class _modifiers
     {
         int mutatedMods = this.mods;
         for( int i = 0; i < modifiers.length; i++ )
-		{
-			mutatedMods |= modifiers[ i ].getBitValue();
-		}
-		validate( mutatedMods ); //verify that it is possible
-        this.mods = mutatedMods;
-		return this;
-    }
-	public _modifiers set( String...keywords )
 	{
-		for( int i = 0; i < keywords.length; i++ )
-		{
-			set( keywords[ i ] );
-		}
-		validate( mods );
-		return this;
-	}
+            mutatedMods |= modifiers[ i ].getBitValue();
+        }
+	validate( mutatedMods ); //verify that it is possible
+        this.mods = mutatedMods;
+	return this;
+    }
+    
+    public _modifiers set( String...keywords )
+    {
+        for( int i = 0; i < keywords.length; i++ )
+        {
+            set( keywords[ i ] );
+        }
+        validate( mods );
+        return this;
+    }
 	
 	public _modifiers set( String keyWord )
 	{
