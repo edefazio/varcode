@@ -43,7 +43,7 @@ public class _methods
             }
         }
         throw new ModelException(
-            "unable to get method at ["+index+"], out of range" );
+            "unable to get method at [" + index + "], out of range" );
     }
     
     public static _methods cloneOf( _methods prototype )

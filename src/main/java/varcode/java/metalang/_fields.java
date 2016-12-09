@@ -433,6 +433,70 @@ public class _fields
 	private String name;
 	private _init init;
 		
+        
+        private static class FieldParams
+        {
+            _javadoc javadoc; // starts with /* ends with */
+            _annotations annots = new _annotations(); //starts with @
+            String fieldSignature;
+        }
+    
+        public static _field of( Object...components )
+        {
+            FieldParams cd = new FieldParams();
+            for( int i = 0; i < components.length; i++ )
+            {
+                if( components[ i ] instanceof String )
+                {
+                    fromString( cd, (String)components[ i ] );
+                }            
+                else if( components[ i ] instanceof _javadoc )
+                {
+                    cd.javadoc = (_javadoc)components[ i ];
+                }
+                else if( components[ i ] instanceof _annotations._annotation )
+                {   
+                    cd.annots.add( (_annotations._annotation)components[ i ] );
+                }
+                else if( components[ i ] instanceof _annotations )
+                {
+                    cd.annots = (_annotations)components[ i ];
+                }            
+            }
+            _field _f = _field.of( cd.fieldSignature );
+            for( int i = 0; i < cd.annots.count(); i++ )
+            {
+                _f.annotate( cd.annots.getAt( i ) );
+            }
+            if( cd.javadoc != null && !cd.javadoc.isEmpty() )
+            {
+                _f.javadoc( cd.javadoc.getComment() );
+            }        
+            return _f;
+        }
+    
+        private static void fromString( FieldParams cd, String component )
+        {
+            if( component.startsWith( "/**" ))
+            {
+                cd.javadoc = _javadoc.of( 
+                    component.substring( 3, component.length() -2 ) );            
+            }
+            else if( component.startsWith( "/*" ) )
+            {
+                cd.javadoc = _javadoc.of( 
+                    component.substring(2, component.length() -2 ) );            
+            }
+            else if( component.startsWith( "@" ) )
+            {
+                cd.annots.add( _annotations._annotation.of( component ) );
+            }        
+            else
+            {
+                cd.fieldSignature =  (String)component;             
+            }        
+        }
+        
         public static _field of( int modifiers, String type, String name )
         {
             return new _field( modifiers, type, name );

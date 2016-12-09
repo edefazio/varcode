@@ -25,6 +25,7 @@ public class _ALL
         suite.addTestSuite( _autoDtoTest.class );
         suite.addTestSuite( _enumTest.class );
         suite.addTestSuite( _extendsTest.class );        
+        suite.addTestSuite( _fieldTest.class );
         suite.addTestSuite( _fieldsTest.class );
         
         suite.addTestSuite( _interfaceTest.class );
