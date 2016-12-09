@@ -295,7 +295,8 @@ public class JavaMetaLangCompiler
         if( astRoot.getPackage() != null )
         {
             _c = _class.of(
-                astRoot.getPackage().getPackageName(), astClassDecl.getName() );
+                _package.of( astRoot.getPackage().getPackageName()), 
+                astClassDecl.getName() );
         }
         else
         {

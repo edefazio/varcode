@@ -43,7 +43,7 @@ public class TailorExistingCode_Describe
     public void testTailorAndUseAdHoc_class()
     {   
         /* 1: Load the _class for the Class at runtime */
-        _class _c = _Java._classFrom(TailorExistingCode_Describe.class );
+        _class _c = _Java._classFrom( TailorExistingCode_Describe.class );
         
         /* 2: change the _class name */
         _c.setName( "ChangeThyself" );

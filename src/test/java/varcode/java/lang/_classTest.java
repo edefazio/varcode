@@ -10,6 +10,7 @@ import varcode.java.lang._class;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
 import junit.framework.TestCase;
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertTrue;
 import varcode.VarException;
 import varcode.java.JavaCase;
 import varcode.java.adhoc.Workspace;
@@ -34,6 +37,85 @@ public class _classTest
     extends TestCase
 {
  
+     public void testStringInit()
+    {
+        _class _c = _class.of( "public class A" );
+        assertEquals( "A", _c.getName());
+        assertTrue( _c.getModifiers().contains("public" ) );        
+        
+        _c = _class.of( "io.varcode", "public class A" );
+        assertEquals( "A", _c.getName());
+        assertTrue( _c.getModifiers().contains("public" ) );        
+        assertEquals( "io.varcode", _c.getPackageName() );
+        
+        _c = _class.of( "/*comment*/", "public class A" );
+        assertEquals( "A", _c.getName());
+        assertTrue( _c.getModifiers().contains("public" ) );        
+        assertEquals( "comment", _c.getJavadoc().getComment() ); 
+        
+        _c = _class.of( "/*comment*/", "io.varcode", "public class A" );
+        assertEquals( "A", _c.getName());
+        assertTrue( _c.getModifiers().contains("public" ) );        
+        assertEquals( "io.varcode", _c.getPackageName() );
+        assertEquals( "comment", _c.getJavadoc().getComment() ); 
+        
+        
+        _c = _class.of( "/*comment*/", "@Deprecated", "io.varcode", "public class A" );
+        assertEquals( "A", _c.getName());
+        assertTrue( _c.getModifiers().contains("public" ) );        
+        assertEquals( "io.varcode", _c.getPackageName() );
+        assertEquals( "comment", _c.getJavadoc().getComment() ); 
+        assertEquals( "@Deprecated ", _c.getAnnotations().getAt( 0 ).toString() );
+        
+        _c = _class.of( "/*comment*/", "@Deprecated", "io.varcode", 
+            "public abstract class A", 
+            Map.class, Date.class );
+        
+        assertEquals( "A", _c.getName());
+        assertTrue( _c.getModifiers().containsAll( "public", "abstract" ) );        
+        assertEquals( "io.varcode", _c.getPackageName() );
+        assertEquals( "comment", _c.getJavadoc().getComment() ); 
+        assertEquals( "@Deprecated ", _c.getAnnotations().getAt( 0 ).toString() );
+        assertTrue( _c.getImports().containsAll( Map.class, Date.class ) ); 
+        
+        _c = _class.of( 
+            "/**comment*/", 
+            "@Deprecated", 
+            "io.varcode", 
+            "public abstract class A", 
+            Map.class, Date.class,
+            _field.of( "public static final int ID = 100;" )
+                .javadoc( "comment" ),
+            _method.of( "public abstract String doIt" )    
+            );
+        
+        assertEquals( "A", _c.getName());
+        assertTrue( _c.getModifiers().containsAll( "public", "abstract" ) );        
+        assertEquals( "io.varcode", _c.getPackageName() );
+        assertEquals( "comment", _c.getJavadoc().getComment() ); 
+        assertEquals( "@Deprecated ", _c.getAnnotations().getAt( 0 ).toString() );
+        assertTrue( _c.getImports().containsAll( Map.class, Date.class ) ); 
+        assertEquals( 1, _c.getFields().count() );
+        assertEquals( 1, _c.getMethods().count() );        
+    }
+    
+    public void testJDocClass()
+    {
+         _class _c = _class.of( 
+            _package.of( "io.varcode" ),
+            _imports.of( Map.class, Date.class ),
+            _javadoc.of( "comment" ),             
+            _annotation.of( "@Deprecated" ),            
+            "public static class A"                         
+            );
+        assertEquals( "A", _c.getName());
+        assertTrue( _c.getModifiers().contains( "public" ) );        
+        assertEquals( "io.varcode", _c.getPackageName() );
+        assertEquals( "comment", _c.getJavadoc().getComment() ); 
+        assertEquals( "@Deprecated ", _c.getAnnotations().getAt( 0 ).toString() );
+        assertTrue( _c.getImports().containsAll( Map.class, Date.class ) );
+    }
+    
     //I should be able to call Add(...) with all facets
     public void testAddFacet()
     {

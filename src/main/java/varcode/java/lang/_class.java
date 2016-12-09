@@ -121,11 +121,12 @@ public class _class
      * creates and returns a public _class "MyClass" in package "ex.varcode"
      * @param classSignature the signature of the class to add
      * @return _class a class with the signature
-     */
+     
     public static _class of( String classSignature )
     {
 	return new _class( null, classSignature ); 
     }
+    * */
 	
     /** 
      * Create and return a langmodel for a new class<PRE> 
@@ -140,11 +141,12 @@ public class _class
      * or
      * ("private static class MyClass extends BaseClass implements Callable<Integer>")
      * @return a new _class
-     */        
+             
     public static _class of( Package pkg, String classSignature )
     {
         return new _class( pkg.getName(), classSignature ); 
     }
+    */
     
     /** 
      * Create and return a langmodel for a new class<PRE> 
@@ -158,10 +160,143 @@ public class _class
      * or
      * ("private static class MyClass extends BaseClass implements Callable<Integer>")
      * @return a new _class
-     */
+     
     public static _class of( String packageName, String classSignature )
     {
 	return new _class( packageName, classSignature ); 
+    }
+    */
+    
+    private static class ClassParams
+    {
+        //_license license;
+        _package pack;    /* package io.varcode....*/
+        _imports imports = new _imports(); // "import Java.lang", Class
+        _javadoc javadoc; // starts with /* ends with */
+        _annotations annots = new _annotations(); //starts with @
+        _class._signature signature; //starts with 
+         List<_facet> facets = new ArrayList<_facet>();        
+    }
+    
+    public static _class of( Object... components )
+    {
+        ClassParams cd = new ClassParams();
+        for( int i = 0; i < components.length; i++ )
+        {
+            if( components[ i ] instanceof String )
+            {
+                fromString( cd, (String)components[ i ] );
+            }
+            else if( components[ i ] instanceof Class )
+            {
+                if( ((Class)components[i]).isAnnotation() )
+                {
+                    cd.annots.add( components[ i ] );
+                    cd.imports.addImport( components[ i ] );
+                }
+                else
+                {
+                    cd.imports.addImport( components[ i ] );
+                }
+            }
+            /*
+            else if( components[ i ] instanceof _license )
+            {
+                cd.license = (_license)components[ i ];
+            }
+            */
+            else if( components[ i ] instanceof _package )
+            {
+                cd.pack = (_package)components[ i ];
+            }
+            else if( components[ i ] instanceof _imports )
+            {
+                cd.imports = (_imports)components[ i ];
+            }
+            else if( components[ i ] instanceof _javadoc )
+            {
+                cd.javadoc = (_javadoc)components[ i ];
+            }
+            else if( components[ i ] instanceof _annotations )
+            {
+                cd.annots = (_annotations)components[ i ];
+            }
+            else if( components[ i ] instanceof _class._signature )
+            {
+                cd.signature = (_class._signature)components[ i ];
+            }
+            else if( components[ i ] instanceof _facet )
+            {
+                cd.facets.add( (_facet)components[ i ] );
+            }
+        }
+        _class _c = new _class( cd.signature );
+        for( int i = 0; i < cd.annots.count(); i++ )
+        {
+            _c.annotate( cd.annots.getAt( i ) );
+        }
+        for( int i = 0; i < cd.imports.count(); i++ )
+        {
+            _c.imports( cd.imports.getImports().toArray( new Object[ 0 ] ) );
+        }
+        for( int i = 0; i < cd.facets.size(); i++ )
+        {
+            _c.add( cd.facets.get( i ) );
+        }
+        if( cd.javadoc != null && !cd.javadoc.isEmpty())
+        {
+            _c.javadoc( cd.javadoc.getComment() );
+        }
+        /*
+        if( cd.license != null ) //TODO fix
+        {
+            _c.codeLicense( cd.license.author() );
+        }
+        */
+        if( cd.pack != null && !cd.pack.isEmpty() )
+        {
+            _c.packageName( cd.pack.getName() );
+        }
+        return _c;
+    }
+    
+    private static void fromString( ClassParams cd, String component )
+    {
+        if( component.startsWith( "/**" ))
+        {
+            cd.javadoc = _javadoc.of( component.substring(3, component.length() -2 ) );            
+        }
+        else if( component.startsWith( "/*" ))
+        {
+            cd.javadoc = _javadoc.of( component.substring(2, component.length() -2 ) );            
+        }
+        else if( component.startsWith( "package ") )
+        {
+            cd.pack = _package.of( component );
+        }        
+        else if( component.startsWith( "@" ) )
+        {
+            cd.annots.add( _annotation.of( component ) );
+        }        
+        else
+        {
+            String[] tokens = component.split( " " );
+            if( tokens.length == 1 )
+            {
+                if( tokens[ 0 ].indexOf( "." ) > 0 )
+                {
+                    cd.pack = _package.of( tokens[ 0 ] );
+                }
+                else
+                {
+                    cd.signature = _signature.of( component ); 
+                }
+            } 
+            else
+            {
+                cd.signature = _signature.of( component ); 
+            }
+        }        
     }
 	
     @Override
