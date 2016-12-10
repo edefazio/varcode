@@ -175,28 +175,29 @@ public class _class
         _javadoc javadoc; // starts with /* ends with */
         _annotations annots = new _annotations(); //starts with @
         _class._signature signature; //starts with 
-         List<_facet> facets = new ArrayList<_facet>();        
+        List<_facet> facets = new ArrayList<_facet>();
+        _nests nesteds = new _nests();
     }
     
     public static _class of( Object... components )
     {
-        ClassParams cd = new ClassParams();
+        ClassParams cp = new ClassParams();
         for( int i = 0; i < components.length; i++ )
         {
             if( components[ i ] instanceof String )
             {
-                fromString( cd, (String)components[ i ] );
+                fromString(cp, (String)components[ i ] );
             }
             else if( components[ i ] instanceof Class )
             {
                 if( ((Class)components[i]).isAnnotation() )
                 {
-                    cd.annots.add( components[ i ] );
-                    cd.imports.addImport( components[ i ] );
+                    cp.annots.add( components[ i ] );
+                    cp.imports.addImport( components[ i ] );
                 }
                 else
                 {
-                    cd.imports.addImport( components[ i ] );
+                    cp.imports.addImport( components[ i ] );
                 }
             }
             /*
@@ -207,45 +208,49 @@ public class _class
             */
             else if( components[ i ] instanceof _package )
             {
-                cd.pack = (_package)components[ i ];
+                cp.pack = (_package)components[ i ];
             }
             else if( components[ i ] instanceof _imports )
             {
-                cd.imports = (_imports)components[ i ];
+                cp.imports = (_imports)components[ i ];
             }
             else if( components[ i ] instanceof _javadoc )
             {
-                cd.javadoc = (_javadoc)components[ i ];
+                cp.javadoc = (_javadoc)components[ i ];
             }
             else if( components[ i ] instanceof _annotations )
             {
-                cd.annots = (_annotations)components[ i ];
+                cp.annots = (_annotations)components[ i ];
             }
             else if( components[ i ] instanceof _class._signature )
             {
-                cd.signature = (_class._signature)components[ i ];
+                cp.signature = (_class._signature)components[ i ];
             }
             else if( components[ i ] instanceof _facet )
             {
-                cd.facets.add( (_facet)components[ i ] );
+                cp.facets.add( (_facet)components[ i ] );
+            }
+            else if( components[ i ] instanceof _model )
+            {
+                cp.nesteds.add( (_model)components[ i ] );
             }
         }
-        _class _c = new _class( cd.signature );
-        for( int i = 0; i < cd.annots.count(); i++ )
+        _class _c = new _class( cp.signature );
+        for( int i = 0; i < cp.annots.count(); i++ )
         {
-            _c.annotate( cd.annots.getAt( i ) );
+            _c.annotate(cp.annots.getAt( i ) );
         }
-        for( int i = 0; i < cd.imports.count(); i++ )
+        for( int i = 0; i < cp.imports.count(); i++ )
         {
-            _c.imports( cd.imports.getImports().toArray( new Object[ 0 ] ) );
+            _c.imports(cp.imports.getImports().toArray( new Object[ 0 ] ) );
         }
-        for( int i = 0; i < cd.facets.size(); i++ )
+        for( int i = 0; i < cp.facets.size(); i++ )
         {
-            _c.add( cd.facets.get( i ) );
+            _c.add(cp.facets.get( i ) );
         }
-        if( cd.javadoc != null && !cd.javadoc.isEmpty())
+        if( cp.javadoc != null && !cp.javadoc.isEmpty())
         {
-            _c.javadoc( cd.javadoc.getComment() );
+            _c.javadoc(cp.javadoc.getComment() );
         }
         /*
         if( cd.license != null ) //TODO fix
@@ -253,9 +258,16 @@ public class _class
             _c.codeLicense( cd.license.author() );
         }
         */
-        if( cd.pack != null && !cd.pack.isEmpty() )
+        if( cp.pack != null && !cp.pack.isEmpty() )
         {
-            _c.packageName( cd.pack.getName() );
+            _c.packageName(cp.pack.getName() );
+        }
+        if( !cp.nesteds.isEmpty() )
+        {
+            for( int i = 0; i < cp.nesteds.count(); i++ )
+            {
+                _c.nest(cp.nesteds.getAt( i ) );
+            }
         }
         return _c;
     }

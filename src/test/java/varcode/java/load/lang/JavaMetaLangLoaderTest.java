@@ -50,7 +50,7 @@ public class JavaMetaLangLoaderTest
         _enum _e = JavaMetaLangLoader._Enum.from( Lang.class );
         assertEquals( "Lang", _e.getName() );
         assertEquals( 3, _e.getFields().count() );
-        _e.getValueConstructs().getByName( Lang.JAVA.getName() );
+        _e.getConstants().getByName( Lang.JAVA.getName() );
     }
     
     public interface SimpleInterface

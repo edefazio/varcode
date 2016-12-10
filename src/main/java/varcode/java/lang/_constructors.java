@@ -163,7 +163,6 @@ public class _constructors
             List<Object> body = new ArrayList<Object>(); //anything AFTER signature is populated
         }
     
-        
         private static void addBody( CtorParams ctorParams, Object body )
         {   
             if( body.getClass().isArray() )
@@ -280,6 +279,11 @@ public class _constructors
         public _modifiers getModifiers()
         {
             return this.constructorSig.getModifiers();
+        }
+        
+        public _throws getThrows()
+        {
+            return this.constructorSig.getThrows();
         }
         
         public String getName()

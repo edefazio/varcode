@@ -326,7 +326,7 @@ public class _enum
         return this.fields;
     }
     
-    public _constants getValueConstructs()
+    public _constants getConstants()
     {
         return this.constants;
     }
@@ -425,7 +425,8 @@ public class _enum
         _javadoc javadoc; // starts with /* ends with */
         _annotations annots = new _annotations(); //starts with @
         _enum._signature signature; //starts with 
-        List<_facet> facets = new ArrayList<_facet>();        
+        List<_facet> facets = new ArrayList<_facet>();    
+        _nests nesteds = new _nests();
     }
     
     public static _enum of( Object... components )
@@ -477,6 +478,7 @@ public class _enum
             {
                 eParams.facets.add( (_facet)components[ i ] );
             }
+         
         }
         _enum _e = new _enum( eParams.signature );
         for( int i = 0; i < eParams.annots.count(); i++ )
@@ -504,6 +506,13 @@ public class _enum
         if( eParams.pack != null && !eParams.pack.isEmpty() )
         {
             _e.packageName(eParams.pack.getName() );
+        }
+        if( !eParams.nesteds.isEmpty() )
+        {
+            for( int i = 0; i < eParams.nesteds.count(); i++ )
+            {
+                _e.nest( eParams.nesteds.getAt( i ) );
+            }
         }
         return _e;
     }
@@ -856,24 +865,24 @@ public class _enum
             return this;
 	}
 		
-		//the form is always
-		// Identifier1( parameters, separated, by commas ), 
-		// Identifier2( parameters, separated, by commas ),  
-		//   -or-
-		// Ideitifier1,
-		// Ideitifier2,
+	//the form is always
+	// Identifier1( parameters, separated, by commas ), 
+	// Identifier2( parameters, separated, by commas ),  
+	//   -or-
+	// Ideitifier1,
+	// Ideitifier2,
 		
-		//NOTE : must be unique names
+	//NOTE : must be unique names
 		
-		public static _constants cloneOf( _constants prototype ) 
-		{
-			_constants clone = new _constants();
-			for( int i = 0; i < prototype.count(); i++ )
-			{
-				clone.addConstant( _constant.cloneOf(prototype.constants.get( i ) ) );
-			}
-			return clone;
-		}
+	public static _constants cloneOf( _constants prototype ) 
+	{
+            _constants clone = new _constants();
+            for( int i = 0; i < prototype.count(); i++ )
+            {
+		clone.addConstant( _constant.cloneOf(prototype.constants.get( i ) ) );
+            }
+            return clone;
+	}
 
         public _constant getByName( String name )
         {
@@ -944,7 +953,18 @@ public class _enum
             {
 		return new _constant( name, _arguments.of( arguments ) );								
             }
-			
+		
+            
+            public String getName()
+            {
+                return this.name;
+            }
+            
+            public _arguments getArguments()
+            {
+                return this.args;
+            }
+            
             public static _constant cloneOf( _constant construct )
             {
 		return new _constant( 

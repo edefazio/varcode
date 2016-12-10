@@ -69,7 +69,7 @@ public class _enumTest
         assertEquals( 0, e.getSignature().getModifiers().count() );
         
         assertTrue( e.getStaticBlock().isEmpty() );
-        assertEquals( 0, e.getValueConstructs().count() );     
+        assertEquals( 0, e.getConstants().count() );     
         
         Class enumClazz = e.toJavaCase( ).loadClass();
         
@@ -182,7 +182,7 @@ public class _enumTest
         assertEquals( 0, e.getSignature().getModifiers().count() );
         
         assertTrue( e.getStaticBlock().isEmpty() );
-        assertEquals( 1, e.getValueConstructs().count() );    
+        assertEquals( 1, e.getConstants().count() );    
         
         //load it as a Class
         Class enumClazz = e.toJavaCase( ).loadClass();

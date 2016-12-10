@@ -109,9 +109,9 @@ public class _autoJavadocMethod
                 sb.append( shortName( _m.getReturnType() ) );
                 sb.append( System.lineSeparator() );
             }
-            for( int j = 0; j < _m.getThrownExceptions().count(); j++ )
+            for( int j = 0; j < _m.getThrows().count(); j++ )
             {
-                String _th = _m.getThrownExceptions().getAt( i );
+                String _th = _m.getThrows().getAt( i );
                 sb.append( "@throws " );
                 sb.append( shortName( _th ) );
                 sb.append( System.lineSeparator() );                

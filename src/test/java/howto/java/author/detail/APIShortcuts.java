@@ -1,85 +1,112 @@
-/*
- * Copyright 2016 Eric.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package howto.java.author.detail;
 
+import java.util.UUID;
 import junit.framework.TestCase;
-import varcode.java.lang._annotations._annotation;
 import varcode.java.lang._class;
 import varcode.java.lang._constructors._constructor;
+import varcode.java.lang._enum;
 import varcode.java.lang._fields._field;
-import varcode.java.lang._javadoc;
 import varcode.java.lang._methods._method;
-import varcode.java.lang._package;
 
 /**
- * varcode API wants to make developers productive, while also
- * providing flexible and consistent API to create readable code.
+ * the varcode API wants to make developers productive and
+ * provide a flexible and consistent API for readable code.
  * 
  * Ideally, we should be able to define (_class, _enum, and _interface) 
- * abstractions in a single "fluent-style" statement (to avoid having to 
- * unnecessarily create static initializer blocks)
+ * abstractions in a single "fluent-style" initializing statement 
+ * (to avoid having to unnecessarily create static initializer blocks)
  * 
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class APIShortcuts
     extends TestCase
 {
-    public static _class _a = _class.of(
-        "package howto.java.author.detail;",      //set the package
-        "/* API Shortcuts to create a _class */", // add _javadoc 
-        "@Deprecated",                            // add a annotation  
-        "@CustomAnnotation{a=100}",               // add another annotation
+    /**
+     * varcode tries to discern what the tokens you pass in "mean"<BR><PRE>
+     * ... String args that start with "package " are package declarations
+     * ... String args that start with "/*" are javadocs
+     * ... String args that start with "@" are annotations
+     * 
+     * ... Also, passing in any _facets (_fields, _methods, _constructors)
+     * will add them to the _class model
+     * </PRE>
+     */
+    public static _class _apiShort = _class.of(
+        "package howto.java.author.detail;",      
+        "/* API Shortcuts to create a _class */", 
+        "@Deprecated",                            
+        "@CustomAnnotation{a=100}",               
         
-        "public class APIShortcut " +             //set the class signature      
+        "public class APIShortcut " +             
             "extends BaseClass implements Serializable, AnotherInterface",
         _field.of( "/* a number */",  //add a field w/ javadoc
             "@Deprecated",    
-            "public final int count;" ),
+            "public final int count = 100;" ),
         _constructor.of( 
             "/* multi-line constructor comment " + System.lineSeparator() +
             "@param count the number" + System.lineSeparator() +        
-            "@throws IOException"         
-          + "*/",    
+            "@throws IOException" +        
+            "*/",    
+                
             "@Deprecated",    
-            "public APIShortcut( int count ) throws IOException",
+            "public APIShortcut( int count ) throws IOException, CustomException",
             "this.count = count;" ),
         _method.of(  
             "/* method comment */", 
             "@Deprecated",    
             "public int getCount() throws MyException",
-            "return this.count;" )    
+            "return this.count;" ),    
+        
+        _enum.of( //add a nexted enum to this class
+            "/* Enum Javadoc */",    
+            "@CustomAnnotation",    
+            "public enum Nested" )
+            .constant( "INSTANCE" )
+            .imports( UUID.class )
+            .field("public static final String ID = UUID.randomUUID().toString();")            
         );
     
     public void testIt()
     {
         
+        assertEquals("APIShortcut", _apiShort.getName());
+        assertEquals(" API Shortcuts to create a _class ", _apiShort.getJavadoc().getComment() );
+        assertEquals(2, _apiShort.getAnnotations().count());
+        assertEquals(1, _apiShort.getExtends().count());
+        assertEquals(2, _apiShort.getImplements().count());
+        
+        
+        _enum _e = (_enum)_apiShort.getNestedAt( 0 );
+        assertEquals( " Enum Javadoc ", _e.getJavadoc().getComment() );
+        assertEquals( 1, _e.getAnnotations().count() );
+        assertEquals( "Nested", _e.getName() );
+        assertTrue( _e.getModifiers().contains( "public" ) );
+        assertEquals( "INSTANCE", _e.getConstants().getAt( 0 ).getName() );
+        assertEquals( 0, _e.getConstants().getAt( 0 ).getArguments().count() );
+        
+        _method _m = _apiShort.getMethodNamed("getCount" );
+        assertEquals(1, _m.getAnnotations().count());
+        assertEquals( " method comment ", _m.getJavadoc().getComment() );
+        assertEquals( 1, _m.getThrows().count() );
+        assertEquals( "return this.count;", _m.getBody().toString() );
+        
+        _constructor _ctor = _apiShort.getConstructors().getAt( 0 );
+        assertNotNull( _ctor.getJavadoc().getComment() );
+        assertEquals( 1, _ctor.getAnnotations().count() );
+        assertEquals( "APIShortcut", _ctor.getName());
+        assertEquals( "int", _ctor.getParameters().getAt(0).getType());
+        assertEquals( "count", _ctor.getParameters().getAt(0).getName());
+        
+        assertEquals( 2, _ctor.getThrows().count() );
+        assertEquals( "this.count = count;", _ctor.getBody().toString() );
+        
+        _field _f = _apiShort.getField("count");
+        assertEquals( "int", _f.getType() );
+        assertEquals( " 100", _f.getInit().getCode() );
+        assertEquals( " a number ", _f.getJavadoc().getComment() );
+        assertEquals(1, _f.getAnnotations().count());
+        assertTrue( _f.getModifiers().containsAll( "public", "final" ) );
+        
+                        
     }
-    /*
-    public _class _c = _class.of(
-        _javadoc.of( "this is the class comment" ),
-        _package.of( "howto.java.author.detail" ),
-        _annotation.of( "@Deprecated" ),
-        "public class DeclareShort extends BaseClass implements Serializable",
-        _field.of( "public final int count;"),
-        _constructor.of( "public DeclareShort( int count )",
-            "this.count = count;" ),
-        _method.of(  "public int getCount()",
-            "return this.count;" )    
-        );
-    */
-    
-    
 }

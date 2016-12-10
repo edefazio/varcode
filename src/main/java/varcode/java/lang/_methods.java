@@ -605,9 +605,10 @@ public class _methods
         {
             return this.signature.getParameters();
         }
-        public _throws getThrownExceptions()
+        
+        public _throws getThrows()
         {
-            return this.signature.getThrownExceptions();
+            return this.signature.getThrows();
         }
 
         public _method setReturnType( String returnType ) 
@@ -735,7 +736,7 @@ public class _methods
 		return params;
             }
 			
-            public _throws getThrownExceptions()
+            public _throws getThrows()
             {
 		return this.throwsExceptions;
             }
