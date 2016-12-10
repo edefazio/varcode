@@ -46,6 +46,7 @@ import varcode.java.lang._argumentsTest;
 import varcode.java.lang._bindNestTest;
 import varcode.java.lang._classTest;
 import varcode.java.lang._codeTest;
+import varcode.java.lang._constructorTest;
 import varcode.java.lang._constructorsTest;
 import varcode.java.lang._doTest;
 import varcode.java.lang._enumTest;
@@ -247,6 +248,7 @@ public class AllTestSuite
         
         suite.addTestSuite( _classTest.class );
         suite.addTestSuite( _codeTest.class );
+        suite.addTestSuite( _constructorTest.class );
         suite.addTestSuite( _constructorsTest.class );
         suite.addTestSuite( _doTest.class );
         suite.addTestSuite( _enumTest.class );                

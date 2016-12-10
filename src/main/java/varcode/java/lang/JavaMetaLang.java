@@ -106,7 +106,7 @@ public interface JavaMetaLang
      * 
      * @author Eric DeFazio eric@varcode.io
      */
-    public interface _facet
+    public interface _facet extends JavaMetaLang
     {
     
     }

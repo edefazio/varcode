@@ -15,12 +15,7 @@
  */
 package varcode.java.lang;
 
-import varcode.java.lang._annotations;
-import varcode.java.lang._javadoc;
-import varcode.java.lang._fields;
 import junit.framework.TestCase;
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertTrue;
 
 /**
  *
