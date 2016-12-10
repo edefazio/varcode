@@ -4,6 +4,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -36,6 +39,23 @@ public enum Resolve
     private static final Logger LOG = 
         LoggerFactory.getLogger( Resolve.class );
 	
+    
+    /**
+     * The Resolver is generally considered a "lazy pull" model, 
+     * where it will lazily lookup / bind a component based on a name.
+     * (Var, VarScipt, Directive, etc.).  Sometimes, however we want to
+     * seed or Push a specific Binding
+     */
+    public interface ResolveBinder
+    {
+        public List<Var> getVars();
+        
+        public List<Directive> getDirectives();
+        
+        public List<VarBindings> getVarBindings();
+        
+        public List<VarScript> getVarScripts();
+    }
     /** 
      * name of a Property in the {@code VarContext} that specifies a Class that 
      * can define: 
@@ -118,8 +138,125 @@ public enum Resolve
                 return null;
             }
         }
+        
+        /**
+         * Gets the value of a static field from a Field
+         * @param field the field definition
+         * @return the value of the static field
+         */
+        public static Object getStaticFieldValue( Field field )
+        {
+            try 
+            {
+                return field.get( null );
+            } 
+            catch( IllegalArgumentException e ) 
+            {
+                return null;
+                //throw new VarException( "Illegal Argument for field " + field, e );
+            } 	    
+            catch( IllegalAccessException e ) 
+            {
+                return null;
+                //throw new VarException( "Illegal Acccess for field " + field, e );
+            } 	    
+        }
     }
     
+    /**
+     * Binds the appropriate "properties" 
+     * ({@Directive}s {@VarScript}s, {@code Var}s, {@code VarBinding}s
+     * into the VarContext that are on the resolveClass.
+     * 
+     * When a ResolveClass is provided to the context, 
+     * it can contain "properties" that should be populated the VarContext
+     * with static Fields of the class that are public & static
+     * <UL>
+     *   <LI>{@code VarScript}s
+     *   <LI>{@code Var}s (or {@code Var}[]) 
+     *   <LI>{@code VarBindings}
+     *   <LI>{@code Directive}s (or {@code Directive}[])
+     *</UL>    
+     * 	
+     * @param resolveClass
+     * @param context the context to bind static bindings to
+     * @return a List of Directives that are from static fields
+     */
+    public static List<Directive> bindResolveBaseClass( 
+    	Class<?> resolveClass, VarContext context )
+    {
+    	VarBindings staticBindings = 
+            context.getOrCreateBindings( VarScope.STATIC );
+
+    	staticBindings.put( Resolve.BASECLASS_PROPERTY, resolveClass );
+        
+    	List<Directive> directives = new ArrayList<Directive>();
+        
+    	Field[] fields = resolveClass.getFields();
+        for( int i = 0; i < fields.length; i++ )
+        {
+            LOG.trace( "LOOKING THROUGH [" + fields.length + "] fields for context components" );
+            if( Modifier.isStatic( fields[ i ].getModifiers() ) 
+        	&& Modifier.isPublic( fields[ i ].getModifiers() ) )
+            {
+        	Class<?> fieldType = fields[ i ].getType();
+        	if( fieldType.isAssignableFrom( VarBindings.class ) )
+        	{   //add VarBindings at Static scope 
+                    VarBindings vb = 
+                        (VarBindings)SilentReflection.getStaticFieldValue( fields[ i ] ); 
+                    staticBindings.merge( vb );
+                    LOG.trace( "Adding static filed bindings " + vb );
+        	}
+        	else if( fieldType.isAssignableFrom( Var.class ) )
+        	{   //Add Vars at "Static" scope
+                    Var theVar = (Var)SilentReflection.getStaticFieldValue( fields[ i ] ); 
+                    staticBindings.put( theVar );
+                    LOG.trace( "Adding static Var " + theVar );
+        	}
+        	else if( fieldType.isAssignableFrom( VarScript.class ) )
+        	{   //Add Vars at "Static" scope
+                    VarScript vScript = 
+                        (VarScript)SilentReflection.getStaticFieldValue( fields[ i ] );
+                    staticBindings.put( fields[ i ].getName(),  vScript );
+                    LOG.trace( "Adding static VarScript \"" 
+                        + fields[ i ].getName()+ "\" " + vScript );
+        	}
+        	else if( fieldType.isAssignableFrom( Directive.class ) )
+        	{
+                    Directive dir = (Directive)SilentReflection.getStaticFieldValue( fields[ i ] );
+                    directives.add( dir );
+                    LOG.trace( "Adding Directive \"" + fields[ i ].getName() + "\" " + dir );
+        	}
+        	else if( fieldType.isArray() ) 
+        	{   //arrays of Directives and Vars
+                    if( fieldType.getComponentType().isAssignableFrom( 
+                        Directive.class ) )
+                    {
+                        Directive[] dirs = 
+                            (Directive[])SilentReflection.getStaticFieldValue( fields[ i ] );
+                        directives.addAll( Arrays.asList(dirs) );
+                        if( LOG.isTraceEnabled() )
+                        {
+                            for( int j = 0; j < dirs.length; j++ )
+                            {
+                                LOG.trace( 
+                                    "Added static Directive [" + j + "]"+ dirs[ j ] );
+                            }
+        		}
+                    }
+                    if( fieldType.getComponentType().isAssignableFrom( Var.class ) )
+                    {
+        		Var[] vars = (Var[])SilentReflection.getStaticFieldValue( fields[ i ] );
+                        for( int j = 0; j < vars.length; j++ )
+                        {
+                            staticBindings.put( vars[ i ] );
+                        }
+                    } 
+        	}    		
+            }        	
+        }
+        return directives;
+    }
     
 	
     /**
