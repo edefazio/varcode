@@ -25,6 +25,15 @@ public class _constructors
 {
     private List<_constructor>constructors = new ArrayList<_constructor>();
 
+    public static _constructors of( _constructor..._ctorArray )
+    {
+        _constructors _ctors = new _constructors();
+        for( int i = 0; i < _ctorArray.length; i++ )
+	{
+            _ctors.addConstructor( _ctorArray[ i ] );
+	}
+	return _ctors;        
+    }
     /**
      * Builds and returns a clone of the prototype constructors
      * @param prototype baseline to build clone from
@@ -50,13 +59,14 @@ public class _constructors
      * @param signature
      * @param linesOfCode
      * @return
-     */
+     
     public static _constructors of( String signature, Object...linesOfCode )
     {
         _constructors cs = new _constructors();
 	cs.addConstructor( signature, linesOfCode );
 	return cs;
     }
+    */
 	
     public _constructors()
     {

@@ -1,5 +1,6 @@
 package varcode.java.lang;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -8,6 +9,7 @@ import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.Dom;
 import varcode.java.CloneInstance;
+import varcode.java.lang.JavaMetaLang._body;
 import varcode.markup.bindml.BindML;
 
 /**
@@ -26,38 +28,38 @@ import varcode.markup.bindml.BindML;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _code
-    implements JavaMetaLang
+    implements JavaMetaLang, _body
 {    
-	/**
-	 * Creates a code from the objects (Strings, _code) for instance:<PRE>
-	 * _code commentLog = _code.of(
-	 *     "//this is a comment", 
-	 *     "LOG.debug(\"Line After Comment\");");</PRE>
-	 *     
-	 * represents (2) lines of code...<BR><BR>
-	 * 
-	 * ...we can also take an existing {@code _code} and add it
-	 * to another {@code _code}:<PRE>
-	 * _code combined = _code.of( commentLog, "//This is a comment After the Log" );</PRE>
-	 * 
-	 * Where "combined" is:<PRE>
-	 * //this is a comment
-	 * LOG.debug("Line After Comment");
-	 * //This is a comment After the Log
-	 * </PRE> 
-	 * 
-	 * @param codeSequence a sequence of Strings and _code 
-	 * @return the _code representing the code in sequence
-	 */
-	public static _code of( Object...codeSequence )
+    /**
+     * Creates a code from the objects (Strings, _code) for instance:<PRE>
+     * _code commentLog = _code.of(
+     *     "//this is a comment", 
+     *     "LOG.debug(\"Line After Comment\");");</PRE>
+     *     
+     * represents (2) lines of code...<BR><BR>
+     * 
+     * ...we can also take an existing {@code _code} and add it
+     * to another {@code _code}:<PRE>
+     * _code combined = _code.of( commentLog, "//This is a comment After the Log" );</PRE>
+     * 
+     * Where "combined" is:<PRE>
+     * //this is a comment
+     * LOG.debug("Line After Comment");
+     * //This is a comment After the Log
+     * </PRE> 
+     * 
+     * @param codeSequence a sequence of Strings and _code 
+     * @return the _code representing the code in sequence
+     */
+    public static _code of( Object...codeSequence )
+    {
+	_code code = new _code();
+	if( codeSequence != null )
 	{
-		_code code = new _code();
-		if( codeSequence != null )
-		{
             code.codeSequence.addAll( Arrays.asList( codeSequence ) );
-		}
-		return code;
 	}
+	return code;
+    }
 	 
     /**
      * Create and return a clone of the prototype code
@@ -87,34 +89,34 @@ public class _code
         return theClone;
     }
     
-	public boolean isEmpty()
-	{
-		return codeSequence.isEmpty();
-	}
+    public boolean isEmpty()
+    {
+	return codeSequence.isEmpty();
+    }
 	
-	/** 
-	 * A List of "generic" objects that are convert-able to a sequence
-	 * of code.  contains:
-	 * <UL>
-	 *   <LI>Strings
-	 *   <LI>_code
+    /** 
+     * A List of "generic" objects that are convert-able to a sequence
+     * of code.  contains:
+     * <UL>
+     *   <LI>Strings
+     *   <LI>_code
      *   <LI>Template entities (like: _try, _for, _while, _if, _do)
-	 * </UL>  
-	 */
-	private List<Object>codeSequence = new ArrayList<Object>();
+     * </UL>  
+     */
+    private List<Object>codeSequence = new ArrayList<Object>();
 	
-	public static final Dom CODEBLOCK = BindML.compile( "{+codeBlock+}" );
+    public static final Dom CODEBLOCK = BindML.compile( "{+codeBlock+}" );
 	
-	/**
+    /**
      * The context 
      * @return context prior to Authoring
      */
-	public VarContext getContext()
-	{
-		return VarContext.of(
-			"codeBlock", stringify( this.codeSequence ) 
+    public VarContext getContext()
+    {
+	return VarContext.of(
+            "codeBlock", stringify( this.codeSequence ) 
         );
-	}
+    }
     
     @Override
     public _code bind( VarContext context )
@@ -142,32 +144,32 @@ public class _code
         return this;
     }
         
-	private String stringify( List<Object>codeComponents )
+    private String stringify( List<Object>codeComponents )
+    {
+	if( codeComponents == null || codeComponents.isEmpty() )
 	{
-		if( codeComponents == null || codeComponents.isEmpty() )
-		{
-			return null;
-		}
-		StringBuilder sb = new StringBuilder();
-		for( int i = 0; i < codeComponents.size(); i++ )
-		{
-                    if( i > 0 )
-                    {
-			sb.append( "\r\n" );
-                    }
-                    Object o = codeComponents.get( i );
-                    if( o != null )
-                    {
-                        sb.append( o.toString() );			
-                    }
-		}
-		return sb.toString();
+            return null;
+        }
+	StringBuilder sb = new StringBuilder();
+	for( int i = 0; i < codeComponents.size(); i++ )
+	{
+            if( i > 0 )
+            {
+		sb.append( "\r\n" );
+            }
+            Object o = codeComponents.get( i );
+            if( o != null )
+            {
+                sb.append( o.toString() );			
+            }
 	}
+	return sb.toString();
+    }
 	
-	public Dom getDom()
-	{
+    public Dom getDom()
+    {
         return CODEBLOCK;
-	}
+    }
 	
     @Override
     public String author( )
@@ -176,99 +178,99 @@ public class _code
     }
         
     @Override
-	public String author( Directive... directives ) 
-	{			
-		return Compose.asString(
-			getDom(), 
-			getContext(), 
-			directives );
-	}
+    public String author( Directive... directives ) 
+    {			
+	return Compose.asString(
+            getDom(), 
+            getContext(), 
+            directives );
+    }
 	
-	/**
-	 * Add a block of code at the head of the method 
-	 * (BEFORE all of the existing code in teh codeBlock)
-	 * 
-	 * @param codeBlock the codeBlokc to add before
-	 * @return the mutated _codeBlock
-	 */
-	public _code addHeadCode( _code codeBlock )
-	{
-		List<Object> headCode = new ArrayList<Object>();
-		headCode.add( codeBlock );		
-		headCode.addAll( this.codeSequence );
-		this.codeSequence = headCode;
-		return this;
-	}
+    /**
+     * Add a block of code at the head of the method 
+     * (BEFORE all of the existing code in teh codeBlock)
+     * 
+     * @param codeBlock the codeBlokc to add before
+     * @return the mutated _codeBlock
+     */
+    public _code addHeadCode( _code codeBlock )
+    {
+	List<Object> headCode = new ArrayList<Object>();
+	headCode.add( codeBlock );		
+	headCode.addAll( this.codeSequence );
+	this.codeSequence = headCode;
+	return this;
+    }
 	
-	/**
-	 * Adds code at the "top" (Head) of the code Block
-	 * @param codeLines lines of code
-	 * @return
-	 */
-	public _code addHeadCode( Object... codeLines )
-	{
-		List<Object> headCode = new ArrayList<Object>();
+    /**
+     * Adds code at the "top" (Head) of the code Block
+     * @param codeLines lines of code
+     * @return
+     */
+    public _code addHeadCode( Object... codeLines )
+    {
+	List<Object> headCode = new ArrayList<Object>();
         headCode.addAll( Arrays.asList( codeLines ) );
-		headCode.addAll( codeSequence );
-		this.codeSequence = headCode;
-		return this;
-	}
+	headCode.addAll( codeSequence );
+	this.codeSequence = headCode;
+	return this;
+    }
 	
-	/** 
+    /** 
      * Adds lines of code to the tail (bottom) of the code block
      * @param codeLines lines of code to add to the tail
      * @return this (modified) 
      */
-	public _code addTailCode( Object...codeLines )
-	{
+    public _code addTailCode( Object...codeLines )
+    {
         this.codeSequence.addAll(Arrays.asList(codeLines));
-		return this;
-	}
+	return this;
+    }
 	
     /**
      * Add code to the tail
      * @param codeBlock a code block to add
      * @return this (modified)
      */
-	public _code addTailCode( _code codeBlock )
-	{
-		this.codeSequence.add( codeBlock );		
-		return this;
-	}
+    public _code addTailCode( _code codeBlock )
+    {
+	this.codeSequence.add( codeBlock );		
+	return this;
+    }
 	
-	private static List<Object>doReplace( 
+    private static List<Object>doReplace( 
         List<Object>list, String target, String replacement )
+    {
+	List<Object> replace = new ArrayList<Object>();
+	for( int i = 0; i < list.size(); i++ )
 	{
-		List<Object> replace = new ArrayList<Object>();
-		for( int i = 0; i < list.size(); i++ )
-		{
-			Object obj = list.get( i );
-			if( obj instanceof String )
-			{
-				replace.add( ((String)obj).replace( target, replacement) ); 
-			}
-			else if( obj instanceof JavaMetaLang )
-			{
-				replace.add(((JavaMetaLang)obj ).replace( target, replacement ) );
-			}
-			else
-			{
-				replace.add( obj.toString().replace( target, replacement ) );
-			}
-		}
-		return replace;
+            Object obj = list.get( i );
+            if( obj instanceof String )
+            {
+		replace.add( ((String)obj).replace( target, replacement) ); 
+            }
+            else if( obj instanceof JavaMetaLang )
+            {
+		replace.add(((JavaMetaLang)obj ).replace( target, replacement ) );
+            }
+            else
+            {
+                replace.add( obj.toString().replace( target, replacement ) );
+            }
 	}
+	return replace;
+    }
 	
     @Override
-	public _code replace( String target, String replacement )
-	{
-		this.codeSequence = doReplace( this.codeSequence, target, replacement );
+    public _code replace( String target, String replacement )
+    {
+	this.codeSequence = doReplace( this.codeSequence, target, replacement );
         return this;
-	}
+    }
 	
     @Override
-	public String toString()
-	{
-		return author();
-	}
+    public String toString()
+    {
+	return author();
+    }
 }

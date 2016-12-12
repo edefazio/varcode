@@ -425,7 +425,7 @@ public class _annotations
          */
         public static _annotation cloneOf( _annotation prototype )
         {
-            _annotation ann = new _annotation( prototype.annotation + "" );
+            _annotation ann = new _annotation( prototype.name + "" );
             ann.attributes(prototype.attributes );            
             return ann;
         }
@@ -433,9 +433,9 @@ public class _annotations
         @Override
         public _annotation bind( VarContext context )
         {
-            if( this.annotation != null )
+            if( this.name != null )
             {
-                this.annotation = Compose.asString( BindML.compile( this.annotation ), context );            
+                this.name = Compose.asString(BindML.compile(this.name ), context );            
             }
             if (this.attributes != null && !attributes.isEmpty() )
             {
@@ -470,7 +470,7 @@ public class _annotations
         }
         
         /** A String starting with @ */
-        private String annotation;
+        private String name;
         
         private _attributes attributes;
         
@@ -486,31 +486,31 @@ public class _annotations
             {
                 if( annotation.toString().startsWith( "@" ) )
                 {
-                    this.annotation = annotation.toString();
+                    this.name = annotation.toString();
                 }
                 else
                 {
-                    this.annotation = "@" + annotation.toString();
+                    this.name = "@" + annotation.toString();
                 }
             }            
         }
 
         public boolean isEmpty()
         {
-            return annotation == null;
+            return name == null;
         }
         
         public String getAnnotation()
         {
-            return this.annotation;
+            return this.name;
         }
         
         @Override
         public _annotation replace( String target, String replacement )
         {
-            if( this.annotation != null )
+            if( this.name != null )
             {
-                this.annotation = annotation.replace( target, replacement );
+                this.name = name.replace( target, replacement );
             }
             if( this.attributes != null )
             {
@@ -528,18 +528,17 @@ public class _annotations
         @Override
         public String author( Directive... directives )
         {
-            if( this.annotation == null )
+            if( this.name == null )
             {
                 return "";
             }
             if( this.attributes == null || this.attributes.isEmpty() )
             {
-                return Compose.asString( ANNOTATION, 
-                    VarContext.of( "annotation", annotation ), directives );
+                return Compose.asString(ANNOTATION, 
+                    VarContext.of("annotation", name ), directives );
             }
-            return Compose.asString( ANNOTATION_ATTRIBUTES, 
-                VarContext.of( 
-                    "annotation", annotation, "attributes", attributes ), 
+            return Compose.asString(ANNOTATION_ATTRIBUTES, 
+                VarContext.of("annotation", name, "attributes", attributes ), 
                 directives ); 
         }
         

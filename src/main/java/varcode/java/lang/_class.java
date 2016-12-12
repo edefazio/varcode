@@ -311,7 +311,7 @@ public class _class
         this.annotations = _annotations.cloneOf( prototype.annotations );
         this.classPackage = _package.cloneOf( prototype.classPackage );
         this.imports = _imports.cloneOf( prototype.imports );
-	this.signature = _signature.cloneOf(prototype.signature  );
+	this.signature = _signature.cloneOf( prototype.signature  );
 		
 	this.javadoc = _javadoc.cloneOf( prototype.javadoc );
 	this.methods = _methods.cloneOf( prototype.methods );

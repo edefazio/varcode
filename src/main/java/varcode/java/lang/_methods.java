@@ -24,7 +24,14 @@ public class _methods
 {        
     private Map<String, List<_method>>methodsByName = 
 	new HashMap<String, List<_method>>();
-	
+
+    public static _methods of( _method..._meths )
+    {
+        _methods _ms = new _methods();
+        _ms.addMethods( _meths );
+        return _ms;
+    }
+    
     public _method getAt( int index )
     {
         if( index < count() && index >= 0 )
@@ -435,51 +442,26 @@ public class _methods
             return this.javadoc;
         }
         
-	public static _method cloneOf( _method prototype ) 
+	public static _method cloneOf( _method _proto ) 
 	{
-            _method m = 
-		new _method( _signature.cloneOf( prototype.signature ) );
-                    m.javadoc = _javadoc.cloneOf(prototype.javadoc );
-                    m.methodBody = prototype.getBody();			
-                    m.annotations = new _annotations( prototype.annotations.getAnnotations() );
-		return m;
+            _method _m = _method.of( _proto.getSignature().author() )
+                .body( _code.cloneOf( _proto.methodBody ) );
+                
+            if( !_proto.javadoc.isEmpty() )
+            {
+                _m.javadoc( _javadoc.cloneOf( _proto.javadoc ) );
+            }            
+            if( !_proto.annotations.isEmpty() )
+            {
+                _m.annotate( _proto.getAnnotations().getAnnotations().toArray() );
+            }
+            return _m;
 	}
 
 	public _signature getSignature()
 	{
             return signature;
 	}
-		
-        /*
-        public static _method of( _javadoc javadoc, String signature, Object...body )
-        {
-            _method m = new _method( signature );
-            if( body != null && body.length > 0 )
-            {
-                m.body( body );
-            }
-            if( javadoc != null )
-            {
-                m.javadoc( javadoc );
-            }
-            return m;
-        }
-        */
-        /*
-	public static _method of( String comment, String signature, Object... body )
-	{
-            _method m = new _method( signature );
-            if( body != null && body.length > 0 )
-            {
-                m.body( body );
-            }			
-            if( comment != null && comment.trim().length() > 0 )
-            {
-		m.javadoc( comment );
-            }			
-            return m;
-	}
-        */
 
 	private _javadoc javadoc;
         private _annotations annotations;

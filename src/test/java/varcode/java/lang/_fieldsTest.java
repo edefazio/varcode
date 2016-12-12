@@ -63,14 +63,6 @@ public class _fieldsTest
             "public int f;", f.toString() );
     }
     
-    public void testEmpty()
-    {
-        _fields f = _fields.of( );
-        assertEquals( 0, f.count() );
-        assertEquals( null, f.getByName( "Name" ) );
-        
-        assertEquals( "", f.toString() );        
-    }
     
     public void testOne()
     {

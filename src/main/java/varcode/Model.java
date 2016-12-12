@@ -71,8 +71,6 @@ public interface Model
      */
     public static final String STRING_LITERAL_PREFIX = "$$";
     
-
-            
     /** 
      * MetaLanguage Model of a program language entites.
      * <A HREF="https://en. wikipedia.org/wiki/Metalanguage">metalanguage</A>
@@ -102,8 +100,6 @@ public interface Model
          * @return document representation of the model
          */ 
 	String author( Directive... directives );
-        
-
     }
     
     /**

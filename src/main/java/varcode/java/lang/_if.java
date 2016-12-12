@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package varcode.java.lang.cs;
+package varcode.java.lang;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +21,7 @@ import varcode.context.VarContext;
 import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.Dom;
-import varcode.java.lang.JavaMetaLang;
+import varcode.java.lang.JavaMetaLang._body;
 import varcode.java.lang._code;
 import varcode.markup.bindml.BindML;
 
@@ -31,9 +31,8 @@ import varcode.markup.bindml.BindML;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _if
-    implements JavaMetaLang
-{        
-    
+    implements JavaMetaLang, _body
+{   
     public static _if is( Object condition, Object... bodyLines )
     {
         return new _if( condition, bodyLines );
@@ -53,12 +52,12 @@ public class _if
     }
 
     @Override
-    public _if replace(String target, String replacement)
+    public _if replace( String target, String replacement )
     {
         this.condition = this.condition.replace( target, replacement );
         this.body = this.body.replace( target, replacement );
         this.elseBody = this.elseBody.replace ( target, replacement );
-        for(int i=0; i< this.elseIfs.size(); i++)
+        for( int i = 0; i < this.elseIfs.size(); i++ )
         {
             this.elseIfs.get( i ).replace( target, replacement );
         }

@@ -195,6 +195,13 @@ public class _fields
 	}
 	return _fs;
     }
+    
+    public static _fields of( _field..._fields )
+    {
+        _fields _fs = new _fields();
+        _fs.addFields( _fields );        
+	return _fs;        
+    }
 	
     /**
      * model for a field 

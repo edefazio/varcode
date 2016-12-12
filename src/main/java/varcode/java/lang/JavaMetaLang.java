@@ -15,6 +15,7 @@
  */
 package varcode.java.lang;
 
+import java.io.Serializable;
 import java.util.List;
 import varcode.Model.MetaLang;
 import varcode.context.VarContext;
@@ -88,6 +89,12 @@ public interface JavaMetaLang
          */
         List<String> getAllNestedClassNames( 
             List<String>nestedClassNames, String containerClassName );
+    }
+    
+    
+    public interface _body extends Serializable
+    {
+        
     }
     
     /**

@@ -29,6 +29,16 @@ public class _nests
     //all nested components of a declaring class (_class, _enum, _interface)
     public List<_model>components = new ArrayList<_model>();
 
+    public static _nests of( _model..._ms )
+    {
+        _nests _ns = new _nests();
+        for( int i = 0; i < _ms.length; i++ )
+        {
+            _ns.add( _ms[ i ] );
+        }
+        return _ns;
+    }
+    
     public _nests()
     {			
     }

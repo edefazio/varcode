@@ -21,11 +21,15 @@ import varcode.markup.bindml.BindML;
 public class _var
     implements SelfBinding
 {
-    public static final Dom DOM = BindML.compile( "{+type*+} {+varName*+}" );
-	
+    public static final Dom DOM = BindML.compile( "{+type*+} {+varName*+}" );	
     public final _type type; 
     public final _identifier varName; 
 	
+    public static _var of( Object type, Object identifier )
+    {
+        return new _var( type, identifier );
+    }
+    
     public _var( _var iv )
     {
 	this.type = iv.type;

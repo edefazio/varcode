@@ -22,40 +22,55 @@ import varcode.markup.bindml.BindML;
 public class _parameters
     implements JavaMetaLang
 {            
-	public static final Dom PARAMS_LIST = 
+    public static final Dom PARAMS_LIST = 
         BindML.compile( "( {{+:{+params+}, +}} )" );
 	
-	public static _parameters cloneOf( _parameters prototype )
+    public static _parameters cloneOf( _parameters prototype )
+    {
+	List<_parameter> clone = new ArrayList<_parameter>();
+	for( int i = 0; i < prototype.params.size(); i++ )
 	{
-		List<_parameter> clone = new ArrayList<_parameter>();
-		for( int i = 0; i < prototype.params.size(); i++ )
-		{
-			clone.add( _parameter.cloneOf( prototype.params.get( i ) ) );
-		}
-		return new _parameters( clone );
+            clone.add( _parameter.cloneOf( prototype.params.get( i ) ) );
 	}
+	return new _parameters( clone );
+    }
 	
-	public static _parameters of( _var...vars )
+    public static _parameters of()
+    {
+        return new _parameters();
+    }
+    
+    public static _parameters of( _parameter...ps )
+    {
+        List<_parameter> params = new ArrayList<_parameter>();
+	for( int i = 0; i < ps.length ; i++ )
 	{
-		List<_parameter> params = new ArrayList<_parameter>();
-		for( int i = 0; i < vars.length ; i++ )
-		{
-			params.add( new _parameter( vars[ i ].type, vars[ i ].varName ) );
-		}
-		return new _parameters( params );
+            params.add( ps[ i ] );
 	}
-	
-	/**
-	 * KeyValue pairs of type - names
-	 * "int", "x"
-	 * "String", "name"
-	 * "double", 
-	 * @param tokens tokens comprised of parameters
-	 * @return _parameters representing parsed tokens
-	 */
-	public static _parameters of( String[] tokens )
+	return new _parameters( params );
+    }
+    
+    public static _parameters of( _var...vars )
+    {
+        List<_parameter> params = new ArrayList<_parameter>();
+	for( int i = 0; i < vars.length ; i++ )
 	{
-		List<_parameter> params = new ArrayList<_parameter>();
+            params.add( new _parameter( vars[ i ].type, vars[ i ].varName ) );
+	}
+	return new _parameters( params );
+    }
+	
+    /**
+     * KeyValue pairs of type - names
+     * "int", "x"
+     * "String", "name"
+     * "double", 
+     * @param tokens tokens comprised of parameters
+     * @return _parameters representing parsed tokens
+     */
+    public static _parameters of( String[] tokens )
+    {
+	List<_parameter> params = new ArrayList<_parameter>();
 
         List<String> currentTokens = new ArrayList<String>();
         int prefix = 0;
@@ -80,21 +95,21 @@ public class _parameters
                 }                
             }
         }		
-		return new _parameters( params );
-	}
+	return new _parameters( params );
+    }
 	
-	private List<_parameter> params;
+    private List<_parameter> params;
 	
-	public _parameters()
-	{
-		this.params = new ArrayList<_parameter>();
-	}
+    public _parameters()
+    {
+	this.params = new ArrayList<_parameter>();
+    }
 	
-	public _parameters add( _parameter param )
-	{
-		this.params.add( param );
-		return this;
-	}
+    public _parameters add( _parameter param )
+    {
+	this.params.add( param );
+	return this;
+    }
     
     public _parameters add( _parameters params )
     {
@@ -105,51 +120,50 @@ public class _parameters
         return this;
     }
 	
-	public int count()
-	{
-		return params.size();
-	}
+    public int count()
+    {
+	return params.size();
+    }
 	
     public boolean isEmpty()
     {
         return count() == 0;
     }
     
-	public _parameters( List<_parameter>params )
-	{
-		this.params = params;
-	}
+    public _parameters( List<_parameter>params )
+    {
+	this.params = params;
+    }
 	
-	/**
-	 * 
-	 * @param commaAndSpaceSeparatedTokens
-	 * @return
-	 */
-	protected static String[] normalizeTokens( 
+    /**
+     * 
+     * @param commaAndSpaceSeparatedTokens
+     * @return
+     */
+    protected static String[] normalizeTokens( 
         String commaAndSpaceSeparatedTokens )
-	{
-		String[] toks = commaAndSpaceSeparatedTokens.split( " " );
-		List<String>toksList = new ArrayList<String>(); 
+    {
+	String[] toks = commaAndSpaceSeparatedTokens.split( " " );
+	List<String>toksList = new ArrayList<String>(); 
         String temp = "";
-		for( int i = 0; i < toks.length; i++ )
-		{
-			if( toks[ i ].endsWith( "," ) )
-			{
-				toks[ i ] = toks[i].substring( 0, toks[ i ].length() -1 ); 
-			}
-			if( toks[ i ].startsWith( "," ) )
-			{
-				toks[ i ] = toks[ i ].substring( 1 ); 
-			}
-			String[] ts = toks[ i ].split( " " );
-			
-            
-			for( int j = 0; j < ts.length; j++ )
-			{
-				String t = ts[ j ].trim();
+	for( int i = 0; i < toks.length; i++ )
+	{
+            if( toks[ i ].endsWith( "," ) )
+            {
+		toks[ i ] = toks[i].substring( 0, toks[ i ].length() -1 ); 
+            }
+            if( toks[ i ].startsWith( "," ) )
+            {
+                toks[ i ] = toks[ i ].substring( 1 ); 
+            }
+            String[] ts = toks[ i ].split( " " );
+        
+            for( int j = 0; j < ts.length; j++ )
+            {
+                String t = ts[ j ].trim();
                 if( temp.length() > 0 )
                 {
-                    temp = temp +"," + t;
+                    temp = temp + "," + t;
                     if( symmeticGeneric( temp ) )
                     {
                         toksList.add( temp );
@@ -157,7 +171,7 @@ public class _parameters
                     }                    
                 }
                 else if( t.length() > 0 )
-				{
+                {
                     if( t.contains( "<" ) )
                     {                        
                         if( symmeticGeneric( t ) )
@@ -172,18 +186,26 @@ public class _parameters
                     else
                     {
                         toksList.add( t );
-                    }
-				}
-			}            
-		}
+                    }   
+                }
+            }            
+        }
         if( temp.length() > 0 )
         {
             throw new ModelException( 
                 "unable to parse tokens, remaining temp = " + temp );
         }
-		return toksList.toArray( new String[ 0 ] );
-	}
+        return toksList.toArray( new String[ 0 ] );
+    }
 	
+    /**
+     * Tests if a "type" is defined as a Generic
+     * (i.e. it contains the appropriate amount of< >'s
+     * to represent a Generic Type
+     * 
+     * @param s
+     * @return 
+     */
     private static boolean symmeticGeneric( String s )
     {
         int openCount = 0;
@@ -203,10 +225,10 @@ public class _parameters
         return openCount == 0;
     }
     
-	public List<_parameter> getParameters()
-	{
-		return this.params;
-	}
+    public List<_parameter> getParameters()
+    {
+        return this.params;
+    }
 	
     @Override
     public String author( )
@@ -215,8 +237,8 @@ public class _parameters
     }
     
     @Override
-	public String author( Directive... directives ) 
-	{
+    public String author( Directive... directives ) 
+    {
         if( params != null && params.size() > 0 )            
         {
             return Compose.asString( 
@@ -225,13 +247,13 @@ public class _parameters
                     "params", params ), directives );
         }
         return "(  )";
-	}	
+    }	
     
     @Override
-	public String toString()
-	{
-		return author();
-	}
+    public String toString()
+    {
+        return author();
+    }
 
     @Override
     public _parameters bind( VarContext context )
@@ -292,35 +314,35 @@ public class _parameters
             return this;
         }
         
-		public static _parameter of( Object type, Object name )
-		{
-			return new _parameter( type, name );
-		}
+	public static _parameter of( Object type, Object name )
+	{
+            return new _parameter( type, name );
+	}
 		
         /** The type4 of the parameter ( int, String, {+typeName+}, ... )*/
-		private String type; 
+	private String type; 
         
         /** the name of the parameter ("count", "name"...) */
-		private String name; 
+	private String name; 
 	
         private Boolean isFinal = Boolean.FALSE;
         
         private _annotation parameterAnnotation;
         
-		public static final Dom PARAMS = 
+	public static final Dom PARAMS = 
             BindML.compile( 
                 "{+parameterAnnotation+}" +
                 "{{+?isFinal:final +}}"+        
                 "{+type*+} {+name*+}" );
 		
-		public _parameter( _parameter iv )
-		{
+	public _parameter( _parameter iv )
+	{
             this.parameterAnnotation = iv.parameterAnnotation= 
                 new _annotation( iv.parameterAnnotation.getAnnotation() );
             this.isFinal = iv.isFinal;
-			this.type = iv.type + "";
-			this.name = iv.name + "";
-		}
+            this.type = iv.type + "";
+            this.name = iv.name + "";
+	}
 	
         public _parameter setFinal()
         {
@@ -372,17 +394,17 @@ public class _parameters
             }
         }
         
-		public _parameter( Object type, Object name )
-		{
-			this.type =  type.toString();
-			this.name = name.toString();
-		}
+	public _parameter( Object type, Object name )
+        {
+            this.type =  type.toString();
+            this.name = name.toString();
+	}
 	
         @Override
-		public String toString()
-		{
-			return author();
-		}
+	public String toString()
+	{
+            return author();
+	}
         
         public String getType()
         {
@@ -450,18 +472,18 @@ public class _parameters
             }
             return vc;    
         }
-	}
+    }
 
-	public _parameter getAt( int index ) 
+    public _parameter getAt( int index ) 
+    {
+	if( index < count() )
 	{
-		if( index < count() )
-		{
-			return params.get( index );
-		}
-		throw new ModelException(
-			"unable to get parameter ["+ 
-			index +"] out of range [0..."+ ( count() -1 ) +"]" );
+            return params.get( index );
 	}
+	throw new ModelException(
+            "unable to get parameter ["+ 
+            index +"] out of range [0..."+ ( count() -1 ) +"]" );
+    }
    
     /**
      * If we have this:
@@ -529,10 +551,10 @@ public class _parameters
     }
     
     
-	public static _parameters of( String parameterString ) 
-	{
-		String[] tokens = normalizeTokens( parameterString );
+    public static _parameters of( String parameterString ) 
+    {
+	String[] tokens = normalizeTokens( parameterString );
         tokens = splitVarargsTokens( tokens );
-		return _parameters.of( tokens );
-	}
+	return _parameters.of( tokens );
+    }
 }

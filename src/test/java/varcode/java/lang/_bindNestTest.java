@@ -15,7 +15,6 @@
  */
 package varcode.java.lang;
 
-import varcode.java.lang.cs._if;
 import junit.framework.TestCase;
 import varcode.context.VarContext;
 

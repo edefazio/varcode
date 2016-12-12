@@ -21,6 +21,7 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.EnumDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -34,6 +35,8 @@ import varcode.load.LoadException;
  * (Abstract Syntax Tree) {@code CompilationUnit}... And converts the AST
  * {@code CompilationUnit} into a java "Lang Model" (_class, _interface, _enum)
  *
+ * Also, provides some convenient methods to walk the tree for performing 
+ * "simple"
  * @author M. Eric DeFazio eric@varcode.io
  */
 public enum JavaASTParser
@@ -329,6 +332,29 @@ public enum JavaASTParser
         //List<Node> nodes = cu.getChildrenNodes();
         throw new LoadException( 
             "Could not find type declaration for \"" + typeName + "\"" );
+    }
+    
+    /**
+     * returns all ast {@code MethodDeclaration}s within ast {@code TypeDeclaration}
+     * @param astTypeDef the Type Definition
+     * @return all ast {@code MethodDeclaration}s within the {@code TypeDefinition}
+     */
+    public static MethodDeclaration[] findAllMethods( 
+        TypeDeclaration astTypeDef )
+    {
+        List<BodyDeclaration> members = astTypeDef.getMembers();
+        
+        List<MethodDeclaration> astMethods = 
+            new ArrayList<MethodDeclaration>();
+        
+        for( int i = 0; i < members.size(); i++ )
+        {
+            if( members.get( i ) instanceof MethodDeclaration )
+            {
+                astMethods.add( (MethodDeclaration)members.get( i ) );
+            }                        
+        }
+        return astMethods.toArray( new MethodDeclaration[ 0 ] );
     }
     
     private static TypeDeclaration recurseTypeChildren( 

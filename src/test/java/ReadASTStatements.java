@@ -31,6 +31,7 @@ import java.util.Comparator;
 import java.util.List;
 import junit.framework.TestCase;
 import varcode.java._Java;
+import varcode.java.lang._if;
 
 /**
  *
@@ -106,6 +107,8 @@ public class ReadASTStatements
             //break
         }
     }
+    
+
     
     public MethodDeclaration getMethod( TypeDeclaration astTypeDef )
     {
@@ -189,10 +192,20 @@ public class ReadASTStatements
         }
     }
     
+    public static class MethodWithIf
+    {
+        public static void methodWithIf()
+        {            
+            if( ( System.currentTimeMillis() & 1L ) == 1 )
+            {
+                System.out.println( "Odd" );
+            }
+        }
+    }
     public void testThing( )
     {
         TypeDeclaration astTypeDef = 
-            _Java.astTypeDeclarationFrom( MethodWithSomeCode.class );
+            _Java.astTypeDeclarationFrom( MethodWithIf.class ); //MethodWithSomeCode.class );
         
         MethodDeclaration md = getMethod( astTypeDef );
         
@@ -213,6 +226,7 @@ public class ReadASTStatements
             System.out.println( "[" + i + "]" + stmt.getClass() );
             if( stmt instanceof IfStmt )
             {
+                
                 handleIfStatment( (IfStmt) stmt );
             }   
             if( stmt instanceof ExpressionStmt )
@@ -227,13 +241,18 @@ public class ReadASTStatements
         }
     }
     
-    public static void handleExpressionStmt ( ExpressionStmt es )
+    
+    public static void handleExpressionStmt( ExpressionStmt es )
     {
         System.out.println( es.getExpression().toString() );
     }
     
     public static void handleIfStatment( IfStmt ifStmt )            
     {
+        _if _ifs = ASTCodeTo_body.toModel( ifStmt );
+        
+        System.out.println( _ifs );
+        
         Expression e = ifStmt.getCondition();
         System.out.println("Condition" + e );
         

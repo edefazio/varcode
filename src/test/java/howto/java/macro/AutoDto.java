@@ -34,7 +34,7 @@ public class AutoDto
     public void testAutoDto()
     {
         _autoDto _dto = 
-            _autoDto.of( "tutorial.varcode.chap1.author.MyDto" )
+            _autoDto.of( "tutorial.varcode.chap1.author.MyDto")
             .property( String.class, "name" )
             .property( "public int[] numbers = {1,2,3,4,5};")        
             .property( Date.class, "dob" );     
