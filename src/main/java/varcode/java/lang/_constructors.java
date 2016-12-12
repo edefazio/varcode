@@ -148,7 +148,7 @@ public class _constructors
 	
     /** Individual constructor model */
     public static class _constructor
-        implements _facet
+        implements _facet, JavaMetaLang
     {
         
         /**

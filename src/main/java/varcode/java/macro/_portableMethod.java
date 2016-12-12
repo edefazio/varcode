@@ -17,6 +17,8 @@ package varcode.java.macro;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import varcode.Model.ModelException;
+import varcode.java.lang.JavaMetaLang._facet;
 import varcode.java.lang._fields;
 import varcode.java.lang._fields._field;
 import varcode.java.lang._imports;
@@ -100,6 +102,41 @@ public class _portableMethod
         return _requiredImports;
     }
     
+    public _portableMethod requires( Class... importClasses )
+    {
+        for( int i = 0; i < importClasses.length; i++ )
+        {
+            this._requiredImports.addImport( importClasses[ i ] );
+        }
+        return this;
+    }
+    
+    public _portableMethod requires( _facet... facets )
+    {
+        for( int i = 0; i < facets.length; i++ )
+        {
+            if( facets[ i ] instanceof _field )
+            {
+                addRequiredFields( (_field) facets[ i ] );
+            }
+            else if( facets[ i ] instanceof _imports )
+            {
+                this._requiredImports.addImport( (_imports) facets[ i ] );
+            }
+            else if( facets[ i ] instanceof _method )
+            {
+                this._requiredMethods.addMethod( (_method) facets[ i ] );
+            }
+            else
+            {
+                throw new ModelException(
+                    "Unsupported facet " + facets[ i ] + " for _portableMethod" );
+            }
+            
+        }
+        return this;
+    }
+    
     public _portableMethod addRequiredMethods( _method... methods )
     {
         this._requiredMethods.addMethods( methods );
@@ -111,6 +148,12 @@ public class _portableMethod
         this._requiredImports.addImports( imports );
         return this;
     }
+    
+    public _portableMethod requires( _fields  fields )
+    {
+        this._requiredFields.addFields( fields );
+        return this;
+    }     
     
     public _portableMethod addRequiredFields( _field... fields )
     {

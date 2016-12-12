@@ -20,7 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import varcode.VarException;
 import varcode.java.JavaCase;
-import varcode.java.JavaCase.JavaCaseAuthor;
+import varcode.java.JavaCase.JavaCaseBuilder;
 
 /**
  * One or more {@code AdHocJavaFiles} (java source code) to be compiled 
@@ -53,7 +53,7 @@ public class Workspace
      * @param caseAuthors authors of Java Cases that contain Java code
      * @return a Workspace containing the JavaFiles that are
      */
-    public static Workspace of( JavaCaseAuthor...caseAuthors )
+    public static Workspace of( JavaCaseBuilder...caseAuthors )
     {
         JavaCase[] cases = new JavaCase[ caseAuthors.length ];
         
@@ -93,7 +93,7 @@ public class Workspace
      * @param caseAuthors authors of JavaCases
      * @return  an AdHocClassLoader loaded with compiled Classes
      */
-    public static AdHocClassLoader compileNow( JavaCaseAuthor...caseAuthors )
+    public static AdHocClassLoader compileNow( JavaCaseBuilder...caseAuthors )
     {
         JavaCase[] cases = new JavaCase[ caseAuthors.length ];
         for( int i = 0; i < caseAuthors.length; i++ )

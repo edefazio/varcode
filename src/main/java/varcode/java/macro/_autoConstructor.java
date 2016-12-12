@@ -46,7 +46,7 @@ import varcode.java.lang._fields._field;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _autoConstructor
-    implements _javaMacro
+    implements JavaMacro.Generator
 {    
     /**
      * Returns a constructor based on which <B>final, non-initialized _fields</B>
@@ -72,7 +72,7 @@ public class _autoConstructor
     
     public static _constructor of( _enum _e, _fields _fs )
     {
-         //we need a constructor with all the uninitialized final fields
+        //we need a constructor with all the uninitialized final fields
         //verify that all fields are either
         // nonfinal and they are final With an initializer
         List<_field>uninitializedFinalFields = 

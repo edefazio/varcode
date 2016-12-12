@@ -21,7 +21,8 @@ import varcode.context.VarContext;
 import varcode.doc.Dom;
 
 /**
- *
+ * "Meta" Model view of components within the Java Language.
+ * 
  * @author M. Eric DeFazio eric@varcode.io
  */
 public interface JavaMetaLang 
@@ -91,8 +92,8 @@ public interface JavaMetaLang
     
     /**
      * Marker interface for organizing "facets" which are
-     * "parts" that can be added within a hierarchial {@code JavaMetaLang} model
-     * _class, _enum, _interfaces)
+     * "parts" that can be added within a hierarchal 
+     * {@code JavaMetaLang._model (_class, _enum, _interfaces)}
      * 
      * (any field, method, modifier, annotation,...)
      * this allows the interface for an entity (_class,_enum, _interface)
@@ -106,7 +107,7 @@ public interface JavaMetaLang
      * 
      * @author Eric DeFazio eric@varcode.io
      */
-    public interface _facet extends JavaMetaLang
+    public interface _facet //extends JavaMetaLang
     {
     
     }

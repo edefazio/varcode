@@ -5,8 +5,6 @@
  */
 package varcode.java.lang;
 
-import varcode.java.lang._annotations;
-import varcode.java.lang._class;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;

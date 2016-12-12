@@ -15,23 +15,13 @@
  */
 package varcode.java.macro;
 
-import varcode.java.lang._code;
-
 /**
- * Adds some (static) code at the beginning of a method
- * 
- * @author M. Eric DeFazio eric@varcode.io
+ *
+ * @author Eric
  */
-public class _autoMethodCodePrefix
-    implements JavaMacro
-{    
-    /*the code to add at the "prefix" (before any other code) of the method */    
-    public _code codePrefix;
+public class _autoJavadoc 
+{
+    //make methods to pass in Javadoc @author
     
-    //_transposeCode
     
-    public _autoMethodCodePrefix ( _code codePrefix )
-    {
-        this.codePrefix = codePrefix;
-    }
 }

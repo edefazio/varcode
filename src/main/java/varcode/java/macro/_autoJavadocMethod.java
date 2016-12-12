@@ -72,8 +72,14 @@ import varcode.java.lang._parameters._parameter;
  * 
  * @author M. Eric DeFazio eric@varcode.io
  */
-public class _autoJavadocMethod 
+public class _autoJavadocMethod
+    implements JavaMacro.Generator
 {
+    public static final String PARAM_TAG  = "@param";
+    public static final String RETURN_TAG = "@return";
+    public static final String THROWS_TAG = "@throws";
+    public static final String AUTHOR_TAG = "@author";
+    
     /**
      * 
      * @param _c
@@ -82,41 +88,47 @@ public class _autoJavadocMethod
     public static _class ofClass ( _class _c )
     {
         _methods _ms = _c.getMethods();
-        of( _ms );
+        to( _ms );
         return _c;
     }
     
-    public static void of( _methods _ms )
+    
+    public static void to( _method _m )
+    {
+        if( !_m.getJavadoc().isEmpty() )
+        {   //dont mess with existing Javadocs
+            return;
+        }
+        StringBuilder sb = new StringBuilder();
+        for( int j = 0; j < _m.getParameters().count(); j++ )
+        {            
+            _parameter _p = _m.getParameters().getAt( j );
+            sb.append( "@param " );
+            sb.append( _p.getName() );
+            sb.append( System.lineSeparator() );
+        }
+        if( !_m.getReturnType().equals( "void" ) )
+        {
+            sb.append( "@return " );
+            //sb.append( shortName( _m.getReturnType() ) );
+            sb.append( System.lineSeparator() );
+        }
+        for( int j = 0; j < _m.getThrows().count(); j++ )
+        {
+            String _th = _m.getThrows().getAt( j );
+            sb.append( "@throws " );
+            sb.append( shortName( _th ) );
+                sb.append( System.lineSeparator() );                
+            }
+            _m.javadoc( sb.toString() );
+    }
+    
+    public static void to( _methods _ms )
     {        
         for( int i = 0; i < _ms.count(); i++ )
         {
             _method _m = _ms.getAt( i );
-            if( !_m.getJavadoc().isEmpty() )
-            {   //dont mess with existing Javadocs
-                break;
-            }
-            StringBuilder sb = new StringBuilder();
-            for( int j = 0; j < _m.getParameters().count(); j++ )
-            {
-                _parameter _p = _m.getParameters().getAt( j );
-                sb.append( "@param " );
-                sb.append( _p.getName() );
-                sb.append( System.lineSeparator() );
-            }
-            if( !_m.getReturnType().equals( "void" ) )
-            {
-                sb.append( "@return " );
-                sb.append( shortName( _m.getReturnType() ) );
-                sb.append( System.lineSeparator() );
-            }
-            for( int j = 0; j < _m.getThrows().count(); j++ )
-            {
-                String _th = _m.getThrows().getAt( i );
-                sb.append( "@throws " );
-                sb.append( shortName( _th ) );
-                sb.append( System.lineSeparator() );                
-            }
-            _m.javadoc( sb.toString() );
+            to( _m );            
         }        
     }
     
@@ -127,6 +139,5 @@ public class _autoJavadocMethod
             name = name.substring( name.lastIndexOf( "." ) + 1 );
         }
         return name;
-    }
-    
+    }   
 }

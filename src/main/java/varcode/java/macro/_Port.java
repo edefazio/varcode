@@ -19,42 +19,85 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import varcode.Model.ModelException;
+import varcode.java.lang.JavaMetaLang;
+import varcode.java.lang.JavaMetaLang._model;
 import varcode.java.lang._class;
 import varcode.java.lang._fields._field;
 import varcode.java.lang._methods._method;
 
 /**
- * PERHAPS, what I do here is populate a ChangeLIst of the Work I accomplished
- * and also the work I did not accomplish within the macro
- * 
- * So, any 
+ * Ports a _facet to {@code _models} like  
  * @author Eric   
  */
-public class _portMethod
-    implements _javaMacro
+public class _Port
+     implements JavaMacro.Mutator
 {
     public static final Logger LOG = 
-        LoggerFactory.getLogger( _portMethod.class );
+        LoggerFactory.getLogger( _Port.class );
     
     public static final String N = System.lineSeparator();
     
+    
+    public static _class portForce( _portableMethod _pMethod, _class _c )
+    {
+        return (_class)portForce( _pMethod, (_model)_c );
+    }
+    
+    
+    
     /**
+     * Hmm, should I have a portForce(...) (to overwrite)
+     * and a port(...) to fail if I encounter an existing method?
+     * 
+     * This ports the portable method _pMethod to the _class _c
      * @param _pMethod the method to "port" to the _class
      * @param _c the class (receiver) of the method
-     * @return 
+     * @return the modified _class
      */
-    public static _class portTo( _portableMethod _pMethod, _class _c )
+    public static _model portForce( _portableMethod _pMethod, _model _c )
     {
         //first, create a clone of the _class, so we dont have to roll back
-        _class _clone = _c.clone();
+        _model _clone = _c.clone();
         
         //now apply changes to the _clone, if we fail... don't mutate _c
         
-        //add the method
-        _clone.add(_pMethod.getMethod() );
+        boolean changed = false;
+        
+        List<_method> _ms = _clone.getMethods().getByName(  
+            _pMethod.getMethod().getName() );
+        if( _ms != null )
+        {
+            for( int i = 0; i < _ms.size(); i++ )
+            {
+                _method _m  = _ms.get( i );
+                if( _m.getParameters().count() == 
+                    _pMethod.getMethod().getParameters().count() )
+                {                
+                //we could do a "more envolved" search, but for now
+                //lets just do this
+                //if( _m.getModifiers().contains( "abstract" ) )
+                //{
+                    //its an abstract method, lets replace it with
+                    // a "real method"
+                //}
+                //lets delta the method
+                    changed = true;
+                    _m.getSignature().setModifiers( 
+                        _pMethod.getMethod().getModifiers() );
+                    _m.setBody( _pMethod.getMethod().getBody() );
+                }    
+            }
+        }
+        if( ! changed )
+        {
+            //add the method only if we didnt "change" a method
+            _clone.getMethods().addMethod( _pMethod.getMethod ()); 
+            //_clone.add(_pMethod.getMethod() );
+        }
         
         //add imports (merge to current imports)
-        _clone.add(_pMethod.getRequiredImports() );
+        
+        _clone.getImports().addImports( _pMethod.getRequiredImports() );
         
         for( int i = 0; i < _pMethod.getRequiredFields().count(); i++ )
         {
@@ -63,7 +106,7 @@ public class _portMethod
                 _f.getName() ) )
             {
                 LOG.debug( "adding required field " + _f );
-                _clone.add( _f );
+                _clone.getFields().addFields( _f );
             }
             else
             {
@@ -80,8 +123,8 @@ public class _portMethod
             if( _rm.isAbstract() )
             {   //THERE MUST BE A CORRESPONDING METHOD DEFINED in clone
                 // IF NOT THROW EXCEPTION
-                List<_method> candidates = 
-                    _clone.getMethodsByName( _rm.getName() );
+                List<_method> candidates = _clone.getMethods().getByName(
+                    _rm.getName() );
                 
                 boolean foundImpl = false;
                 
@@ -108,7 +151,7 @@ public class _portMethod
             {
                 //if they dont already HAVE this method, I need to add it
                 List<_method> candidates = 
-                    _clone.getMethodsByName(_rm.getName() );
+                    _clone.getMethods().getByName( _rm.getName() );
                 
                 boolean needToAdd = true;
                 
@@ -125,7 +168,7 @@ public class _portMethod
                 if( needToAdd )
                 {
                     LOG.debug( "Adding method " +_rm.getSignature() + " to clone" );
-                    _clone.method( _rm );
+                    _clone.getMethods().addMethod( _rm );
                 }
             }
         }        

@@ -201,18 +201,18 @@ public class JavaReflection
      * @return the value of the static field
      */
     public static Object getStaticFieldValue( Field field )
-	{
+    {
     	try 
-	    {
-	    	return field.get( null );
-	    } 
-	    catch( IllegalArgumentException e ) 
-	    {
-            throw new VarException( "Illegal Argument for field "+ field, e );
-	    } 	    
+	{
+	    return field.get( null );
+	} 
+	catch( IllegalArgumentException e ) 
+	{
+            throw new VarException( "Illegal Argument for field " + field, e );
+	} 	    
         catch (IllegalAccessException e) 
         {
-            throw new VarException( "Illegal Acccess for field "+ field, e );
+            throw new VarException( "Illegal Acccess for field " + field, e );
         } 	    
     }
     

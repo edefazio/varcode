@@ -1,7 +1,7 @@
 package tutorial.varcode.chapx.appendix;
 
 import junit.framework.TestCase;
-import varcode.java.metalang._methods;
+import varcode.java.lang._methods;
 import varcode.markup.codeml.code._Method;
 
 /**

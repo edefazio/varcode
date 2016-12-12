@@ -38,7 +38,7 @@ import varcode.markup.bindml.BindML;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _autoMethodSetter
-    implements _javaMacro
+    implements JavaMacro
 {
     /** composes the signature for the setter*/
     public static final Dom SIGNATURE = BindML.compile( 

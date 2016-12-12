@@ -12,7 +12,7 @@ import varcode.java.load.JavaMetaLangLoader;
  * @author Eric DeFazio
  */
 public class _autoMethodGetAtArrayIndex
-    implements _javaMacro
+    implements JavaMacro.Generator
 {
      /**
      * Creates "getXXXXAt()" _method for an element of a member field array

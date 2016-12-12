@@ -56,6 +56,7 @@ public enum Resolve
         
         public List<VarScript> getVarScripts();
     }
+    
     /** 
      * name of a Property in the {@code VarContext} that specifies a Class that 
      * can define: 

@@ -9,7 +9,6 @@ import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.Dom;
 import varcode.java.JavaCase;
-import varcode.java.JavaCase.JavaCaseAuthor;
 import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.lang._constructors._constructor;
 import varcode.java.lang._enum._constants._constant;
@@ -17,13 +16,14 @@ import varcode.java.lang._fields._field;
 import varcode.java.lang._methods._method;
 import varcode.markup.bindml.BindML;
 import varcode.java.lang.JavaMetaLang._model;
+import varcode.java.JavaCase.JavaCaseBuilder;
 
 /**
  * MetaLang model 
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _enum
-    implements JavaCaseAuthor, _model
+    implements JavaCaseBuilder, _model
 {
     private _package enumPackage = new _package( "" ); 
     private _imports imports = new _imports();
@@ -477,6 +477,10 @@ public class _enum
             else if( components[ i ] instanceof _facet )
             {
                 eParams.facets.add( (_facet)components[ i ] );
+            }
+            else if( components[ i ] instanceof _model )
+            {
+                eParams.nesteds.add( (_model)components[ i ] );
             }
          
         }
@@ -932,7 +936,7 @@ public class _enum
             implements JavaMetaLang
 	{
             private String name;
-            private _arguments args;
+            private _args args;
 			
             /** So:
              * <PRE>
@@ -951,7 +955,7 @@ public class _enum
              */
             public static _constant of( String name, Object... arguments )
             {
-		return new _constant( name, _arguments.of( arguments ) );								
+		return new _constant( name, _args.of( arguments ) );								
             }
 		
             
@@ -960,7 +964,7 @@ public class _enum
                 return this.name;
             }
             
-            public _arguments getArguments()
+            public _args getArguments()
             {
                 return this.args;
             }
@@ -969,10 +973,10 @@ public class _enum
             {
 		return new _constant( 
                     construct.name,
-                    _arguments.cloneOf( construct.args ) );					
+                    _args.cloneOf( construct.args ) );					
             }
             
-            public _constant( String name, _arguments args )
+            public _constant( String name, _args args )
             {
 		this.name = name;
 		this.args = args;

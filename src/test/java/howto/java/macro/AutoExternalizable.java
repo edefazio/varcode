@@ -9,9 +9,11 @@ import java.util.Map;
 import junit.framework.TestCase;
 import varcode.java.adhoc.AdHocObjectInputStream;
 import varcode.java.lang._class;
+import varcode.java.macro._Port;
 import varcode.java.macro._autoDto;
 import varcode.java.macro._autoExternalizable;
-import varcode.java.lang.cs._autoToString;
+import varcode.java.macro._autoToString;
+import varcode.java.macro._portableMethod;
 
 /**
  * Illustrates creating an AdHoc Class (and using _autoExternalizable),
@@ -37,9 +39,13 @@ public class AutoExternalizable
         throws IOException, ClassNotFoundException
     {
         //create a toString() AND
-        _class _extern = _autoToString.of( 
-            _autoExternalizable.of( 
-                _dto.as_class() ) ); 
+        _class _extern =  
+            _autoExternalizable.of( _dto.as_class() ); 
+        
+        _portableMethod _pm = _autoToString.of( _extern.getFields() );
+        _extern = _Port.portForce( _pm, _extern );
+        
+        System.out.println( _extern );
         
         Object emptyInstance = _extern.instance( );
         

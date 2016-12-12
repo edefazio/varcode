@@ -8,7 +8,6 @@ import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.Dom;
 import varcode.java.JavaCase;
-import varcode.java.JavaCase.JavaCaseAuthor;
 import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.lang._annotations._annotation;
 import varcode.java.lang._constructors._constructor;
@@ -18,6 +17,7 @@ import varcode.java.lang._methods._method;
 import varcode.java.lang._modifiers._modifier;
 import varcode.markup.bindml.BindML;
 import varcode.java.lang.JavaMetaLang._model;
+import varcode.java.JavaCase.JavaCaseBuilder;
 
 /**
  * "parametric code" using a fluent builder pattern for 
@@ -32,7 +32,7 @@ import varcode.java.lang.JavaMetaLang._model;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _class    
-    implements JavaCaseAuthor, _model
+    implements JavaCaseBuilder, _model
 {	
     //the 
     private String license;
@@ -797,7 +797,8 @@ public class _class
      * @return the modified _class
      */
     public _class mainMethod( Object...bodyLines )
-    {        
+    {   
+        //Object[] method = new Object[]
         if( bodyLines.length > 0 )
         {
             if( bodyLines[ 0 ] instanceof _javadoc )

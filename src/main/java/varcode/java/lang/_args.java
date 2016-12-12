@@ -33,7 +33,7 @@ import varcode.markup.bindml.BindML;
  * </PRE>
  * @author M. Eric DeFazio eric@varcode.io
  */
-public class _arguments 
+public class _args 
     implements JavaMetaLang
 {
 
@@ -41,9 +41,9 @@ public class _arguments
      * @param prototype the prototype to base the clone
      * @return new clone instance
      */
-	public static _arguments cloneOf( _arguments prototype ) 
+	public static _args cloneOf( _args prototype ) 
 	{
-		_arguments clone = new _arguments();
+		_args clone = new _args();
 		for( int i = 0; i < prototype.count(); i++ )
 		{
 			clone.arguments.add( prototype.arguments.get( i ) ); 
@@ -73,13 +73,13 @@ public class _arguments
      * @param argument an argument to add to the end of existing arguments
      * @return this (updated with new argument)
      */
-    public _arguments addArgument( Object argument )
+    public _args addArgument( Object argument )
     {
         this.arguments.add( stringFormOf( argument ) );
         return this;
     }
     
-    public _arguments addArguments( Object... arguments )
+    public _args addArguments( Object... arguments )
     {
         for( int i = 0; i< arguments.length; i++ )
         {
@@ -89,7 +89,7 @@ public class _arguments
     }
     
     @Override
-    public _arguments bind( VarContext context )
+    public _args bind( VarContext context )
     {
         for( int i = 0; i < arguments.size(); i++ )
         {
@@ -179,11 +179,11 @@ public class _arguments
 	 * @param arguments the arguments
 	 * @return a new _arguments container
 	 */
-	public static _arguments of( Object... arguments )
+	public static _args of( Object... arguments )
 	{
 		if( arguments == null )
 		{
-			return new _arguments( "null" );
+			return new _args( "null" );
 		}
         
 		List<String> args = new ArrayList<String>();
@@ -192,13 +192,13 @@ public class _arguments
 		{
             args.add( stringFormOf( arguments[ i ] ) );            
 		}
-		return new _arguments( args.toArray( new String[ 0 ] ) );
+		return new _args( args.toArray( new String[ 0 ] ) );
 	}
 	
     /** the arguments list */
 	private final List<String> arguments;
 	
-	public _arguments( String...args )
+	public _args( String...args )
 	{
         arguments = new ArrayList<String>();        
         arguments.addAll(Arrays.asList(args));
@@ -211,7 +211,7 @@ public class _arguments
     }
 
     @Override
-    public _arguments replace( String target, String replacement )
+    public _args replace( String target, String replacement )
     {
         for( int i = 0; i < this.arguments.size(); i++ )
         {

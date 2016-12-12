@@ -49,7 +49,7 @@ import varcode.java.lang._fields._field;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _portableProperty 
-    implements _javaMacro
+    implements JavaMacro
 {
     public _field field;
     

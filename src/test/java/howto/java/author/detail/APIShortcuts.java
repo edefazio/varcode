@@ -20,7 +20,33 @@ import varcode.java.lang._methods._method;
  */
 public class APIShortcuts
     extends TestCase
-{
+{    
+    /** 
+     * you can just pass in the Annotation Class and we will know
+     * it's an annotation
+     */
+    public void testAnnotationShortcut()
+    {
+        _class _c = _class.of( 
+            Deprecated.class, //pass in an Annotation class   
+            "public class MyClass",             
+            _method.of( Override.class, //pass in an Annotation Class
+                "public String toString()", 
+                "return \"Hi\";" )
+            );
+        
+        assertEquals( 
+            _c.getAnnotations().author().trim(), "@java.lang.Deprecated" );
+        
+        assertEquals( _c.getMethodNamed("toString").getAnnotations().author().trim(), 
+               "@java.lang.Override" );
+        
+        //System.out.println( _c.getAnnotations().getAt( 0 ) );
+        System.out.println( _c );
+        
+        _c.instance( );
+    }
+    
     /**
      * varcode tries to discern what the tokens you pass in "mean"<BR><PRE>
      * ... String args that start with "package " are package declarations

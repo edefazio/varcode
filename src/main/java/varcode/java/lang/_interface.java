@@ -8,16 +8,20 @@ import varcode.doc.Compose;
 import varcode.doc.Directive;
 import varcode.doc.Dom;
 import varcode.java.JavaCase;
-import varcode.java.JavaCase.JavaCaseAuthor;
 import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.lang._fields._field;
 import varcode.java.lang._methods._method;
 import varcode.markup.bindml.BindML;
 import varcode.java.lang.JavaMetaLang._model;
+import varcode.java.JavaCase.JavaCaseBuilder;
 
-//allow default methods
+/**
+ * Meta Lang Model of a Java interface
+ * 
+ * @author M. Eric DeFazio eric@varcode.io
+ */
 public class _interface 
-    implements JavaCaseAuthor, _model
+    implements JavaCaseBuilder, _model
 {    
     public static final Dom INTERFACE = 
 	BindML.compile( 
@@ -81,29 +85,17 @@ public class _interface
             "methods", meth, 
             "nests", n );		
     }
+
 	
-	/**
-	 * i.e.<PRE>
-	 * _interface inter = 
-	 *    _interface.of("public interface MyInterface extends Serializable");
-	 * </PRE>    
-	 * @param interfaceSignature the signature of the interface
-	 * @return the interface
-	 
-	public static _interface of( String interfaceSignature )
-	{
-	    return of( "", interfaceSignature );
-	}
-        */
-	
-	public static _interface cloneOf( _interface prototype )
-	{
-	    return new _interface( prototype );
-	}
+    public static _interface cloneOf( _interface prototype )
+    {
+	return new _interface( prototype );
+    }
 	
     /** Creates and returns a clone of this component 
      * @return a deep clone of this component
      */
+    @Override
     public _interface clone()
     {
         return cloneOf( this );
@@ -149,22 +141,6 @@ public class _interface
         return this.interfaceSignature.modifiers;
     }
     
-	/**
-	 * i.e.<PRE>
-	 * _interface inter = 
-	 *    _interface.of(
-	 *        "io.varcode.mypackage", 
-	 *        "public interface MyInterface extends Serializable");
-	 * </PRE>  
-	 * @param packageName
-	 * @param interfaceSignature
-	 * @return
-	 
-	public static _interface of( String packageName, String interfaceSignature )
-	{
-	    return new _interface( packageName, interfaceSignature );
-	}
-        */
 
     private static class InterfaceParams
     {
@@ -174,77 +150,89 @@ public class _interface
         _javadoc javadoc; // starts with /* ends with */
         _annotations annots = new _annotations(); //starts with @
         _interface._signature signature; //starts with 
-        List<_facet> facets = new ArrayList<_facet>();        
+        List<_facet> facets = new ArrayList<_facet>();     
+        _nests nesteds = new _nests();
     }
     
     public static _interface of( Object... components )
     {
-        InterfaceParams cd = new InterfaceParams();
+        InterfaceParams ip = new InterfaceParams();
         for( int i = 0; i < components.length; i++ )
         {
             if( components[ i ] instanceof String )
             {
-                fromString( cd, (String)components[ i ] );
+                fromString( ip, (String)components[ i ] );
             }
             else if( components[ i ] instanceof Class )
             {
                 if( ((Class)components[i]).isAnnotation() )
                 {
-                    cd.annots.add( components[ i ] );
-                    cd.imports.addImport( components[ i ] );
+                    ip.annots.add( components[ i ] );
+                    ip.imports.addImport( components[ i ] );
                 }
                 else
                 {
-                    cd.imports.addImport( components[ i ] );
+                    ip.imports.addImport( components[ i ] );
                 }
             }
             else if( components[ i ] instanceof _package )
             {
-                cd.pack = (_package)components[ i ];
+                ip.pack = (_package)components[ i ];
             }
             else if( components[ i ] instanceof _imports )
             {
-                cd.imports = (_imports)components[ i ];
+                ip.imports = (_imports)components[ i ];
             }
             else if( components[ i ] instanceof _javadoc )
             {
-                cd.javadoc = (_javadoc)components[ i ];
+                ip.javadoc = (_javadoc)components[ i ];
             }
             else if( components[ i ] instanceof _annotations )
             {
-                cd.annots = (_annotations)components[ i ];
+                ip.annots = (_annotations)components[ i ];
             }
             else if( components[ i ] instanceof _interface._signature )
             {
-                cd.signature = (_interface._signature)components[ i ];
+                ip.signature = (_interface._signature)components[ i ];
             }
             else if( components[ i ] instanceof _facet )
             {
-                cd.facets.add( (_facet)components[ i ] );
+                ip.facets.add( (_facet)components[ i ] );
+            }
+            else if( components[ i ] instanceof _model )
+            {
+                ip.nesteds.add( (_model)components[ i ] );
             }
         }
-        _interface _e = new _interface( null, cd.signature );
-        for( int i = 0; i < cd.annots.count(); i++ )
+        _interface _i = new _interface( null, ip.signature );
+        for( int i = 0; i < ip.annots.count(); i++ )
         {
-            _e.annotate( cd.annots.getAt( i ) );
+            _i.annotate(ip.annots.getAt( i ) );
         }
-        for( int i = 0; i < cd.imports.count(); i++ )
+        for( int i = 0; i < ip.imports.count(); i++ )
         {
-            _e.imports( cd.imports.getImports().toArray( new Object[ 0 ] ) );
+            _i.imports( ip.imports.getImports().toArray( new Object[ 0 ] ) );
         }
-        for( int i = 0; i < cd.facets.size(); i++ )
+        for( int i = 0; i < ip.facets.size(); i++ )
         {
-            _e.add( cd.facets.get( i ) );
+            _i.add( ip.facets.get( i ) );
         }
-        if( cd.javadoc != null && !cd.javadoc.isEmpty())
+        if( ip.javadoc != null && !ip.javadoc.isEmpty())
         {
-            _e.javadoc( cd.javadoc.getComment() );
+            _i.javadoc(ip.javadoc.getComment() );
         }
-        if( cd.pack != null && !cd.pack.isEmpty() )
+        if( ip.pack != null && !ip.pack.isEmpty() )
         {
-            _e.packageName( cd.pack.getName() );
+            _i.packageName( ip.pack.getName() );
         }
-        return _e;
+        if( !ip.nesteds.isEmpty() )
+        {
+            for( int i = 0; i < ip.nesteds.count(); i++ )
+            {
+                _i.nest( ip.nesteds.getAt( i ) ); 
+            }
+        }
+        return _i;
     }
     
     private static void fromString( InterfaceParams cd, String component )

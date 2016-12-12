@@ -297,7 +297,12 @@ public class _methods
             List<Object> body = new ArrayList<Object>(); //anything AFTER signature is populated
         }
     
-        
+    
+        /**
+         * 
+         * @param mp
+         * @param body 
+         */
         private static void addBody( MethodParams mp, Object body )
         {
             if( body.getClass().isArray() )
@@ -363,7 +368,14 @@ public class _methods
                 else if( parts[ i ] instanceof _annotations )
                 {
                     mp.annots = (_annotations)parts[ i ];
-                }            
+                }
+                else if ( parts[ i ] instanceof Class )
+                {
+                    if( ((Class)parts[ i ]).isAnnotation() )
+                    {
+                        mp.annots.add( parts[ i ] );                        
+                    }
+                }
             }
         
             _method _f = new _method( mp.signature );
@@ -520,16 +532,25 @@ public class _methods
             return this;
         }
         
-        /** Add code to the end (tail) of the current body of code 
-         * @param code code to append
+        /** 
+         * Add code to the end (tail) of the current body of code
+         * 
+         * EXACTLY the same as method.addTailCode 
+         * @param linesOfCode code to append
          * @return this
          */
-        public _method addToBody( Object... code )
+        public _method add( Object... linesOfCode )
         {
-            this.methodBody.addTailCode( code );
+            this.methodBody.addTailCode( linesOfCode );
             return this;
         }
         
+        /**
+         * Sets / replaces the code in the method body
+         * 
+         * @param linesOfCode
+         * @return 
+         */
 	public _method body( Object... linesOfCode )
 	{
             if( this.isAbstract() && methodBody != null 
@@ -537,7 +558,7 @@ public class _methods
                     && linesOfCode.length > 0 )
             {
 		throw new ModelException(
-                    "Abstract methods : "+ N + signature + N 
+                    "Abstract methods : " + N + signature + N 
                   + "cannot have a method body" );
             }
             this.methodBody = _code.of( linesOfCode );

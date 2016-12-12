@@ -24,7 +24,7 @@ import varcode.java.lang._methods._method;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _autoMethodGetter
-    implements _javaMacro
+    implements JavaMacro.Generator
 {   
     /**
      * Creates and returns a _method based on a _field

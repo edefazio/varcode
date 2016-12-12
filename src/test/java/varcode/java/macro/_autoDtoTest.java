@@ -15,12 +15,11 @@
  */
 package varcode.java.macro;
 
-import varcode.java.macro._autoDto;
 import java.math.BigDecimal;
 import java.util.Map;
 import junit.framework.TestCase;
 import varcode.java._Java;
-import varcode.java.JavaCase;
+import varcode.java.lang._class;
 
 /**
  *
@@ -38,26 +37,27 @@ public class _autoDtoTest
                 .property( String.class, "name" )
                 .property( int.class, "age")
                 .property( String[].class, "aliases")
-                .instance();
+                .as_class()
+                .instance( );
         
     }
     
     public void testAutoDto()
     {
         _autoDto d = _autoDto.of( "MyDto" );
-        Object o = d.toJavaCase( ).instance();
+        Object o = d.as_class( ).instance();
         assertEquals( o.getClass().getName(), "MyDto" );
         
         
         d = _autoDto.of("ex.varcode.dto.MyDto");
-        o = d.toJavaCase( ).instance();
+        o = d.as_class( ).instance();
         
         assertEquals( "MyDto", o.getClass().getSimpleName() );
         assertEquals( "ex.varcode.dto.MyDto", o.getClass().getCanonicalName() );
         
         d.property( "public String name;" );
         
-        o = d.toJavaCase( ).instance();
+        o = d.as_class( ).instance();
         
         assertEquals( null, _Java.invoke( o, "getName" ) );
         _Java.invoke(o, "setName", "A");
@@ -65,7 +65,7 @@ public class _autoDtoTest
         
         
         d.property( int.class, "count" );
-        o = d.toJavaCase( ).instance();
+        o = d.as_class( ).instance();
         
         _Java.invoke(o, "setCount", 5 );
         assertEquals( 5, _Java.invoke( o, "getCount" ) );
@@ -73,11 +73,12 @@ public class _autoDtoTest
         //make sure when I create a field whos type requires an import it
         //works
         d.property( BigDecimal.class, "value" );
-        o = d.toJavaCase( ).instance();
+        o = d.as_class( ).instance();
         
         _Java.invoke( o, "setValue", new BigDecimal( Math.PI ) );
         assertEquals( new BigDecimal( Math.PI ), _Java.invoke( o, "getValue" ) );        
     }
+    
     
     //verify that _autoDto works when dealing with final fields
     // (i.e. final fields that have no init() must be passed in via 
@@ -91,13 +92,31 @@ public class _autoDtoTest
             .property( "public final int id;" )
             .property( "public Map<String,Integer> nameToCount;" );
         
-        JavaCase jc = d.toJavaCase( );
+        //JavaCase jc = d.toJavaCase( );
         
         //System.out.println( jc );
-        Object myVoInstance = jc.instance( 12345 );
+        Object myVoInstance = d.as_class().instance( 12345 );
         assertEquals( null, _Java.invoke( myVoInstance, "getName" ) );
         assertEquals( 100, _Java.invoke( myVoInstance, "getCount" ) );
         assertEquals( 12345, _Java.invoke( myVoInstance, "getId" ) );
     }
     
+        //verify that _autoDto works when dealing with final fields
+    // (i.e. final fields that have no init() must be passed in via 
+    // the constructor
+    public void testFinalsShortcut()
+    {
+        //this is the "simple" constructor which passes int
+        _class _myDto= _autoDto._classOf( "ex.varcode.dto.MyDto",  
+            "public String name",
+            "private final int count = 100",
+            "public final int id" );
+        
+        //JavaCase jc = d.toJavaCase( );
+        
+        //System.out.println( jc );
+        Object myVoInstance = _myDto.instance( 12345 );
+        assertEquals( 100, _Java.invoke( myVoInstance, "getCount" ) );
+        assertEquals( 12345, _Java.invoke( myVoInstance, "getId" ) );
+    }
 }

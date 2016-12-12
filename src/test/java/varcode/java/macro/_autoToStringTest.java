@@ -15,10 +15,9 @@
  */
 package varcode.java.macro;
 
-import varcode.java.macro._autoDto;
-import varcode.java.lang.cs._autoToString;
 import junit.framework.TestCase;
 import varcode.java.lang._class;
+import varcode.java.lang._fields;
 
 /**
  *
@@ -28,22 +27,40 @@ public class _autoToStringTest
     extends TestCase
 {
     
+    public void test_portableMethod()
+    {
+        _class _c = _class.of( "ex.varcode", "public class MyClass",
+            _fields._field.of( "public int count;" ) );
+        
+        _portableMethod _pm = 
+            _autoToString.of ( _c.getFields() );
+        
+        //System.out.println( _pm.getMethod() );
+        //System.out.println( _pm.getRequiredImports() );
+        
+        System.out.println( _c );
+        
+        _c = _Port.portForce( _pm, _c );
+        
+        System.out.println( _c );        
+    }   
+    
     public void testNoFieldsToString()
     {
-        _autoDto a = _autoDto.of("ex.varcode.NoFields");
-        _class toStrung = _autoToString.of( a.as_class() );
-        assertEquals( "ex.varcode.NoFields"+ System.lineSeparator(), 
+        _autoDto a = _autoDto.of( "ex.varcode.NoFields" );
+        _class toStrung = _autoToString.to( a.as_class() );
+        assertEquals( "ex.varcode.NoFields" + System.lineSeparator(), 
             toStrung.instance( ).toString() );
     }
     
     public void testPrimitiveToString()
     {
-        _autoDto a = _autoDto.of("ex.varcode.Primitives")
-            .property("int a = 1;")
-            .property("long b = 2;")    
-            .property("float f = 3.0f;");
+        _autoDto a = _autoDto.of("ex.varcode.Primitives",
+            "int a = 1;",
+            "long b = 2;",
+            "float f = 3.0f;");
         
-        _class toStrung = _autoToString.of( a.as_class() );
+        _class toStrung = _autoToString.to( a.as_class() );
         
         assertEquals( 
             "ex.varcode.Primitives" + System.lineSeparator()  +
@@ -52,18 +69,19 @@ public class _autoToStringTest
             "    f = 3.0", toStrung.instance().toString().trim() );        
     }
     
-    public static void main( String[] args )
+    public void test3Fields()
     {
-        _autoDto a = _autoDto.of("ex.varcode.MyDto")
-            .property( "public int count = 1;" )
-            .property( "public String name = \"Default\";" )
-            .property( "public int[] values = new int[]{1,2,3,4}");
+        _autoDto a = _autoDto.of("ex.varcode.MyDto",
+            "public int count = 1;",
+            "public String name = \"Default\";",
+            "public int[] values = new int[]{1,2,3,4}");
         
-        _class toStrung = _autoToString.of( a.as_class() );
+        _class toStrung = _autoToString.to( a.as_class() );
         
         System.out.println( toStrung );
         
         Object inst = toStrung.instance( );
         System.out.println ( inst );            
     }
+    
 }

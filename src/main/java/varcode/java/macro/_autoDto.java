@@ -16,52 +16,70 @@
 package varcode.java.macro;
 
 import java.lang.reflect.Modifier;
-import varcode.context.VarContext;
-import varcode.doc.Directive;
-import varcode.java.JavaCase;
-import varcode.java.JavaCase.JavaCaseAuthor;
 import varcode.java.JavaNaming;
-import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.lang._class;
 import varcode.java.lang._constructors._constructor;
 import varcode.java.lang._fields._field;
 import varcode.java.lang._modifiers;
+import varcode.java.lang._package;
 
 /**
- * Creates an ad-hoc dto (Data Transfer Object)
+ * Creates an _class that is a SteroTypical DTO (Data Transfer Object)
  * 
  * Data Transfer Objects are similar to "structs" in Java
  * they have private fields that can be accessed (read, updated)
  * using getters and setters.
  * 
- * Final Fields (that have no init)  MUST be passed in on the constructor i.e.
+ * Final Fields (that have no init) MUST be passed in on the constructor i.e.
  * <UL>
  *   <LI>"private final int a;" <-- this is a final field with no init 
  *    (and a value for a must be passed in in constructor)
  *   <LI>"private final int b = 100;" <-- this is a fienal field with an init
- *</UL>  
+ * </UL>  
  * Final fields have only a getter (cant be set)
  * 
- * NOTE: 
  */
 public class _autoDto
-    implements JavaCaseAuthor, _javaMacro
+    implements JavaMacro.StereoType
 {
+    /** 
+     * we "hide" the creation of the underlying class, and provide a simpler
+     * StereoType API
+     */
     private final _class theClass;
     
     /**
-     * Create a dto at the full pathName:<PRE>
-     *  _auto_dto.of("ex.varcode.dto.MyDto");</PRE>
+     * Create a dto at the full pathName, add the appropriate fields
+     * and build the approriate getters and setters:<PRE>
      * 
-     * @param fullClassName
-     * @return 
-     */
-    public static _autoDto of( String fullClassName )
+     *  _auto_dto.of("ex.varcode.dto.MyDto", "public int a");</PRE>
+     * 
+     * @param fullClassName the full class name ("ex.mypackage.MyClass")
+     * @param fields the field definitions of the Dto (i.e. "private int count")
+     * @return the pre-built _autoDto
+     */    
+    public static _autoDto of( String fullClassName, String... fields )
     {
-         String[] packageAndClassName = 
+        String[] packageAndClassName = 
             JavaNaming.ClassName.extractPackageAndClassName( fullClassName );
         
-        return new _autoDto( packageAndClassName[ 0 ], packageAndClassName[ 1 ] );
+        _autoDto ad = 
+            new _autoDto( packageAndClassName[ 0 ], packageAndClassName[ 1 ] );
+        ad.properties(fields );
+        return ad;        
+    }
+    
+    /**
+     * Build and return a _class that is a Dto with the following 
+     * properties
+     * @param fullClassName the fully qualified class name("ex.mypackage.MyClass")
+     * @param fields the definitions of the fields on the class (of which 
+     * getter/setters will be generated for)
+     * @return the _class
+     */
+    public static _class _classOf( String fullClassName, String...fields )
+    {
+        return of(fullClassName, fields ).as_class();
     }
     
     /**
@@ -76,7 +94,8 @@ public class _autoDto
      */
     public _autoDto( String packageName, String className )
     {
-       this.theClass = _class.of( packageName, "public class "+className );        
+       this.theClass = _class.of( _package.of( packageName ), 
+            "public class "+className );        
     }
     
     /**
@@ -90,6 +109,15 @@ public class _autoDto
         return this;
     }
     
+    
+    public _autoDto properties( String...properties )
+    {
+        for( int i = 0; i < properties.length; i++ )
+        {
+            property( properties[ i ] );
+        }
+        return this;
+    }
     /** 
      * Adds a field with class and name, and getter and setter 
      * (also imports the class if need be)
@@ -176,46 +204,5 @@ public class _autoDto
         
         dtoClass.constructor( constructor );
         return dtoClass;
-    }
-    
-    
-    public Object instance( AdHocClassLoader classLoader, Object...args )
-    {
-        return toJavaCase().instance( classLoader, args );
-    }
-    
-    public Object instance( Object...args )
-    {
-        return toJavaCase().instance( args );
-    }
-    
-    public Class loadClass()
-    {
-        return toJavaCase().loadClass();
-    }
-    
-    public Class loadClass( AdHocClassLoader classLoader )
-    {
-        return toJavaCase().loadClass( classLoader );
-    }
-    
-    @Override
-    public JavaCase toJavaCase( Directive... directives )
-    {
-        return toJavaCase( null, directives );
-    }
-
-    @Override
-    public JavaCase toJavaCase( VarContext context, Directive... directives )
-    {
-        _class dtoClass = as_class();
-        if( context == null )
-        {
-            return dtoClass.toJavaCase( directives );
-        }
-        else
-        {
-            return dtoClass.toJavaCase( context, directives );
-        }
     }    
 }

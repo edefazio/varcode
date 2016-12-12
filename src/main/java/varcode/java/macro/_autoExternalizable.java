@@ -27,8 +27,8 @@ import varcode.java.lang._methods;
 import varcode.java.lang._methods._method;
 
 /**
- * Generates the appropriate Externalizable methods (readExternal, writeExternal)
- * for a class
+ * Generates the appropriate Externalizable methods 
+ * (readExternal, writeExternal) for a class
  * 
  * issue with final fields : (either you manually set accessible or use Unsafe)
  * http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6379948
@@ -36,7 +36,7 @@ import varcode.java.lang._methods._method;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _autoExternalizable
-    implements _javaMacro
+    implements JavaMacro.Generator
 {
     public static _class of( _class c )
     {
@@ -103,48 +103,48 @@ public class _autoExternalizable
             
             if( type.equals( "int" ) || type.equals( "java.lang.int" ) )
             {
-                writeExternal.addToBody( "out.writeInt(" + field.getName() + ");" );
-                readExternal.addToBody( "this." + field.getName() + " = in.readInt( );" );
+                writeExternal.add( "out.writeInt(" + field.getName() + ");" );
+                readExternal.add( "this." + field.getName() + " = in.readInt( );" );
             }
             else if( type.equals( "boolean" ) || ( type.equals( "java.lang.boolean" ) ) )
             {
-                writeExternal.addToBody( "out.writeBoolean(" + field.getName() + ");" );
-                readExternal.addToBody( "this." + field.getName() + " = in.readBoolean( );" );
+                writeExternal.add( "out.writeBoolean(" + field.getName() + ");" );
+                readExternal.add( "this." + field.getName() + " = in.readBoolean( );" );
             }
             else if( type.equals( "byte" ) || ( type.equals( "java.lang.byte" ) ) )
             {
-                writeExternal.addToBody( "out.writeByte(" + field.getName() + ");" );
-                readExternal.addToBody( "this." + field.getName() + " = in.readByte( );" );
+                writeExternal.add( "out.writeByte(" + field.getName() + ");" );
+                readExternal.add( "this." + field.getName() + " = in.readByte( );" );
             }
             else if( type.equals( "short" ) || ( type.equals( "java.lang.short" ) ) )
             {
-                writeExternal.addToBody( "out.writeShort(" + field.getName() + ");" );
-                readExternal.addToBody( "this." + field.getName() + " = in.readShort( );" );      
+                writeExternal.add( "out.writeShort(" + field.getName() + ");" );
+                readExternal.add( "this." + field.getName() + " = in.readShort( );" );      
             }
             else if( type.equals( "char" ) || ( type.equals( "java.lang.char" ) ) )
             {
-                writeExternal.addToBody( "out.writeChar(" + field.getName() + ");" );
-                readExternal.addToBody( "this." + field.getName() + " = in.readChar( );" );       
+                writeExternal.add( "out.writeChar(" + field.getName() + ");" );
+                readExternal.add( "this." + field.getName() + " = in.readChar( );" );       
             }
             else if( type.equalsIgnoreCase( "long" ) || ( type.equalsIgnoreCase( "java.lang.long" ) ) )
             {
-                writeExternal.addToBody( "out.writeLong(" + field.getName() + ");" ); 
-                readExternal.addToBody( "this." + field.getName() + " = in.readLong( );" );
+                writeExternal.add( "out.writeLong(" + field.getName() + ");" ); 
+                readExternal.add( "this." + field.getName() + " = in.readLong( );" );
             }
             else if( type.equals( "float" ) || ( type.equals( "java.lang.float" ) ) )
             {
-                writeExternal.addToBody( "out.writeFloat(" + field.getName() + ");" );
-                readExternal.addToBody( "this." + field.getName() + " = in.readFloat( );" );
+                writeExternal.add( "out.writeFloat(" + field.getName() + ");" );
+                readExternal.add( "this." + field.getName() + " = in.readFloat( );" );
             }
             else if( type.equals( "double" ) || ( type.equals( "java.lang.double" ) ) )
             {
-                writeExternal.addToBody( "out.writeDouble(" + field.getName() + ");" );       
-                readExternal.addToBody( "this." + field.getName() + " = in.readDouble( );" );
+                writeExternal.add( "out.writeDouble(" + field.getName() + ");" );       
+                readExternal.add( "this." + field.getName() + " = in.readDouble( );" );
             }            
             else
             {
-                writeExternal.addToBody( "out.writeObject(" + field.getName() + ");" );                   
-                readExternal.addToBody( 
+                writeExternal.add( "out.writeObject(" + field.getName() + ");" );                   
+                readExternal.add( 
                  "this." + field.getName() + " = (" + field.getType() + ") in.readObject( );" );
             }
         }

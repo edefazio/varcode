@@ -34,7 +34,7 @@ import varcode.java.lang._imports;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _autoDelegate
-    implements _javaMacro
+    implements JavaMacro
 {    
     private Class[] implementedInterfaces;
     
