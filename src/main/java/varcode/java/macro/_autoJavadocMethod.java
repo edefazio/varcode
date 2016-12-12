@@ -100,6 +100,8 @@ public class _autoJavadocMethod
             return;
         }
         StringBuilder sb = new StringBuilder();
+        sb.append( " - auto generated javadoc - ");
+        sb.append( System.lineSeparator() );
         for( int j = 0; j < _m.getParameters().count(); j++ )
         {            
             _parameter _p = _m.getParameters().getAt( j );

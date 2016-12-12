@@ -28,11 +28,10 @@ import varcode.java.JavaCase.JavaCaseBuilder;
  * 
  * Other classes, interfaces, enums can be nested within a single class
  * 
- * 
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _class    
-    implements JavaCaseBuilder, _model
+    implements JavaCaseBuilder, JavaMetaLang._model
 {	
     //the 
     private String license;
@@ -113,59 +112,6 @@ public class _class
         throw new ModelException(
             "Unsupported facet " + facet + " for _class" );
     }
-    
-    /** 
-     * Create and return a builder for a new class<PRE> 
-     * i.e. _class.of( "public class MyClass" );</PRE>
-     * 
-     * creates and returns a public _class "MyClass" in package "ex.varcode"
-     * @param classSignature the signature of the class to add
-     * @return _class a class with the signature
-     
-    public static _class of( String classSignature )
-    {
-	return new _class( null, classSignature ); 
-    }
-    * */
-	
-    /** 
-     * Create and return a langmodel for a new class<PRE> 
-     * _class.of( 
-     *    BaseClass.getClass().getPackage(), 
-     *   "public class MyClass extends BaseClass implements Something" );</PRE>
-     * 
-     * creates and returns a public _class "MyClass" in same package 
-     * as the {@code BaseClass} that extends {@code BaseClass}
-     * @param pkg the package the class belongs in (i.e. SomeClass.class.getPackage())
-     * @param classSignature the signature of the class ("public class MyClass")
-     * or
-     * ("private static class MyClass extends BaseClass implements Callable<Integer>")
-     * @return a new _class
-             
-    public static _class of( Package pkg, String classSignature )
-    {
-        return new _class( pkg.getName(), classSignature ); 
-    }
-    */
-    
-    /** 
-     * Create and return a langmodel for a new class<PRE> 
-     * _class.of( 
-     *    "ex.varcode", "public class MyClass extends BaseClass implements Something" );</PRE>
-     * 
-     * creates and returns a public _class "MyClass" in package "ex.varcode"
-     * that extends from BaseClass
-     * @param packageName the name of the package the class belongs in (i.e. "ex.app")
-     * @param classSignature the signature of the class ("public class MyClass")
-     * or
-     * ("private static class MyClass extends BaseClass implements Callable<Integer>")
-     * @return a new _class
-     
-    public static _class of( String packageName, String classSignature )
-    {
-	return new _class( packageName, classSignature ); 
-    }
-    */
     
     private static class ClassParams
     {
@@ -728,11 +674,12 @@ public class _class
      * @param javadoc the Javadoc comment
      * @return this
      */
-    public _class javadoc( String javadoc )
+    public _class javadoc( String... javadoc )
     {
 	return javadoc( new _javadoc( javadoc ) );        
     }
 
+    
     public _class javadoc( _javadoc javadoc )
     {
         this.javadoc = javadoc;
@@ -760,7 +707,8 @@ public class _class
         {
             signature.implementsFrom = new _implements();
         }
-        this.signature.implementsFrom.implement(classes );
+        this.imports.addImports( (Object[])classes );
+        this.signature.implementsFrom.implement( classes );
         return this;
     }
     

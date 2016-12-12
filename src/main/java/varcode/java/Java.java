@@ -59,22 +59,22 @@ import varcode.java.adhoc.Workspace;
  */
 public enum Java 
 {
-	;
+    ;
 	
     private static final Logger LOG = 
     	LoggerFactory.getLogger( Java.class );
     
     private static void addPropertyIfNonNull( StringBuilder sb, String propertyName )
+    {
+	String propertyValue = System.getProperty( propertyName );
+	if( propertyValue != null && propertyValue.trim().length() > 0 )
 	{
-		String propertyValue = System.getProperty( propertyName );
-		if( propertyValue != null && propertyValue.trim().length() > 0 )
-		{
-			sb.append( propertyName );
-			sb.append( " = " );
-			sb.append( propertyValue );
-			sb.append( "\r\n" );
-		}		
-	}
+            sb.append( propertyName );
+            sb.append( " = " );
+            sb.append( propertyValue );
+            sb.append( "\r\n" );
+	}		
+    }
 	
     /**
      * Given a Type return the classes (as Strings) 
@@ -92,25 +92,25 @@ public enum Java
         return s.split( " " );              
     }
     
-	/**
-	 * Describes the Current Java Environment (at Runtime)
-	 * 
-	 * @return a String that details particulars about the Java Runtime
-	 */
-	public static String describeEnvironment()
-	{
-		StringBuilder sb = new StringBuilder();
-		sb.append( "--- Current Java Environment --- " );
-		sb.append( "\r\n" );
-		addPropertyIfNonNull( sb, "java.vm.name" );
-		addPropertyIfNonNull( sb, "java.runtime.version" );
-		addPropertyIfNonNull( sb, "java.library.path" );
-		addPropertyIfNonNull( sb, "java.vm.version" );
-		addPropertyIfNonNull( sb, "sun.boot.library.path" );
-		sb.append( "--------------------------------- " );
-		sb.append( "\r\n" );
-		return sb.toString();
-	}
+    /**
+     * Describes the Current Java Environment (at Runtime)
+     * 
+     * @return a String that details particulars about the Java Runtime
+     */
+    public static String describeEnvironment()
+    {
+	StringBuilder sb = new StringBuilder();
+	sb.append( "--- Current Java Environment --- " );
+	sb.append( "\r\n" );
+	addPropertyIfNonNull( sb, "java.vm.name" );
+	addPropertyIfNonNull( sb, "java.runtime.version" );
+	addPropertyIfNonNull( sb, "java.library.path" );
+	addPropertyIfNonNull( sb, "java.vm.version" );
+	addPropertyIfNonNull( sb, "sun.boot.library.path" );
+	sb.append( "--------------------------------- " );
+	sb.append( "\r\n" );
+	return sb.toString();
+    }
 
     public static final String JAVA_CLASS_NAME = "fullyQualifieldJavaClassName";
     
@@ -213,18 +213,17 @@ public enum Java
     {
         try
         {
-      		if( args.length > 0 )
-       		{
-       			LOG.debug("Calling constructor >" 
-       			    + constructor + " with [" + args.length + "] arguments" );
+            if( args.length > 0 )
+            {
+       		LOG.debug( "Calling constructor >" 
+                    + constructor + " with [" + args.length + "] arguments" );
                 return constructor.newInstance(args );
-       		}
-       		else
-       		{
-       			LOG.debug( "Calling no-arg constructor > " + constructor );
+            }
+            else
+            {
+       		LOG.debug( "Calling no-arg constructor > " + constructor );
                 return constructor.newInstance(  );
-       		}            
-            //
+            } 
         }
         catch( InstantiationException e )
         {
@@ -262,19 +261,19 @@ public enum Java
          
         if( constructors.length == 1 )
         {
-         	return construct( constructors[ 0 ], constructorArgs );
+            return construct( constructors[ 0 ], constructorArgs );
         }
         for( int i = 0; i < constructors.length; i++ )
         {
             //noinspection Since15
             if( constructors[ i ].getParameters().length == constructorArgs.length )
-           	{
-          		sameArgCount.add( constructors[ i ] );
-           	}
+            {
+          	sameArgCount.add( constructors[ i ] );
+            }
         }
         if( sameArgCount.size() == 1 )
         {
-         	return construct(sameArgCount.get( 0 ), constructorArgs );
+            return construct(sameArgCount.get( 0 ), constructorArgs );
         }
         for( int i = 0; i < constructors.length; i++ )
         {
@@ -301,12 +300,12 @@ public enum Java
         Method method = null;        
     	try            
         {            
-    		if( target instanceof Class )
-    		{
-    		    return invokeStatic((Class<?>)target, methodName, arguments );
-    		}
+            if( target instanceof Class )
+            {
+    		return invokeStatic((Class<?>)target, methodName, arguments );
+            }
              
-    		method = getMethod( 
+            method = getMethod( 
                 target.getClass().getMethods(), methodName, arguments );
     		 
             if( method == null )
@@ -319,12 +318,12 @@ public enum Java
         catch( SecurityException iae )
         { 
               throw new VarException( 
-                  "Security Exception not call " + method, iae );
+                "Security Exception not call " + method, iae );
         }        
         catch( IllegalAccessException iae ) 
         {
             throw new VarException(
-                 "Illegal Access Could not call " + method, iae );
+                "Illegal Access Could not call " + method, iae );
         }
         catch( IllegalArgumentException iae ) 
         {
@@ -341,37 +340,40 @@ public enum Java
     public static Object getStaticFieldValue( Class<?> clazz, String fieldName )
     {
     	try
-		{    		
-			Field f = clazz.getField( fieldName );
-			if( LOG.isDebugEnabled() ) 
+	{    		
+            Field f = clazz.getField( fieldName );
+            if( LOG.isDebugEnabled() ) 
             { 
                 LOG.debug( "Getting field \"" + f ); 
             }			
-			return f.get( null );
-		}
-		catch( NoSuchFieldException e )
-		{
-			throw new VarException( "No Such Field \"" + fieldName + "\"", e );
-		}
-        catch (SecurityException e) 
+            return f.get( null );
+	}
+	catch( NoSuchFieldException e )
+	{
+            throw new VarException( "No Such Field \"" + fieldName + "\"", e );
+	}
+        catch( SecurityException e ) 
         {
-            throw new VarException( "Security Exception on Field \""+fieldName+"\"", e );
+            throw new VarException( 
+                "Security Exception on Field \"" + fieldName + "\"", e );
         }
-        catch (IllegalArgumentException e) {
-            throw new VarException( e );
+        catch( IllegalArgumentException e ) 
+        {
+            throw new VarException( "Illegal argument ", e );
         }
-        catch (IllegalAccessException e) {
-            throw new VarException( e );
+        catch( IllegalAccessException e ) 
+        {
+            throw new VarException( "Illegal Access", e );
         }
     }
     
     public static void setFieldValue( Object instance, String fieldName, Object value )
     {
         try 
-		{
-			Field f = instance.getClass().getField( fieldName );			
-			f.set( instance, value );
-		}
+        {
+            Field f = instance.getClass().getField( fieldName );			
+            f.set( instance, value );
+	}
         catch( NoSuchFieldException e )
         {
             throw new VarException(
@@ -407,28 +409,32 @@ public enum Java
             { 
                 LOG.debug( "getting static field \"" + fieldName + "\"" );
             }
-    		return getStaticFieldValue( (Class<?>)instanceOrClass, fieldName );
+            return getStaticFieldValue( (Class<?>)instanceOrClass, fieldName );
     	}
     	try 
-		{
-			Field f = instanceOrClass.getClass().getField( fieldName );			
-			return f.get( instanceOrClass );
-		}
+	{
+            Field f = instanceOrClass.getClass().getField( fieldName );			
+            return f.get( instanceOrClass );
+	}
     	catch( IllegalAccessException iae )
     	{
-    		throw new VarException( "Illegal Access for \"" + fieldName + "\"", iae );
+            throw new VarException( 
+                "Illegal Access for \"" + fieldName + "\"", iae );
     	}
     	catch( NoSuchFieldException e ) 
-		{
-			throw new VarException( "No such Field exception for \"" + fieldName + "\"", e );
-		} 		    	
+	{
+            throw new VarException( 
+                "No such Field exception for \"" + fieldName + "\"", e );
+	} 		    	
         catch( SecurityException e ) 
         {
-            throw new VarException( "SecurityException for field \"" + fieldName + "\"", e );
+            throw new VarException( 
+                "SecurityException for field \"" + fieldName + "\"", e );
         }
         catch( IllegalArgumentException e ) 
         {
-            throw new VarException( "Illegal Argument for field \"" + fieldName + "\"", e );
+            throw new VarException( 
+                "Illegal Argument for field \"" + fieldName + "\"", e );
         } 		    	
     }
     
@@ -437,7 +443,7 @@ public enum Java
     {
     	try
         {
-    		Method method = getMethod( clazz.getMethods(), methodName, args );
+            Method method = getMethod( clazz.getMethods(), methodName, args );
             if( method == null )
             {
             	throw new VarException(
@@ -448,18 +454,19 @@ public enum Java
         }
         catch( IllegalAccessException iae )
         {
-        	throw new VarException( 
+            throw new VarException( 
                 "Could not call \"" + clazz.getName() + "." + methodName + "();\"", iae );
         }
         catch( IllegalArgumentException iae )
         {
-        	throw new VarException( 
+            throw new VarException( 
                 "Could not call \"" + clazz.getName() + "." + methodName + "();\"", iae );
         }
         catch( InvocationTargetException ite )
         {   
-        	throw new VarException( 
-        		ite.getTargetException().getMessage() + " calling \"" + clazz.getName() + "." + methodName + "();\"", ite.getTargetException() );            
+            throw new VarException( 
+                ite.getTargetException().getMessage() + " calling \"" 
+                    + clazz.getName() + "." + methodName + "();\"", ite.getTargetException() );            
         }
     }
     
@@ -817,15 +824,15 @@ public enum Java
     */
     
     public static Object getStaticFieldValue( Field field )
-	{
+    {
     	try 
-	    {
-	    	return field.get( null );
-	    } 
-	    catch( IllegalArgumentException e ) 
-	    {
+	{
+	    return field.get( null );
+	} 
+	catch( IllegalArgumentException e ) 
+	{
             throw new VarException( "Illegal Argument for field "+ field, e );
-	    } 	    
+	} 	    
         catch (IllegalAccessException e) 
         {
             throw new VarException( "Illegal Acccess for field "+ field, e );

@@ -13,6 +13,11 @@ import varcode.doc.Dom;
 import varcode.java.JavaNaming;
 import varcode.markup.bindml.BindML;
 
+/**
+ * The idea of a variable
+ * 
+ * @author M. Eric DeFazio
+ */
 public class _var
     implements SelfBinding
 {

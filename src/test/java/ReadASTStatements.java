@@ -132,7 +132,6 @@ public class ReadASTStatements
             this.comments.sort( new CommentPositionComparator() );
         }
         
-        
         static class CommentPositionComparator
             implements Comparator<Comment>
         {
