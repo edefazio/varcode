@@ -31,7 +31,7 @@ import java.util.Comparator;
 import java.util.List;
 import junit.framework.TestCase;
 import varcode.java._Java;
-import varcode.java.ast.JavaASTParser;
+import varcode.java.ast.JavaAst;
 import varcode.java.lang._if;
 
 /**
@@ -57,7 +57,7 @@ public class AST_to_String
             _Java.astTypeDeclarationFrom( MethodWithIf.class ); //MethodWithSomeCode.class );
         
         MethodDeclaration astMethod = 
-            JavaASTParser.findAllMethods( astTypeDecl )[ 0 ];
+            JavaAst.findAllMethods( astTypeDecl )[ 0 ];
         
         
         

@@ -16,7 +16,7 @@
 package varcode.java.lang;
 
 import varcode.java.lang.JavaMetaLangCompiler;
-import varcode.java.ast.JavaASTParser;
+import varcode.java.ast.JavaAst;
 import com.github.javaparser.ParseException;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -39,11 +39,10 @@ public class JavaMetaLangCompilerTest
     public void testClass() throws ParseException
     {
         CompilationUnit cu = 
-            JavaASTParser.astFrom( "class A {}" );
+            JavaAst.astFrom( "class A {}" );
         
-        _class _c = JavaMetaLangCompiler._classFrom( 
-            cu, 
-            JavaASTParser.findClassDeclaration( cu, "A" ) );
+        _class _c = JavaMetaLangCompiler._classFrom(cu, 
+            JavaAst.findClassDeclaration( cu, "A" ) );
         
         assertEquals( "A", _c.getName() );        
     }
@@ -57,11 +56,11 @@ public class JavaMetaLangCompilerTest
         
         //Create the AST root from the Source File
         CompilationUnit astRoot = 
-            JavaASTParser.astFrom( ss.getInputStream() );
+            JavaAst.astFrom( ss.getInputStream() );
         
         //find the class AST declaration within the rootAST
         ClassOrInterfaceDeclaration astClass = 
-            JavaASTParser.findClassDeclaration( 
+            JavaAst.findClassDeclaration( 
                 astRoot, LargeTopLevelClass.class );
         
         //create the _class model
@@ -73,11 +72,10 @@ public class JavaMetaLangCompilerTest
     public void testInterface() throws ParseException
     {
         CompilationUnit cu = 
-            JavaASTParser.astFrom( "interface A {}" );
+            JavaAst.astFrom( "interface A {}" );
         
-        _interface _i = JavaMetaLangCompiler._interfaceFrom( 
-            cu, 
-            JavaASTParser.findInterfaceDeclaration( cu, "A" ) );
+        _interface _i = JavaMetaLangCompiler._interfaceFrom(cu, 
+            JavaAst.findInterfaceDeclaration( cu, "A" ) );
         
         assertEquals( "A", _i.getName() );        
     }
@@ -85,11 +83,10 @@ public class JavaMetaLangCompilerTest
     public void testEnum() throws ParseException
     {
         CompilationUnit cu = 
-            JavaASTParser.astFrom( "enum A {}" );
+            JavaAst.astFrom( "enum A {}" );
         
-        _enum _e = JavaMetaLangCompiler._enumFrom( 
-            cu, 
-            JavaASTParser.findEnumDeclaration( cu, "A" ) );
+        _enum _e = JavaMetaLangCompiler._enumFrom(cu, 
+            JavaAst.findEnumDeclaration( cu, "A" ) );
         
         assertEquals( "A", _e.getName() );        
     }

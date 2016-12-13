@@ -39,7 +39,7 @@ import varcode.load.LoadException;
  * "simple"
  * @author M. Eric DeFazio eric@varcode.io
  */
-public enum JavaASTParser
+public enum JavaAst
 {
     ; //singleton enum idiom
     
@@ -81,7 +81,7 @@ public enum JavaASTParser
     {
         ByteArrayInputStream bais = 
             new ByteArrayInputStream( javaSourceCode.getBytes() );
-        return JavaASTParser.astFrom( bais );
+        return JavaAst.astFrom( bais );
     }
     
     /**

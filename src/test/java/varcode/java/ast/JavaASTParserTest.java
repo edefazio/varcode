@@ -15,7 +15,7 @@
  */
 package varcode.java.ast;
 
-import varcode.java.ast.JavaASTParser;
+import varcode.java.ast.JavaAst;
 import com.github.javaparser.ParseException;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -34,17 +34,17 @@ public class JavaASTParserTest
         throws ParseException
     {
         CompilationUnit cu = 
-           JavaASTParser.astFrom( "class A {}" );
+           JavaAst.astFrom( "class A {}" );
         assertEquals( null, cu.getPackage());
         assertEquals( 1, cu.getTypes().size() );
         assertEquals( 0, cu.getComments().size() );
         assertEquals( 0, cu.getAllContainedComments().size() );
        
         TypeDeclaration td = 
-           JavaASTParser.findTypeDeclaration( cu, "A" );
+           JavaAst.findTypeDeclaration( cu, "A" );
        
         ClassOrInterfaceDeclaration cd = 
-           JavaASTParser.findClassDeclaration( cu, "A" );
+           JavaAst.findClassDeclaration( cu, "A" );
         assertNotNull( td ); 
         
         assertNotNull( cd );
@@ -64,17 +64,17 @@ public class JavaASTParserTest
         throws ParseException
     {
        CompilationUnit cu = 
-           JavaASTParser.astFrom( "interface A {}" );
+           JavaAst.astFrom( "interface A {}" );
        assertEquals( null, cu.getPackage());
        assertEquals( 1, cu.getTypes().size() );
        assertEquals( 0, cu.getComments().size() );
        assertEquals( 0, cu.getAllContainedComments().size() );
        
         TypeDeclaration td = 
-           JavaASTParser.findTypeDeclaration( cu, "A" );
+           JavaAst.findTypeDeclaration( cu, "A" );
         
         ClassOrInterfaceDeclaration cd = 
-           JavaASTParser.findInterfaceDeclaration( cu, "A" );
+           JavaAst.findInterfaceDeclaration( cu, "A" );
         
         assertNotNull( td ); 
         assertNotNull( cd );
@@ -94,17 +94,17 @@ public class JavaASTParserTest
         throws ParseException
     {
        CompilationUnit cu = 
-           JavaASTParser.astFrom( "enum A {}" );
+           JavaAst.astFrom( "enum A {}" );
        assertEquals( null, cu.getPackage());
        assertEquals( 1, cu.getTypes().size() );
        assertEquals( 0, cu.getComments().size() );
        assertEquals( 0, cu.getAllContainedComments().size() );
        
         TypeDeclaration td = 
-           JavaASTParser.findTypeDeclaration( cu, "A" );
+           JavaAst.findTypeDeclaration( cu, "A" );
         
         EnumDeclaration cd = 
-           JavaASTParser.findEnumDeclaration( cu, "A" );
+           JavaAst.findEnumDeclaration( cu, "A" );
         
         assertNotNull( td ); 
         

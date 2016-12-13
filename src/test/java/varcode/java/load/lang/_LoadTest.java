@@ -15,7 +15,7 @@ import varcode.java.lang._methods;
 import varcode.java.lang._methods._method;
 import varcode.java.load.JavaSourceLoader;
 import varcode.java._Java;
-import varcode.java.ast.JavaASTParser;
+import varcode.java.ast.JavaAst;
 import varcode.load.SourceLoader.SourceStream;
 
 /**
@@ -61,7 +61,7 @@ public class _LoadTest
         System.out.println( ss.asString() );
         
         CompilationUnit astRoot = _Java.astFrom( _LoadTest.class );        
-        TypeDeclaration dec = JavaASTParser.findClassDeclaration(
+        TypeDeclaration dec = JavaAst.findClassDeclaration(
             astRoot,
             MemberClass.class );
         

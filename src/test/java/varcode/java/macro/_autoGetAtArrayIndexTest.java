@@ -15,13 +15,9 @@
  */
 package varcode.java.macro;
 
-import varcode.java.macro._autoMethodGetAtArrayIndex;
 import junit.framework.TestCase;
-import varcode.java._Java;
-import varcode.java.lang._class;
-import varcode.java.lang._fields;
-import varcode.java.lang._methods;
-import static varcode.java.macro._autoGetterTest.N;
+import varcode.java.lang._fields._field;
+import varcode.java.lang._methods._method;
 
 /**
  *
@@ -30,6 +26,20 @@ import static varcode.java.macro._autoGetterTest.N;
 public class _autoGetAtArrayIndexTest
     extends TestCase
 {
+        
+    public void testIt()
+    {
+        _method _m = 
+            _autoMethodGetAtArrayIndex.fromField( "int", "x" );
+        System.out.println( _m );
+        
+        _method _m2 = 
+            _autoMethodGetAtArrayIndex.fromField( 
+                _field.of( "private String[] name;" ) );
+        
+        System.out.println( _m2 );
+    }
+    
     public void testNothing()
     {
         //cop out, I know, but checking strings is BRITTLE

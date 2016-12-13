@@ -80,13 +80,4 @@ public class _autoMethodGetAtArrayIndex
         return m;
         //return _GET_AT_ARRAY_INDEX.composeWith( $type$, $fieldName$ );
     }    
-    
-    public static void main(String[] args)
-    {
-        _method _m = fromField( "int", "x" );
-        System.out.println( _m );
-        
-        _method _m2 = fromField( _field.of( "private String[] name;" ) );
-        System.out.println( _m2 );
-    }
 }

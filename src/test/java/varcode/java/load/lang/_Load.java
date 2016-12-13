@@ -28,7 +28,7 @@ import varcode.load.LoadException;
 import varcode.java.lang._class;
 import varcode.java.lang._enum;
 import varcode.java.lang._interface;
-import varcode.java.ast.JavaASTParser;
+import varcode.java.ast.JavaAst;
 import varcode.java.load.JavaSourceLoader;
 import varcode.load.SourceLoader;
 import varcode.load.SourceLoader.SourceStream;
@@ -134,7 +134,7 @@ public class _Load
             try
             {
                 cu = JavaParser.parse( declaringClassStream.getInputStream() );
-                TypeDeclaration td = JavaASTParser.findTypeDeclaration( cu, memberClass );
+                TypeDeclaration td = JavaAst.findTypeDeclaration( cu, memberClass );
                 JavaMemberSourceStream sss = new JavaMemberSourceStream( 
                     declaringClassStream, memberClass.getCanonicalName(), td.toString() );
                 return sss;
@@ -169,7 +169,7 @@ public class _Load
                     cu = JavaParser.parse( declareSource.getInputStream() );
                     
                     String name = sourceId.substring( sourceId.lastIndexOf( "$" ) + 1 );
-                    TypeDeclaration td = JavaASTParser.findTypeDeclaration( cu, name );
+                    TypeDeclaration td = JavaAst.findTypeDeclaration( cu, name );
                     JavaMemberSourceStream sss = new JavaMemberSourceStream( 
                         declareSource, sourceId, td.toString() );
                     return sss;
@@ -269,7 +269,7 @@ public class _Load
             try
             {
                 cu = JavaParser.parse( declaringClassStream.getInputStream() );
-                TypeDeclaration td = JavaASTParser.findTypeDeclaration( cu, clazz );
+                TypeDeclaration td = JavaAst.findTypeDeclaration( cu, clazz );
                 return td;            
             }
             catch( ParseException pe )

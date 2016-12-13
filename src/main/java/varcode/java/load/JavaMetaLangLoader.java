@@ -17,7 +17,7 @@ package varcode.java.load;
 
 import varcode.load.LoadException;
 import varcode.java.lang.JavaMetaLangCompiler;
-import varcode.java.ast.JavaASTParser;
+import varcode.java.ast.JavaAst;
 import com.github.javaparser.ParseException;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -98,10 +98,10 @@ public class JavaMetaLangLoader
                     }
                     //Parse the Declaring Class into an AST
                     CompilationUnit astRoot = 
-                        JavaASTParser.astFrom( sourceStream.getInputStream() );
+                        JavaAst.astFrom( sourceStream.getInputStream() );
                     
                     TypeDeclaration astTypeDecl = 
-                        JavaASTParser.findTypeDeclaration( astRoot, clazz );
+                        JavaAst.findTypeDeclaration( astRoot, clazz );
                     
                     if( astTypeDecl instanceof ClassOrInterfaceDeclaration )
                     {
@@ -131,10 +131,10 @@ public class JavaMetaLangLoader
                 // parse the file
                 //CompilationUnit cu = JavaParser.parse( ss.getInputStream() );
                 CompilationUnit astRoot = 
-                    JavaASTParser.astFrom( ss.getInputStream() );
+                    JavaAst.astFrom( ss.getInputStream() );
                 
                 ClassOrInterfaceDeclaration astClassDecl = 
-                    JavaASTParser.findInterfaceDeclaration( astRoot, clazz );
+                    JavaAst.findInterfaceDeclaration( astRoot, clazz );
                 
                 return JavaMetaLangCompiler._interfaceFrom( 
                     astRoot, astClassDecl );
@@ -156,7 +156,7 @@ public class JavaMetaLangLoader
         public static _interface from( CompilationUnit astRoot, String typeName )
         {
             ClassOrInterfaceDeclaration astClassDecl = 
-                JavaASTParser.findInterfaceDeclaration( astRoot, typeName );
+                JavaAst.findInterfaceDeclaration( astRoot, typeName );
             return JavaMetaLangCompiler._interfaceFrom( astRoot, astClassDecl );
         }
         
@@ -165,9 +165,9 @@ public class JavaMetaLangLoader
         {
             try
             {
-                CompilationUnit astRoot = JavaASTParser.astFrom( javaSourceCode );
+                CompilationUnit astRoot = JavaAst.astFrom( javaSourceCode );
                 TypeDeclaration astTypeDecl = 
-                    JavaASTParser.findRootTypeDeclaration( astRoot );
+                    JavaAst.findRootTypeDeclaration( astRoot );
                 String typeName = astTypeDecl.getName();
                 return from( astRoot, typeName );
                 /*
@@ -241,7 +241,7 @@ public class JavaMetaLangLoader
         public static _class from( CompilationUnit astRoot, Class clazz )
         {
             ClassOrInterfaceDeclaration astClassDecl = 
-                JavaASTParser.findClassDeclaration( astRoot, clazz );
+                JavaAst.findClassDeclaration( astRoot, clazz );
             return JavaMetaLangCompiler._classFrom( astRoot, astClassDecl );
         }
         
@@ -249,7 +249,7 @@ public class JavaMetaLangLoader
             CompilationUnit astRoot, String simpleClassName )
         {
             ClassOrInterfaceDeclaration astClassDecl = 
-                JavaASTParser.findClassDeclaration( astRoot, simpleClassName );
+                JavaAst.findClassDeclaration( astRoot, simpleClassName );
             return JavaMetaLangCompiler._classFrom( astRoot, astClassDecl );
         }
         
@@ -259,9 +259,9 @@ public class JavaMetaLangLoader
         {
             try
             {
-                CompilationUnit astRoot = JavaASTParser.astFrom( javaSourceCode );
+                CompilationUnit astRoot = JavaAst.astFrom( javaSourceCode );
                 TypeDeclaration astTypeDecl = 
-                    JavaASTParser.findRootTypeDeclaration( astRoot );
+                    JavaAst.findRootTypeDeclaration( astRoot );
                 String className = astTypeDecl.getName();
                 if( astTypeDecl instanceof ClassOrInterfaceDeclaration )
                 {
@@ -290,9 +290,9 @@ public class JavaMetaLangLoader
         {
             try
             {
-                CompilationUnit astRoot = JavaASTParser.astFrom( javaSourceCode );
+                CompilationUnit astRoot = JavaAst.astFrom( javaSourceCode );
                 ClassOrInterfaceDeclaration astClassDecl = 
-                    JavaASTParser.findClassDeclaration(astRoot, simpleClassName );
+                    JavaAst.findClassDeclaration(astRoot, simpleClassName );
                 return JavaMetaLangCompiler._classFrom( astRoot, astClassDecl );                
             }
             catch( ParseException pe )
@@ -333,7 +333,7 @@ public class JavaMetaLangLoader
                     
                     //Parse the Declaring Class into an AST
                     CompilationUnit astRoot = 
-                        JavaASTParser.astFrom( ss.getInputStream() );
+                        JavaAst.astFrom( ss.getInputStream() );
                     
                     return from( astRoot, clazz );
                 }
@@ -350,7 +350,7 @@ public class JavaMetaLangLoader
                 // parse the file
                 //CompilationUnit cu = JavaParser.parse( ss.getInputStream() );
                 CompilationUnit astRoot = 
-                    JavaASTParser.astFrom( ss.getInputStream() );
+                    JavaAst.astFrom( ss.getInputStream() );
                 
                 return from( astRoot, clazz );
             }    
@@ -374,7 +374,7 @@ public class JavaMetaLangLoader
         public static _enum from( CompilationUnit astRoot, Class clazz )
         {
             EnumDeclaration astEnumDecl = 
-                JavaASTParser.findEnumDeclaration( astRoot, clazz );
+                JavaAst.findEnumDeclaration( astRoot, clazz );
             return JavaMetaLangCompiler._enumFrom( astRoot, astEnumDecl );
         }
         
@@ -400,10 +400,10 @@ public class JavaMetaLangLoader
                     
                     //Parse the Declaring Class into an AST
                     CompilationUnit astRoot = 
-                        JavaASTParser.astFrom( ss.getInputStream() );
+                        JavaAst.astFrom( ss.getInputStream() );
                     
                     EnumDeclaration enumDecl = 
-                        JavaASTParser.findEnumDeclaration( astRoot, clazz );
+                        JavaAst.findEnumDeclaration( astRoot, clazz );
                     
                     //return JavaASTParser._Enum.fromCompilationUnit( cu, classDecl );
                     return JavaMetaLangCompiler._enumFrom( astRoot, enumDecl );
@@ -420,10 +420,10 @@ public class JavaMetaLangLoader
             {
                 // parse the file
                 CompilationUnit astRoot = 
-                    JavaASTParser.astFrom( ss.getInputStream() );
+                    JavaAst.astFrom( ss.getInputStream() );
                 
                 EnumDeclaration enumDecl = 
-                    JavaASTParser.findEnumDeclaration( astRoot, clazz );
+                    JavaAst.findEnumDeclaration( astRoot, clazz );
                 
                 return JavaMetaLangCompiler._enumFrom( astRoot, enumDecl );
             }    
@@ -440,9 +440,9 @@ public class JavaMetaLangLoader
         {
             try
             {
-                CompilationUnit astRoot = JavaASTParser.astFrom( javaSourceCode );
+                CompilationUnit astRoot = JavaAst.astFrom( javaSourceCode );
                 TypeDeclaration astTypeDecl = 
-                    JavaASTParser.findRootTypeDeclaration( astRoot );
+                    JavaAst.findRootTypeDeclaration( astRoot );
                 String enumName = astTypeDecl.getName();
                 return from( astRoot, enumName );
             }
@@ -458,7 +458,7 @@ public class JavaMetaLangLoader
             CompilationUnit astRoot, String simpleClassName )
         {
             EnumDeclaration astEnumDecl = 
-                JavaASTParser.findEnumDeclaration( astRoot, simpleClassName );
+                JavaAst.findEnumDeclaration( astRoot, simpleClassName );
             return JavaMetaLangCompiler._enumFrom( astRoot, astEnumDecl );
         }
         
@@ -467,9 +467,9 @@ public class JavaMetaLangLoader
         {
             try
             {
-                CompilationUnit astRoot = JavaASTParser.astFrom( javaSourceCode );
+                CompilationUnit astRoot = JavaAst.astFrom( javaSourceCode );
                 EnumDeclaration astEnumDecl = 
-                    JavaASTParser.findEnumDeclaration( astRoot, className );
+                    JavaAst.findEnumDeclaration( astRoot, className );
                 return JavaMetaLangCompiler._enumFrom(astRoot, astEnumDecl );                
             }
             catch( ParseException pe )

@@ -91,15 +91,15 @@ import com.github.javaparser.ast.visitor.VoidVisitor;
  * 
  * @author M. Eric DeFazio (changed the original)
  */
-public class JavaASTToCodeVisitor implements VoidVisitor<Object> {
+public class JavaAstCodeVisitor implements VoidVisitor<Object> {
 
     private boolean printComments;
 
-    public JavaASTToCodeVisitor() {
+    public JavaAstCodeVisitor() {
         this(true);
     }
 
-    public JavaASTToCodeVisitor(boolean printComments) {
+    public JavaAstCodeVisitor(boolean printComments) {
         this.printComments = printComments;
     }
 
@@ -259,7 +259,7 @@ public class JavaASTToCodeVisitor implements VoidVisitor<Object> {
 	}
 
 	private void printArguments(final List<Expression> args, final Object arg) {
-		printer.print("(");
+		printer.print("( ");
         if (!isNullOrEmpty(args)) {
 			for (final Iterator<Expression> i = args.iterator(); i.hasNext();) {
 				final Expression e = i.next();
@@ -269,7 +269,7 @@ public class JavaASTToCodeVisitor implements VoidVisitor<Object> {
 				}
 			}
 		}
-		printer.print(")");
+		printer.print(" )");
 	}
 
 	private void printJavadoc(final JavadocComment javadoc, final Object arg) {
@@ -817,7 +817,7 @@ public class JavaASTToCodeVisitor implements VoidVisitor<Object> {
 		printJavaComment(n.getComment(), arg);
 		printer.print("(");
 		n.getType().accept(this, arg);
-		printer.print(") ");
+		printer.print(")");
 		n.getExpr().accept(this, arg);
 	}
 
@@ -838,11 +838,11 @@ public class JavaASTToCodeVisitor implements VoidVisitor<Object> {
 
 	@Override public void visit(final EnclosedExpr n, final Object arg) {
 		printJavaComment(n.getComment(), arg);
-		printer.print("(");
+		printer.print("( ");
 		if (n.getInner() != null) {
 		n.getInner().accept(this, arg);
 		}
-		printer.print(")");
+		printer.print(" )");
 	}
 
 	@Override public void visit(final FieldAccessExpr n, final Object arg) {
@@ -1013,7 +1013,7 @@ public class JavaASTToCodeVisitor implements VoidVisitor<Object> {
 		}
 		printer.print(n.getName());
 
-		printer.print("(");
+		printer.print("( ");
 		if (!n.getParameters().isEmpty()) {
 			for (final Iterator<Parameter> i = n.getParameters().iterator(); i.hasNext();) {
 				final Parameter p = i.next();
@@ -1023,7 +1023,7 @@ public class JavaASTToCodeVisitor implements VoidVisitor<Object> {
 				}
 			}
 		}
-		printer.print(")");
+		printer.print(" )");
 
 		if (!isNullOrEmpty(n.getThrows())) {
 			printer.print(" throws ");
@@ -1058,7 +1058,7 @@ public class JavaASTToCodeVisitor implements VoidVisitor<Object> {
 		printer.print(" ");
 		printer.print(n.getName());
 
-		printer.print("(");
+		printer.print("( ");
 		if (!isNullOrEmpty(n.getParameters())) {
 			for (final Iterator<Parameter> i = n.getParameters().iterator(); i.hasNext();) {
 				final Parameter p = i.next();
@@ -1068,14 +1068,20 @@ public class JavaASTToCodeVisitor implements VoidVisitor<Object> {
 				}
 			}
 		}
-		printer.print(")");
+		printer.print(" )");
 
 		for (int i = 0; i < n.getArrayCount(); i++) {
 			printer.print("[]");
 		}
 
 		if (!isNullOrEmpty(n.getThrows())) {
-			printer.print(" throws ");
+                    /*MED*/
+                    printer.printLn();
+                    printer.indent();
+                    printer.print( "throws " );
+                    /*MED*/
+                    
+		    /*MED printer.print(" throws "); */
 			for (final Iterator<ReferenceType> i = n.getThrows().iterator(); i.hasNext();) {
 				final ReferenceType name = i.next();
 				name.accept(this, arg);
@@ -1083,11 +1089,13 @@ public class JavaASTToCodeVisitor implements VoidVisitor<Object> {
 					printer.print(", ");
 				}
 			}
+                    /*MED*/printer.unindent();/*MED*/
 		}
 		if (n.getBody() == null) {
 			printer.print(";");
 		} else {
-			printer.print(" ");
+			/*MED printer.print(" "); MED*/
+                        printer.printLn("");
 			n.getBody().accept(this, arg);
 		}
 	}
@@ -1207,9 +1215,11 @@ public class JavaASTToCodeVisitor implements VoidVisitor<Object> {
 
 	@Override public void visit(final SwitchStmt n, final Object arg) {
 		printJavaComment(n.getComment(), arg);
-		printer.print("switch(");
+		printer.print("switch( ");
 		n.getSelector().accept(this, arg);
-		printer.printLn(") {");
+		/*MED printer.printLn(" ) {"); */
+                printer.printLn(" )");
+                printer.printLn("{");
 		if (n.getEntries() != null) {
 			printer.indent();
 			for (final SwitchEntryStmt e : n.getEntries()) {
@@ -1341,13 +1351,18 @@ public class JavaASTToCodeVisitor implements VoidVisitor<Object> {
 
 	@Override public void visit(final IfStmt n, final Object arg) {
 		printJavaComment(n.getComment(), arg);
-		printer.print("if (");
+		printer.print("if( ");
 		n.getCondition().accept(this, arg);
 		final boolean thenBlock = n.getThenStmt() instanceof BlockStmt;
-		if (thenBlock) // block statement should start on the same line
-			printer.print(") ");
-		else {
-			printer.printLn(")");
+		/* MED*/
+                if (thenBlock) // block statement should start on the *MED* next *MED*  line
+                {
+			/*MED printer.print(" ) ");*/
+                        /*MED*/printer.printLn(" ) " );/*MED*/
+                }
+                else 
+                {                
+			printer.printLn(" )");
 			printer.indent();
 		}
 		n.getThenStmt().accept(this, arg);
@@ -1361,11 +1376,23 @@ public class JavaASTToCodeVisitor implements VoidVisitor<Object> {
 			final boolean elseIf = n.getElseStmt() instanceof IfStmt;
 			final boolean elseBlock = n.getElseStmt() instanceof BlockStmt;
 			if (elseIf || elseBlock) // put chained if and start of block statement on a same level
+                        {
+                                /*MED */printer.printLn(" ");/* MED*/
 				printer.print("else ");
-			else {
-				printer.printLn("else");
+                        }
+                        else 
+                        {
+                                /*MED*/
+                                printer.printLn(" ");
+                                printer.printLn( "else" );
+                                /*MED*/
+				/* MED printer.printLn("else"); */
 				printer.indent();
 			}
+                        /*MED*/if( ! elseIf )
+                        { 
+                            printer.printLn();
+                        }/*MED*/
 			n.getElseStmt().accept(this, arg);
 			if (!(elseIf || elseBlock))
 				printer.unindent();
@@ -1374,9 +1401,10 @@ public class JavaASTToCodeVisitor implements VoidVisitor<Object> {
 
 	@Override public void visit(final WhileStmt n, final Object arg) {
 		printJavaComment(n.getComment(), arg);
-		printer.print("while (");
+		printer.print( "while( " );
 		n.getCondition().accept(this, arg);
-		printer.print(") ");
+		/*MED printer.print(" ) "); MED*/
+                /*MED*/printer.printLn(" ) "); /*MED*/
 		n.getBody().accept(this, arg);
 	}
 
@@ -1392,26 +1420,29 @@ public class JavaASTToCodeVisitor implements VoidVisitor<Object> {
 
 	@Override public void visit(final DoStmt n, final Object arg) {
 		printJavaComment(n.getComment(), arg);
-		printer.print("do ");
+		/*MED printer.print("do "); */
+                printer.printLn("do");
 		n.getBody().accept(this, arg);
-		printer.print(" while (");
+                /*MED*/printer.printLn();/*MED*/
+		printer.print("while( ");
 		n.getCondition().accept(this, arg);
-		printer.print(");");
+		/*MED printer.print(");"); */
+                printer.printLn(" );");
 	}
 
 	@Override public void visit(final ForeachStmt n, final Object arg) {
 		printJavaComment(n.getComment(), arg);
-		printer.print("for (");
+		printer.print("for( ");
 		n.getVariable().accept(this, arg);
 		printer.print(" : ");
 		n.getIterable().accept(this, arg);
-		printer.print(") ");
+		printer.print(" ) ");
 		n.getBody().accept(this, arg);
 	}
 
 	@Override public void visit(final ForStmt n, final Object arg) {
 		printJavaComment(n.getComment(), arg);
-		printer.print("for (");
+		printer.print("for( ");
 		if (n.getInit() != null) {
 			for (final Iterator<Expression> i = n.getInit().iterator(); i.hasNext();) {
 				final Expression e = i.next();
@@ -1435,7 +1466,9 @@ public class JavaASTToCodeVisitor implements VoidVisitor<Object> {
 				}
 			}
 		}
-		printer.print(") ");
+		/*MED printer.print(" ) "); MED*/
+                /*MED*/printer.printLn(" ) ");/*MED*/
+                
 		n.getBody().accept(this, arg);
 	}
 
@@ -1448,17 +1481,19 @@ public class JavaASTToCodeVisitor implements VoidVisitor<Object> {
 
 	@Override public void visit(final SynchronizedStmt n, final Object arg) {
 		printJavaComment(n.getComment(), arg);
-		printer.print("synchronized (");
+		printer.print("synchronized( ");
 		n.getExpr().accept(this, arg);
-		printer.print(") ");
+		/*MED printer.print(" ) "); */
+                /*MED*/printer.printLn(" )" );/*MED*/
 		n.getBlock().accept(this, arg);
 	}
 
 	@Override public void visit(final TryStmt n, final Object arg) {
 		printJavaComment(n.getComment(), arg);
-		printer.print("try ");
+		/*MED printer.print("try"); */
+                /*MED*/printer.printLn("try");/*MED*/
 		if (!n.getResources().isEmpty()) {
-			printer.print("(");
+			printer.print("( ");
 			Iterator<VariableDeclarationExpr> resources = n.getResources().iterator();
 			boolean first = true;
 			while (resources.hasNext()) {
@@ -1475,25 +1510,33 @@ public class JavaASTToCodeVisitor implements VoidVisitor<Object> {
 			if (n.getResources().size() > 1) {
 				printer.unindent();
 			}
-			printer.print(") ");
-		}
+			printer.print(" ) ");
+		}                
 		n.getTryBlock().accept(this, arg);
+                /*MEDprinter.printLn();MED*/
 		if (n.getCatchs() != null) {
 			for (final CatchClause c : n.getCatchs()) {
 				c.accept(this, arg);
 			}
 		}
 		if (n.getFinallyBlock() != null) {
-			printer.print(" finally ");
+			/* MED printer.print(" finally ");*/
+                        
+                        /*MED*/
+                        printer.printLn();
+                        printer.printLn( "finally" );
+                        /*MED*/
 			n.getFinallyBlock().accept(this, arg);
 		}
 	}
 
 	@Override public void visit(final CatchClause n, final Object arg) {
 		printJavaComment(n.getComment(), arg);
-		printer.print(" catch (");
+                /*MED*/printer.printLn();/*MED*/
+		printer.print("catch( ");
 		n.getParam().accept(this, arg);
-		printer.print(") ");
+		/*MED printer.print(" ) ");*/
+                printer.printLn(" )");
 		n.getCatchBlock().accept(this, arg);
 
 	}
@@ -1599,7 +1642,7 @@ public class JavaASTToCodeVisitor implements VoidVisitor<Object> {
 		final boolean printPar = n.isParametersEnclosed();
 
 		if (printPar) {
-			printer.print("(");
+			printer.print("( ");
 		}
 		if (parameters != null) {
 			for (Iterator<Parameter> i = parameters.iterator(); i.hasNext();) {
@@ -1611,7 +1654,7 @@ public class JavaASTToCodeVisitor implements VoidVisitor<Object> {
 			}
 		}
 		if (printPar) {
-			printer.print(")");
+			printer.print(" )");
 		}
 
 		printer.print(" -> ");

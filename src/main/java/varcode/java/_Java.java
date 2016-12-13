@@ -37,7 +37,7 @@ import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.adhoc.AdHocJavaFile;
 import varcode.java.adhoc.JavacOptions;
 import varcode.java.adhoc.Workspace;
-import varcode.java.ast.JavaASTParser;
+import varcode.java.ast.JavaAst;
 import varcode.java.lang._class;
 import varcode.java.lang._enum;
 import varcode.java.lang._interface;
@@ -180,7 +180,7 @@ public class _Java
     {
         try
         {
-            return JavaASTParser.astFrom( javaSourceCode );
+            return JavaAst.astFrom( javaSourceCode );
         }
         catch( ParseException pe )
         {
@@ -201,7 +201,7 @@ public class _Java
     {
         try
         {
-            return JavaASTParser.astFrom(
+            return JavaAst.astFrom(
                 sourceFrom( topLevelClass ).getInputStream() );
         }
         catch( ParseException pe )
@@ -230,7 +230,7 @@ public class _Java
         CompilationUnit astRoot,
         Class clazz )
     {
-        return JavaASTParser.findTypeDeclaration( astRoot, clazz );
+        return JavaAst.findTypeDeclaration( astRoot, clazz );
     }
     
     /**
@@ -248,7 +248,7 @@ public class _Java
             JavaSourceLoader.INSTANCE.sourceStream( topLevelClass );
         try
         {
-            CompilationUnit astRoot = JavaASTParser.astFrom( ss.getInputStream() );
+            CompilationUnit astRoot = JavaAst.astFrom( ss.getInputStream() );
             return astTypeDeclarationFrom( astRoot, clazz );
         }
         catch( ParseException ex )
@@ -270,7 +270,7 @@ public class _Java
         Class topLevelClass = getTopLevelClass( clazz ); 
         try
         {
-            return JavaASTParser.astFrom( 
+            return JavaAst.astFrom( 
                 sourceLoader.sourceStream( topLevelClass.getName() + ".java" )
                 .getInputStream() );
         }

@@ -22,8 +22,8 @@ import com.github.javaparser.ast.body.TypeDeclaration;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import varcode.load.LoadException;
-import varcode.java.ast.JavaASTParser;
-import varcode.java.ast.JavaASTParser;
+import varcode.java.ast.JavaAst;
+import varcode.java.ast.JavaAst;
 import varcode.load.SourceLoader;
 
 /**
@@ -102,7 +102,7 @@ public class NestedJavaSourceLoader
             
             //find the declaration of the nested class by recursively 
             // checking the nodes until I find a TypeDeclaration with this name
-            TypeDeclaration td = JavaASTParser.findTypeDeclaration( 
+            TypeDeclaration td = JavaAst.findTypeDeclaration( 
                 cu, nestedClass.getSimpleName() );
             
             NestedJavaSourceStream njss = new NestedJavaSourceStream( 
@@ -139,7 +139,7 @@ public class NestedJavaSourceLoader
                 cu = JavaParser.parse( declareSource.getInputStream() );
                 
                 String name = sourceId.substring( sourceId.lastIndexOf( "$" ) + 1 );
-                TypeDeclaration td = JavaASTParser.findTypeDeclaration( cu, name );
+                TypeDeclaration td = JavaAst.findTypeDeclaration( cu, name );
                 NestedJavaSourceStream sss = new NestedJavaSourceStream( 
                     declareSource, sourceId, td.toString() );
             return sss;
