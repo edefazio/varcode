@@ -7,15 +7,20 @@ import java.io.StringWriter;
 import junit.framework.TestCase;
 import varcode.VarException;
 import varcode.doc.Compose;
-import varcode.doc.lib.java.ValidateIdentifierName;
-import varcode.doc.lib.java.ValidateTypeName;
+import varcode.java.lib.ValidateIdentifierName;
+import varcode.java.lib.ValidateTypeName;
 import varcode.doc.Dom;
 /*-}*/
 import varcode.markup.bindml.BindML;
 
-public class _JavaCase_AllDirectivesTest
+public class MOVE_THIS_TO_JAVA_JavaCase_AllDirectivesTest
 /*{-*/	extends TestCase/*-}*/
 {
+    public void testNothing()
+    {
+        
+    }
+    /* MOVE THESE TO A JAVA SPECIFIC TEST
 	public void testBindML()
 	{
 		Dom d = BindML.compile(
@@ -42,7 +47,11 @@ public class _JavaCase_AllDirectivesTest
 			//System.out.println( ve );
 		}
 	}
+    */
 	
+        /**
+         * TODO MOVE THIS TO JAVA TEST CASES
+         
 	public void testJavaBindML()
 	{
 		Dom d = BindML.compile(
@@ -54,6 +63,7 @@ public class _JavaCase_AllDirectivesTest
 		
 		Compose.asString( d , "type", "Map<String>", "name", "blah" );
 	}
+        * */
 	
 	
 	// Handle IOException

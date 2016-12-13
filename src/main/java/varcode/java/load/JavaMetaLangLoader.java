@@ -169,22 +169,7 @@ public class JavaMetaLangLoader
                 TypeDeclaration astTypeDecl = 
                     JavaAst.findRootTypeDeclaration( astRoot );
                 String typeName = astTypeDecl.getName();
-                return from( astRoot, typeName );
-                /*
-                if( astTypeDecl instanceof ClassOrInterfaceDeclaration )
-                {
-                    ClassOrInterfaceDeclaration interfaceDecl = 
-                        (ClassOrInterfaceDeclaration)astTypeDecl;
-                    if( ! interfaceDecl.isInterface() )
-                    {
-                        return from( astRoot, interfaceDecl.getName() );
-                    }
-                    throw new LoadException( 
-                        className + " is an interface; expected a class" );
-                }
-                throw new LoadException(
-                    "could not find class " + className + " in source " );
-                */
+                return from( astRoot, typeName );               
             }
             catch( ParseException pe )
             {
@@ -265,11 +250,11 @@ public class JavaMetaLangLoader
                 String className = astTypeDecl.getName();
                 if( astTypeDecl instanceof ClassOrInterfaceDeclaration )
                 {
-                    ClassOrInterfaceDeclaration classDecl = 
+                    ClassOrInterfaceDeclaration astClassDecl = 
                         (ClassOrInterfaceDeclaration)astTypeDecl;
-                    if( ! classDecl.isInterface() )
+                    if( ! astClassDecl.isInterface() )
                     {
-                        return from( astRoot, classDecl.getName() );
+                        return from( astRoot, astClassDecl.getName() );
                     }
                     throw new LoadException( 
                         className + " is an interface; expected a class" );
@@ -286,11 +271,11 @@ public class JavaMetaLangLoader
         }
         
         public static _class from( 
-            CharSequence javaSourceCode, String simpleClassName )
+            CharSequence javaCode, String simpleClassName )
         {
             try
             {
-                CompilationUnit astRoot = JavaAst.astFrom( javaSourceCode );
+                CompilationUnit astRoot = JavaAst.astFrom( javaCode );
                 ClassOrInterfaceDeclaration astClassDecl = 
                     JavaAst.findClassDeclaration(astRoot, simpleClassName );
                 return JavaMetaLangCompiler._classFrom( astRoot, astClassDecl );                
@@ -299,7 +284,7 @@ public class JavaMetaLangLoader
             {
                 throw new LoadException(
                     "Error Parsing AST from Java Source :" + System.lineSeparator() +
-                    javaSourceCode, pe );
+                    javaCode, pe );
             }
         }
         
@@ -435,12 +420,12 @@ public class JavaMetaLangLoader
             }        
         }              
         
-        public static _enum from( CharSequence javaSourceCode )
+        public static _enum from( CharSequence javaCode )
             throws LoadException
         {
             try
             {
-                CompilationUnit astRoot = JavaAst.astFrom( javaSourceCode );
+                CompilationUnit astRoot = JavaAst.astFrom(javaCode );
                 TypeDeclaration astTypeDecl = 
                     JavaAst.findRootTypeDeclaration( astRoot );
                 String enumName = astTypeDecl.getName();
@@ -450,7 +435,7 @@ public class JavaMetaLangLoader
             {
                 throw new LoadException(
                     "Error Parsing AST from Java Source :" + System.lineSeparator() +
-                    javaSourceCode, pe );
+                    javaCode, pe );
             }
         }
         

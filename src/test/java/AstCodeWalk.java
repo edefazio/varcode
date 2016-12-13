@@ -138,7 +138,7 @@ public class AstCodeWalk
         /** Javadoc */
         @Deprecated
         public void WithAnns( @Deprecated String s, @Deprecated int count )
-            throws RuntimeException
+            throws IOException, RuntimeException
         {
             /*1*/
             int i=0; /*2*/
@@ -161,22 +161,6 @@ public class AstCodeWalk
             JavaAstCodeVisitor jcv = new JavaAstCodeVisitor();
             astMethod.accept( jcv, args );
             System.out.println( jcv.getSource() );
-        }
-        /*
-        astMethod = astMethods[ 1 ];
-        jcv = new JavaAstCodeVisitor();
-        astMethod.accept( jcv, args );
-        System.out.println( jcv.getSource() );
-        
-        astMethod = astMethods[ 2 ];
-        jcv = new JavaAstCodeVisitor();
-        astMethod.accept( jcv, args );
-        System.out.println( jcv.getSource() );
-        
-        astMethod = astMethods[ 3 ];
-        jcv = new JavaAstCodeVisitor();
-        astMethod.accept( jcv, args );
-        System.out.println( jcv.getSource() );
-        */        
+        }       
     }    
 }

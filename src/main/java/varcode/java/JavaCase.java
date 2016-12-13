@@ -10,7 +10,7 @@ import varcode.context.Resolve;
 import varcode.context.VarContext;
 import varcode.doc.Directive;
 import varcode.doc.Dom;
-import varcode.doc.lib.java.CommentEscape;
+import varcode.java.lib.CommentEscape;
 import varcode.doc.lib.text.PrefixWithLineNumber;
 import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.adhoc.AdHocJavaFile;

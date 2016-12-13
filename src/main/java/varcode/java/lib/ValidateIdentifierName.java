@@ -1,4 +1,4 @@
-package varcode.doc.lib.java;
+package varcode.java.lib;
 
 import java.lang.reflect.Array;
 import java.util.Collection;
@@ -10,25 +10,15 @@ import varcode.java.JavaNaming;
 import varcode.context.eval.VarScript;
 
 /**
- * Creates an index count (an array of sequential indexes) for all
- * elements in the array
- * 
- * For example:
- * <PRE> 
- * if I have the input String[]{ "A", "B", "C", "D", "E" };
- * it will return int[]{ 0, 1, 2, 3, 4 };
- * 
- * if I have the input String[]{"Yes" "No", "Maybe"};
- * it will return int[]{ 0, 1, 2 };
- * </PRE>
+ * Validates a var represents a valid Java identifier name
  * 
  * @author M. Eric DeFazio eric@varcode.io
  */
-public enum ValidateTypeName
+public enum ValidateIdentifierName
     implements VarScript
 {
     INSTANCE;
-        
+    
     @Override
     public Object eval( VarContext context, String input )
     {
@@ -40,15 +30,12 @@ public enum ValidateTypeName
       //the user passes in the NAME of the one I want index for
         //Object var = context.get( varName );
         Object var = context.resolveVar( varName );
-        return validateType( varName,  var );
+        return validate( varName, var );
     }
     
-    public Object validateType( String varName, Object var )
+    public Object validate( String varName, Object var )
     {
-        if( var instanceof Class )
-        {
-        	return var;
-        }
+        //System.out.println( "VarName "+varName+" : "+ context.getAttribute( varName ) );
         if( var != null )
         {
             if( var.getClass().isArray() )
@@ -57,19 +44,15 @@ public enum ValidateTypeName
                 for( int i = 0; i < len; i++ )
                 {
                     Object o = Array.get( var, i );
-                    
                     if( o != null )
                     {
-                    	if(! ( o instanceof Class ) )
-                    	{
-                    		JavaNaming.TypeName.validate( o.toString() );
-                    	}
+                    	JavaNaming.IdentifierName.validate( o.toString() );
                     }
                     else
                     {
                         throw new VarException( 
-                            "type name for \"" + varName + 
-                            "\" at index [" + i + "] cannot be null" );
+                            "null identifier name for \"" + varName + 
+                            "\" at index [" + i + "]" );
                     }
                 }
                 return var;
@@ -83,25 +66,21 @@ public enum ValidateTypeName
                     Object o = coll[ i ];
                     if( o != null )
                     {
-                    	if(! ( o instanceof Class ) )
-                    	{
-                    		JavaNaming.TypeName.validate( o.toString() );
-                    	}
+                        JavaNaming.IdentifierName.validate( o.toString() );
                     }
                     else
                     {
                         throw new VarException( 
-                            "type name for \"" + varName + "\" at [" + i 
-                          + "] null " + "identifier name at index [" + i + "]" );
+                            "null identifier name at index [" + i + "]" );
                     }
                 }
                 return var;
             }
-            JavaNaming.TypeName.validate( var.toString() );
+            JavaNaming.IdentifierName.validate( var.toString() );
             return var;
         }
         throw new VarException( 
-            "type name for \"" + varName + "\" cannot be null" );
+            "invalid, null identifier name for var \"" + varName + "\"" );
     }     
     
     @Override
@@ -115,5 +94,4 @@ public enum ValidateTypeName
 	{
 		return this.getClass().getName();  
 	}
-	   
 }

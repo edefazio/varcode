@@ -647,20 +647,19 @@ public class JavaMetaLangCompiler
             BodyDeclaration astMember = astMembers.get( i );
             if( astMember instanceof ConstructorDeclaration )
             {
-                ConstructorDeclaration astConstDecl = 
+                ConstructorDeclaration astCtor = 
                     (ConstructorDeclaration)astMember;
                     
-                String name = astConstDecl.getName();
-                _modifiers _ctorMods = _modifiers.of( astConstDecl.getModifiers() );
+                String name = astCtor.getName();
+                _modifiers _ctorMods = _modifiers.of(astCtor.getModifiers() );
                     
                 _throws throwsEx = new _throws();
-                for( int j = 0; j < astConstDecl.getThrows().size(); j++ )
+                for( int j = 0; j < astCtor.getThrows().size(); j++ )
                 {
-                    throwsEx.addThrows( 
-                        astConstDecl.getThrows().get( j ).toString() );
+                    throwsEx.addThrows(astCtor.getThrows().get( j ).toString() );
                 }
                 
-                List<Parameter>astParameters =  astConstDecl.getParameters();
+                List<Parameter>astParameters = astCtor.getParameters();
                 _parameters _params = new _parameters();
                 for( int j = 0; j < astParameters.size(); j++ )
                 {
@@ -668,26 +667,39 @@ public class JavaMetaLangCompiler
                 }
                 _constructor _ctor = new _constructor( 
                     _ctorMods, name, _params, throwsEx );
-                    
+                
+                /* OLD way of setting the body
                 //set the body
-                List<Statement>astBodyStatements = astConstDecl.getBlock().getStmts();
+                List<Statement>astBodyStatements = astCtor.getBlock().getStmts();
                     
                 for( int j = 0; j < astBodyStatements.size(); j++ )
                 {
                     _ctor.body( astBodyStatements.get( j ).toString() );
                 }
+                */
+                
+                //NEW way to set the body
+                         
+                List<Statement>astBodyStatements = astCtor.getBlock().getStmts();
+                    
+                for( int j = 0; j < astBodyStatements.size(); j++ )
+                {
+                    
+                    _ctor.body( astBodyStatements.get( j ).toString() );
+                }
+                
                 
                 //set annotations on the constructor 
-                List<AnnotationExpr> astCtorAnnots = astConstDecl.getAnnotations();
+                List<AnnotationExpr> astCtorAnnots = astCtor.getAnnotations();
                 for( int j = 0; j < astCtorAnnots.size(); j++ )
                 {
                     _ctor.annotate( astCtorAnnots.get( j ).toString() );
                 }
                 
-                if( astConstDecl.getJavaDoc() != null )
+                if( astCtor.getJavaDoc() != null )
                 {
                     //_javadoc doc = new _javadoc();
-                    _ctor.javadoc( astConstDecl.getJavaDoc().getContent() );    
+                    _ctor.javadoc(astCtor.getJavaDoc().getContent() );    
                 }
                 
                 _e.constructor( _ctor );

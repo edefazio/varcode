@@ -1,4 +1,4 @@
-package varcode.doc.lib.java;
+package varcode.java.lib;
 
 import varcode.context.VarContext;
 import varcode.doc.lib.ContextValidator;

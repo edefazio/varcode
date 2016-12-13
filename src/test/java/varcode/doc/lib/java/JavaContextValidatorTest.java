@@ -8,7 +8,7 @@ import java.util.UUID;
 import junit.framework.TestCase;
 import varcode.VarException;
 import varcode.context.VarContext;
-import varcode.doc.lib.java.JavaContextValidator;
+import varcode.java.lib.JavaContextValidator;
 
 public class JavaContextValidatorTest
 	extends TestCase

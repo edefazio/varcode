@@ -1,4 +1,4 @@
-package varcode.doc.lib.java;
+package varcode.java.lib;
 
 import java.util.HashMap;
 import java.util.Map;

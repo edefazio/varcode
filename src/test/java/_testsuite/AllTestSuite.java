@@ -39,7 +39,7 @@ import varcode.java.JavaCaseTest;
 import varcode.java.JavaNamingTest;
 import varcode.java._JavaTest;
 import varcode.java._JavaCaseClassNameTest;
-import varcode.java._JavaCase_AllDirectivesTest;
+import varcode.java.MOVE_THIS_TO_JAVA_JavaCase_AllDirectivesTest;
 import varcode.java.adhoc.WorkspaceTest;
 import varcode.java.lang._annotationTest;
 import varcode.java.lang._argumentsTest;
@@ -153,7 +153,7 @@ public class AllTestSuite
         suite.addTestSuite( AuthorTest.class );
         suite.addTestSuite( FillInTheBlanksTest.class );
 	 	
-        suite.addTestSuite( _JavaCase_AllDirectivesTest.class );
+        suite.addTestSuite(MOVE_THIS_TO_JAVA_JavaCase_AllDirectivesTest.class );
         suite.addTestSuite( _JavaCaseClassNameTest.class );
         suite.addTestSuite( JavaCaseTest.class );
         suite.addTestSuite(_JavaTest.class );

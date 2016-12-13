@@ -1,4 +1,4 @@
-package varcode.doc.lib.java;
+package varcode.java.lib;
 
 import java.lang.reflect.Array;
 import java.util.Collection;
@@ -10,11 +10,21 @@ import varcode.java.JavaNaming;
 import varcode.context.eval.VarScript;
 
 /**
- * Validates a var represents a valid Java identifier name
+ * Creates an index count (an array of sequential indexes) for all
+ * elements in the array
+ * 
+ * For example:
+ * <PRE> 
+ * if I have the input String[]{ "A", "B", "C", "D", "E" };
+ * it will return int[]{ 0, 1, 2, 3, 4 };
+ * 
+ * if I have the input String[]{"Yes" "No", "Maybe"};
+ * it will return int[]{ 0, 1, 2 };
+ * </PRE>
  * 
  * @author M. Eric DeFazio eric@varcode.io
  */
-public enum ValidateIdentifierName
+public enum ValidatePackageName
     implements VarScript
 {
     INSTANCE;
@@ -28,14 +38,8 @@ public enum ValidateIdentifierName
     public Object validate( VarContext context, String varName )
     {
       //the user passes in the NAME of the one I want index for
-        //Object var = context.get( varName );
-        Object var = context.resolveVar( varName );
-        return validate( varName, var );
-    }
-    
-    public Object validate( String varName, Object var )
-    {
-        //System.out.println( "VarName "+varName+" : "+ context.getAttribute( varName ) );
+        //bject var = context.get( varName );
+    	Object var = context.resolveVar( varName );
         if( var != null )
         {
             if( var.getClass().isArray() )
@@ -46,7 +50,7 @@ public enum ValidateIdentifierName
                     Object o = Array.get( var, i );
                     if( o != null )
                     {
-                    	JavaNaming.IdentifierName.validate( o.toString() );
+                        JavaNaming.PackageName.validate( o.toString() );
                     }
                     else
                     {
@@ -66,7 +70,7 @@ public enum ValidateIdentifierName
                     Object o = coll[ i ];
                     if( o != null )
                     {
-                        JavaNaming.IdentifierName.validate( o.toString() );
+                    	JavaNaming.PackageName.validate( o.toString() );
                     }
                     else
                     {
@@ -76,7 +80,7 @@ public enum ValidateIdentifierName
                 }
                 return var;
             }
-            JavaNaming.IdentifierName.validate( var.toString() );
+            JavaNaming.PackageName.validate( var.toString() );
             return var;
         }
         throw new VarException( 
@@ -87,7 +91,7 @@ public enum ValidateIdentifierName
 	public void collectAllVarNames( Set<String> collection, String input ) 
 	{
 		collection.add( input );
-	}
+	}        
 	
     @Override
 	public String toString()

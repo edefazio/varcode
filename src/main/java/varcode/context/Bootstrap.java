@@ -6,7 +6,7 @@ import varcode.doc.lib.CountIndex;
 import varcode.doc.lib.DateTime;
 import varcode.doc.lib.SHA1Checksum;
 import varcode.doc.lib.SameCount;
-import varcode.doc.lib.java.JavaLib;
+//import varcode.java.lib.JavaLib;
 import varcode.doc.lib.text.AllCap;
 import varcode.doc.lib.text.CondenseMultipleBlankLines;
 import varcode.doc.lib.text.EscapeString;
@@ -65,7 +65,7 @@ public enum Bootstrap
 	        
 	    bindDirective( bindings, SHA1Checksum.INSTANCE , "checksum", "sha1" );		
 	        
-		bindScript( bindings, AllCap.INSTANCE, "^^", "cap", "caps", "allCap" );		
+	    bindScript( bindings, AllCap.INSTANCE, "^^", "cap", "caps", "allCap" );		
 	    bindScript( bindings, FirstCap.INSTANCE, "^", "firstCap", "firstCaps" );	     
 	    bindScript( bindings, LowerCase.INSTANCE, "lower", "allLower" );
 	    bindScript( bindings, FirstLower.INSTANCE, "firstLower" );
@@ -88,7 +88,7 @@ public enum Bootstrap
         bindScript( bindings, Prefix.INDENT_12_SPACES, ">>>" );
         bindScript( bindings, Prefix.INDENT_16_SPACES, ">>>>" );
 	    
-	    bindDirective( bindings, JavaLib.INSTANCE, "java" );
+	    //bindDirective( bindings, JavaLib.INSTANCE, "java" );
 	    
 	    context.getOrCreateBindings( VarScope.CORE_LIBRARY ).put( "date", DateTime.DATE_FORMAT );  
 	        

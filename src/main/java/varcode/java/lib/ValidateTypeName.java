@@ -1,4 +1,4 @@
-package varcode.doc.lib.java;
+package varcode.java.lib;
 
 import java.lang.reflect.Array;
 import java.util.Collection;
@@ -24,11 +24,11 @@ import varcode.context.eval.VarScript;
  * 
  * @author M. Eric DeFazio eric@varcode.io
  */
-public enum ValidatePackageName
+public enum ValidateTypeName
     implements VarScript
 {
     INSTANCE;
-    
+        
     @Override
     public Object eval( VarContext context, String input )
     {
@@ -38,8 +38,17 @@ public enum ValidatePackageName
     public Object validate( VarContext context, String varName )
     {
       //the user passes in the NAME of the one I want index for
-        //bject var = context.get( varName );
-    	Object var = context.resolveVar( varName );
+        //Object var = context.get( varName );
+        Object var = context.resolveVar( varName );
+        return validateType( varName,  var );
+    }
+    
+    public Object validateType( String varName, Object var )
+    {
+        if( var instanceof Class )
+        {
+        	return var;
+        }
         if( var != null )
         {
             if( var.getClass().isArray() )
@@ -48,15 +57,19 @@ public enum ValidatePackageName
                 for( int i = 0; i < len; i++ )
                 {
                     Object o = Array.get( var, i );
+                    
                     if( o != null )
                     {
-                        JavaNaming.PackageName.validate( o.toString() );
+                    	if(! ( o instanceof Class ) )
+                    	{
+                    		JavaNaming.TypeName.validate( o.toString() );
+                    	}
                     }
                     else
                     {
                         throw new VarException( 
-                            "null identifier name for \"" + varName + 
-                            "\" at index [" + i + "]" );
+                            "type name for \"" + varName + 
+                            "\" at index [" + i + "] cannot be null" );
                     }
                 }
                 return var;
@@ -70,32 +83,37 @@ public enum ValidatePackageName
                     Object o = coll[ i ];
                     if( o != null )
                     {
-                    	JavaNaming.PackageName.validate( o.toString() );
+                    	if(! ( o instanceof Class ) )
+                    	{
+                    		JavaNaming.TypeName.validate( o.toString() );
+                    	}
                     }
                     else
                     {
                         throw new VarException( 
-                            "null identifier name at index [" + i + "]" );
+                            "type name for \"" + varName + "\" at [" + i 
+                          + "] null " + "identifier name at index [" + i + "]" );
                     }
                 }
                 return var;
             }
-            JavaNaming.PackageName.validate( var.toString() );
+            JavaNaming.TypeName.validate( var.toString() );
             return var;
         }
         throw new VarException( 
-            "invalid, null identifier name for var \"" + varName + "\"" );
+            "type name for \"" + varName + "\" cannot be null" );
     }     
     
     @Override
 	public void collectAllVarNames( Set<String> collection, String input ) 
 	{
 		collection.add( input );
-	}        
+	}
 	
     @Override
 	public String toString()
 	{
 		return this.getClass().getName();  
 	}
+	   
 }

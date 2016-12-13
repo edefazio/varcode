@@ -168,7 +168,7 @@ public enum Eval_JavaScript
 		"double","in","static","with",
 		"alert","frames","outerHeight",
 		"all","frameRate","outerWidth","anchor","function","packages","anchors",
-        "getClass","pageXOffset",
+                "getClass","pageXOffset",
 		"area","hasOwnProperty","pageYOffset",
 		"Array","hidden","parent",
 		"assign","history","parseFloat",

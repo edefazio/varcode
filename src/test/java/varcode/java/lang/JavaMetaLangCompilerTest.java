@@ -21,6 +21,7 @@ import com.github.javaparser.ParseException;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import junit.framework.TestCase;
+import varcode.java._Java;
 import varcode.java.lang._class;
 import varcode.java.lang._enum;
 import varcode.java.lang._interface;
@@ -35,7 +36,23 @@ import varcode.load.SourceLoader.SourceStream;
 public class JavaMetaLangCompilerTest
     extends TestCase
 {
+    public static class MyClass
+    {
+        public MyClass()
+        {
+            /* comment */
+            int g = 1;
+            // comment
+        }
+    }
     
+    public void testCtorComments()
+    {
+        _class _mc = _Java._classFrom( MyClass.class );
+        
+        System.out.println( _mc.getConstructors().getAt( 0 ) );
+        
+    }
     public void testClass() throws ParseException
     {
         CompilationUnit cu = 

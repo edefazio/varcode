@@ -1,3 +1,5 @@
+package varcode.java.ast;
+
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.comments.Comment;
@@ -21,6 +23,11 @@ import java.util.List;
  * limitations under the License.
  */
 
+/**
+ * This is used because how the AST is parsed is kinda dorked up.
+ * 
+ * @author Eric
+ */
 public class CommentQueue
 {
         int index = -1;
