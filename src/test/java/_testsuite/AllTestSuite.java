@@ -123,8 +123,8 @@ import varcode.markup.mark.ReplaceWithFormTest;
 import varcode.markup.mark.ReplaceWithScriptResultTest;
 import varcode.markup.mark.ReplaceWithVarTest;
 import varcode.markup.mark.RunScriptTest;
-import varcode.source.JavaMarkupRepoTest;
-import varcode.source.PathWalkTest;
+import varcode.java.load.JavaMarkupRepoTest;
+import varcode.load.PathWalkTest;
 
 public class AllTestSuite
 {

@@ -1,4 +1,4 @@
-package varcode.source;
+package varcode.java.load;
 
 import varcode.java.load.JavaSourceLoader;
 import junit.framework.TestCase;
