@@ -56,10 +56,12 @@ _c.add( _f ); //add the "ID" field to the _class
 ```    
 
 ##metaprogramming##
-to support metaprogramming, varcode can accept the .java source of (class, enum, interface, or annotationType) and **build a the correct ```( _class, _enum, _interface, _annotationType )``` model from the source automatically**. the metaprogramming "process" is simple:
-1. build a model from the .java source 
-2. modify the model 
-3. compile and instantiate and use the "ad hoc" modified model
+to support metaprogramming, varcode can accept the .java source of (class, enum, interface, or annotationType) and **build the  ```( _class, _enum, _interface, _annotationType )``` automatically**. 
+
+the metaprogramming "process" is simple:
+ 1. build a model from the .java source 
+ 2. modify the model 
+ 3. compile and instantiate and use the "ad hoc" modified model
 
 ```java
 // 1. read in the .java source and create a _class model
