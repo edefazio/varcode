@@ -42,15 +42,10 @@ public class OriginalClass
     }
 }
 
-//...Find an read the .java source for a class at runtime, then convert 
-// the .java source to a _class model
-_class _c = _Java.classFrom( OriginalClass.class );
-// change the class Name
-_c.setName("Tailored");
-//change the toString method body to return the 
-_c.getOnlyMethodNamed("toString").body( "return getClass().getSimpleName();") 
+_class _c = _Java.classFrom( OriginalClass.class ); //build a model from the source of a class at runtime
+_c.setName("Tailored");// change the class Name on the model
+_c.getOnlyMethodNamed("toString").body( "return getClass().getSimpleName();") //change the method body
 
-// compile the model and return a new instance of "Tailored"
-Object tailored = _c.instance();
+Object tailored = _c.instance(); // compile the model and return a new instance of "Tailored"
 System.out.println( tailored );  //prints "Tailored"
 ```
