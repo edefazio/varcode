@@ -1,51 +1,40 @@
 <img src="https://github.com/edefazio/varcode/blob/master/varcode_greenOnWhite.png?raw=true" width="60"/>
-***load, model, compile and run custom Java code at runtime***
-
-build, compile and run a snippet of code:
-```java 
-Snippet product = Snippet.of( "(int a,int b){return a * b;}" );
-int prod1 = (int)product.call(2,3); //prod1 = 6
-int prod2 = (int)product.call(5,4); //prod2 = 20
-```
-model, compile, and use a new Class / instance at runtime:
+#**meta**-**sourcery**#
+##**meta**programming + model based **source** code generation##
+varcode provides models of java language constructs (i.e. a ```_class``` models a java ```class```) 
+varcode uses these models to **generate source code and/or compile and run new generated code dynamically**.  
+ 
+build a model:
 ```java
-//model a class
-_class _model = _class.of( "Model" ).imports(UUID.class)
+_class _model = _class.of( "public class Model" ).imports( UUID.class )
     .method( "public String createId",
         "return UUID.randomUUID().toString();" );
-        
-//compile the _model to a new Model.class and create a new "Model" instance
-Object adHocModel = _model.instance();
-
-//call a method on the adHocModel instance
-String id1 = (String)Java.call( adHocModel, "createId" );
-String id2 = (String)Java.call( adHocModel, "createId" );    
-// will set id1 and id2 to new UUIDs like "2184d924-780d-4203-9fff-fa26c0886fc4"    
 ```
-load the model from an existing Class / modify the model, and create, use a new instance
+write the .java source code:
 ```java
-package my.original;
-import java.util.UUID;
+String javaSource = _model.author(); //return the .java source the model represents
 
-public class OriginalClass
-{
-    public static int value = 100;
-    
-    public String toString()
-    {
-        return "Hello World";
-    }
-    
-    public String createId()
-    {
-        return 
-    }
-}
+//export the .java source of the _model
+Export.toDir( "C:\\myapp\\src\\main\\java\\", _model );
+```
+compile a **new instance** of the model:
+```java
+Object myModel = _model.instance();
+```
+invoke methods on the new instance:
+```java
+String id1 = (String)Java.call( myModel, "createId" );
+String id2 = (String)Java.call( myModel, "createId" );     
+```
+##metaprogramming##
+building a large (class, enum, interface, annotationType) in varcode is simple with the fluent model api.     
+if you already the .java source of (class, enum, interface, or annotationType) varcode can **build a model ( \_class, \_enum, \_interface, \_annotationType) automatically** 
 
-_class _c = _Java.classFrom( OriginalClass.class ); //build a model from the source of a class at runtime
+```java
+_class _c = Java._classFrom( OriginalClass.class ); //build a _class from the .java source of a class
 _c.setName("Tailored");// change the class Name on the model
-_c.getOnlyMethodNamed("toString").body( "return getClass().getSimpleName();") //change the method body
+_c.getOnlyMethodNamed("toString").body( "return getClass().getSimpleName() + value;") //change the method body
 
 Object tailored = _c.instance(); // compile the model and return a new instance of "Tailored"
-System.out.println( tailored );  //prints "Tailored"
+System.out.println( tailored );  //prints "Tailored100"
 ```
