@@ -1,5 +1,5 @@
 <img src="https://github.com/edefazio/varcode/blob/master/varcode_greenOnWhite.png?raw=true" width="60"/>
-**meta**programming + **model** based **source** code generation
+**meta**programming and **model** based **source** code generation
 
 varcode provides models of java language constructs _(a varcode ```_class``` models a java ```class```)_ 
 these models can **generate and run source code dynamically**.  
@@ -10,11 +10,11 @@ _class _model = _class.of( "public class Model" ).imports( UUID.class )
     .method( "public String createId()",
         "return UUID.randomUUID().toString();" );
 ```
-write or export the .java source of a model:
+export the .java source of the model:
 ```java
 Export.toDir( "C:\\myapp\\src\\main\\java\\", _model );
 ```
-...generates/ exports the following .java source code:
+...creates the file ```C:\\myapp\\src\\main\\java\\Model.java``` of:
 ```java
 import java.util.UUID;
 
@@ -58,21 +58,21 @@ _c.add( _f ); //add the "ID" field to the _class
 ##metaprogramming##
 to support metaprogramming, varcode can accept the .java source of (class, enum, interface, or annotationType) and **build the  ```( _class, _enum, _interface, _annotationType )``` automatically**. 
 
-the metaprogramming "process" is simple:
- 1. build a model from the .java source 
+the metaprogramming "process" in varcode is simple:
+ 1. load and build a model from the .java source 
  2. modify the model 
- 3. compile and instantiate and use the "ad hoc" modified model
+ 3. compile, instantiate and use the "ad hoc" modified model
 
 ```java
-// 1. read in the .java source and create a _class model
-_class _c = Java._classFrom( OriginalClass.class ); //build a _class from the .java source of a class
+// 1. build the _class model from the .java source
+_class _c = Java._classFrom( OriginalClass.class ); //find the .java source 
 
 // 2. modify the model
 _c.setName("Tailored");// change the class Name on the model
 _c.field("private static final int ID = 100;");
 _c.getOnlyMethodNamed("toString").body( "return getClass().getSimpleName() + value;") //change the method body
 
-// 3.  
+// 3. compile, instantiate and use the "adhoc" model
 Object tailored = _c.instance(); // create a new instance of "Tailored"
 System.out.println( tailored );  //prints "Tailored100"
 ```
