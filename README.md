@@ -22,7 +22,7 @@ String id1 = (String)Java.call( adHocModel, "createId" );
 String id2 = (String)Java.call( adHocModel, "createId" );    
 // will set id1 and id2 to new UUIDs like "2184d924-780d-4203-9fff-fa26c0886fc4"    
 ```
-load the model from an existing Class / modify the model, and create a new instance
+load the model from an existing Class / modify the model, and create, use a new instance
 ```java
 package my.original;
 import java.util.UUID;
