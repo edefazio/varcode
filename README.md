@@ -18,6 +18,7 @@ Export.dir( "C:\\myapp\\src\\main\\java\\").toFile( _model );
 ```
 ...```Export(...)``` will create the file ```C:\\myapp\\src\\main\\java\\mymodel\\Model.java``` containing:
 ```java
+package mymodel;
 import java.util.UUID;
 
 public class Model
