@@ -73,7 +73,7 @@ _class _c = Java._classFrom( OriginalClass.class ); //find the .java source
 // 2. modify the model
 _c.setName("Tailored");// change the class Name on the model
 _c.field("private static final int ID = 100;");
-_c.getOnlyMethodNamed("toString").body( "return getClass().getSimpleName() + value;") //change the method body
+_c.getOnlyMethodNamed("toString").body( "return getClass().getSimpleName() + ID;") //modify the toString method
 
 // 3. compile, instantiate and use the "adhoc" model
 Object tailored = _c.instance(); // create a new instance of "Tailored"
