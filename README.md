@@ -36,7 +36,7 @@ String id1 = (String)Java.call( myModel, "createId" );
 String id2 = (String)Java.call( myModel, "createId" );     
 ```
 ##building & mutating hierarchial models##
-building a model for a ( \_class, [\_interface](https://gist.github.com/edefazio/adbbd9cd500617d3202b2a2a3c7ebf68), _enum, _annotationType```) can be done in a single compound statement, or by calling individual mutator methods on the model.  "components" of models are themseleves models, i.e. we model (```_methods, _fields,  _parameters, _annotations, _imports...```)
+building a model for a ( [\_class](https://gist.github.com/edefazio/b491989cd6ef72ad7ea2bc0005895c81), [\_interface](https://gist.github.com/edefazio/adbbd9cd500617d3202b2a2a3c7ebf68), _enum, _annotationType```) can be done in a single compound statement, or by calling individual mutator methods on the model.  "components" of models are themseleves models, i.e. we model (```_methods, _fields,  _parameters, _annotations, _imports...```)
 ```java 
 _class _c = _class.of("package ex.mutable;",
     _import.of(Serializable.class),
