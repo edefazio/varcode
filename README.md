@@ -2,7 +2,7 @@
 ## **model** based **source** code generation ##
 
 varcode provides models of java language constructs _(a varcode ```_class``` models a java ```class```)_. 
-we can build these model and **generate and run source code dynamically**.  
+we can build these models and **generate and run source code dynamically**.  
  
 build a model:
 ```java
@@ -29,7 +29,7 @@ public class Model
     }
 }
 ```
-to create a **new instance** of the model dynamically:
+to create a **new instance** of the model **dynamically**:
 ```java
 Object dynamicModel = _model.instance();
 ```
