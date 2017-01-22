@@ -21,9 +21,12 @@ invoke methods on the dynamic instance:
 String id1 = (String)Java.call( dynamicModel, "createId" );
 String id2 = (String)Java.call( dynamicModel, "createId" );     
 ```
-export the .java source of the model and/or the generated class:
+export the .java source and the dynamically compiled .class files:
 ```java
+//export "C:\MyApp\src\main\java\mymodel\Model.java"
 Export.dir( "C:\\MyApp\\src\\main\\java\\").toFile( _model );
+
+//export "C:\MyApp\traget\classes\mymodel\Model.class"
 Export.dir( "C:\\MyApp\\target\\classes\\").toFile( dynamicModel.getClass() );
 ```
 ...```Export(...)``` will create the file ```C:\\myapp\\src\\main\\java\\mymodel\\Model.java``` containing:
