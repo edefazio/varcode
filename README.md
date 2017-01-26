@@ -1,6 +1,5 @@
-<img src="https://github.com/edefazio/varcode/blob/master/varcode_greenOnWhite.png?raw=true" width="60"/>
-## **model** based **source** code generation ##
-
+<!-- <img src="https://github.com/edefazio/varcode/blob/master/varcode_greenOnWhite.png?raw=true" width="60"/>
+## **model** based **source** code generation ## -->
 varcode provides models of java language constructs _(a varcode ```_class``` models a java ```class```)_. 
 we can build these models and **generate and run source code dynamically**.  
  
