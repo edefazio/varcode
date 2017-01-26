@@ -21,7 +21,7 @@ invoke methods on the dynamic instance:
 String id1 = (String)Java.call( dynamicModel, "createId" );
 String id2 = (String)Java.call( dynamicModel, "createId" );     
 ```
-export the .java source and the dynamically compiled .class files:
+export the **.java source** and the dynamically compiled **.class** files:
 ```java
 //export "C:\MyApp\src\main\java\mymodel\Model.java"
 Export.dir( "C:\\MyApp\\src\\main\\java\\").toFile( _model );
@@ -44,7 +44,7 @@ public class Model
 ```
 
 ## using the api to build & mutate models ##
-building a model for a ( [\_class](https://gist.github.com/edefazio/b491989cd6ef72ad7ea2bc0005895c81), [\_interface](https://gist.github.com/edefazio/adbbd9cd500617d3202b2a2a3c7ebf68), [\_enum](https://gist.github.com/edefazio/0e566868ab5f134720cfde6db24b9b11), [\_annotationType](https://gist.github.com/edefazio/f1bed02ff66524149c215311c6d6f356) ) can be done in a single compound statement, or by calling individual mutator methods on the model.  "components" of models are themseleves models, i.e. we model (```_methods, _fields,  _parameters, _annotations, _imports...```)
+building a model for a ( [\_class](https://gist.github.com/edefazio/b491989cd6ef72ad7ea2bc0005895c81), [\_interface](https://gist.github.com/edefazio/adbbd9cd500617d3202b2a2a3c7ebf68), [\_enum](https://gist.github.com/edefazio/0e566868ab5f134720cfde6db24b9b11), [\_annotationType](https://gist.github.com/edefazio/f1bed02ff66524149c215311c6d6f356) ) can be done in a single compound statement, or by calling individual mutator methods on the model. 
 ```java 
 _class _c = _class.of( "package ex.mutable;",
     _imports.of( Serializable.class ),
