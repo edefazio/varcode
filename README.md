@@ -1,7 +1,8 @@
 <!-- <img src="https://github.com/edefazio/varcode/blob/master/varcode_greenOnWhite.png?raw=true" width="60"/>
 ## **model** based **source** code generation ## -->
+## dynamically generate .java code and run it ##
 varcode provides models of java language constructs _(a varcode ```_class``` models a java ```class```)_. 
-we can build these models and **generate and run source code dynamically**.  
+we can build these models and **generate and run the code dynamically**.  
  
 build a model:
 ```java
@@ -42,7 +43,7 @@ public class Model
 }
 ```
 
-##building & mutating models of models##
+## using the api to build & mutate models ##
 building a model for a ( [\_class](https://gist.github.com/edefazio/b491989cd6ef72ad7ea2bc0005895c81), [\_interface](https://gist.github.com/edefazio/adbbd9cd500617d3202b2a2a3c7ebf68), [\_enum](https://gist.github.com/edefazio/0e566868ab5f134720cfde6db24b9b11), [\_annotationType](https://gist.github.com/edefazio/f1bed02ff66524149c215311c6d6f356) ) can be done in a single compound statement, or by calling individual mutator methods on the model.  "components" of models are themseleves models, i.e. we model (```_methods, _fields,  _parameters, _annotations, _imports...```)
 ```java 
 _class _c = _class.of( "package ex.mutable;",
@@ -62,8 +63,8 @@ _c.add( _m ); //add the "random" method to the _class
 _c.add( _f ); //add the "ID" field to the _class
 ```    
 
-##metaprogramming##
-to support metaprogramming, varcode can load the .java source of (class, enum, interface, or annotationType) and **build the  ```( _class, _enum, _interface, _annotationType )``` automatically**. 
+## read existing code into models ##
+to support **metaprogramming**, varcode can load the .java source of (class, enum, interface, or annotationType) and **build the  ```( _class, _enum, _interface, _annotationType )``` automatically**. 
 
 the metaprogramming "process" in varcode is simple:
  1. load and build a model from the .java source 
