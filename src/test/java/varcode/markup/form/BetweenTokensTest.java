@@ -1,4 +1,4 @@
-package varcode.doc.form;
+package varcode.markup.form;
 
 import junit.framework.TestCase;
 import varcode.markup.form.BetweenTokens;
