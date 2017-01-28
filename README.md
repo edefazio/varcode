@@ -63,23 +63,18 @@ _c.add( _f ); //add the "ID" field to the _class
 ```    
 
 ## read existing code into models ##
-to support **metaprogramming**, varcode can load the .java source of (class, enum, interface, or annotationType) and **build the  ```( _class, _enum, _interface, _annotationType )``` automatically**. 
-
-the metaprogramming "process" in varcode is simple:
- 1. load and build a model from the .java source 
- 2. modify the model 
- 3. compile, instantiate and use the "ad hoc" modified model
+to support **metaprogramming**, varcode can load the .java source of any (class, enum, interface, or annotationType) and **build the  ```( _class, _enum, _interface, _annotationType )``` automatically**. 
 
 ```java
-// 1. build the _class model from the .java source
-_class _c = Java._classFrom( OriginalClass.class ); //find the .java source 
+// 1. build the _class model from the .java source of the Class
+_class _c = Java._classFrom( OriginalClass.class ); 
 
 // 2. modify the model
-_c.setName("Tailored");// change the class Name on the model
+_c.setName("Tailored");// change the class Name
 _c.field("private static final int ID = 100;");
 _c.getOnlyMethodNamed("toString").body( "return getClass().getSimpleName() + ID;") //modify the toString method
 
-// 3. compile, instantiate and use the "adhoc" model
+// 3. compile, instantiate and use the "tailored" model
 Object tailored = _c.instance(); // create a new instance of "Tailored"
 System.out.println( tailored );  //prints "Tailored100"
 ```
