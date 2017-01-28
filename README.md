@@ -1,8 +1,7 @@
 <!-- <img src="https://github.com/edefazio/varcode/blob/master/varcode_greenOnWhite.png?raw=true" width="60"/>
 ## **model** based **source** code generation ## -->
 ## dynamically generate .java code and run it ##
-varcode provides models of java language constructs _(a varcode ```_class``` models a java ```class```)_. 
-we can build these models and **generate and run the code dynamically**.  
+varcode provides models for **generating and runing dynamic .java code**.  
  
 build a model:
 ```java
@@ -16,12 +15,12 @@ to create a **new instance** of the model **dynamically**:
 ```java
 Object dynamicModel = _model.instance();
 ```
-invoke methods on the dynamic instance:
+**run** methods on the dynamic instance:
 ```java
 String id1 = (String)Java.call( dynamicModel, "createId" );
 String id2 = (String)Java.call( dynamicModel, "createId" );     
 ```
-export the **.java source** and the dynamically compiled **.class** files:
+export the **.java source** and the compiled **.class** files:
 ```java
 //export "C:\MyApp\src\main\java\mymodel\Model.java"
 Export.dir( "C:\\MyApp\\src\\main\\java\\").toFile( _model );
