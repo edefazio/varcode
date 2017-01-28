@@ -55,10 +55,11 @@ _method _m = _method.of( "/** create a random number */",
     "public static final double random()", 
     "return Math.random();" );
     
+_c.method( _m );   //add the "random" method to the _class  
+    
 _field _f = _field.of( "/** field javadoc */", 
     "public static int ID = 100;"); 
-
-_c.add( _m ); //add the "random" method to the _class 
+    
 _c.add( _f ); //add the "ID" field to the _class
 ```    
 
@@ -72,9 +73,11 @@ _class _c = Java._classFrom( OriginalClass.class );
 // 2. modify the model
 _c.setName("Tailored");// change the class Name
 _c.field("private static final int ID = 100;");
-_c.getOnlyMethodNamed("toString").body( "return getClass().getSimpleName() + ID;") //modify the toString method
 
-// 3. compile, instantiate and use the "tailored" model
+// get and modify the "toString" method
+_c.getMethod("toString").body( "return getClass().getSimpleName() + ID;")
+
+// 3. compile, instantiate and use it
 Object tailored = _c.instance(); // create a new instance of "Tailored"
 System.out.println( tailored );  //prints "Tailored100"
 ```
