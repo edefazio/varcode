@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 eric.
+ * Copyright 2017 M. Eric DeFazio.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,19 +18,25 @@ package varcode.java.ast;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseException;
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.AnnotationDeclaration;
 import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.EnumDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.Statement;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
-import varcode.load.LoadException;
 
 /**
+ * API for Reading in / Parsing and traversing / querying ASTs 
+ * (Abstract Syntax Trees)of Java code (using the github JavaParser API).
+ * 
  * Reads in Java Source as text and converts the text into an AST 
  * (Abstract Syntax Tree) {@code CompilationUnit}... And converts the AST
  * {@code CompilationUnit} into a java "Lang Model" (_class, _interface, _enum)
@@ -44,14 +50,13 @@ public enum JavaAst
     ; //singleton enum idiom
     
     /** 
-     * read the .java source from the input stream and construct a 
+     * read the .java source from the input stream and construct an AST 
      * {@code CompilationUnit}
      * @param javaSourceInputStream .java source as an inputStream
      * @return the CompilationUnit root node of the parsed AST
      * @throws com.github.javaparser.ParseException if parsing failed
      */
-    public static CompilationUnit astFrom( 
-        InputStream javaSourceInputStream )            
+    public static CompilationUnit astFrom( InputStream javaSourceInputStream )            
         throws ParseException
     {
         return JavaParser.parse( javaSourceInputStream );           
@@ -85,15 +90,32 @@ public enum JavaAst
     }
     
     /**
+     * Returns the MethodDeclaration (ast method node)
+     * @param methodSource
+     * @return 
+     * @throws ParseException if parsing to AST fails
+     */
+    public static MethodDeclaration astMethodFrom( String methodSource )
+        throws ParseException
+    {
+        String classSource = "interface A { "+ methodSource+ " }";
+        CompilationUnit cu = astFrom( classSource );
+        
+        MethodDeclaration md = 
+            (MethodDeclaration) cu.getTypes().get( 0 ).getMembers().get( 0 );
+        return md;
+    }
+    
+    /**
      * Looks into the AST nodes (Types) of a {@code CompilationUnit} to return 
      * the "Top Level" type
      * @param astRoot the AST root Node
      * @return the top Level {@code TypeDeclaration}
-     * @throws LoadException if unable to find the root type declaration
+     * @throws ParseException if unable to find the root type declaration
      */
     public static TypeDeclaration findRootTypeDeclaration( 
         CompilationUnit astRoot )
-        throws LoadException
+        throws ParseException
     {
         List<TypeDeclaration> astTypes =  astRoot.getTypes();
         
@@ -110,7 +132,7 @@ public enum JavaAst
             if( (astTypes.get( i ).getModifiers() 
                & Modifier.STATIC ) != 0 )
             {
-                astTypeCandidates.add(astTypes.get( i ) ); 
+                astTypeCandidates.add( astTypes.get( i ) ); 
             }
         }
         if( astTypeCandidates.size() == 1 )
@@ -120,8 +142,8 @@ public enum JavaAst
         
         if( astTypes.isEmpty() )
         {
-            throw new LoadException( 
-                "No Type Declarations in AST : "+ System.lineSeparator() + 
+            throw new ParseException( 
+                "No Type Declarations in AST : " + System.lineSeparator() + 
                 astRoot );
         }
         //or I give up, just return the first one
@@ -133,18 +155,18 @@ public enum JavaAst
      * @param astRoot the root AST node
      * @param enumName the name of the Enum
      * @return the EnumDeclaration astNode
-     * @throws LoadException if unable to find the enum declaration
+     * @throws ParseException if unable to find the enum declaration
      */
     public static EnumDeclaration findEnumDeclaration(
         CompilationUnit astRoot, String enumName )
-        throws LoadException    
+        throws ParseException    
     {
         TypeDeclaration astTypeDecl = findTypeDeclaration( astRoot, enumName );
         if( astTypeDecl instanceof EnumDeclaration )
         {
             return (EnumDeclaration)astTypeDecl;            
         }
-        throw new LoadException( 
+        throw new ParseException( 
             "Could not find interface declaration for \""
                 + enumName + "\"" );
     }
@@ -154,18 +176,18 @@ public enum JavaAst
      * @param astRoot the CompilationRoot AST Node
      * @param clazz the clazz to resolve the EnumDeclaration from
      * @return the EnumTypeDeclaration AST node
-     * @throws LoadException if unable to find the enum declaration
+     * @throws ParseException if unable to find the enum declaration
      */
     public static EnumDeclaration findEnumDeclaration( 
         CompilationUnit astRoot, Class clazz )
-        throws LoadException
+        throws ParseException
     {
         TypeDeclaration astTypeDecl = findTypeDeclaration( astRoot, clazz );
         if( astTypeDecl instanceof EnumDeclaration )
         {
             return (EnumDeclaration) astTypeDecl;
         }
-        throw new LoadException( 
+        throw new ParseException( 
             "Could not find class declaration for \""
             + clazz.getCanonicalName() + "\"" );
     }
@@ -176,11 +198,11 @@ public enum JavaAst
      * @param astRoot the CompilationRoot AST Node
      * @param interfaceName the name of the interface
      * @return the ClassOrInterfaceDeclaration AST node
-     * @throws LoadException if unable to find the interface declaration
+     * @throws ParseException if unable to find the interface declaration
      */
     public static ClassOrInterfaceDeclaration findInterfaceDeclaration( 
         CompilationUnit astRoot, String interfaceName )
-        throws LoadException
+        throws ParseException
     {
         TypeDeclaration astTypeDecl = findTypeDeclaration( astRoot, interfaceName );
         if( astTypeDecl instanceof ClassOrInterfaceDeclaration )
@@ -193,7 +215,7 @@ public enum JavaAst
                 return astClassDecl;
             }
         }
-        throw new LoadException( 
+        throw new ParseException( 
             "Could not find interface declaration for \""
             + interfaceName + "\"" );
     }
@@ -203,11 +225,11 @@ public enum JavaAst
      * @param astRoot the CompilationRoot AST Node
      * @param clazz the clazz to resolve the EnumDeclaration from
      * @return the EnumTypeDeclaration AST node
-     * @throws LoadException if unable to find the interface declaration
+     * @throws ParseException if unable to find the interface declaration
      */
     public static ClassOrInterfaceDeclaration findInterfaceDeclaration( 
         CompilationUnit astRoot, Class clazz )
-        throws LoadException
+        throws ParseException
     {
         TypeDeclaration astTypeDecl = findTypeDeclaration( astRoot, clazz );
         if( astTypeDecl instanceof ClassOrInterfaceDeclaration )
@@ -220,7 +242,7 @@ public enum JavaAst
                 return astClassDecl;
             }
         }
-        throw new LoadException( 
+        throw new ParseException( 
             "Could not find class declaration for \""
             + clazz.getCanonicalName() + "\"" );
     }
@@ -231,13 +253,14 @@ public enum JavaAst
      * @param simpleClassName the (simple) class Name ClassOrInterfaceDeclaration 
      * AST Node from
      * @return the EnumTypeDeclaration AST node
-     * @throws LoadException if unable to resolve the class declaration
+     * @throws ParseException if unable to resolve the class declaration
      */
     public static ClassOrInterfaceDeclaration findClassDeclaration( 
         CompilationUnit astRoot, String simpleClassName )
-        throws LoadException
+        throws ParseException
     {
-        TypeDeclaration astTypeDecl = findTypeDeclaration(astRoot, simpleClassName );
+        TypeDeclaration astTypeDecl = findTypeDeclaration( 
+            astRoot, simpleClassName );
         if( astTypeDecl instanceof ClassOrInterfaceDeclaration )
         {
             ClassOrInterfaceDeclaration astClassDecl = 
@@ -248,7 +271,7 @@ public enum JavaAst
                 return astClassDecl;
             }
         }
-        throw new LoadException( 
+        throw new ParseException( 
             "Could not find class declaration for \""
             + simpleClassName + "\"" );
     }
@@ -259,11 +282,11 @@ public enum JavaAst
      * @param astRoot the CompilationRoot AST Node
      * @param clazz the clazz to resolve the EnumDeclaration from
      * @return the ClassOrInterfaceTypeDeclaration AST node     
-     * @throws LoadException if unable to find the class declaration
+     * @throws ParseException if unable to find the class declaration
      */
     public static ClassOrInterfaceDeclaration findClassDeclaration( 
         CompilationUnit astRoot, Class clazz )
-        throws LoadException
+        throws ParseException
     {
         TypeDeclaration astTypeDecl = findTypeDeclaration( astRoot, clazz );
         if( astTypeDecl instanceof ClassOrInterfaceDeclaration )
@@ -275,7 +298,7 @@ public enum JavaAst
                 return astClassDecl;
             }
         }
-        throw new LoadException( 
+        throw new ParseException( 
             "Could not find class declaration for \""
             + clazz.getCanonicalName() + "\"" );
     }
@@ -287,11 +310,11 @@ public enum JavaAst
      * @param astRoot the CompilationUnit (top Level AST node)
      * @param typeName the name of the TypeDeclaration to find
      * @return the TypeDeclaration node (and its children)
-     * @throws LoadException if unable to find a TypeDeclaration
+     * @throws ParseException if unable to find a TypeDeclaration
      */
     public static TypeDeclaration findTypeDeclaration( 
         CompilationUnit astRoot, String typeName )
-        throws LoadException
+        throws ParseException
     {
         List<TypeDeclaration> astTypes =  astRoot.getTypes();
         //System.out.println( "LOOKING FOR \"" + name + "\"" );
@@ -330,7 +353,7 @@ public enum JavaAst
             }
         }        
         //List<Node> nodes = cu.getChildrenNodes();
-        throw new LoadException( 
+        throw new ParseException( 
             "Could not find type declaration for \"" + typeName + "\"" );
     }
     
@@ -379,7 +402,109 @@ public enum JavaAst
     
     public static TypeDeclaration findTypeDeclaration( 
         CompilationUnit astRoot, Class clazz )
+        throws ParseException
     {           
         return findTypeDeclaration( astRoot, clazz.getSimpleName() );
+    }
+
+    public static AnnotationDeclaration findAnnotationTypeDeclaration(
+        CompilationUnit astRoot, Class clazz )
+        throws ParseException
+    {
+        return findAnnotationTypeDeclaration( astRoot, clazz.getSimpleName() );
+        /*
+        TypeDeclaration td = 
+            findTypeDeclaration( astRoot, clazz.getSimpleName() );
+        if( td instanceof AnnotationDeclaration )
+        {
+            return (AnnotationDeclaration)td;
+        }
+        throw new ParseException( 
+            "Found TypeDeclaration "+ td + " was not AnnotationType" );
+        */
+    }
+    
+    public static AnnotationDeclaration findAnnotationTypeDeclaration(
+        CompilationUnit astRoot, String className )
+        throws ParseException
+    {
+        TypeDeclaration td = 
+            findTypeDeclaration( astRoot, className );
+        if( td instanceof AnnotationDeclaration )
+        {
+            return(AnnotationDeclaration)td;
+        }
+        throw new ParseException( 
+            "Found TypeDeclaration "+ td + " was not AnnotationType" );
+    }
+    
+    /**
+     * Return a String of the code formatted given a root AST Node
+     * of 
+     * 
+     * @param astBlockStatement
+     * @return 
+     */
+    public static String formattedCodeFrom( 
+        BlockStmt astBlockStatement )
+    {
+        return formattedCodeFrom( 
+            astBlockStatement.getStmts(), 
+                new FormatJavaCode_AllmanScanStyle() );
+    }
+    
+    
+    /*
+    public static String formattedCodeForm( BlockStmt astBlockStatement )
+    {
+        return formattedCodeForm( 
+            astBlockStatement, )
+    }
+    */
+    
+    public static String formattedCodeFrom( 
+        BlockStmt astBlockStatement, JavaCodeFormatVisitor codeFormatter )
+    {
+        return formattedCodeFrom( 
+            astBlockStatement.getStmts(), codeFormatter );             
+    }
+    
+    /*
+    public static String formattedCodeFrom( Expression expr )
+    {
+        //FormatJavaCode_AllmanScanStyle astCodeVisit = 
+        //    new FormatJavaCode_AllmanScanStyle();
+        //expr.accept( astCodeVisit, "    " );
+        //return astCodeVisit.getSource();        
+        
+        return formattedCodeFrom( expr, 
+            new FormatJavaCode_AllmanScanStyle() );
+    }
+    */
+    
+    public static String formattedCodeFrom( Expression expr, 
+        JavaCodeFormatVisitor codeFormatter )
+    {
+        expr.accept( codeFormatter, "    " );
+        return codeFormatter.getSource();        
+    }
+    
+    public static String formattedCodeFrom( List<Statement> astStmts )
+    {
+        FormatJavaCode_AllmanScanStyle astCodeVisit = 
+            new FormatJavaCode_AllmanScanStyle();
+        return formattedCodeFrom( astStmts, astCodeVisit );      
+    }
+    
+    public static String formattedCodeFrom( 
+        List<Statement>astStmts, JavaCodeFormatVisitor codeFormatter )
+    {
+        for( int i = 0; i < astStmts.size(); i++ )
+        {
+            astStmts.get( i ).accept( codeFormatter, "    " );
+            /*MED ADDED THIS */
+            codeFormatter.getCodeBuffer().printLn();
+        }
+        return codeFormatter.getSource()+ System.lineSeparator();  
     }
 }

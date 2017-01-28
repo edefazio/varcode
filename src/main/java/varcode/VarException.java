@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 M. Eric DeFazio.
+ * Copyright 2017 M. Eric DeFazio.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,29 +16,24 @@
 package varcode;
 
 /**
- * Base Exception for varcode API
- * 
- * As a rule, this library only throws "Unchecked" Exceptions
- * 
+ * Base Exception for Varcode
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class VarException
-	extends RuntimeException
+    extends RuntimeException
 {
-	private static final long serialVersionUID = 4495417336149528283L;
+    public VarException( String message, Throwable throwable )
+    {
+        super( message, throwable );
+    }
 
-	public VarException( String message, Throwable throwable ) 
-	{
-		super( message, throwable );
-	}
-		
-	public VarException( String message ) 
-	{
-		super( message );
-	}
-	
-	public VarException( Throwable throwable  ) 
-	{
-		super( throwable );
-	}	
+    public VarException( String message )
+    {
+        super( message );
+    }
+
+    public VarException( Throwable throwable )
+    {
+        super( throwable );
+    }
 }

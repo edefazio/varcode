@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 M. Eric DeFazio.
+ * Copyright 2017 M. Eric DeFazio.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,12 @@
  */
 package varcode.markup.mark;
 
-import java.util.Set;
-
-import varcode.VarException;
-import varcode.doc.translate.TranslateBuffer;
 import varcode.context.VarBindException;
-import varcode.context.VarContext;
-import varcode.markup.mark.Mark.BlankFiller;
+import varcode.translate.TranslateBuffer;
+import varcode.context.Context;
 import varcode.markup.mark.Mark.HasScript;
-import varcode.context.eval.VarScript;
-import static varcode.markup.mark.Mark.N;
+import varcode.markup.mark.Mark.Bind;
+import varcode.context.VarScript;
 
 /**
  * If a var is either (not null or equal to a target value)
@@ -42,7 +38,7 @@ import static varcode.markup.mark.Mark.N;
 //     params     : inputVO
 public class AddScriptResultIfVar
     extends Mark
-    implements BlankFiller, HasScript 
+    implements Bind, HasScript 
 {	
     private final String varName;
     
@@ -68,7 +64,7 @@ public class AddScriptResultIfVar
     }
 	
     @Override
-    public Object derive( VarContext context ) 
+    public Object derive( Context context ) 
     {	
 	Object resolved = context.resolveVar( varName );
         if( resolved == null )
@@ -86,7 +82,7 @@ public class AddScriptResultIfVar
         return null;
     }
 
-    private Object runScript( VarContext context ) 
+    private Object runScript( Context context ) 
     {	
 	VarScript script = context.resolveScript( scriptName, scriptInput );
         if( script != null )
@@ -98,7 +94,7 @@ public class AddScriptResultIfVar
             }
             catch( Exception e )
             {
-                throw new VarException( 
+                throw new VarBindException( 
                     "Error evaluating AddScriptResultIfVar Mark \"" + N + text + N 
                   + "\" on line [" + lineNumber + "] as :" + N 
                   + this.toString() + N, e );
@@ -110,7 +106,7 @@ public class AddScriptResultIfVar
     }
     
     @Override
-    public void fill( VarContext context, TranslateBuffer buffer )
+    public void bind( Context context, TranslateBuffer buffer )
     {
 	buffer.append( derive( context ) ); 
     }
@@ -135,17 +131,5 @@ public class AddScriptResultIfVar
     public String getScriptInput() 
     {
 	return scriptInput;
-    }
-
-    public void getAllVarNames( Set<String>varNames, VarContext context )
-    {
-    	VarScript script = context.resolveScript( scriptName, scriptInput );
-    	if( script == null )
-        { 
-            throw new VarBindException( 
-		"Unable to resolve script named \"" + getScriptName() 
-                + "\" for Mark :" + N + text + N + "on line [" + lineNumber + "]");
-	}
-        script.collectAllVarNames( varNames, scriptInput );
     }
 }	

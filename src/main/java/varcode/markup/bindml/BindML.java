@@ -1,16 +1,30 @@
+/*
+ * Copyright 2017 M. Eric DeFazio.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package varcode.markup.bindml;
 
-import varcode.context.VarContext;
-import varcode.doc.Compose;
-import varcode.doc.DocState;
-import varcode.doc.Dom;
-import varcode.markup.bindml.BindMLParser.AddVarExpressionMark;
-import varcode.markup.forml.ForML;
-import varcode.markup.mark.Mark;
-import varcode.load.SourceLoader.SourceStream;
+import java.io.*;
+
+import varcode.markup.Template;
+import varcode.markup.MarkupException;
+import varcode.load.Source.SourceStream;
+import varcode.markup.MarkupLanguage;
+
 /** 
- *  <A HREF="https://en.wikipedia.org/wiki/Markup_language">Markup Language</A> for 
- *  logically binding data into text to produce "tailored documents". 
+ * A HREF="https://en.wikipedia.org/wiki/Markup_language">Markup Language</A> for 
+ * logically binding data into text to produce "tailored documents". 
  * 
  * Aggregates the components of the Bind Markup Language
  * (an implementations for producing {@code Markup})   
@@ -34,195 +48,279 @@ import varcode.load.SourceLoader.SourceStream;
  * 
  * Bind Markup Language supports the following Marks for Binding Text:
  * <UL>
- * <LI><CODE>"{+name+}"</CODE>  {@code AddVarExpression}
- * <LI><CODE>"{+name:(( name.length > 1 ))+}"</CODE>  {@code AddVarExpression}
- * <LI><CODE>"{+$script()+}"</CODE>   {@code AddScriptResult}
- * <LI><CODE>"{+((Math.PI * r * r))+}"</CODE>   {@code AddExpressionResult}
- * <LI><CODE>"{+?var:addThis+}"</CODE>  {@code AddIfVar}
- * <LI><CODE>"{{+:{+fieldType+} {+fieldName+}+}}"</CODE> {@code AddForm}
- * <LI><CODE>"{_+:{+fieldType+} {+fieldName+}+_}"</CODE> {@code AddForm}
- * <LI><CODE>"{{+?a==1: implements {+impl+}+}}"</CODE> {@code AddFormIfVar}
- * <LI><CODE>"{_+?a==1: implements {+impl+}+_}"</CODE> {@code AddFormIfVar}
- * <LI><CODE>"{- some text -}"</CODE>  {@code Cut}
- * <LI><CODE>"{#a=1#}"</CODE>  {@code DefineVar.DynamicVar}
- * <LI><CODE>"{#a:$count(a)#}"</CODE>  {@code DefineVarAsScriptResult.DynamicVar}
- * <LI><CODE>"{#$removeEmptyLines()#}"</CODE>  {@code TailorDirective}
- * <LI><CODE>"{##a=1##}"</CODE>  {@code DefineVar.StaticVar}
- * <LI><CODE>"{##a:$count(blah)##}"</CODE> {@code DefineVarAsScriptResult.StaticVar}
- * <LI><CODE>"{{#assign:{+fieldName+} = {+fieldValue+};#}}"</CODE> {@code DefineVarAsForm.DynamicVar}  
- * <LI><CODE>"{_#assign:{+fieldName+} = {+fieldValue+};#_}"</CODE> {@code DefineVarAsForm.DynamicVar} 
- * <LI><CODE>"{{##assign:{+fieldName+} = {+fieldValue+};##}}"</CODE> {@code DefineVarAsForm.StaticVar}
- * <LI><CODE>"{_##assign:{+fieldName+} = {+fieldValue+};##_}"</CODE> {@code DefineVarAsForm.StaticVar} 
- * <LI><CODE>"{{##className:IntFormOf{+count+}##}}"</CODE> {@code DefineVarAsForm.StaticVar}        	
- * <LI><CODE>"{_##className:IntFormOf{+count+}##_}"</CODE> {@code DefineVarAsForm.StaticVar}
- * <LI><CODE>"{$print(*)$}"</CODE>  {@code RunScript}		
- * <LI><CODE>"{@meta:data@}"</CODE> {@code SetMetadata}
+ * <LI><CODE>"{+name+}"</CODE>  {@link varcode.markup.mark.AddVar}
+ * <LI><CODE>"{+$script()+}"</CODE>   {@link varcode.markup.mark.AddScriptResult}
+ * <LI><CODE>"{+?var:addThis+}"</CODE>  {@link varcode.markup.mark.AddIfVar}
+ * <LI><CODE>"{{+:{+fieldType+} {+fieldName+}+}}"</CODE> {@link varcode.markup.mark.AddForm}
+ * <LI><CODE>"{_+:{+fieldType+} {+fieldName+}+_}"</CODE> {@link varcode.markup.mark.AddForm}
+ * <LI><CODE>"{{+?a==1: implements {+impl+}+}}"</CODE> {@link varcode.markup.mark.AddFormIfVar}
+ * <LI><CODE>"{_+?a==1: implements {+impl+}+_}"</CODE> {@link varcode.markup.mark.AddFormIfVar}
  * </UL>
  * 
+ * 
+ * <UL>
+ * <LI><CODE>"{$print(a)$}"</CODE>  {@link varcode.markup.mark.RunScript}		
+ * <LI><CODE>"{$$removeEmptyLines()$$}"</CODE>  {@link varcode.markup.mark.AuthorDirective}		
+ * </UL>
+ * 
+ * Reads/Parses text <B>line-by-line</B> and to build up and returns a
+ * {@code Markup} containing {@code Mark}s, Text, and Blanks.
+ *
+ * Internally acts like a "State Machine" that follows:
+ *
+ * <OL>
+ * <LI>seek next open tag within the text (at {@code tagOpenIndex})
+ * <LI>add all static text between {@code charCursor} and the
+ * {@code tagOpenIndex} to the state
+ * <LI>seek the matching "close" tag {@code tagCloseIndex} within the text after
+ * the {@code tagOpenIndex}.
+ * <LI>using the {@code MarkParser} parse the Mark text between
+ * {@code tagOpenIndex} and {@code tagCloseIndex} and add the parsed
+ * {@code Mark} to the {@code CompileState} (signifying the blank if
+ * appropriate)
+ * <LI>set {@code charCursor} to after {@code tagCloseIndex}
+ * <LI>goto step (1) until the end of document is reached
+ * </OL>
+ *
  * @author M. Eric DeFazio eric@varcode.io
  */
-public enum BindML 
-{		
-	;
-	
-	/**
-	 * Given a String that has BindML markup, compile it and return the Dom
-	 * @param bindMLMarkup markup
-	 * @return the Dom representation
-	 */
-	public static Dom compile( String bindMLMarkup )
-	{
-		return BindMLCompiler.fromString( bindMLMarkup );
-	}
-	
-	public static Dom compile( SourceStream markupStream )
-	{
-		return BindMLCompiler.fromMarkupStream( markupStream );
-	}
-	
-	public static Mark parseMark( String markText )
-	{
-		return parseMark( VarContext.of( ) , markText );
-	}
+public enum BindML
+    implements MarkupLanguage
+{
+    ; //singleton enum idiom
+    
+    private static final String N = "\r\n";
 
-	public static Mark parseMark( VarContext context, String markText )
-	{
-		return parseMark( context, markText, -1 );
-	}
+    private BindML()
+    { }
 
-	public static Mark parseMark(  
-		VarContext context,
-		String markText, 
-		int lineNumber )
-	{
-		return BindMLParser.INSTANCE.parseMark( context, markText, lineNumber );
-	}
-	
-	/**
-	 * 
-	 * @param bindMLMarkup text that contains BindML Marks
-	 * @param keyValuePairs pairs of Key-values
-	 * @return the result of compiling the {@code Dom} from the BindML
-	 * and tailoring the result with the keyValuePairs
-	 */
-	public static String tailorCode( String bindMLMarkup, Object...keyValuePairs )
-	{
-		Dom dom = compile( bindMLMarkup );
-		return Compose.asString( dom, keyValuePairs );
-	}
-	
-	/**
-	 * 
-	 * @param bindMLMarkup text that contains BindML Marks
-	 * @param keyValuePairs pairs of Key-values
-	 * @return the result of compiling the {@code Dom} from the BindML
-	 * and tailoring the result with the keyValuePairs
-	 */
-	public static DocState tailor( String bindMLMarkup, Object...keyValuePairs )
-	{
-		Dom dom = compile( bindMLMarkup );
-		return Compose.toState( dom, VarContext.of( keyValuePairs ) );
-	}
-	
-	public enum Marks
-	{
-		;		
-		public static final String REQUIRED = "*";
-		
-		public static final String OR_DEFAULT = "|";
+    /**
+     * Creates a template based on the lines of text 
+     * @param lines lines of text
+     * @return Template representing the compiled lines
+     */
+    public static Template compileLines( String...lines )
+    {
+        StringBuilder sb = new StringBuilder();
+        for( int i = 0; i < lines.length; i++ )
+        {
+            sb.append( lines[ i ] );            
+            sb.append( System.lineSeparator() );
+        }
+        return compile( sb.toString() );
+    }
+    
+    public static Template compile( String bindMLMarkup )
+    {
+        try
+        {
+            ByteArrayInputStream bais
+                = new ByteArrayInputStream(
+                    bindMLMarkup.getBytes( "UTF-8" ) );
 
-		
-		/** <CODE>"{+varName+}"</CODE> */
-		public static String addVar( String varName )
-		{
-			return ForML.MarkText.addVar( varName ); 			 
-		}
-		
-		/** <CODE>"{+varName*+}"</CODE> */
-		public static String addVar( String varName, boolean isRequired )
-		{
-			return ForML.MarkText.addVar( varName, isRequired ); 			
-		}
-		
-		/** <CODE>"{+name|defaultValue+}"</CODE>  */
-		public static String addVarWithDefault( String varName, String defaultValue )
-		{
-			return ForML.MarkText.addVar( varName, defaultValue ); 			
-		}
-		
-		/** <CODE>"{+name:(( name.length() > 2 ))|defaultValue+}"</CODE>  */
-		public static String addVarWithValidation( String varName, String validationExpression )
-		{
-			return addVarWithValidation( varName, validationExpression, false );
-		}
-		
-		public static String addVarWithValidation( String varName, String validationExpression, boolean isRequired )
-		{
-			String required = "";
-			if( isRequired )
-			{
-				required = "*";
-			}
-			return 
-				AddVarExpressionMark.OPEN_TAG +
-				varName +
-				AddVarExpressionMark.EXPRESSION_OPEN_TAG +
-				" " +
-				validationExpression +
-				" " +
-				AddVarExpressionMark.EXPRESSION_CLOSE_TAG +				
-				required +
-				AddVarExpressionMark.CLOSE_TAG;
-		}
-		
-		public static String addVarWithValidationAndDefault( 
-			String varName, String validationExpression, String defaultValue )
-		{
-			
-			return 
-				AddVarExpressionMark.OPEN_TAG +
-				varName +
-				AddVarExpressionMark.EXPRESSION_OPEN_TAG +
-				" " +
-				validationExpression +
-				" " +
-				AddVarExpressionMark.EXPRESSION_CLOSE_TAG +				
-				"|" +
-				defaultValue +
-				AddVarExpressionMark.CLOSE_TAG;
-		}
-		
-		/** <CODE>"{+$script()+}"</CODE> */
-		public static String addScriptResult( String scriptName )
-		{
-			return ForML.MarkText.addScriptResult( scriptName );			
-		}
-		
-		/** <CODE>"{+$script()*+}"</CODE> */
-		public static String addScriptResult( String scriptName, boolean isRequired )
-		{
-			return ForML.MarkText.addScriptResult( scriptName, isRequired );			
-		}
-		
-		/** <CODE>"{+$script(parm1,param2)*+}"</CODE> */
-		public static String addScriptResult( 
-			String scriptName, String parameters, boolean isRequired )
-		{
-			return ForML.MarkText.addScriptResult( scriptName, parameters, isRequired ); 				
-		}
-		
-		/** <CODE>"{+((Math.PI * r * r))+}"</CODE>*/
-		public static String addExpressionResult( String expression )
-		{
-			return ForML.MarkText.addExpressionResult( expression ); 	
-		}
-		
-		/** <CODE>"{{+:{+fieldType+} {+fieldName+}+}}"</CODE> */
-		public static String addForm( String forMLText )
-		{
-			//TODO should I validate the Form Text??
-			return BindMLParser.AddFormMark.OPEN_TAG + forMLText 
-				+ BindMLParser.AddFormMark.CLOSE_TAG;
-		}		
-	}
-}
+            return BindML.compile( bais );
+        }
+        catch( UnsupportedEncodingException e )
+        {
+            throw new MarkupException( "UTF-8 unsupported Encoding", e );
+        }
+    }
+    
+    /**
+     * 
+     * @param inStream the input stream containing the Test with markup
+     * @return the compiled {@code Template}
+     */
+    public static Template compile( InputStream inStream )
+    {
+        BufferedReader buffReader
+            = new BufferedReader(
+                new InputStreamReader( inStream ) );
+
+        return BindML.compile( buffReader );
+    }
+    
+    public static Template compile( BufferedReader bufferedReader )
+    {
+        return compile( bufferedReader, new BindMLCompileState( ) );
+    }
+
+    public static Template compile( SourceStream sourceStream )
+        throws MarkupException
+    {
+        if( sourceStream == null )
+        {
+            throw new MarkupException( "the SourceStream is null " );
+        }
+        return compile( new BufferedReader(
+            new InputStreamReader( sourceStream.getInputStream() ) ),
+            new BindMLCompileState() );
+    }
+    /**
+     * 
+     * @param sourceReader
+     * @param compileState
+     * @return 
+     */
+    public static Template compile(
+        BufferedReader sourceReader, BindMLCompileState compileState )
+    {
+        try
+        {
+            String line = "";
+            int lineNumber = 1; //initialize the line Number
+
+            boolean firstLine = true;
+
+            while( (line = sourceReader.readLine()) != null )
+            {
+                if( !firstLine )
+                {   //"prepend" the new line before processing the line 
+                    if( compileState.isMarkOpen() )
+                    {   //previous line ended and a Mark wasn't closed
+                        compileState.addToMark( N );
+                    }
+                    else
+                    {   //move static text to next line
+                        compileState.addText( N );
+                    }
+                }
+                else
+                {
+                    firstLine = false;
+                }
+                if( compileState.isMarkOpen() )
+                {   //if previous MARKS aren't closed  
+                    lineOpenMark(line,
+                        lineNumber,
+                        compileState );
+                }
+                else
+                {
+                    line(line,
+                        lineNumber,
+                        compileState );
+                }
+                lineNumber++;
+            }
+            return compileState.compile();
+        }
+        catch( IOException ioe )
+        {
+            throw new MarkupException(
+                "Problem reading from Reader ", ioe );
+        }
+        finally
+        {
+            try
+            {
+                sourceReader.close();
+            }
+            catch( IOException e )
+            {
+                //LOG.warn( "Exception closing Input Reader ", e );
+            }
+        }
+    }
+
+    /**
+     * Process the next line of text compile the code varcode source, knowing that
+     * a mark (compile some previous line) has not been closed.<BR>
+     *
+     * (a Mark spans multiple lines)
+     *
+     * @return an Empty StringBuilder if we have closed the marks -or- a
+     *  StringBuilder containing internal Mark data compile the line
+     */
+    private static void lineOpenMark(
+        String sourceLine,
+        int lineNumber,
+        BindMLCompileState compileState )
+    {   //check if the open Mark is closed this line
+        String closeTag = compileState.getCloseTagForOpenMark();
+
+        int indexOfCloseMark
+            = sourceLine.indexOf( closeTag );
+
+        if( indexOfCloseMark >= 0 )
+        {
+            //if( LOG.isTraceEnabled() )
+            //{
+            //    LOG.trace("    found \"" + closeTag + "\" for open Mark \"" 
+            //        + compileState.getMarkContents()
+            //        + "\" on line [" + lineNumber + "]" );
+            //}
+            compileState.completeMark(
+                sourceLine.substring( 0, indexOfCloseMark + closeTag.length() ),
+                lineNumber );
+
+            //process what is left of the line (after the close mark)
+            line(sourceLine.substring( indexOfCloseMark + closeTag.length() ),
+                lineNumber,
+                compileState );
+            return;
+        }
+        //mark was NOT closed this line, add this line contentx to existing Open Mark
+        compileState.addToMark( sourceLine );
+    }
+
+    /**
+     * Process the data within the {@code sourceLine} at {@code lineNumber}
+     * (update the {@code builder} with any tags, internal test or document text
+     *
+     * @param sourceLine the source line to parse
+     * @param lineNumber
+     * @param compileState updates the {@code Dom} being built
+     */
+    private static void line(
+        String sourceLine,
+        int lineNumber,
+        BindMLCompileState compileState )
+    {   //this is the CLOSE Mark for EITHER ALONE or REPLACE Marks		    
+
+        String firstOpenTag = BindMLCompiler.firstOpenTag( sourceLine );
+
+        if( firstOpenTag != null )
+        {   //Opened a mark this line
+            int indexOfOpenMark = sourceLine.indexOf( firstOpenTag );
+            //add everything before the open tag
+            compileState.addText( sourceLine.substring( 0, indexOfOpenMark ) );
+
+            String matchingCloseTag
+                = BindMLCompiler.matchCloseTag( firstOpenTag );
+
+            //find a close tag AFTER the OPEN Tag
+            int closeTagIndex = sourceLine.indexOf(
+                matchingCloseTag, indexOfOpenMark + firstOpenTag.length() );
+
+            if( closeTagIndex >= 0 )
+            {   //the Mark is closed this line
+                compileState.completeMark(
+                    sourceLine.substring(
+                        indexOfOpenMark,
+                        closeTagIndex + matchingCloseTag.length() ),
+                    lineNumber );
+
+                //process the rest of the line (AFTER the CLOSE TAG of MARK)
+                line(sourceLine.substring(
+                        closeTagIndex + matchingCloseTag.length(),
+                        sourceLine.length() ),
+                    lineNumber,
+                    compileState );
+                return;
+            }
+            else
+            {   //the mark is not closed this line
+                compileState.startMark(
+                    sourceLine.substring( indexOfOpenMark ),
+                    firstOpenTag,
+                    lineNumber );
+                return;
+            }
+        }
+        else
+        {   //NO Tags/ Marks this line (just text)
+            compileState.addText( sourceLine );
+        }
+    }
+} //BindML

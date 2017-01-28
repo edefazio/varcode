@@ -1,20 +1,46 @@
+/*
+ * Copyright 2017 M. Eric DeFazio.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package varcode;
 
-import varcode.context.VarContext;
-import varcode.doc.Directive;
-
-/**
- * An IR (Intermediate Representation) of a Hierarchal 
- * Model of an entity that is represented in structured text
- * (in short, textual code, File formats, configuration files,
- * HTML, CSS, SQL, SVG, etc.)
+/** 
+ * Model of source code.
+ * <A HREF="https://en.wikipedia.org/wiki/Metalanguage">metalanguage</A>
+ (specifically in the case of Java, a Hierarchial MetaLangauge)
+ 
+ An IR (Intermediate Representation) of a Hierarchal 
+ Model of an entity that is represented in structured text
+ (in short, textual code, File formats, configuration files,
+ HTML, CSS, SQL, SVG, etc.)
+ 
+ The purpose for the Model is to provide an intuitive API
+ for analyzing, querying, and mutating a model based on source code 
+ (i.e. Java code, an HTML Table, a CSS styleSheet, a Log4J config file, 
+ a Maven POM file).
+ 
+ MetaL provides a simple API that can read and interpret code and provides
+ a programmer friendly model. 
+ 
+ Having a mutable MetaL model is much more intuitive than:
+ <UL>
+ *  <LI>building source code from scratch using +=, sb.append(...) into 1BS ("1 Big String")
+ *  <LI>manipulating 1BS ("1 Big String") representing source code
+ *  <LI>manually parsing and manipulating the AST( Abstract Syntax Tree) for code
+ * </UL>
  * 
- * The purpose for the model is to provide an intuitive API
- * for querying, and mutating an entity and ultimately the 
- * model (i.e. Java code, an HTML Table, a CSS styleSheet, 
- * a Maven POM file ) can "author" the code 
- * 
- * a good analogy for a Model is a HTML DOM (document object model):
+ * A good analogy for a Meta Model is a HTML DOM (document object model):
  * from <A HREF="https://www.w3.org/DOM/">w3c.org</A><BR>
  * <BLOCKQUOTE>
  * "The Document Object Model is a platform- and language-neutral 
@@ -22,7 +48,7 @@ import varcode.doc.Directive;
  * access and update the content, structure and style of documents." 
  * </BLOCKQUOTE>
  * 
- * which models entities 
+ * Meta Models can be written to handle:
  * <UL>
  *  <LI>SQL
  *  <LI>IDL Data Format
@@ -35,34 +61,10 @@ import varcode.doc.Directive;
  *  <LI>etc...
  * </UL>
  * 
- * the structured text can (internally) contain {@code varcode.markup.Mark}s in 
- * {@code varcode.markup.bindml.BindML}
- * <UL>
- *  <LI>"{+name+}"
- *  <LI>"{+((a = b))+}"
- *  <LI>...
- * </UL>
- * are lazily 
- * so we could have a _method:
- * <PRE>
- * _method parameterized = _method.of( 
- *    "public {+returnType+} getByName( String name )" );
- * </PRE>
- * we could generate the code for the method (which does not compile):
- * 
- * <PRE>
- * System.out.println( lazyBindMethod );
- *  //prints:
- * "public {+returnType+} getByName( String name )"
- * </PRE>
- * 
- * ...or LazyBind the method to build the template, compile it to a {@code Dom}
- * and then 
- * 
  * @author M. Eric DeFazio eric@varcode.io
  */
 public interface Model
-{   
+{
     public static final String N = "\r\n";
 	
     /** 
@@ -71,62 +73,5 @@ public interface Model
      */
     public static final String STRING_LITERAL_PREFIX = "$$";
     
-    /** 
-     * MetaLanguage Model of a program language entites.
-     * <A HREF="https://en. wikipedia.org/wiki/Metalanguage">metalanguage</A>
-     */ 
-    public interface MetaLang
-        extends Model
-    {
-        /**
-         * Binds values from the context into BindML marks within the model
-         * @param context providing bindings to be bound within the model
-         * @return the mutated model
-         */
-        Model bind( VarContext context );
-    
-        /** 
-         * Authors the code as a String the in the target language 
-         * @return document representation of the model 
-         */    
-        String author( );
-    
-        /** 
-         * Authors the document for the model directives
-         * and returns the bound document as a String
-         * 
-         * @param directives optional directives to apply when 
-         * authoring the document
-         * @return document representation of the model
-         */ 
-	String author( Directive... directives );
-    }
-    
-    /**
-     * An exception in the creation, mutation or modeling of an entity,
-     * 
-     * Examples: 
-     * <UL>
-     *   <LI>trying to set the Class Name of a _class to "*&*^$&*^@#$")
-     *   <LI>trying to create a _class that extends from more than one baseClass
-     * </UL>
-     */
-    public static class ModelException
-        extends VarException
-    {        
-        public ModelException( String message, Throwable throwable )
-        {
-            super( message, throwable );
-        }
-        
-        public ModelException( String message )
-        {
-            super( message );
-        }
-        
-        public ModelException( Throwable throwable )
-        {
-            super( throwable );
-        }
-    } 
+
 }

@@ -1,342 +1,449 @@
+/*
+ * Copyright 2017 M. Eric DeFazio.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package varcode.markup.forml;
 
-import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 
-import varcode.VarException;
-import varcode.context.VarContext;
-import varcode.doc.form.BetweenTokens;
-import varcode.doc.form.Form;
-import varcode.doc.form.FormTemplate;
-import varcode.doc.form.SeriesFormatter;
-import varcode.doc.form.VarForm;
 import varcode.markup.MarkupException;
+import varcode.context.VarNameAudit;
+import varcode.markup.mark.AddIfVar;
+import varcode.markup.mark.AddScriptResult;
+import varcode.markup.mark.AddVar;
+import varcode.markup.mark.Mark;
 
 /**
- * Parses/Compiles the Text/ Markup of a {@code Form}
- * and returns the appropriate {@code Form} implementation
+ * Uses the "base" conventions for parsing varcode source and creating
+ * {@code CodeForm}s
+ *
  * <UL>
- *   <LI>{@code VarForm} if the Markup contains {@code MarkAction}s
- *   <LI>{@code StaticForm} if the Markup does not contain {@code MarkAction}s 
- * </UL>   
+ * <LI>AddVar {+name+} {+name|default+} {+name*+}
+ * <LI>AddScriptResult {+$scriptName(param1)+}
+ * <LI>AddIfVar {+?(log==true):log.debug("got here");+}
+ * </UL>
+ *
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class ForMLCompiler
-{    
-	public static final String N = "\r\n";
-	
-	/** The standard Context used for Parsing */
-	private static final VarContext PARSE_CONTEXT = VarContext.of( );
-	
-    /** The Default Instance */
-    public static final ForMLCompiler INSTANCE = 
-        new ForMLCompiler( 
-            PARSE_CONTEXT, 
-            BetweenTokens.BaseBetweenTokens.INSTANCE );
+{
+    //public static final ForMLCompiler INSTANCE
+    //    = new ForMLCompiler();
+
+    public static final VarNameAudit nameAudit = VarNameAudit.BASE;
     
-    private final BetweenTokens betweenTokens;
-    
-    /** parseContext contains the components for parsing */
-    private final VarContext parseContext;
-    
-    public ForMLCompiler(
-        VarContext parseContext,
-        BetweenTokens betweenTokens )
+    public static final String N = "\r\n";
+
+    private static final Map<String, String> OPENTAG_TO_CLOSETAG
+        = new HashMap<String, String>();
+
+    static
     {
-        this.parseContext = parseContext;
-        this.betweenTokens = betweenTokens;        
+        OPENTAG_TO_CLOSETAG.put( "{+", "+}" ); //Add
+        OPENTAG_TO_CLOSETAG.put( "{+$", "+}" ); //AddWithScript
+        OPENTAG_TO_CLOSETAG.put( "{+?", "+}" ); //IfAdd
     }
-    
-    public Form compile( String forMLDoc )
+
+    private ForMLCompiler()
     {
-        return fromString( parseContext, -1, null, forMLDoc );
     }
-    
-    public Form compile( String name, String forMLDoc )
+
+    public static String[] nameDefault( String tag )
     {
-        return fromString( parseContext, -1, name, forMLDoc );
-    }
-    
-    public Form fromString( int lineNumber, String name, String forMLDoc )
-    {
-        return fromString( parseContext, lineNumber, name, forMLDoc );
-    }
-   
-    protected static BufferedReader readerFromString( String forMLDoc )
-    {
-        try
+        int tagIndex = tag.indexOf( '|' );
+        String[] nameDefault = { tag };
+        if( tagIndex > 0 && tagIndex < tag.length() - 1 )
         {
-            ByteArrayInputStream bais =
-               new ByteArrayInputStream(
-                    forMLDoc.getBytes( "UTF-8" ) );
-            return new BufferedReader(
-                    new InputStreamReader( bais ) );
+            nameDefault = new String[]
+                { tag.substring( 0, tagIndex ), tag.substring( tagIndex + 1 ) };
         }
-        catch( UnsupportedEncodingException e )
-        {
-            throw new VarException("Unsupported Encoding", e);
-        }
+        return nameDefault;
     }
-    
-   
-    // {{ }} this "means" form and tail series test
-    // {_ _} this "means" form and NO tail Series test
-    public Form fromString( 
-        VarContext context, int lineNumber, String name, String text )
-    {   
-        // does the form text "end" with a between token? 
-        // if so, I need to chop this off BEFORE parsing the Form
-        String formNoTail = chopTailOf( text );
-    
-        FormTemplate formMarkup = 
-            compileTemplate(  
-                context, 
-                readerFromString( formNoTail ) );
         
-        if( formMarkup.getMarks().length == 0 )
-        {   //there are NO marks (its just static text) 
-            return new Form.StaticForm( text );
-        }
-        //get the tail
-        String theTail = text.substring( formNoTail.length() );
-        
-        if( theTail.trim().length() == 0 )
-        {   //each Form instance doesnt have a tail
-            //a series of forms can be placed inline
-            VarForm vf = new VarForm(
-                formMarkup,
-                new SeriesFormatter.AfterEach( theTail ) );
-            return vf;
-        }
-        //I have a "Between" tail...
-        //let me get at the Tail that I Chopped off
-        String tailText = text.substring( 
-            formNoTail.length(), text.length() );
-        
-        VarForm vf = new VarForm( 
-            formMarkup, 
-            new SeriesFormatter.BetweenTwo( tailText ) );
-        return vf;        
-    }
-    
     /**
-     * I need to return the Tail
-     * AND the Tail
-     * @param text
-     * @return
+     * Given an "escape sequence open tag for a {@link Mark} in the Markup... 
+     * return the appropriate close tag for the {@link Mark}.
+     *
+     * @param openTag the opening escape sequence (tag) for a {@link Mark} in markup
+     * @return the appropriate close escape sequence (tag) for the {@link Mark}
+     * @throws MarkupException if the openTag is not recognized
      */
-    public String chopTailOf( String text )
+    public static String closeTagFor( String openTag )
+        throws MarkupException
     {
-        String betweenToken = betweenTokens.endsWithToken( text );
-        //String betweenTail = null;
-        
-        if( betweenToken != null )
-        {   // The Text ENDS with a "Between" Token (like a ',', '&', etc.)
-            // which signifies when we have a series of Forms, they need
-            // to have this token to separate Tokens in a Series:
-            //<PRE>
-            // if the form is : "{+var}, "
-            //                         ^^
-            //</PRE>
-            // ...we recognize the "tail"
-            // and remove it, since when we put a series of forms together
-            // we want this:<PRE>
-            // "A, B, C"
-            //   ^^ ^^
-            //        
-            // NOT this (with a dangling separator):<PRE>
-            // "A, B, C, "</PRE>
-            //            
-            //found a between token, remove it from the "form" proper
-            String betweenTail 
-                = text.substring( text.lastIndexOf( betweenToken ) );            
-            
-            return text.substring( 0, text.length() - betweenTail.length() );
-        }
-        //The Form DOESNT end with a "BEtween Token", but lets chop off any trailing
-        // Whitespace ( spaces, tabs, lineFeeds )
-        //trim the tail
-        int lastIndex = text.length() -1;
-        while( lastIndex > 1 
-            && Character.isWhitespace( text.charAt( lastIndex ) ) )
+        String closeTag = OPENTAG_TO_CLOSETAG.get( openTag );
+        if( closeTag == null )
         {
-            lastIndex --;
+            throw new MarkupException(
+                "Open tag \"" + openTag + "\" is not recognized",
+                openTag,
+                -1 );
         }
-        text = text.substring( 0, lastIndex + 1 );
-        return text;              
+        return closeTag;
     }
-    
-    public static FormTemplate compileTemplate( String forML )
+
+    public static boolean charIs( String string, int index, char expect )
     {
-    	return compileTemplate( VarContext.of( ), readerFromString( forML ) );
+        return string != null
+            && string.length() > index
+            && index > -1
+            && string.charAt( index ) == expect;
     }
-    
-    public static FormTemplate compileTemplate( 
-        VarContext varContext,            
-        BufferedReader theReader )
+
+    /**
+     *
+     * TODO cant I just look for next "{+" ?? instead of looking for '{'
+     *
+     * Scan the line for a valid "open tag" and return the first one in the line
+     *
+     * @param line a line of text
+     * @return the first Open Tag in the string, or null if no open tags are
+     * found in the String
+     */
+    public static String getFirstOpenTag( String line )
     {
-        ForMLParseState parseState = new ForMLParseState( varContext );
-        try
+        /*
+        int indexOf$ = line.indexOf( '$' );       
+        boolean $thisLine = false;
+        if( indexOf$ > -1 )
         {
-            String line = "";
-            int lineNumber = 1; //initialize the line Number
-             
-            boolean firstLine = true;
-             
-            while( ( line = theReader.readLine() ) != null ) 
+            int nextIndexOf$ = line.indexOf( '$', indexOf$ + 1 );
+            if( nextIndexOf$ > indexOf$ )
             {
-                if( !firstLine )   
-                {   //"prepend" the new line before processing the line 
-                    if( parseState.isMarkOpen() ) 
-                    {   //previous line ended and a Mark wasn't closed
-                        parseState.addToMark( N );
-                    }
-                    else
-                    {   //move static text to next line
-                        parseState.addText( N ); 
-                    }
-                }
-                else 
+                //if all the characters BETWEEN
+                for( int i = indexOf$ + 1; i < nextIndexOf$ - 1; i++ )
                 {
-                    firstLine = false;
-                }               
-                if( parseState.isMarkOpen() ) 
-                {   //if previous MARKS aren't closed  
-                    lineOpenMark( 
-                        line,   
-                        lineNumber, 
-                        parseState );
+                    
+                }
+            }
+        }
+        */
+        int indexOfBrace = line.indexOf( '{' );
+        boolean braceThisLine = indexOfBrace >= 0;
+        while( indexOfBrace > -1 && indexOfBrace < line.length() - 1 ) //a '{' is a prerequisite for an open tag
+        {
+            //if add open
+            // {+ } -or- {+$ }
+            //if( line.charAt( indexOfBrace + 1 ) == '+' )
+            if( charIs( line, indexOfBrace + 1, '+' ) )
+            { // "{+" or "{+$"                
+                if( charIs( line, indexOfBrace + 2, '$' ) )
+                {
+                    return AddScriptResultMark.OPEN_TAG; //"{+$";
+                }
+                if( charIs( line, indexOfBrace + 2, '?' ) )
+                {
+                    return AddIfVarMark.OPEN_TAG; //"{+?"; //IfAdd                
+                }                
+                return AddVarMark.OPEN_TAG; //"{+";                
+            }
+            //find the next { brace 
+            indexOfBrace = line.indexOf( '{', indexOfBrace + 1 );
+        }
+        
+        return null;
+    }
+
+    /**
+     * Given Text parse and return the appropriate MarkAction
+     *
+     * NOTE: I could make this more efficient, but it's fine
+     * <UL>
+     * <LI>{+ +}
+     * <LI>{+$ +}
+     * <LI>{+? +}
+     * </UL>
+     *
+     * @param markText the text of the entire mark
+     * @param lineNumber the line number where the mark appears
+     * @throws MarkupException if the Mark is invalid
+     */
+    public static Mark compileMark(
+        String markText,
+        int lineNumber )
+        throws MarkupException
+    {
+        
+
+        if( markText.startsWith( AddScriptResultMark.OPEN_TAG ) ) // "{+$"
+        {
+            return AddScriptResultMark.of( markText, lineNumber );
+        }
+        if( markText.startsWith( AddIfVarMark.OPEN_TAG ) ) // "{+?"
+        {
+            return AddIfVarMark.of( markText, lineNumber, nameAudit );
+        }
+        if( markText.startsWith( AddVarMark.OPEN_TAG ) ) // "{+"
+        {
+            return AddVarMark.of( markText, lineNumber, nameAudit );
+        }
+
+        throw new MarkupException(
+            "Unknown Form Mark on line [" + lineNumber + "] :" + N
+            + markText,
+            markText,
+            lineNumber );
+    }
+
+    public static class AddVarMark
+    {
+        public static final String OPEN_TAG = "{+";
+
+        public static final String CLOSE_TAG = "+}";
+
+        public static AddVar of(
+            String text, int lineNumber, VarNameAudit nameAudit )
+            throws MarkupException
+        {
+            if( !text.startsWith( OPEN_TAG ) )
+            {
+                throw new MarkupException(
+                    "Invalid AddVarMark : " + N
+                    + text + N
+                    + "  ... on line [" + lineNumber + "] must start with "
+                    + " \"" + OPEN_TAG + "\" ",
+                    text,
+                    lineNumber );
+            }
+            if( !text.endsWith( CLOSE_TAG ) )
+            {
+                throw new MarkupException(
+                    "Invalid AddVarMark : " + N
+                    + text + N + "  ... on line [" + lineNumber + "] must end with"
+                    + " \"" + CLOSE_TAG + "\" ",
+                    text,
+                    lineNumber );
+            }
+            String name = null;
+            boolean isRequired = false;
+            String defaultValue = null;
+
+            String tag = text.substring(
+                OPEN_TAG.length(),
+                text.indexOf( "+}" ) );
+
+            String[] nameDefault = //Tokenize.byChar( tag, '|' );
+                nameDefault( tag );
+            if( nameDefault[ 0 ].endsWith( "*" ) )
+            {
+                name = nameDefault[ 0 ].substring( 0, nameDefault[ 0 ].length() - 1 );
+                isRequired = true;
+            }
+            else
+            {
+                name = nameDefault[ 0 ];
+                isRequired = false;
+            }
+            if( nameDefault.length == 2 )
+            {    //they specified a default
+                defaultValue = nameDefault[ 1 ];
+            }
+            else
+            {
+                defaultValue = null;
+            }
+            try
+            {
+                nameAudit.audit( name );
+            }
+            catch( Exception e )
+            {
+                throw new MarkupException(
+                    "Invalid AddVar  \"" + name + "\", on line ["
+                    + lineNumber + "]",
+                    text,
+                    lineNumber,
+                    e );
+            }
+            return new AddVar( text, lineNumber, name, isRequired, defaultValue );
+        }
+    }
+
+    public static class AddScriptResultMark
+    {
+        public static final String OPEN_TAG = "{+$";
+        public static final String CLOSE_TAG = "+}";
+
+        public static final String CONTEXT_SEPARATOR = ":";
+        public static final String OPEN_PARAMETERS = "(";
+        public static final String CLOSE_PARAMETERS = ")";
+
+        public static AddScriptResult of(
+            String text,
+            int lineNumber )
+            throws MarkupException
+        {
+            if( !text.startsWith( OPEN_TAG ) )
+            {
+                throw new MarkupException(
+                    "Invalid AddScriptResult : " + N
+                    + text + N
+                    + "  ... on line [" + lineNumber + "] must start with "
+                    + " \"" + OPEN_TAG + "\" ",
+                    text,
+                    lineNumber );
+            }
+            if( !text.endsWith( CLOSE_TAG ) )
+            {
+                throw new MarkupException(
+                    "Invalid AddScriptResult : " + N
+                    + text + N + "  ... on line [" + lineNumber + "] must end with"
+                    + " \"" + CLOSE_TAG + "\" ",
+                    text,
+                    lineNumber );
+            }
+
+            int openParamIndex = text.indexOf( '(' );
+            int closeParamIndex = text.lastIndexOf( ')' );
+
+            // "/*{+$javascript(paramName=value, a, 100)}*/"            
+            String scriptName = text.substring( OPEN_TAG.length(), openParamIndex );
+            // parameters = null; 
+            if( openParamIndex < 0 || closeParamIndex < 0 )
+            {
+                throw new MarkupException(
+                    "AddScriptResult with name \"" + scriptName
+                    + "\" on line [" + lineNumber
+                    + "] must have a '(' and ')' to demarcate parameters ",
+                    text,
+                    lineNumber );
+            }
+            if( openParamIndex > closeParamIndex )
+            {
+                throw new MarkupException(
+                    "AddScriptResult with name \"" + scriptName
+                    + "\" on line [" + lineNumber
+                    + "] must have a '(' BEFORE ')' to demarcate parameters",
+                    text, lineNumber );
+            }
+            String paramContents
+                = text.substring( openParamIndex + 1, closeParamIndex );
+
+            boolean isRequired = false;
+            // "{+script()*+}" (REQUIRED)
+            if( charIs( text, closeParamIndex + 1, '*' ) )
+            {
+                isRequired = true;
+            }
+            return new AddScriptResult(
+                text,
+                lineNumber,
+                scriptName,
+                paramContents,
+                isRequired );
+        }
+    }
+
+    public static class AddIfVarMark
+    {
+        /**
+         * Opening mark for a AddIfVar Mark
+         */
+        public static final String OPEN_TAG = "{+?";
+
+        /**
+         * Closing mark for a AddIfVar Mark
+         */
+        public static final String CLOSE_TAG = "+}";
+
+        public static AddIfVar of(
+            String text, int lineNumber )
+        {
+            return of( text, lineNumber, VarNameAudit.BASE );
+        }
+
+        public static AddIfVar of(
+            String text, int lineNumber, VarNameAudit nameAudit )
+        {
+            String name = null;
+            String targetValue = null;
+            String code = null;
+
+            if( !text.startsWith( OPEN_TAG ) )
+            {
+                throw new MarkupException(
+                    "Invalid IfAdd on line [" + lineNumber + "], must start "
+                    + "with open mark \"" + OPEN_TAG + "\" ",
+                    text,
+                    lineNumber );
+            }
+            if( !text.endsWith( CLOSE_TAG ) )
+            {
+                throw new MarkupException(
+                    "Invalid IfAdd on line [" + lineNumber + "], must end "
+                    + "with close mark \"" + CLOSE_TAG + "\" ",
+                    text,
+                    lineNumber );
+            }
+            int colonIndex = text.indexOf( ':' );
+            if( colonIndex < 0 )
+            {
+                throw new MarkupException(
+                    "Invalid IfAdd " + N + text + " on line ["
+                    + lineNumber + "], Mark must contain ':' separating condition"
+                    + "from code",
+                    text,
+                    lineNumber );
+            }
+            String condition = text.substring( OPEN_TAG.length(), colonIndex );
+            //String nameEquals = parseNameEquals( this.text, lineNumber );
+
+            int equalsIndex = condition.indexOf( "==" );
+            if( equalsIndex > -1 )
+            {
+                name = condition.substring( 0, equalsIndex ).trim();
+
+                targetValue = condition.substring(
+                    equalsIndex + 2,
+                    condition.length() );
+            }
+            else
+            {
+                equalsIndex = condition.indexOf( "=" );
+                if( equalsIndex > -1 )
+                {
+                    name = condition.substring( 0, equalsIndex ).trim();
+
+                    targetValue = condition.substring(
+                        equalsIndex + 1,
+                        condition.length() );
                 }
                 else
                 {
-                    line( 
-                        line, 
-                        lineNumber, 
-                        parseState );                       
-                }           
-                lineNumber++;
-            }
-            //REACHED THE END OF Markup
-            if( parseState.isMarkOpen() )
-            {   //UNCLOSED MARK
-                throw new MarkupException( 
-                    "Unclosed Mark with text " + N 
-                    + parseState.getMarkContents() );
-            }
-                return parseState.compile();
-            }
-            catch( IOException ioe )            
-            {
-                throw new MarkupException( 
-                    "Problem reading from Reader ", ioe );
-            }
-            finally
-            {
-                try
-                {
-                    theReader.close();
-                }
-                catch( IOException e )
-                {
-                    e.printStackTrace();
+                    name = condition.trim();
+                    targetValue = null;
                 }
             }
-        }
-        
-        /**
-         * Process the next line of text from the code varcode source, 
-         * knowing that a mark (from some previous line) has not been closed.<BR>
-         *  
-         * (a Mark spans multiple lines)
-         * 
-         * @return an Empty StringBuilder if we have closed the marks 
-         *         -or- a StingBuilder containing internal Mark data  from the line 
-         */
-        private static void lineOpenMark( 
-            String sourceLine, 
-            int lineNumber, 
-            ForMLParseState builder )
-        {   //check if the open Mark is closed this line
-            String closeTag = builder.getCloseTagForOpenMark();
-            
-            int indexOfCloseMark = 
-                sourceLine.indexOf( closeTag );
-            
-            if( indexOfCloseMark >= 0 )
+            //basically everything AFTER : and before close MARK
+            //TODO TEST THIS
+            code = text.substring(
+                colonIndex + 1,
+                text.length() - CLOSE_TAG.length() );
+            try
             {
-                builder.completeMark( 
-                    sourceLine.substring( 
-                        0, 
-                        indexOfCloseMark + closeTag.length() ),                 
+                nameAudit.audit( name );
+            }
+            catch( Exception e )
+            {
+                throw new MarkupException(
+                    "Invalid IfAdd name \"" + name
+                    + "\" on line [" + lineNumber + "]",
+                    text,
                     lineNumber );
-                
-                //process what is left of the line (after the close mark)
-                line( 
-                    sourceLine.substring( indexOfCloseMark + closeTag.length() ), 
-                    lineNumber, 
-                    builder );
-                return;
             }
-            builder.addToMark( sourceLine );
-        }       
-        
-   /**
-    * Process the data within the {@code sourceLine} at {@code lineNumber}
-    * (update the {@code builder} with any tags, internal test or document
-    * text  
-    * 
-    * @param sourceLine the source line to parse
-    * @param lineNumber 
-    * @param builder updates the {@code VarCode} being built
-    */
-    private static void line( 
-        String sourceLine, 
-        int lineNumber, 
-        ForMLParseState builder )
-    {   //this is the CLOSE Mark for EITHER ALONE or REPLACE Marks          
-        
-        String firstOpenTag = ForMLParser.INSTANCE.getFirstOpenTag( sourceLine );
-         
-        if( firstOpenTag != null )
-        {   //Opened a mark this line
-            int indexOfOpenMark = sourceLine.indexOf( firstOpenTag );
-            //add everything before the open tag
-            builder.addText( sourceLine.substring( 0, indexOfOpenMark ) );
-               
-            String matchingCloseTag = 
-            	ForMLParser.INSTANCE.closeTagFor( firstOpenTag );
-                
-            //find a close tag AFTER the OPEN Tag
-            int closeTagIndex = sourceLine.indexOf( 
-                matchingCloseTag, indexOfOpenMark + firstOpenTag.length() );
-                
-            if( closeTagIndex >= 0 )
-            {   //the Mark is closed this line
-                builder.completeMark( 
-                    sourceLine.substring( 
-                        indexOfOpenMark, 
-                        closeTagIndex + matchingCloseTag.length() ), 
-                    lineNumber );
-                    
-                //process the rest of the line (AFTER the CLOSE TAG of MARK)
-                line( 
-                    sourceLine.substring( 
-                        closeTagIndex + matchingCloseTag.length(), 
-                        sourceLine.length() ),
-                    lineNumber,                 
-                    builder );
-                return;
-            }
-            else
-            {   //the mark is not closed this line
-                builder.startMark( 
-                    sourceLine.substring( indexOfOpenMark ), 
-                    firstOpenTag );
-                return;
-            }
+            return new AddIfVar( text, lineNumber, name, targetValue, code );
         }
-        else
-        {   //NO Tags/ Marks this line (just text)
-            builder.addText( sourceLine );
-        }           
-    }       
+    }
 }

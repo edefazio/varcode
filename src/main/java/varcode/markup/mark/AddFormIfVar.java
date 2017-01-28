@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 M. Eric DeFazio.
+ * Copyright 2017 M. Eric DeFazio.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,62 +15,63 @@
  */
 package varcode.markup.mark;
 
-import java.util.Set;
-
-import varcode.VarException;
-import varcode.doc.translate.TranslateBuffer;
-import varcode.context.VarContext;
-import varcode.doc.form.Form;
-import varcode.markup.mark.Mark.BlankFiller;
+import varcode.context.VarBindException;
+import varcode.translate.TranslateBuffer;
+import varcode.context.Context;
+import varcode.markup.form.Form;
 import varcode.markup.mark.Mark.HasForm;
-import varcode.markup.mark.Mark.HasVars;
+import varcode.markup.mark.Mark.HasVar;
+import varcode.markup.mark.Mark.Bind;
 
 /**
- * A Form of Code (one or more java statements) that is <I>conditionally</I> 
+ * A Form of Code (one or more java statements) that is <I>conditionally</I>
  * written to the tailored source.
- * 
- * There are (2) variants: 
+ *
+ * There are (2) variants:
  * <UL>
- *  <LI><B>On name</B> will write the block to the tailored source if the name
- *  resolves to a <B>non-null</B> value.<PRE> 
+ * <LI><B>On name</B> will write the block to the tailored source if the name
+ * resolves to a <B>non-null</B> value.<PRE>
  *  / *{{+?log:
  *  import {+logFactory};
  *  import {+logger};
  *  }}* /</PRE>
- *  
- *  <LI><B>On name equals</B> will write the block to the tailored source is the
- *  name resolves to a value that is is <B>equal to a target value</B>.
- *  
- *  <PRE>/ *{{+?(log==trace): LOG.trace( "Inside {+methodName}() Loop"); }}* /</PRE>
- * </UL> 
- * 
+ *
+ * <LI><B>On name equals</B> will write the block to the tailored source is the
+ * name resolves to a value that is is <B>equal to a target value</B>.
+ *
+ * <PRE>/ *{{+?(log==trace): LOG.trace( "Inside {+methodName}() Loop"); }}* /</PRE>
+ * </UL>
+ *
  * @author M. Eric DeFazio eric@varcode.io
  */
-
 //BindML :
 // {{+?log==true: LOG.debug("Resolved "+ {+vari+}.toString() +" for service call");+}}
-
 //CodeML : 
 /*{{+?log:
 import {+logFactory};
 import {+logger}; 
 }}*/
-
 public class AddFormIfVar
     extends Mark
-    implements BlankFiller, HasForm, HasVars
+    implements Bind, HasForm, HasVar
 {
-    /** the name of the var*/
+    /**
+     * the name of the var
+     */
     private final String varName;
-    
-    /** the target value condition (for the code to be tailored) 
-     * i.e. if a == targetValue (NOTE: OPTIONAL)*/
+
+    /**
+     * the target value condition (for the code to be tailored) i.e. if a ==
+     * targetValue (NOTE: OPTIONAL)
+     */
     private final String targetValue;
-    
-    /** form of code conditionally written when tailoring source */ 
+
+    /**
+     * form of code conditionally written when tailoring source
+     */
     private final Form form;
-   
-    public AddFormIfVar( 
+
+    public AddFormIfVar(
         String text, int lineNumber, String name, String targetValue, Form form )
     {
         super( name, lineNumber );
@@ -78,7 +79,8 @@ public class AddFormIfVar
         this.targetValue = targetValue;
         this.form = form;
     }
-        
+
+    @Override
     public String getVarName()
     {
         return varName;
@@ -86,55 +88,48 @@ public class AddFormIfVar
 
     public String getTargetValue()
     {
-    	return targetValue;
+        return targetValue;
     }
-    
+
     @Override
-    public void fill( VarContext context, TranslateBuffer buffer )
+    public void bind( Context context, TranslateBuffer buffer )
     {
         buffer.append( derive( context ) );
     }
-    
+
     @Override
-    public Object derive( VarContext context )
+    public Object derive( Context context )
     {
         try
         {
-            Object resolved = 
-            	context.getVarResolver().resolveVar( context, varName );
-            
+            Object resolved
+                = context.getVarResolver().resolveVar( context, varName );
+
             if( resolved == null || resolved.toString().length() == 0 )
-            {        	
+            {
                 return null;
             }
             if( targetValue == null )
-            {               
-                return form.compose( context );                   	
+            {
+                return form.author( context );
             }
-            if ( resolved.equals( targetValue ) )
-            {              
-                return form.compose( context );            
+            if( resolved.equals( targetValue ) )
+            {
+                return form.author( context );
             }
             return null;
         }
         catch( Exception e )
         {
-            throw new VarException (
-                "Unable to derive AddFormIfVar \"" + varName + "\" for mark " + N 
+            throw new VarBindException(
+                "Unable to derive AddFormIfVar \"" + varName + "\" for mark " + N
                 + text + N + " on line [" + lineNumber + "]", e );
         }
     }
-    
+
     @Override
     public Form getForm()
     {
         return form;
-    }    
-
-    @Override
-    public void collectVarNames( Set<String>varNames, VarContext context )
-    {
-        form.collectVarNames( varNames, context );
     }
-        
 }

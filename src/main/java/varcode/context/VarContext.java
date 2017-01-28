@@ -1,292 +1,260 @@
+/*
+ * Copyright 2017 M. Eric DeFazio.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package varcode.context;
 
-import java.util.List;
+import java.util.Set;
+import varcode.context.resolve.InitVarContextBindings;
+import varcode.context.resolve.StaticFieldsScraper;
 
-import varcode.VarException;
-import varcode.context.Resolve.DirectiveResolver;
-import varcode.context.Resolve.ScriptResolver;
-import varcode.context.Resolve.VarResolver;
-import varcode.context.VarBindings.SelfBinding;
-import varcode.doc.Directive;
-import varcode.doc.lib.Library;
-import varcode.context.eval.Evaluator;
-import varcode.markup.VarNameAudit;
-import varcode.context.eval.VarScript;
+import varcode.context.resolve.Resolve;
+import varcode.context.resolve.DirectiveResolver;
+import varcode.context.resolve.VarResolver;
+import varcode.context.resolve.VarScriptResolver;
 
 /**
- * Container for (vars, scripts) for applying "specializations" 
- * applied to {@code Markup}
- * 
- * Maintains hierarchical "Scoped" 
+ * Container for (vars, varScripts) for applying "specializations" applied to
+ {@code Markup}
+ *
+ * Maintains hierarchical "Scoped"
  * <UL>
- *   <LI>Var(s) key value associated variables 
- *   (where the key is a String and variable is any Object) 
- *   <LI>VarScript(s) String key associated with {@code VarScript}
- *   <LI>Form(s) {@code VarForm}  
- * </UL> 
- * 
+ * <LI>Var(s) key value associated variables (where the key is a String and
+ * variable is any Object)
+ * <LI>VarScript(s) String key associated with {@code VarScript}
+ * <LI>Form(s) {@code VarForm}
+ * </UL>
+ *
  * @author M. Eric DeFazio eric@varcode.io
  */
-public class VarContext
-{   
-    public static VarContext load( Library... libraries )
+public class VarContext implements Context
+{
+    /** Resolves variables (data) by name */
+    private VarResolver varResolver;
+    
+    /** Resolves VarScripts (methods/functions) by name */
+    private VarScriptResolver varScriptResolver;
+    
+    /** Resolves Directives ({@link PreProcessor}s {@link PostProcessor}s by name */
+    private DirectiveResolver directiveResolver;
+
+    @Override
+    public void remove( String name )
     {
-    	VarContext context = new VarContext();
-    	for( int i = 0; i < libraries.length; i++ )
-    	{
-    		libraries[ i ].loadAtScope( context, VarScope.CORE_LIBRARY );
-    	}
-    	return context;
+        this.scopeBindings.remove( name );
     }
     
     /**
-     * Merges all (non-conflicting)properties from {@code anotherContext}
-     * to this context 
-     * @param anotherContext
+     * Constructs a VarContext and binds values in sequence as key value pairs:
+     * for example:
+     * <CODE>
+     * VarContext vc = VarContext.of( "a", 1, "b", 2, "c", 3, "d", 4, "e", 5);
+     * </CODE>
+     * will bind :
+     * <TABLE>
+     * <TR><TD>key</TD><TD>val</TD></TR>
+     * <TR><TD>"a"</TD><TD>1</TD></TR>
+     * <TR><TD>"b</TD><TD>2</TD></TR>
+     * <TR><TD>"c"</TD><TD>3</TD></TR>
+     * <TR><TD>"d"</TD><TD>4</TD></TR>
+     * <TR><TD>"e"</TD><TD>5</TD></TR>
+     * </TABLE>
+     * 
+     * @param keyValuePairs data passed in as alternating key values
+     * @return the Context populated with bound key value pairs (at INSTANCE scope)
      */
-    public void merge( VarContext anotherContext )
+    public static VarContext of( Object... keyValuePairs )
     {
-    	ScopeBindings otherBindings = anotherContext.getScopeBindings();
-    	this.scopeBindings.merge( otherBindings );
+        return ofScope( VarScope.INSTANCE, keyValuePairs );
     }
     
-    public static VarContext of( Object... nameValuePairs )
+    private static VarContext ofScope( VarScope scope, Object... keyValuePairs )
     {
-        return ofScope( VarScope.INSTANCE.getValue(), nameValuePairs );          
-    }
-    
-    public static VarContext ofScope( VarScope scope, Object... nameValuePairs )
-    {    	
-        return ofScope( scope.getValue(), nameValuePairs );        
-    }
-
-    public static VarContext ofScope( int scope, Object... nameValuePairs )
-    {
-        if( nameValuePairs.length % 2 != 0 )
+        if( keyValuePairs.length % 2 != 0 )
         {
-            throw new VarException( 
+            throw new VarBindException(
                 "Pairs values must be passed in as pairs, length ("
-                + nameValuePairs.length + ") not valid" );
+                + keyValuePairs.length + ") not valid" );
         }
-
-        if( nameValuePairs.length == 0 )
+        VarContext context = new VarContext();
+        
+        for( int i = 0; i < keyValuePairs.length; i += 2 )
         {
-            VarContext vc = new VarContext( );
-            Bootstrap.init( vc );
-        }
-        VarContext context = new VarContext( );
-
-        for( int i = 0; i < nameValuePairs.length; i += 2 )
-        {
-            context.set( 
-                nameValuePairs[ i ].toString(), 
-                nameValuePairs[ i + 1 ], 
+            context.set( keyValuePairs[ i ].toString(),
+                keyValuePairs[ i + 1 ],
                 scope );
         }
-        Bootstrap.init( context );
+        InitVarContextBindings.INSTANCE.registerTo( context );
         return context;
     }
 
-    /** Bindings (by Scope) of Vars and Scripts by name for use of 
-     *  specialization/Tailoring*/
+    /**
+     * Bindings (by Scope) of Vars and Scripts by name for use of 
+     *  specialization/Tailoring
+     */
     private final ScopeBindings scopeBindings;
-    
+
     protected VarContext()
-    {   
-        this( new ScopeBindings() );        
-    }           
+    {
+        this( new ScopeBindings() );
+    }
 
     protected VarContext( ScopeBindings scopeBindings )
     {
-        this.scopeBindings = scopeBindings;         
-    }  
-    
-    public ScopeBindings getScopeBindings()
-    {
-        return scopeBindings;
+        this.scopeBindings = scopeBindings;
     }
-    
-    public VarBindings getBindings( VarScope scope )
+
+    @Override
+    public Context clearAllScopeBindings( VarScope scope )
     {
-        return scopeBindings.getBindings( scope );
-    }
-    
-    public VarBindings getBindings( int scope )
-    {
-        return scopeBindings.getBindings( scope );
-    }
-    
-    public VarBindings getOrCreateBindings( VarScope scope )
-    {
-        return scopeBindings.getOrCreateBindings( scope );
-    }
-    
-    public VarBindings getOrCreateBindings( int scope )
-    {
-        return scopeBindings.getOrCreateBindings( VarScope.fromScope( scope ) );
-    }  
-    
-    public VarContext set( SelfBinding selfBinding )
-    {
-    	return set( selfBinding, VarScope.INSTANCE );
-    }
-    
-    public VarContext set( SelfBinding selfBinding, VarScope scope )
-    {
-    	selfBinding.bindTo( this.getOrCreateBindings( scope ) );
-    	return this;
-    }
-    
-    public VarContext set( Var var )
-    {
-    	return set( var.getName(), var.getValue() );
-    }
-    
-    public VarContext set( Var var, VarScope scope )
-    {
-    	return set( var.getName(), var.getValue(), scope );
-    }
-    
-    public VarContext set( String name, Object value )
-    {
-    	return set( name, value, VarScope.INSTANCE );
-    }
-    
-    public VarContext set( String name, Object value, VarScope scope )
-    {
-    	 VarBindings vb = getOrCreateBindings( scope );
-    	 Object oldValue = vb.put( name, value );
-    	 if( oldValue != null )
-    	 {
-    		 //Log??
-    	 }
-         return this;
-    }
-    
-    public VarContext set( String name, Object value, int scope )
-    {
-        VarBindings vb = getOrCreateBindings( scope );
-        vb.put( name, value );
+        VarBindings sb = scopeBindings.getBindings( scope );
+        if( sb != null )
+        {
+            sb.clear();
+        }
         return this;
     }
     
-    public Object get( String name )
+    @Override
+    public Set<String> keySet()
     {
-        return scopeBindings.get( name );
-    }
-    
-    public Object get( String name, VarScope scope )
-    {
-        return scopeBindings.get( name, scope.getValue() );
-    }
-    
-    public Object get( String name, int scope )
-    {
-        return scopeBindings.get( name, scope );
-    }
-
-    public List<Integer>getScopes()
-    {
-        return ScopeBindings.ALL_SCOPES;
+        return this.scopeBindings.keySet();
     }
     
     /** 
-     * The scope of the var with name, -1 if not found
-     * @param name the name of the variable
-     * @return the scope
+     * Gets a Bindings at the given scope or Creates a new Bindings at the scope
+     * and returns it
      */
-    public int getScopeOf( String name )
+    private VarBindings getOrCreateBindings( int scope )
     {
-        return scopeBindings.getScopeOf( name );
+        return scopeBindings.getOrCreateBindings( VarScope.fromScope( scope ) );
     }
 
-    public Object clear( String name, int scope )
+    /**
+     * Sets the Class as the Resolve Base, where Vars, (static methods) Scripts,
+     * and Directives can be resolved automatically
+     *
+     * @param resolveBaseClass the base class
+     * @return the VarContext
+     */
+    @Override
+    public VarContext setResolveBase( Class resolveBaseClass )
     {
-        VarBindings vb = scopeBindings.getBindings( scope );
-        if( vb != null )
-        {
-            return vb.remove( name );
-        }
-        return null;
+        set( Resolve.BASECLASS_PROPERTY, resolveBaseClass, VarScope.INSTANCE );
+        return this;
     }
+
+    @Override
+    public VarContext set( String name, Object value )
+    {
+        return set( name, value, VarScope.INSTANCE );
+    }
+
     
+    @Override
+    public VarContext set( String name, Object value, VarScope scope )
+    {
+        VarBindings vb = 
+            this.scopeBindings.getOrCreateBindings( scope );
+        Object oldValue = vb.put( name, value );
+        if( oldValue != null )
+        {
+            //Log??
+        }
+        return this;
+    }
+
+    @Override
+    public Object get( String name)
+    {
+        return scopeBindings.get( name );
+    }
+
     @Override
     public String toString()
     {
-    	return "_____________________________________________________" 
-               + System.lineSeparator() +
-    			"VarContext" + System.lineSeparator() +     		     
-    			scopeBindings.toString()+ System.lineSeparator() +
-    	       "_____________________________________________________";
+        return "_____________________________________________________"
+            + System.lineSeparator()
+            + "VarContext" + System.lineSeparator()
+            + scopeBindings.toString() + System.lineSeparator()
+            + "_____________________________________________________";
     }
- 
-    public static final String VAR_RESOLVER_NAME = "_VAR_RESOLVER";
 
-    public static final String DIRECTIVE_RESOLVER_NAME = "_DIRECTIVE_RESOLVER";
-    
-    public static final String SCRIPT_RESOLVER_NAME = "_SCRIPT_RESOLVER";
-    
-    public static final String VAR_NAME_AUDIT_NAME = "_VAR_NAME_AUDIT";
-    
-    public static final String EXPRESSION_EVALUATOR_NAME = "_EXPRESSION_EVALUATOR";
 
-	public Object resolveVar( String varName ) 
-	{
-		return getVarResolver().resolveVar( this, varName );
-	}
-	
-	public VarResolver getVarResolver() 
-	{
-		return (VarResolver)get( VAR_RESOLVER_NAME );
-	}
-	
-	public VarNameAudit getVarNameAudit()
-	{
-		return (VarNameAudit)get( VAR_NAME_AUDIT_NAME );
-	}
-	
-	public Evaluator getExpressionEvaluator()
-	{
-		return (Evaluator)
-			scopeBindings.get( EXPRESSION_EVALUATOR_NAME );
-	}
+    @Override
+    public Object resolveVar( String varName )
+    {
+        return getVarResolver().resolveVar( this, varName );
+    }
 
-	public Directive getDirective( String name )
-	{
-		if( name.startsWith( "$" ) )
-	    {
-			return scopeBindings.getDirective( name );
-	    }
-	    return scopeBindings.getDirective( "$" + name );
-	}	
-	
-	public Directive resolveDirective( String name )
-	{
-		if( name.startsWith( "$" ) )
-	    {
-			return scopeBindings.getDirective( name );
-	    }
-	    return scopeBindings.getDirective( "$" + name );
-	}
-	 
-	public DirectiveResolver getDirectiveResolver()
-	{
-		return (DirectiveResolver)get( DIRECTIVE_RESOLVER_NAME );
-	}
-	
-	public ScriptResolver getScriptResolver() 
-	{
-		return (ScriptResolver)get( SCRIPT_RESOLVER_NAME );
-	}
-	
-	public VarScript resolveScript( String scriptName, String scriptInput ) 
-	{
-		ScriptResolver sr = (ScriptResolver)get( SCRIPT_RESOLVER_NAME );		
-		return sr.resolveScript( this, scriptName, scriptInput );
-	}
-	
-	public Object evaluate( String expression )
-	{
-		return getExpressionEvaluator().evaluate( this, expression );
-	}
+    @Override
+    public VarResolver getVarResolver()
+    {
+        return this.varResolver;
+    }
+
+    @Override
+    public Directive resolveDirective( String name )
+    {
+        if( name.startsWith( "$" ) )
+        {
+            return scopeBindings.getDirective( name );
+        }
+        return scopeBindings.getDirective( "$" + name );
+    }
+
+    @Override
+    public DirectiveResolver getDirectiveResolver()
+    {
+        return this.directiveResolver;
+    }
+
+    @Override
+    public VarScriptResolver getVarScriptResolver()
+    {
+        return this.varScriptResolver;
+    }
+
+    @Override
+    public VarScript resolveScript( String scriptName, String scriptInput )
+    {
+        VarScriptResolver sr = getVarScriptResolver();
+        return sr.resolveScript( this, scriptName, scriptInput );
+    }
+
+    public void setDirectiveResolver ( DirectiveResolver dr )
+    {
+        this.directiveResolver = dr;
+    }
+
+    public void setVarResolver( VarResolver vr )
+    {
+        this.varResolver = vr;
+    }
+    
+    public void setVarScriptResolver( VarScriptResolver vsr )
+    {
+        this.varScriptResolver = vsr;
+    }
+        
+    @Override
+    public Context register( Class componentsAsStaticFields )
+    {
+        //Read all the static fields from the Class,
+        // if there are any Components
+        StaticFieldsScraper.scrapeStaticFields( componentsAsStaticFields )
+            .registerTo( this );        
+        return this;
+    }
 }

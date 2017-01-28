@@ -1,474 +1,130 @@
+/*
+ * Copyright 2017 M. Eric DeFazio.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package varcode.java.adhoc;
 
-import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import javax.tools.DiagnosticCollector;
-import javax.tools.FileObject;
-import javax.tools.ForwardingJavaFileManager;
-import javax.tools.JavaCompiler;
-import javax.tools.JavaFileManager;
-import javax.tools.JavaFileObject;
-import javax.tools.JavaFileObject.Kind;
-import javax.tools.StandardJavaFileManager;
-import javax.tools.ToolProvider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import varcode.VarException;
-import varcode.java.JavaCase;
-import varcode.java.JavaCase.JavaCaseBuilder;
+import varcode.java.model._Java.FileModel;
 
 /**
- * One or more {@code AdHocJavaFiles} (java source code) to be compiled 
- * (via Javac) and loaded into an {@code AdHocClassLoader}.
- * 
- * {@code Workspace} represents and simplifies the client view of pushing one or 
- * more in memory Java source files to the Javac compiler at runtime 
- * and loading the compilers result (the derived .class files bytecode) as 
- * {@code AdHocClassFile}s, in a {@code AdHocClassLoader}.
- * 
- * Simplifies the client view of the process of 
- * preparing, compiling, and loading Java source files at runtime, especially
- * when the classes/interfaces/enums have complex dependency graphs.
+ * Group of {@code AdHocJavaFile}s (.java source code files) intended to be 
+ * compiled together into a single {@link AdHocClassLoader} containing the 
+ * .class files with the bytecodes.
  * 
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class Workspace
 {
-    private static final Logger LOG = 
-        LoggerFactory.getLogger( Workspace.class );
-    
-    /** A handle to the Runtime Java Compiler */
-    public static final JavaCompiler JAVAC = 
-        ToolProvider.getSystemJavaCompiler(); 
-    
-    /** 
-     * Build a Workspace containing the Java source output from the 
-     * {@code JavaCaseAuthor}s
-     * 
-     * @param caseAuthors authors of Java Cases that contain Java code
-     * @return a Workspace containing the JavaFiles that are
+    /**
+     * Fully qualified Class Name -> Java source files of the {@code Workspace}
      */
-    public static Workspace of( JavaCaseBuilder...caseAuthors )
+    private final Map<String, AdHocJavaFile> classNameToAdHocJavaFileMap
+        = new HashMap<String, AdHocJavaFile>();
+
+    /** creates a Workspace of AdHocJavaFiles */
+    public static Workspace of( AdHocJavaFile...adHocJavaFiles )
     {
-        JavaCase[] cases = new JavaCase[ caseAuthors.length ];
-        
-        for( int i = 0; i < caseAuthors.length; i++ )
-        {
-            cases[ i ] = caseAuthors[ i ].toJavaCase( );
-        }
-        return Workspace.of( cases );
+        Workspace workspace = new Workspace();
+        workspace.add( adHocJavaFiles );
+        return workspace;
     }
     
-    /** 
-     * Creates a Workspace given the JavaCases <PRE>
-     * Workspace ws = 
-     *    Workspace.of( 
-     *        _interface.of("interface Count").toJavaCase(), 
-     *        _enum.of("enum MyEnum").value("ONE").toJavaCase() );
-     * </PRE>
-     * @param javaCases java Cases to be compiled into the workspace
-     * @return the Workspace containing all the Java Cases to be compiled
-     */
-    public static Workspace of( JavaCase...javaCases )
-	{
-        Workspace workspace = new Workspace( );
-		workspace.addCases( javaCases );
-		return workspace;
-	}
-    
-    /**
-     * Authors {@code JavaCase}s and then compiles each of the JavaCases
-     * and returns a ClassLoader loaded with the compiled Classes.
-     * 
-     * Workspace ws = 
-     *    Workspace.of( 
-     *        _interface.of("interface Count"), 
-     *        _enum.of("enum MyEnum implements Count").value("ONE") );
-     * 
-     * @param caseAuthors authors of JavaCases
-     * @return  an AdHocClassLoader loaded with compiled Classes
-     */
-    public static AdHocClassLoader compileNow( JavaCaseBuilder...caseAuthors )
+    /** Creates a Workspace given one or more JavaFileModels */
+    public static Workspace of( FileModel... javaModels )
     {
-        JavaCase[] cases = new JavaCase[ caseAuthors.length ];
-        for( int i = 0; i < caseAuthors.length; i++ )
-        {
-            cases[ i ] = caseAuthors[ i ].toJavaCase( );
-        }
-        return compileNow( cases );
-    }
-    /**
-     * 
-     * <PRE>
-     * Workspace ws = 
-     *    Workspace.of( 
-     *        "MyWorkspace" 
-     *        _interface.of("interface Count").toJavaCase(), 
-     *        _enum.of("enum MyEnum").value("ONE").toJavaCase() );
-     * </PRE>
-     * 
-     * @param javaCases authored java code to be compiled and loaded
-     * @return ClassLoader containing the compiled Java classes
-     */
-    public static AdHocClassLoader compileNow( JavaCase...javaCases )
-    {
-        AdHocJavaFile[] files = new AdHocJavaFile[ javaCases.length ];
-        for( int i = 0; i < files.length; i++ )
-        {
-            files[ i ] = javaCases[ i ].javaCode(); 
-        }
-        return compileNow( files );
+        Workspace workspace = new Workspace();
+        workspace.add(javaModels );
+        return workspace;
     }
     
     /**
-     * Creates a new AdHocClassLoader, and compiles the javaFiles into the
-     * AdHocClassLoader and returns it.
-     * 
-     * @param javaFiles Java code to be compiled
-     * @return an AdHocClassLoader containing the compiled .classes 
+     * Removes all Java Files from the Workspace
      */
-    public static AdHocClassLoader compileNow( AdHocJavaFile...javaFiles )
+    public void clear()
     {
-        return compileNow( new AdHocClassLoader(), javaFiles );
+        classNameToAdHocJavaFileMap.clear();
+    }
+    
+    /** counts the number of files in the workspace */
+    public int count()
+    {
+        return this.classNameToAdHocJavaFileMap.size();
+    }
+    
+    public boolean isEmpty()
+    {
+        return count() == 0;
     }
     
     /**
-     * Creates a Workspace, adds the Java Files, compiles to Java Files
-     * and loads the classes into the {@code adHocClassLoader} and returns 
-     * the updated {@code AdHocClassLoader}
-     * @param adHocClassLoader the classLoader where files are to be loaded
-     * @param javaFiles the files to compile and load
-     * @return the updated AdHocClassLoader
+     * Gets the Java files from the Workspace
+     * @return a collection of JavaFiles
      */
-    public static AdHocClassLoader compileNow( 
-        AdHocClassLoader adHocClassLoader,
-        AdHocJavaFile... javaFiles)
+    public Collection<AdHocJavaFile> getJavaFiles()
     {
-        Workspace ws = new Workspace( adHocClassLoader, javaFiles );
-        return ws.compile( );
-    }        
-    
-    public static AdHocClassLoader compileNow(
-        List<AdHocJavaFile>javaFiles,
-        JavacOptions.CompilerOption...compilerOptions )
-    {
-        return compileNow( new AdHocClassLoader(), javaFiles, compilerOptions );
-    }
-    
-    public static AdHocClassLoader compileNow(
-        AdHocClassLoader adHocClassLoader,
-        List<AdHocJavaFile>javaFiles,
-        JavacOptions.CompilerOption...compilerOptions )
-    {
-        Workspace ws = new Workspace( adHocClassLoader );
-        ws.addCode( javaFiles.toArray( new AdHocJavaFile[ 0 ] ) );
-        return ws.compile( compilerOptions );
-    }        
-    
-    /** ClassLoader for loading ad hoc Java Code that exists in memory 
-     * at runtime */
-    private final AdHocClassLoader adHocClassLoader;
-    	
-    /** Java source files of the Workspace */
-    private final Map<String, AdHocJavaFile> classNameToAdHocJavaFileMap = 
-	new HashMap<String, AdHocJavaFile>();
-    
-    private final WorkspaceFileManager workspaceFileManager;
-    
-    /**
-     * Construct a new Workspace with a new AdHocClassLoader
-     */
-    public Workspace()
-    {
-        this( new AdHocClassLoader() );
+        return classNameToAdHocJavaFileMap.values();
     }
     
     /**
-     * Construct a new Workspace with a the AdHocClassLoader
-     * @param adHocClassLoader 
-     */
-    public Workspace( AdHocClassLoader adHocClassLoader )
-    {
-        this( adHocClassLoader, new AdHocJavaFile[ 0 ] );
-    }
-    
-    /**
-     * Construct a Workspace with the ClassLoader and AdHocJavaFiles
-     * 
-     * @param adHocClassLoader the loader that will contain the compile classes
-     * @param adHocJavaFiles Java source files that are to be compiled to classes
-     */
-    public Workspace( 
-        AdHocClassLoader adHocClassLoader, AdHocJavaFile...adHocJavaFiles )
-    {
-        
-        this( JAVAC.getStandardFileManager( 
-                null, //use default DiagnosticListener
-                null, //use default Locale
-                null ), //use default CharSet    
-            adHocClassLoader,
-            adHocJavaFiles ); 	
-    }        
-    
-    /**
-     * Creates a Workspace that delegates to the fileManager for class resolution
-     * and compiles & loads classes with the adHocClassLoader
-     * 
-     * @param fileManager file Manager for resolving classes
-     * @param adHocClassLoader classLoader to contain the compiled .classes
-     * @param adHocJavaFiles source .java files to be compiled and loaded
-     */
-    public Workspace(
-        StandardJavaFileManager fileManager,    
-        AdHocClassLoader adHocClassLoader, 
-        AdHocJavaFile...adHocJavaFiles )
-    {
-        this.workspaceFileManager = 
-            new WorkspaceFileManager( fileManager, adHocClassLoader );
-        //super( fileManager );
-        
-        this.adHocClassLoader = adHocClassLoader;     
-	for( int i = 0; i < adHocJavaFiles.length; i++ )
-	{
-	    addCode( adHocJavaFiles[ i ] );								
-        }        
-    }
-    
-    /**
-	 * Adds a class with code to the workspace
-	 * @param className the fully qualified class name:
-	 * (i.e. "java.util.HashMap") 
-	 * @param code the text of the source code
+     * Directly adds (_class, _enum, _interface, _annotationType)s
+     * to the workspace
+     * @param fileModels any top Level Java file type
      * @return the updated workspace
-	 */
-	public final Workspace addCode( String className, String code )
-	{
-		AdHocJavaFile adHocJavaFile = 
-			new AdHocJavaFile( className, code );
-        
-		addCode( adHocJavaFile );
-		return this;
-	}
-	
-    /**
-     * Adds one of more JavaCases containing (.java) source code
-     * to be compiled within the workspace
-     * 
-     * @param javaCases one or more Java cases to be compiled together
-     * @return the Workspace a workspace managing 
      */
-	public final Workspace addCases( JavaCase...javaCases )
-	{
-        for( int i = 0; i < javaCases.length; i++ )
-		{
-			AdHocJavaFile javaCode = javaCases[ i ].javaCode();
-            addCode( javaCode );
-		}
-		return this;
-	}
-	
-    /** 
-     * adds java code to the Workspace and returns the Workspace
-     * @param javaCode
-     * @return  the Workspace
-     */
-    public final Workspace addCode( AdHocJavaFile... javaCode )
-    {        
-        for( int i = 0; i < javaCode.length; i++ )
-	{
-            if( this.adHocClassLoader.getAdHocClassMap().containsKey(
-                javaCode[ i ].getClassName() ) )
-            {
-                throw new VarException( 
-                    "Failed Adding Class \"" + javaCode[ i ].getClassName()
-                   +"\" to workspace; a Class by this name already exists "
-                  + "in this workspace" );
-            }
-            if( LOG.isTraceEnabled() )
-            { 
-                LOG.trace( "Adding code \"" + javaCode[ i ].getClassName() + "\" to workspace" ); 
-            }
-	    classNameToAdHocJavaFileMap.put( 
-                javaCode[ i ].getClassName(), javaCode[ i ] );           
-	}
-	return this;
+    public final Workspace add( FileModel...fileModels )
+    {
+        for( int i = 0; i < fileModels.length; i++ )
+        {
+            add( fileModels[ i ].toJavaFile(  ) );
+        }
+        return this;
     }
     
     /**
-     * File Manager for the AdHoc Workspace
-     * (note this is private b/c I dont want the internals leaking onto
-     * the Workspace API)
+     * Adds one or more {@code AdHocJavaFile}s to the Workspace 
+     *
+     * @param adHocJavaFiles one or more {@code AdHocJavaFile}s to add to the 
+     * {@code Workspace}
+     * @return the Workspace containing the AdHocJavaFiles
      */
-    private static class WorkspaceFileManager
-        extends ForwardingJavaFileManager<JavaFileManager>      
+    public final Workspace add( AdHocJavaFile... adHocJavaFiles )
     {
-        private final AdHocClassLoader adHocClassLoader;
-        
-        public WorkspaceFileManager(  
-            StandardJavaFileManager fileManager,    
-            AdHocClassLoader adHocClassLoader )
-        {
-            super( fileManager );
-            this.adHocClassLoader = adHocClassLoader;
+        for( int i = 0; i < adHocJavaFiles.length; i++ )
+        {            
+            classNameToAdHocJavaFileMap.put(
+                adHocJavaFiles[ i ].getQualifiedName(), adHocJavaFiles[ i ] );
         }
-        
-        //MED ADED
-        /**
-        * @throws SecurityException {@inheritDoc}
-        * @throws IllegalStateException {@inheritDoc}
-        */
-        @Override
-        public ClassLoader getClassLoader( Location location ) 
-        {
-            LOG.debug("trying to get classLoader ");
-            return this.adHocClassLoader; //fileManager.getClassLoader(location);
-        }
+        return this;
+    } 
     
-        //MED Added
-        /**
-        * @throws IllegalArgumentException {@inheritDoc}
-        * @throws IllegalStateException {@inheritDoc}
-        */
-        @Override
-        public JavaFileObject getJavaFileForInput( Location location,
-            String className,
-            JavaFileObject.Kind kind)
-            throws IOException
-        {
-            LOG.debug( "trying to get input " + className + " of " + kind );
-            return fileManager.getJavaFileForInput(location, className, kind);
-        }
-        
-        /**
-        * @throws IOException {@inheritDoc}
-        * @throws IllegalStateException {@inheritDoc}
-        */
-        public Iterable<JavaFileObject> list( Location location,
-            String packageName,
-            Set<JavaFileObject.Kind> kinds,
-            boolean recurse)
-            throws IOException
-        {
-            //LOG.debug( "****** LISTING ****** " + location );
-            Iterable<JavaFileObject> theList = 
-                fileManager.list( location, packageName, kinds, recurse );
-            if( "CLASS_PATH".equals( location.getName() ) 
-                && kinds.contains( Kind.CLASS ) 
-                && recurse )
-            {   //if they want the classpath, then Include the 
-                LOG.debug( "Supplementing the FileManager with ClassPath "
-                    + packageName + " " + recurse );
-                List<JavaFileObject> javaFiles = 
-                    new ArrayList<JavaFileObject>();
-                //adds all the Class files in the AdHocClassLoader
-                javaFiles.addAll( this.adHocClassLoader.getAdHocClassMap().values() );
-                System.out.println( javaFiles );
-                Iterator<JavaFileObject> it = theList.iterator();
-                while( it.hasNext() )
-                {
-                    javaFiles.add( it.next() );
-                }
-                
-                //for( int i = 0; i < )
-                //javaFiles.addAll( theList. );
-                
-                return javaFiles;                
-            }
-            return theList;
-        }
-        
-        /**
-         * @throws IllegalArgumentException {@inheritDoc}
-         * @throws IllegalStateException {@inheritDoc}
-         */
-        @Override
-        public FileObject getFileForInput( Location location,
-            String packageName,
-            String relativeName)
-            throws IOException
-        {
-            LOG.debug("trying to get input "+ packageName +"."+relativeName );
-            return fileManager.getFileForInput(location, packageName, relativeName);
-        }
-    
-        @Override
-        public JavaFileObject getJavaFileForOutput(
-            JavaFileManager.Location location, 
-            String className, 
-            JavaFileObject.Kind kind, 
-            FileObject sibling ) 
-        {    	
-            if( LOG.isDebugEnabled( ) )
-            {
-                LOG.debug( "Looking for " + className +" kind "+ kind);
-            }
-            // check if we already loaded this class
-            AdHocClassFile adHocClass =
-                this.adHocClassLoader.getAdHocClassMap().get( className );	
-        
-            if( adHocClass != null )
-            {   // return the already-loaded class
-                return adHocClass;
-            }
-            try
-            {   // create a "home" for the compiled bytes
-                adHocClass = new AdHocClassFile( this.adHocClassLoader, className );
-                return adHocClass;
-            }
-            catch( Exception e )
-            {
-                throw new VarException( 
-                    "Unable to create output class for class \"" + className + "\"" );
-            }
-        }
-    }
-    
-    /**
-     * Compile the contents of the Workspace into a new AdHocClassLoader
-     * @param compilerOptions compiler options for the runtime Javac
-     * @return the populated AdHocClassLoader containing the compiled classes
-     * @throws JavacException if the workspace id not compile
-     */
-    public AdHocClassLoader compile( 
-        JavacOptions.CompilerOption...compilerOptions )
-        throws JavacException
+    public String toString()
     {
-        Iterable<String> options = JavacOptions.optionsFrom( compilerOptions );
-			
-	DiagnosticCollector<JavaFileObject> diagnostics = 
-            new DiagnosticCollector<JavaFileObject>();
-			
-	JavaCompiler.CompilationTask task = 
-            JAVAC.getTask(
-                null, //use System.err if the tool fails 
-                this.workspaceFileManager,
-                diagnostics, 
-                options, 
-		null, // NO annotation processors classes (at this time) 
-                this.classNameToAdHocJavaFileMap.values() ); //files to compile
-			
-		boolean compiledNoErrors = task.call();
-			
-        if( !compiledNoErrors )
-	{                
-            //LOG.debug( diagnostics.toString() );
-            throw new JavacException( 
-                this.classNameToAdHocJavaFileMap.values(),  
-                diagnostics );
-	}	        	
-        try
+        StringBuilder sb = new StringBuilder();
+        AdHocJavaFile[] javaFiles = 
+            classNameToAdHocJavaFileMap.values().toArray( new AdHocJavaFile[ 0 ] );
+        
+        for( int i=0; i< javaFiles.length; i++ )
         {
-            this.workspaceFileManager.close();
+            sb.append("   ");
+            sb.append( javaFiles[ i ].describe() );
+            sb.append( System.lineSeparator() );
         }
-        catch( IOException ioe )
-        {
-            //LOG.warn( "Error closing BaseFileManager", ioe);            	
-        }
-        return this.adHocClassLoader;
+        
+        return "@Workspace "+ hashCode()+"@" + System.lineSeparator() +
+            sb.toString();
     }
 }

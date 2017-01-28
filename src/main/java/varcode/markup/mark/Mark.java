@@ -1,25 +1,40 @@
+/*
+ * Copyright 2017 M. Eric DeFazio.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package varcode.markup.mark;
 
 import java.util.Set;
+import varcode.context.Context;
+import varcode.context.VarBindException;
 
-import varcode.VarException;
-import varcode.doc.translate.TranslateBuffer;
-import varcode.context.VarContext;
-import varcode.doc.form.Form;
-import varcode.markup.MarkupParseState;
+import varcode.translate.TranslateBuffer;
+import varcode.markup.form.Form;
 
 /** 
- * "Action" associated with a {@code Mark} within Markup file / {@Dom}.
+ * "Action" associated with a textual {@code Mark} within Markup file / 
+ * {@link varcode.markup.Template}.
  * 
- * {@code Mark}s provide ways of manipulating the {@code Dom} to 
- * produce Text
+ * {@code Mark}s provide ways of manipulating the {@code Template} to 
+ * author the textual output
  * 
  * {@code Mark}s are like a <A HREF="https://en.wikipedia.org/wiki/Scriptlet">scriptlet</A> 
- * tag in a JSPs, but they DO NOT ENFORCE Syntax. ( 
+ * tag in a JSPs, but they DO NOT ENFORCE Syntax.
  * <P>
  * --We use the term "Mark" to imply more of a 
  * <A HREF="https://en.wikipedia.org/wiki/Markup_language">Markup</A>
- * nature of the ( Marks, may "Wrap" and translate code embedded within).
+ * nature of the document.
  * </P>
  *  
  * @author M. Eric DeFazio eric@varcode.io
@@ -40,6 +55,7 @@ public abstract class Mark
         this.lineNumber = lineNumber;
     }
 
+    @Override
     public String toString()
     {
     	return "\""+ this.text + "\" (" + this.getClass().getSimpleName() + ") on line [" + lineNumber + "]";
@@ -55,24 +71,30 @@ public abstract class Mark
     }
     
     /** Derives value(s) and updates the context with new key-value binding(s) */
-    public interface Bind
+    public interface Define
     {
-        public void bind( VarContext context )
-           throws VarException;                 
+        public void define( Context context )
+           throws VarBindException;                 
     }
     
     /** Gets the names of all Vars that are Referenced from each component*/
+    public interface HasVar
+    {
+        public String getVarName();
+        //public void collectVarNames( Set<String> varNames,  VarContext context );
+    }
+    
     public interface HasVars
     {
-        public void collectVarNames( Set<String> varNames,  VarContext context );
+        public Set<String>getVarNames();
     }
     
     /** A Mark whose "value" is derived / evaluated using the {@code Context} */
     public interface Derived
     {       
         /** Derive the result given the {@code context} and return it*/
-        public Object derive( VarContext context )
-            throws VarException;        
+        public Object derive( Context context )
+            throws VarBindException;        
     }
     
     /**
@@ -108,11 +130,12 @@ public abstract class Mark
      * include any dependencies that understand generating Minimal Perfect Hash 
      * Functions) as the precalculated functions are already <B>"baked" into the 
      * source code.</B>
-     */
-    public interface BoundStatically
+     
+    public interface Static
     {     
-    	public void onMarkParsed( MarkupParseState parseState );
+    	public void onMarkParsed( CompileState parseState );
     }
+    */
     
     /**
      * Mark that is Derives a Var value in the Context at "Tailor Time" 
@@ -121,8 +144,8 @@ public abstract class Mark
      * signifies WHICH COMPONENT (Tailor) does the derivation and WHEN 
      * (During "Tailor" Time) 
      */
-    public interface BoundDynamically
-        extends Derived, Bind, IsNamed
+    public interface Dynamic
+        extends Derived, Define, HasVar
     {        
     }
     
@@ -201,17 +224,17 @@ public abstract class Mark
     }
     
     /** 
-     * Fills text into a predefined blank when Tailoring {@code Markup}.<BR><BR>
+     * Binds text into a predefined blank when Tailoring {@code Markup}.<BR><BR>
      * 
      * it is MarkupStateAware, because (while parsing the Marks from the source)
      * it needs to know where (within the Tailored output code) it needs to start 
      * writing content/filling in the blank). 
      */
-    public interface BlankFiller
+    public interface Bind
         extends Derived
     {   
         /** Populate a "blank" with derived value in the DocBuffer */
-        public void fill( VarContext context, TranslateBuffer buffer );        
+        public void bind( Context context, TranslateBuffer buffer );        
     }
     
     /** 
@@ -221,10 +244,5 @@ public abstract class Mark
     public interface MayBeRequired
     {    	
         public boolean isRequired();        
-    }
-    
-    public interface IsNamed
-    {
-        public String getVarName();
-    }
+    }    
 }

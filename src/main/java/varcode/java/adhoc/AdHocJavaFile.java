@@ -1,3 +1,18 @@
+/*
+ * Copyright 2017 M. Eric DeFazio.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package varcode.java.adhoc;
 
 import java.io.IOException;
@@ -5,38 +20,63 @@ import java.net.URI;
 
 import javax.tools.JavaFileObject;
 import javax.tools.SimpleJavaFileObject;
-
-import varcode.VarException;
-import varcode.java.JavaNaming;
+import varcode.java.ClassNameQualified;
 
 /**
- * Encapsulates a compile-able AdHoc Java unit of source code (a ".java" file)
- * for integrating with the {@code SimpleJavaFileObject} to be "fed" into
- * the Javac compiler Tool at Runtime (to convert from source to a class 
- * bytecodes)
+ * In memory representation of a .java source file. (as apposed to a .java 
+ * source file that ie being read from a File on the File System)
  * 
- * NOTE: a single AdHocCodeFile can contain MANY Classes 
- * (Inner Classes, Anonymous Classes
+ * For feeding to the Javac compiler at runtime .  Integrating with the 
+ * {@code SimpleJavaFileObject} to be "fed" into the Javac compiler at Runtime 
+ * (to convert from .java source to a .class bytecode)
+ * 
+ * NOTE: a single {@code AdHocJavaFile} can contain MANY Class Declarations 
+ * (Inner Classes, Anonymous Classes) as Member/Nested classes.
  * 
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class AdHocJavaFile
     extends SimpleJavaFileObject
+    implements ClassNameQualified
 {    
     /** the fully qualified name of the Source created (i.e. "ex.varcode.MyClass") */
     private final String className;
     
-    /** the "actual" source code content of the class */
+    /** the .java source code content of the (class, enum, interface, ...) */
     private final String code;
 
     /**
-     * returns the content of the class
+     * Returns the .java code content of the (class, enum, interface, ...)
      * @param ignoreEncodingErrors
-     * @return 
+     * @return the Java source code
      */
+    @Override
     public CharSequence getCharContent( boolean ignoreEncodingErrors ) 
     {
         return code;
+    }
+    
+    /**
+     * Creates and returns an AdHocJavaFile with the packageName, className, of code
+     * @param packageName the package where class is
+     * @param className the simple name of the class
+     * @param code the source code for the class
+     * @return the AdHocJavaFile
+     */
+    public static AdHocJavaFile of( String packageName, String className, String code )
+    {
+        return new AdHocJavaFile( packageName, className, code );
+    }
+    
+    /**
+     * Creates and returns an AdHocJavaFile with the packageName, className, of code
+     * @param className the simple name of the class
+     * @param code the source code for the class
+     * @return the AdHocJavaFile
+     */
+    public static AdHocJavaFile of( String className, String code )
+    {
+        return new AdHocJavaFile( className, code );
     }
     
     /**
@@ -53,7 +93,7 @@ public class AdHocJavaFile
     	}
     	catch( IOException ioe )
     	{
-            throw new VarException(
+            throw new AdHocException(
                 "Unable to read code from JavaFileObject \"" + javaFileObject 
               + "\"", ioe );
     	}
@@ -99,26 +139,42 @@ public class AdHocJavaFile
     
     public AdHocJavaFile( 
         String packageName, String className, String code )
+        throws AdHocException
     {
         super( 
             URI.create( 
                 "string:///" + ( packageName + "." + className ).replace( '.', '/' ) 
                 + Kind.SOURCE.extension ), 
             Kind.SOURCE );
-        this.className = JavaNaming.ClassName.toFullClassName( packageName, className );
+        if( packageName == null || packageName.trim().length() == 0 )
+        {
+            this.className = className;
+        }
+        else
+        {
+            this.className = packageName + "." + className;
+        }
         this.code = code;
     }
     
-    public String getClassName()
+    @Override
+    public String getQualifiedName()
     {
         return className;
     }
 
-    public String getCode()
+    public String asString()
     {
         return code;
     }
 
+    /**
+     * @return  a brief String description of the file */
+    public String describe()
+    {
+        return getQualifiedName() + ".java : AdHocJavaFile@" + Integer.toHexString( this.hashCode() );
+    }
+    
     @Override
     public String toString()
     {

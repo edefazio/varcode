@@ -1,3 +1,18 @@
+/*
+ * Copyright 2017 M. Eric DeFazio.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package varcode.java.adhoc;
 
 import java.io.ByteArrayOutputStream;
@@ -8,9 +23,7 @@ import java.net.URISyntaxException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.tools.SimpleJavaFileObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import varcode.VarException;
+import varcode.java.ClassNameQualified;
 
 /** 
  * Container to hold a Java (.class file) (bytecodes) in memory
@@ -22,21 +35,21 @@ import varcode.VarException;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class AdHocClassFile 
-    extends SimpleJavaFileObject
-{	
-    private static final Logger LOG = 
-        LoggerFactory.getLogger( AdHocClassFile.class );
-        
+    extends SimpleJavaFileObject 
+    implements ClassNameQualified
+{	        
     /** 
      * Specific OutputStream used to register the 
      * Class when the JAVAC process has completed writing to the
      * in-memory Stream at runtime. (Delays registering a Class in
      * the AdHocClassLoader until after it has 
-     * 
      */
     private final RegisterOnCloseOutputStream adHocClassBytecode;
     
-    /** the Class    */
+    /** the name of the Class */
+    private final String className;
+    
+    /** the Class Loader */
     private final AdHocClassLoader classLoader;
     
     /**
@@ -50,10 +63,28 @@ public class AdHocClassFile
         throws IllegalArgumentException, URISyntaxException 
     {
         super( new URI( className ), Kind.CLASS );
+        this.className = className;
         this.adHocClassBytecode = new RegisterOnCloseOutputStream( this );
         this.classLoader = classLoader;
     }
 
+    /**
+     * The toString 
+     * @return 
+     */
+    @Override
+    public String toString()
+    {
+        return getQualifiedName() + ".class : AdHocClassFile@" + Integer.toHexString( hashCode() );
+    }
+    
+    /** returns the className of the class 
+    public String getClassName()
+    {
+        return this.className;
+    }
+    */
+    
     /** The"FileManager"/"ClassLoader" writes the class' bytecodes to the local 
      * {@code ByteArrayOutputStream}) {@code inMemoryClassBytes}
      * @return OutputStream
@@ -63,7 +94,6 @@ public class AdHocClassFile
     public OutputStream openOutputStream() 
         throws IOException 
     {
-        if( LOG.isTraceEnabled()) { LOG.trace( "writing bytecode \"" + this.getName() + "\"" ); }
         return adHocClassBytecode;
     }
 
@@ -72,8 +102,13 @@ public class AdHocClassFile
      */
     public byte[] toByteArray() 
     {
-        //return adHocClassBytecode.toByteArray();
         return adHocClassBytecode.toByteArray();
+    }
+
+    @Override
+    public String getQualifiedName()
+    {
+        return this.className;
     }
     
     /**
@@ -94,7 +129,6 @@ public class AdHocClassFile
         /** Binary in-memory representation of the Class' bytecodes */
         private final ByteArrayOutputStream classBytecodeOutputStream;
         
-        //private final AdHocClassLoader classLoader;
         private final AdHocClassFile adHocClassFile;
         
         private final AtomicBoolean isWritten;
@@ -122,7 +156,7 @@ public class AdHocClassFile
         *
         * @param      b   the data.
         * @exception  IOException  if an I/O error occurs.
-            * @see        java.io.OutputStream#write(byte[], int, int)
+        * @see        java.io.OutputStream#write(byte[], int, int)
         */
         @Override
         public void write(byte b[]) throws IOException 
@@ -172,7 +206,7 @@ public class AdHocClassFile
             {
                 return classBytecodeOutputStream.toByteArray();
             }
-            throw new VarException( "the class has not been fully loaded yet" );
+            throw new AdHocException( "the class has not been fully loaded yet" );
         }
         
         /**
@@ -186,12 +220,10 @@ public class AdHocClassFile
             //this is saying that I finished writing data to the class
             // so NOW i should 
             super.close();
-            if( LOG.isTraceEnabled()) { LOG.trace( "done writing bytecode \"" + adHocClassFile.getName() + "\"" ); }
             //here is where I should register the class with the 
-            // 
-            adHocClassFile.classLoader.introduce( adHocClassFile );
+            adHocClassFile.classLoader.loadAdHocClass( adHocClassFile );
             this.isWritten.set( true );
-            //this.classLoader.introduce( this );            
+            //this.classLoader.loadAdHocClass( this );            
         }
         
     }

@@ -1,0 +1,34 @@
+/*
+ * Copyright 2017 M. Eric DeFazio.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package varcode.author;
+
+import varcode.context.Directive;
+
+/**
+ * Perform some actions AFTER the vars are bound to the document
+ * 
+ * @author M. Eric DeFazio eric@varcode.io
+ */
+public interface PostProcessor
+    extends Directive
+{
+    /**
+     * Perform some actions AFTER the binding data to the {@link varcode.markup.Template}
+     * 
+     * @param authorState the state of the document 
+     */
+    void postProcess( AuthorState authorState );
+}

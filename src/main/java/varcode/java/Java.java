@@ -1,247 +1,559 @@
+/*
+ * Copyright 2017 M. Eric DeFazio.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this toJavaFile except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package varcode.java;
 
-import java.lang.reflect.Constructor;
+import com.github.javaparser.ParseException;
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.TypeDeclaration;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import varcode.VarException;
-import varcode.context.VarContext;
-import varcode.context.VarScope;
-import varcode.doc.Compose;
-import varcode.doc.Directive;
-import varcode.doc.DocState;
-import varcode.doc.Dom;
+import varcode.context.Context;
+import varcode.context.Directive;
+import varcode.markup.Template;
 import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.adhoc.AdHocJavaFile;
-import varcode.java.adhoc.JavacOptions;
+import varcode.java.adhoc.Javac.JavacOptions;
+import varcode.java.ast.JavaAst;
+import varcode.java.model._class;
+import varcode.java.model._enum;
+import varcode.java.model._interface;
+import varcode.java.load._JavaLoad;
+import varcode.LoadException;
+import varcode.java.adhoc.AdHoc;
+import varcode.java.adhoc.JavacException;
 import varcode.java.adhoc.Workspace;
+import varcode.java.ast.FormatJavaCode_AllmanScanStyle;
+import varcode.java.ast.JavaCodeFormatVisitor;
+import varcode.java.model._annotationType;
+import varcode.load.Source.SourceLoader;
+import varcode.load.Source.SourceStream;
 
 /**
- * ***********************************************************
- * TODO: The things around Reflection and invoking VarArg methods is
- * BROKEN and UGLY
+ * Unified API for varcode Java functionality:
  * 
- * I need to fix this, I tried using commons-lang reflection but their implementation
- * as of 3.4 ALSO doesnt handle Reflective VarArg Method invocation (there
- * is a patch coming in 3.5, but still)
+ * Unifies loading related to loading porting, compiling, invoking 
+ * _Java models from Java source, ASTs, from the classPath
+ * <UL>
+ *  <LI>finding and <B>loading .java source</B> code for runtime classes
+ *  {@link #sourceFrom(Class) sourceFrom}, 
+ *  {@link #sourceFrom(SourceLoader, Class)}
+ *
+ *  <LI><B>loading / building ASTs</B> (Abstract syntax trees) from .java 
+ *  source code at runtime {@link #astFrom(CharSequence)} {@link #astFrom(Class)}
+ * {@link #astFrom(SourceLoader, Class)} 
+ * {@link #astTypeDeclarationFrom(CompilationUnit, clazz)}
+ * {@link #astTypeDeclarationFrom(clazz)} 
  * 
- * So its something I'll revisit eventually
- * ***************************************************************
+ * <LI><B>loading / building models</B> (_class, _interface, _enum, _annotationType)
+ * from Classes, Strings, ASTs (for modeling source code) 
  * 
- * Java Meta-programming convenience API to: 
- * <OL>
- * <LI>Author AdHoc Java Source Code
- *   <UL>
- *     <LI>resolve and read in the (.java) source code for a java (.class) 
- *       <I><B>at Runtime</B></I>
- *     <LI>compile the CodeML of a .java source file to a {@code Dom}
- *     <LI>author a new {@code AdHocJavaFile} using a {@code Dom} and {@code VarContext}
- *   </UL>
- * <LI>Compile {@code AdHocJavaFile}s to bytecode (.class) using javac at runtime
- * <LI>Load {@code AdHocClass}es into a new {@code AdHocClassLoader}
- * <LI>use (construct new instances, call methods on) AdHoc compiled classes.   
- * </OL>
+ * {@link #_classFrom(java.lang.CharSequence) }
+ * {@link #_classFrom(java.lang.Class) }
+ * {@link #_classFrom(varcode.source.Source.SourceLoader, java.lang.Class)}
+ * {@link #_classFrom(varcode.source.Source.SourceLoader, java.lang.Class, varcode.java.ast.JavaCodeFormatVisitor)}
+ * 
+ * {@link #_enumFrom(java.lang.CharSequence) }
+ * {@link #_enumFrom(java.lang.Class) }
+ * {@link #_enumFrom(varcode.source.Source.SourceLoader, java.lang.Class) }
+ * 
+ * {@link #_interfaceFrom(java.lang.CharSequence) }
+ * {@link #_interfaceFrom(java.lang.Class) }
+ * {@link #_interfaceFrom(java.lang.Class, varcode.java.ast.JavaCodeFormatVisitor) 
+ * {@link #_interfaceFrom(varcode.source.Source.SourceLoader, java.lang.Class) 
+ * 
+ * {@link #_annotationTypeFrom(java.lang.CharSequence)}
+ * {@link #_annotationTypeFrom(java.lang.Class) }
+ * {@link #_annotationTypeFrom(com.github.javaparser.ast.CompilationUnit, java.lang.Class) }
+ * {@link #_annotationTypeFrom(varcode.source.Source.SourceLoader, java.lang.Class) }
+ * 
+ *  <LI><B>authoring</B> {@code AdHocJavaFile}s (.java source code) 
+ * from Templates. 
+ * {@link #authorJavaFile(String, Template, Object...)}
+ * {@link #authorJavaFile(String, Template, Context, Directive...)}
+ * 
+ *  <LI><B>compiling/loading</B> {@code AdHocJavaFile}s (.java code) into Classes
+ *  {@link #compileAndLoadClass(AdHocJavaFile,CompilerOption...)
+ *  {@link #compileAndLoadClass(AdHocClassLoader, AdHocJavaFile, CompilerOption...)
+ * 
+ * <LI><B>Reflection</B> 
+ * <UL>
+ *  <LI>reflectively instantiating new Objects: 
+ *   {@link #instance(java.lang.Class, java.lang.Object...) }
+ *  <LI>reflectively invoking methods :
+ *   {@link #call(java.lang.Class, java.lang.String, java.lang.Object...) }
+ *   {@link #call(java.lang.Object, java.lang.String, java.lang.Object...) }
+ *   {@link #callMain(java.lang.Class, java.lang.String...) }
+ *   {@link #callMain(java.lang.Object, java.lang.String...) }
+ *  <LI>reflectively setting/getting fields 
+ *   {@link #setFieldValue(java.lang.Object, java.lang.String, java.lang.Object) }
+ *   {@link #set(java.lang.Object, java.lang.String, java.lang.Object) }
+ *   {@link #getFieldValue(java.lang.reflect.Field) }
+ *   {@link #getFieldValue(java.lang.Class, java.lang.String) }
+ *   {@link #getFieldValue(java.lang.Object, java.lang.String) }
+ * </UL>
+ * </UL>
  * 
  * @author M. Eric DeFazio eric@varcode.io
  */
-public enum Java 
-{
-    ;
-	
-    private static final Logger LOG = 
-    	LoggerFactory.getLogger( Java.class );
-    
-    private static void addPropertyIfNonNull( StringBuilder sb, String propertyName )
-    {
-	String propertyValue = System.getProperty( propertyName );
-	if( propertyValue != null && propertyValue.trim().length() > 0 )
-	{
-            sb.append( propertyName );
-            sb.append( " = " );
-            sb.append( propertyValue );
-            sb.append( "\r\n" );
-	}		
-    }
-	
+public class Java 
+{    
     /**
-     * Given a Type return the classes (as Strings) 
-     * that compose this Type
-     * for 
-     * @param type
-     * @return 
-     */
-    public static String[] classesFromType( Type type )
-    {
-        String s = type.toString();
-        s = s.replace( "<", " ");
-        s = s.replace( ">", " ");
-        s = s.replace( ",", " ");
-        return s.split( " " );              
-    }
-    
-    /**
-     * Describes the Current Java Environment (at Runtime)
+     * Authors an AdHocJavaFile given the classname, {@code Template} 
+     * and keyValuePairs used in the context.
      * 
-     * @return a String that details particulars about the Java Runtime
+     * <PRE>
+     * AdHocJavaFile adhoc = Java.authorJavaFile(
+     *     "example.MyClass", 
+     *     BindML.compile( 
+     *         "package {+packageName+};" + N + 
+     *         "public class {+className+}" + N + 
+     *         "{" + N + 
+     *         "    public static void main(String[] args) " + N + 
+     *         "    { " + N
+     *         "        System.out.println( \"{+message+}\" );" + N +
+     *         "    }" + N + 
+     *         "}"),
+     *     "message", "Hello World!" );
+     * </PRE>
+     * NOTE: {+packageName+} and {+className+} are used as default parameters
+     * (given by the className passed in)
+     * 
+     * @param className the name of the class to be 
+     * @param template the template to be specialized
+     * @param keyValuePairs parameters comprising the context
+     * @return the Authored AdHocJavaFile containing the (.java) source
      */
-    public static String describeEnvironment()
+    public static AdHocJavaFile authorJavaFile( 
+        String className, Template template, Object...keyValuePairs )
     {
-	StringBuilder sb = new StringBuilder();
-	sb.append( "--- Current Java Environment --- " );
-	sb.append( "\r\n" );
-	addPropertyIfNonNull( sb, "java.vm.name" );
-	addPropertyIfNonNull( sb, "java.runtime.version" );
-	addPropertyIfNonNull( sb, "java.library.path" );
-	addPropertyIfNonNull( sb, "java.vm.version" );
-	addPropertyIfNonNull( sb, "sun.boot.library.path" );
-	sb.append( "--------------------------------- " );
-	sb.append( "\r\n" );
-	return sb.toString();
-    }
-
-    public static final String JAVA_CLASS_NAME = "fullyQualifieldJavaClassName";
-    
-    public static final String JAVA_SIMPLE_CLASS_NAME = "className";
-    
-    public static final String JAVA_PACKAGE_NAME = "packageName";
-    
-    
-    public static AdHocJavaFile author( String className, Dom dom, Object...keyValuePairs )
-    {
-        return author( className, dom, VarContext.of( keyValuePairs ) );
+        return JavaAuthor.toJavaFile( className, template, keyValuePairs );
     }
     
-	/**
+    /**
      * Authors and returns an {@code AdHocJavaFile} with name {@code className} 
      * using a {@code Dom} and based on the specialization provided in the
      * {@code context} and {@code directives}
      * 
      * @param className the class name to be authored (i.e. "io.varcode.ex.MyClass") 
-     * @param dom the document object template to be specialized
+     * @param template the document object template to be specialized
      * @param context the specialization/functionality to be applied to the Dom
      * @param directives optional pre and post processing commands 
      * @return an AdHocJavaFile
      */
-    public static AdHocJavaFile author(
-    	String className, Dom dom, VarContext context, Directive...directives )    
-    {       	
-    	DocState docState = 
-        	new DocState( dom, context, directives ); 
-        
-    	String[] pckgClass = 
-            JavaNaming.ClassName.extractPackageAndClassName( className );
-    	
-    	context.set( JAVA_CLASS_NAME, className, VarScope.INSTANCE );
-    	context.set( JAVA_PACKAGE_NAME, pckgClass[ 0 ], VarScope.INSTANCE );
-    	context.set( JAVA_SIMPLE_CLASS_NAME, pckgClass[ 1 ], VarScope.INSTANCE );
-    	
-        //author the Document by binding the {@code Dom} with the {@code context}
-        docState = Compose.toState( docState );
-        
-        if( pckgClass[ 0 ] != null )
-        {
-            AdHocJavaFile adHocJavaFile =
-                new AdHocJavaFile( 
-                    pckgClass[ 0 ], 
-                    pckgClass[ 1 ], 
-                    docState.getTranslateBuffer().toString() );
-                
-            LOG.debug( "Authored : \"" + pckgClass[ 0 ] + "." + pckgClass[ 1 ] + ".java\"" );
-            return adHocJavaFile;
-        }
-        LOG.debug( "Authored : \"" + pckgClass[ 1 ] + ".java\"" );
-        return new AdHocJavaFile( 
-            pckgClass[ 1 ], docState.getTranslateBuffer().toString() ); 
+    public static AdHocJavaFile authorJavaFile(
+    	String className, Template template, Context context, Directive...directives )    
+    {       
+        return JavaAuthor.toJavaFile( className, template, context, directives );    	
     }
     
     /**
+     * Compiles and Loads an AdHocJavaFile using the runtime JAVAC 
+     * using the compilerOptions and return a new Class (loaded into a
+     * new AdHocClassLoader.
      * 
      * @param javaFile
      * @param compilerOptions Optional Compiler Arguments (@see JavacOptions)
-     * @return
+     * @return a new Class compiled and loaded into a new AdHocClassLoader
+     * @throws JavacException if unable to compile the toJavaFile
      */
-    public static Class<?> loadClass( 
+    public static Class<?> compileAndLoadClass( 
     	AdHocJavaFile javaFile,
     	JavacOptions.CompilerOption...compilerOptions )
+        throws JavacException
     {
         AdHocClassLoader adHocClassLoader = new AdHocClassLoader();
-        return loadClass( adHocClassLoader, javaFile, compilerOptions );        
+        return compileAndLoadClass( adHocClassLoader, javaFile, compilerOptions );        
     }
     
     /**
-     * Compiles the javaFile and loads the Class into the 
-     * {@code adHocClassLoader}
+     * Compiles the toJavaFile and loads the Class into the 
+ {@code adHocClassLoader}
      * 
      * @param adHocClassLoader the classLoader to load the compiled classes
-     * @param javaFile file containing at least one top level Java class
-     * (and potentially many nested classes)
+     * @param javaFile toJavaFile containing at least one top level Java class
+ (and potentially many nested classes)
      * @param compilerOptions options passed to the Runtime Javac compiler
      * @return the Class (loaded in the ClassLoader)
      */
-    public static Class<?> loadClass( 
+    public static Class<?> compileAndLoadClass( 
     	AdHocClassLoader adHocClassLoader, 
     	AdHocJavaFile javaFile,
     	JavacOptions.CompilerOption...compilerOptions )
     {
-        Workspace ws = new Workspace( adHocClassLoader );
-        ws.addCode( javaFile );
-        adHocClassLoader = ws.compile( compilerOptions );
-        return adHocClassLoader.find( javaFile.getClassName() );
+        adHocClassLoader = AdHoc.compile( Workspace.of( javaFile ), 
+            adHocClassLoader,             
+            compilerOptions );
+        return adHocClassLoader.getClassOf( javaFile );
     }
     
     /**
-     * Construct a "new" java instance by calling the constructor
-     * @param constructor the constructor
-     * @param args arguments passed in the constructor
-     * @return  the new instance
+     * Load the (.java) source for a given Class
+     * @param clazz the class to load the source for
+     * @return the SourceStream (carrying an inputStream)
      */
-    private static Object construct( 
-        Constructor<?> constructor, Object[] args )
+    public static SourceStream sourceFrom ( Class clazz )
+    {
+        return BaseJavaSourceLoader.INSTANCE.sourceStream( clazz );
+    }
+    
+    /**
+     * Load the (.java) source for a given Class using the 
+     * <CODE>sourceLoader</CODE> provided.
+     * @param sourceLoader the loader for finding and returning the source
+     * @param clazz the class to load the source for
+     * @return  the SourceStream ( wrapping an inputStream )
+     */
+    public static SourceStream sourceFrom( 
+        SourceLoader sourceLoader, Class clazz )
+    {
+        return sourceLoader.sourceStream( clazz.getCanonicalName() );
+    }
+    
+    /**
+     * Returns the ASTRoot {@code CompilationUnit}
+     * @param javaSourceCode
+     * @return 
+     * @throws LoadException if unable to  load the AST _annotationTypeFrom 
+     * the javaSourceCode
+     */
+    public static CompilationUnit astFrom( CharSequence javaSourceCode )
+        throws LoadException 
     {
         try
         {
-            if( args.length > 0 )
-            {
-       		LOG.debug( "Calling constructor >" 
-                    + constructor + " with [" + args.length + "] arguments" );
-                return constructor.newInstance(args );
-            }
-            else
-            {
-       		LOG.debug( "Calling no-arg constructor > " + constructor );
-                return constructor.newInstance(  );
-            } 
+            return JavaAst.astFrom( javaSourceCode );
         }
-        catch( InstantiationException e )
+        catch( ParseException pe )
         {
-            throw new VarException( "Instantiation Exception to construct", e );
+             throw new LoadException(
+                "Unable to parse AST from Java Source :" 
+                + System.lineSeparator() + javaSourceCode, pe );
         }
-        catch( IllegalAccessException e ) 
+    }
+    
+    /**
+     * Loads the astRootNode {@code CompilationUnit} for a 
+     * @param topLevelClass a Top Level Java class
+     * @return the {@code CompilationUnit} (root AST node)
+     * @throws LoadException if unable to parse the {@code CompilationUnit} 
+     */
+    public static CompilationUnit astFrom( Class topLevelClass )
+        throws LoadException
+    {
+        try
         {
-            throw new VarException( "Illegal Access to construct", e );
+            return JavaAst.astFrom(
+                sourceFrom( topLevelClass ).getInputStream() );
         }
-        catch( IllegalArgumentException e ) 
+        catch( ParseException pe )
         {
-            throw new VarException( "Illegal Argument to construct", e );
+            throw new LoadException(
+                "Unable to parse Model from " + topLevelClass, pe );
         }
-        catch( InvocationTargetException e ) 
+    }
+    
+    /**
+     * Gets the "top level" class (the one having a toJavaFile name) that contains
+ the source/ declaration of the <CODE>clazz</CODE>
+     * @param clazz the class to retrieve
+     * @return the top Level Class for this class
+     */
+    private static Class getTopLevelClass( Class clazz )
+    {
+        if( clazz.getDeclaringClass() == null )
         {
-            throw new VarException( "Invocation Target Exception for construct", e.getCause() );
-        }         
-    }        
+            return clazz;
+        }
+        return getTopLevelClass( clazz.getDeclaringClass() );
+    }
+    
+    /**
+     * Loads and return the Ast Type Declaration for the class within
+     * 
+     * @param astRoot the root AST node
+     * @param clazz the class
+     * @return the TypeDeclaration (astNode) for the Clazz
+     * @throws LoadException if unable to load the Class AST within the AST root
+     */
+    public static TypeDeclaration astTypeDeclarationFrom( 
+        CompilationUnit astRoot,
+        Class clazz )
+        throws LoadException
+    {
+        try
+        {
+            return JavaAst.findTypeDeclaration( astRoot, clazz );
+        }
+        catch( ParseException pe )
+        {
+            throw new LoadException("Unable to load " + clazz + " from AST", pe );
+        }
+    }
+    
+    /**
+     * returns the AST TypeDeclaration node that represents the clazz
+     * the TypeDeclaration instance is a child node of a ast Root 
+     * <CODE>CompilationUnit</CODE>
+     * @param clazz a Class to read the 
+     * @return the {@code TypeDeclaration} ast node
+     * @throws LoadException if unable to parse the {@code TypeDeclaration} 
+     */
+    public static TypeDeclaration astTypeDeclarationFrom( Class clazz )
+    {
+        Class topLevelClass = getTopLevelClass( clazz ); 
+        SourceStream ss = 
+            BaseJavaSourceLoader.INSTANCE.sourceStream( topLevelClass );
+        try
+        {
+            CompilationUnit astRoot = JavaAst.astFrom( ss.getInputStream() );
+            return astTypeDeclarationFrom( astRoot, clazz );
+        }
+        catch( ParseException ex )
+        {
+            throw new LoadException(
+                "Unable to Parse " + topLevelClass + " to extract source for " 
+                + clazz, ex );
+        }
+    }
+    
+    /**
+     * 
+     * @param sourceLoader (strategy) where to load the source code
+     * @param clazz the class to load source for
+     * @return the AST compilation Unit
+     */
+    public static CompilationUnit astFrom( 
+        SourceLoader sourceLoader, Class clazz )
+    {
+        Class topLevelClass = getTopLevelClass( clazz ); 
+        try
+        {
+            return JavaAst.astFrom( 
+                sourceLoader.sourceStream( topLevelClass.getName() + ".java" )
+                .getInputStream() );
+        }
+        catch( ParseException pe )
+        {
+            throw new LoadException( 
+                "Unable to parse contents of class "+ clazz+" ", pe );
+        }        
+    }
+    
+    /**
+     * Parse and return the _class (lang_model) _annotationTypeFrom the source code
+     * @param javaSourceCode the Java source code to parse and compile into a _class
+     * @return a _class (lang_model) representing the java source
+     * @throws LoadException if unable to load the _class 
+     */
+    public static _class _classFrom( CharSequence javaSourceCode )
+        throws LoadException
+    {
+        return _JavaLoad._classFrom( javaSourceCode, 
+            new FormatJavaCode_AllmanScanStyle() );
+    }
+
+    /**
+     * Parse and return the _class (lang_model) _annotationTypeFrom the source code
+     * @param javaSourceCode the Java source code to parse and compile into a _class
+     * @param codeFormatter
+     * @return a _class (lang_model) representing the java source
+     * @throws LoadException if unable to load the _class 
+     */
+    public static _class _classFrom( 
+        CharSequence javaSourceCode, JavaCodeFormatVisitor codeFormatter )
+        throws LoadException
+    {
+        return _JavaLoad._classFrom( javaSourceCode, codeFormatter );
+    }    
+    
+    /**
+     * Loads an Annotation Type Definition _annotationTypeFrom a String
+     * i.e.<PRE>
+     * _annotationType _at = Java._annotationTypeFrom( 
+     *     "@interface MyAnn { int count() default 1; }" );
+     * </PRE>
+     * @param javaSourceCode the java source code for the Annotation Declaration
+     * @return an _annotationType model for the AnnotationType
+     */
+    public static _annotationType _annotationTypeFrom( 
+        CharSequence javaSourceCode )
+    {
+        return _JavaLoad._annotationTypeFrom( javaSourceCode );
+    }
+    
+     /**
+     * Parse and return the _class (lang_model) _annotationTypeFrom the source code
+     * @param sourceLoader the loader for resolving the source for the class
+     * @param clazz a Java class
+     * @return an _annotationType (lang_model) representing the java source
+     * @throws LoadException if unable to load the _class 
+     */
+    public static _annotationType _annotationTypeFrom( 
+        SourceLoader sourceLoader, Class clazz )
+    {
+        return _JavaLoad._annotationTypeFrom( sourceLoader, clazz );
+    }
+    
+    /**
+     * Parse and return the _annotationType (model) by reading .Java source 
+     * code for the class
+     * @param clazz a Java class
+     * @return a _class (lang_model) representing the java source
+     * @throws LoadException if unable to load the _class 
+     */
+    public static _annotationType _annotationTypeFrom( Class clazz )
+        throws LoadException
+    {
+        return _JavaLoad._annotationTypeFrom( clazz );
+    }
+    
+    /**
+     * 
+     * @param astRoot the root of the AST
+     * @param clazz the class
+     * @return the _annotationType based on the source of the Class
+     */
+    public static _annotationType _annotationTypeFrom( 
+        CompilationUnit astRoot, Class clazz )
+    {
+        return _JavaLoad._annotationTypeFrom( astRoot, clazz );
+    }
+    
+    /**
+     * Parse and return the _class (lang_model) _annotationTypeFrom the source code
+     * @param clazz a Java class
+     * @return a _class (lang_model) representing the java source
+     * @throws LoadException if unable to load the _class 
+     */
+    public static _class _classFrom( Class clazz )
+        throws LoadException
+    {
+        return _JavaLoad._classFrom( clazz );
+    }
+    
+    /**
+     * Parse and return the _class (lang_model) _annotationTypeFrom the source code
+     * @param sourceLoader the loader for resolving the source for the class
+     * @param clazz a Java class
+     * @return a _class (lang_model) representing the java source
+     * @throws LoadException if unable to load the _class 
+     */
+    public static _class _classFrom( 
+        SourceLoader sourceLoader, Class clazz )
+    {
+        return _classFrom( 
+            sourceLoader, clazz, new FormatJavaCode_AllmanScanStyle() );
+    }
+    
+    /**
+     * Parse and return the _class (lang_model) _annotationTypeFrom the source code
+     * @param sourceLoader the loader for resolving the source for the class
+     * @param clazz a Java class
+     * @param codeFormatter
+     * @return a _class (lang_model) representing the java source
+     * @throws LoadException if unable to load the _class 
+     */
+    public static _class _classFrom( 
+        SourceLoader sourceLoader, Class clazz, 
+        JavaCodeFormatVisitor codeFormatter )
+    {
+        return _JavaLoad._classFrom( sourceLoader, clazz, codeFormatter );
+    }
+    
+    /**
+     * 
+     * @param astRoot
+     * @param clazz
+     * @return 
+     */
+    public static _class _classFrom( 
+        CompilationUnit astRoot, Class clazz )
+    {
+        return _classFrom( astRoot, clazz, new FormatJavaCode_AllmanScanStyle() );
+    }
+    
+    public static _class _classFrom( 
+        CompilationUnit astRoot, Class clazz, JavaCodeFormatVisitor codeFormatter )        
+    {
+        return _JavaLoad._classFrom( astRoot, clazz, codeFormatter );
+    }
+    
+    public static _interface _interfaceFrom( Class clazz )
+    {
+        return _interfaceFrom( clazz, new FormatJavaCode_AllmanScanStyle() );
+    }
+    
+    public static _interface _interfaceFrom( 
+        Class clazz, JavaCodeFormatVisitor codeFormatter )
+    {
+        return _JavaLoad._interfaceFrom( clazz, codeFormatter );
+    }
+
+    public static _interface _interfaceFrom( 
+         SourceLoader sourceLoader, Class clazz )
+    {
+        return _JavaLoad._interfaceFrom( 
+            sourceLoader, clazz, new FormatJavaCode_AllmanScanStyle() );
+    }
+    
+    
+     /**
+     * Parse and return the _class (lang_model) _annotationTypeFrom the source code
+     * @param javaSourceCode the Java source code to parse and compile into a _class
+     * @return a _class (lang_model) representing the java source
+     * @throws LoadException if unable to load the _class 
+     */
+    public static _interface _interfaceFrom( CharSequence javaSourceCode )
+        throws LoadException
+    {
+        return _JavaLoad._interfaceFrom( 
+            javaSourceCode, new FormatJavaCode_AllmanScanStyle() );
+    }
+    
+    
+    public static _enum _enumFrom( Class clazz )
+    {
+        return _JavaLoad._enumFrom( clazz, new FormatJavaCode_AllmanScanStyle() );
+    }
+    
+    public static _enum _enumFrom( SourceLoader sourceLoader, Class clazz )
+    {
+        return _JavaLoad._enumFrom( 
+            sourceLoader, clazz, new FormatJavaCode_AllmanScanStyle() );
+    }
+    
+    public static _enum _enumFrom( CharSequence enumSourceCode )
+    {
+        return _JavaLoad._enumFrom( 
+            enumSourceCode, new FormatJavaCode_AllmanScanStyle() );
+    }
+    
+    // * * * REFLECTION RELATED * * * //
+    
+    
+    public static Object instance( _class _c, Object...constructorArgs )
+    {
+        AdHocClassLoader adHocClassLoader = 
+            AdHoc.compile( _c.toJavaFile( ) );
+        
+        Class c = adHocClassLoader.getClassOf( _c );
+        //Class c = adHocClassLoader.getClassByName( _c.getQualifiedName() );
+        return instance( c, constructorArgs );
+    }
     
     /** 
      * <UL>
@@ -256,586 +568,110 @@ public enum Java
     public static Object instance( 
         Class<?> theClass, Object... constructorArgs )
     {
-        Constructor<?>[] constructors = theClass.getConstructors();
-        List<Constructor<?>> sameArgCount = new ArrayList<Constructor<?>>();
-         
-        if( constructors.length == 1 )
-        {
-            return construct( constructors[ 0 ], constructorArgs );
-        }
-        for( int i = 0; i < constructors.length; i++ )
-        {
-            //noinspection Since15
-            if( constructors[ i ].getParameters().length == constructorArgs.length )
-            {
-          	sameArgCount.add( constructors[ i ] );
-            }
-        }
-        if( sameArgCount.size() == 1 )
-        {
-            return construct(sameArgCount.get( 0 ), constructorArgs );
-        }
-        for( int i = 0; i < constructors.length; i++ )
-        {
-            //Class<?>[] paramTypes = constructors[ i ].getParameterTypes();
-            //if( allArgsAssignable( paramTypes, constructorArgs ) )
-            if( allArgsAssignable( constructors[ i ], constructorArgs ) )    
-            {
-             	return construct( constructors[ i ], constructorArgs );
-            }
-        }
-        throw new VarException( "Could not find a matching constructor for input" );
+        return JavaReflection.instance( theClass, constructorArgs );
     }
-
+    
+    /**
+     * calls the main method on the target class
+     * @param targetClass
+     * @param arguments 
+     */
+    public static void callMain( Class targetClass, String... arguments )
+    {
+        JavaReflection.invokeMain( targetClass, arguments );
+    }
+    
+    /**
+     * 
+     * @param target
+     * @param arguments 
+     */
+    public static void callMain( Object target, String...arguments )
+    {        
+        Java.callMain( target.getClass(), arguments );        
+    }
+    
     /**
      * Invokes the instance method and returns the result
-     * @param target the target instance to invoke the method on
+     * @param target the target instance to call the method on
      * @param methodName the name of the method
      * @param arguments the parameters to pass to the method
      * @return the result of the call
      */
-    public static Object invoke( 
+    public static Object call( 
     	Object target, String methodName, Object... arguments )
-    {       
-        Method method = null;        
-    	try            
-        {            
-            if( target instanceof Class )
-            {
-    		return invokeStatic((Class<?>)target, methodName, arguments );
-            }
-             
-            method = getMethod( 
-                target.getClass().getMethods(), methodName, arguments );
-    		 
-            if( method == null )
-            {
-                throw new VarException(
-                    "Could not find method \"" + methodName + "\" on \"" + target + "\"" );
-            }
-            return method.invoke( target, arguments );
-        }
-        catch( SecurityException iae )
-        { 
-              throw new VarException( 
-                "Security Exception not call " + method, iae );
-        }        
-        catch( IllegalAccessException iae ) 
-        {
-            throw new VarException(
-                "Illegal Access Could not call " + method, iae );
-        }
-        catch( IllegalArgumentException iae ) 
-        {
-            throw new VarException(
-                "IllegalArgument Could not call "+ method, iae );
-        }
-        catch( InvocationTargetException iae ) 
-        {
-            throw new VarException(
-                "Invocation Target Exception on" + method, iae.getCause() );
-        }
-     }
-    
-    public static Object getStaticFieldValue( Class<?> clazz, String fieldName )
+    {      
+        return JavaReflection.invoke( target, methodName, arguments );
+    }
+
+    /**
+     * Tries to get from a field on the instance or class, THEN tries
+     * calling a getter method for a property.
+     * 
+     * NOTE: this is for CONVENIENCE, NOT for performance critical code
+     * (you want to use the more specific variants: 
+     * {@link #getFieldValue(java.lang.Class, java.lang.String) }
+     * {@link #call(java.lang.Class, java.lang.String, java.lang.Object...) }
+     * 
+     * to directly access the field or method appropriately
+     * 
+     * @param instanceOrClass the class or instance
+     * @param propertyName the name i.e. "count"
+     * @return the value
+     * @throws JavaException if it fails
+     */
+    public static Object get( Object instanceOrClass, String propertyName )
+        throws JavaException 
     {
-    	try
-	{    		
-            Field f = clazz.getField( fieldName );
-            if( LOG.isDebugEnabled() ) 
-            { 
-                LOG.debug( "Getting field \"" + f ); 
-            }			
-            return f.get( null );
-	}
-	catch( NoSuchFieldException e )
-	{
-            throw new VarException( "No Such Field \"" + fieldName + "\"", e );
-	}
-        catch( SecurityException e ) 
-        {
-            throw new VarException( 
-                "Security Exception on Field \"" + fieldName + "\"", e );
-        }
-        catch( IllegalArgumentException e ) 
-        {
-            throw new VarException( "Illegal argument ", e );
-        }
-        catch( IllegalAccessException e ) 
-        {
-            throw new VarException( "Illegal Access", e );
-        }
+        return JavaReflection.get( instanceOrClass, propertyName );
+    }
+    
+    public static Object getFieldValue( Class<?> clazz, String fieldName )
+    {
+    	return JavaReflection.getStaticFieldValue( clazz, fieldName );
+    }
+    
+    public static Object getFieldValue( Field field )
+    {
+        return JavaReflection.getStaticFieldValue( field );
+    }
+    
+    public static void set( Object instance, String fieldName, Object value )
+    {
+        JavaReflection.set( instance, fieldName, value );
     }
     
     public static void setFieldValue( Object instance, String fieldName, Object value )
     {
-        try 
-        {
-            Field f = instance.getClass().getField( fieldName );			
-            f.set( instance, value );
-	}
-        catch( NoSuchFieldException e )
-        {
-            throw new VarException(
-                "No Such Field \"" + fieldName + "\" as "+ value, e );
-        }
-        catch( SecurityException e ) 
-        {
-            throw new VarException(
-                "Security Exception for \"" + fieldName + "\" as "+ value, e );
-        }
-        catch( IllegalArgumentException e ) 
-        {
-            throw new VarException(
-               "IllegalArgument for \"" + fieldName + "\" as "+ value, e );
-        }
-        catch( IllegalAccessException e )  
-        {
-            throw new VarException(
-                "Illegal Access to set \"" + fieldName + "\" as "+ value, e );
-        }
-    }
-    /**
-     * Gets the value of the Field 
-     * @param instanceOrClass
-     * @param fieldName
-     * @return
-     */
-    public static Object getFieldValue( Object instanceOrClass, String fieldName )
-    {        
-    	if( instanceOrClass instanceof Class )
-    	{
-            if( LOG.isDebugEnabled() ) 
-            { 
-                LOG.debug( "getting static field \"" + fieldName + "\"" );
-            }
-            return getStaticFieldValue( (Class<?>)instanceOrClass, fieldName );
-    	}
-    	try 
-	{
-            Field f = instanceOrClass.getClass().getField( fieldName );			
-            return f.get( instanceOrClass );
-	}
-    	catch( IllegalAccessException iae )
-    	{
-            throw new VarException( 
-                "Illegal Access for \"" + fieldName + "\"", iae );
-    	}
-    	catch( NoSuchFieldException e ) 
-	{
-            throw new VarException( 
-                "No such Field exception for \"" + fieldName + "\"", e );
-	} 		    	
-        catch( SecurityException e ) 
-        {
-            throw new VarException( 
-                "SecurityException for field \"" + fieldName + "\"", e );
-        }
-        catch( IllegalArgumentException e ) 
-        {
-            throw new VarException( 
-                "Illegal Argument for field \"" + fieldName + "\"", e );
-        } 		    	
+        JavaReflection.setFieldValue( instance, fieldName, value );
     }
     
-    public static Object invokeStatic( 
+    
+    public static Object getFieldValue( Object instanceOrClass, String fieldName )
+    {
+        return JavaReflection.getFieldValue( instanceOrClass, fieldName );
+    }
+    
+    public static Object call( 
         Class<?> clazz, String methodName, Object... args )
     {
-    	try
-        {
-            Method method = getMethod( clazz.getMethods(), methodName, args );
-            if( method == null )
-            {
-            	throw new VarException(
-                    "Could not find method \"" + methodName + "\" on \"" 
-                    + clazz.getName() + "\"" );
-            }
-            return method.invoke(clazz, args );            
-        }
-        catch( IllegalAccessException iae )
-        {
-            throw new VarException( 
-                "Could not call \"" + clazz.getName() + "." + methodName + "();\"", iae );
-        }
-        catch( IllegalArgumentException iae )
-        {
-            throw new VarException( 
-                "Could not call \"" + clazz.getName() + "." + methodName + "();\"", iae );
-        }
-        catch( InvocationTargetException ite )
-        {   
-            throw new VarException( 
-                ite.getTargetException().getMessage() + " calling \"" 
-                    + clazz.getName() + "." + methodName + "();\"", ite.getTargetException() );            
-        }
+        return JavaReflection.invokeStatic( clazz, methodName, args );
     }
     
-    private static final Map<Class<?>, Set<Class<?>>> SOURCE_CLASS_TO_TARGET_CLASSES= 
-        new HashMap<Class<?>, Set<Class<?>>>();
-        
-    static
-    {
-        Set<Class<?>>byteMapping = new HashSet<Class<?>>();
-        byteMapping.addAll( 
-            Arrays.asList( 
-                new Class<?>[] 
-                {   byte.class, Byte.class, short.class, Short.class, int.class, 
-                    Integer.class, long.class, Long.class} ) );
-            
-        SOURCE_CLASS_TO_TARGET_CLASSES.put( byte.class, byteMapping );
-            
-        Set<Class<?>>ByteMapping = new HashSet<Class<?>>();
-        ByteMapping.addAll( 
-            Arrays.asList( 
-                new Class<?>[] 
-                {   byte.class, Byte.class, short.class, Short.class, int.class, 
-                    Integer.class, long.class, Long.class} ) );
-            
-        SOURCE_CLASS_TO_TARGET_CLASSES.put( Byte.class, ByteMapping );
-        
-        Set<Class<?>>shortMapping = new HashSet<Class<?>>();
-        shortMapping.addAll( 
-            Arrays.asList( 
-                new Class<?>[] 
-                {   short.class, Short.class, int.class, 
-                    Integer.class, long.class, Long.class } ) );
-         
-        SOURCE_CLASS_TO_TARGET_CLASSES.put( short.class, shortMapping );
-           
-        Set<Class<?>>ShortMapping = new HashSet<Class<?>>();
-        ShortMapping.addAll( 
-            Arrays.asList( 
-                new Class<?>[] 
-                {   short.class, Short.class, int.class, 
-                    Integer.class, long.class, Long.class } ) );
-         
-        SOURCE_CLASS_TO_TARGET_CLASSES.put( Short.class, ShortMapping );
-        
-        Set<Class<?>>intMapping = new HashSet<Class<?>>();
-        intMapping.addAll( 
-            Arrays.asList( 
-                new Class<?>[] 
-                {   int.class, Integer.class, long.class, Long.class } ) );
-         
-        SOURCE_CLASS_TO_TARGET_CLASSES.put( int.class, intMapping );
-         
-        Set<Class<?>>longMapping = new HashSet<Class<?>>();
-        longMapping.addAll( 
-            Arrays.asList( 
-                new Class<?>[] 
-                {   long.class, Long.class } ) );
-            
-        SOURCE_CLASS_TO_TARGET_CLASSES.put( long.class, longMapping );
-    }
-        
-    protected static boolean translatesTo( Object source, Class<?>target )
-    {
-        if( source.getClass() == target )
-        {
-            return true;
-        }
-        if( target.isPrimitive() )
-        {
-            if( source instanceof Long || source.getClass() == long.class )
-            {
-                return target == long.class;
-            }
-            if( source instanceof Integer || source.getClass() == int.class )
-            {
-                return target == long.class || target == int.class;
-            }
-            if( source instanceof Short  || source.getClass() == short.class )
-            {
-                return target == long.class || target == int.class || target ==  short.class;
-            }
-            if( source instanceof Byte || source.getClass() == byte.class )
-            {
-                return target == long.class || target == int.class || target ==  short.class || target == byte.class;
-            }
-            if( source instanceof Character  || source.getClass() == char.class )
-            {
-                return target == char.class;
-            }
-            if( source instanceof Boolean  || source.getClass() == boolean.class )
-            {
-                return target == boolean.class;
-            }
-            if( source instanceof Float  || source.getClass() == float.class )
-            {
-                return target == float.class;
-            }
-            if( source instanceof Double  || source.getClass() == double.class )
-            {
-                return target == double.class;
-            }
-        }
-        Set<Class<?>> clazzes = SOURCE_CLASS_TO_TARGET_CLASSES.get( source.getClass() );
-        if( clazzes != null )
-        {
-            return clazzes.contains( target );
-        }
-        return false;
-    }
-        
-    /**
-     * is this arg assignable to the target class?
-     * @param targetArg the target method class
-     * @param arg
-     * @return 
-     */
-    protected static boolean isArgAssignable( Class<?> targetArg, Object arg )
-    {
-        if( arg == null )
-        {
-            return true;
-        }
-        //System.out.println( "ARG IS " + arg );
-        
-        if( targetArg.isPrimitive() || arg.getClass().isPrimitive() )
-        {
-            //System.out.println( arg + " is *** primitive " + targetArg );
-            //return translatesTo( arg, targetArg );
-            return translatesTo( arg, targetArg ); 
-        }
-        if( arg instanceof Class )
-        {
-            boolean isInst = ((Class)arg).isAssignableFrom( targetArg );
-            //System.out.println( arg + " is *** instance of " + targetArg +" "+ isInst );
-            return isInst;
-        }
-        if( arg.getClass().isInstance( targetArg ) )
-        {
-            //System.out.println( arg.getClass() + " is *** instance of " + targetArg );
-            //System.out.println( arg + " is *** instance of " + targetArg );
-            return true;
-        }
-        
-        return false;        
-    }
-
-    /** 
-     * gotta check if varargs 
-     */
-    protected static boolean allArgsAssignable( Method method, Object...args )
-    {
-        if( method.isVarArgs() )
-        {
-            //System.out.println( "VARARGS" + method ); 
-            Type[] at = method.getParameterTypes();
-            int minArgs = at.length -1;
-            //System.out.println( "MINARGS" + minArgs ); 
-            
-            if( minArgs == 0 )
-            {
-                if( args.length == 0 )
-                {
-                    //System.out.println( "NO ARGS!" );
-                    return true;
-                }
-                for( int i = 0; i < args.length; i++ )
-                {
-                    //System.out.println( "TRYING " + args[ i ] );
-                    if( ! isArgAssignable( at[ i ].getClass(), args[ i ] ) );
-                }
-            }    
-            /*
-            for(int i=0; i< minArgs; i++ )
-            {
-                if( isArgsAssignable( at[i], args[i] );
-            }
-            if( minArgsCount > 1 && args.length < minArgsCount )
-            {
-                return false;
-            }
-            for( int i = 0; i < minArgsCount -1; i++ )
-            {
-                System.out.println(" TARGET "+ method.)
-            }
-            
-            else
-            {
-                return true;
-            } 
-            */
-            return false;
-        }
-        else
-        {
-            return allArgsAssignable( method.getParameterTypes(), args );
-        }
-    }
-    
-    protected static boolean allArgsAssignable( Constructor ctor, Object...args )
-    {
-        if( ctor.isVarArgs() )
-        {
-            //System.out.println( "VARARGS " + ctor ); 
-            if( args.length > 0 )
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-        }
-        else
-        {
-            return allArgsAssignable( ctor.getParameterTypes(), args );
-        }
-    }
-    /**
-     * Try and "match" the arguments of a method with the arguments provided
-     * 
-     * TODO I NEED TO HANDLE VARARGS
-     * 
-     * @param target the target arguments
-     * @param args the actual arguments
-     * @return 
-     */
-    protected static boolean allArgsAssignable( Class<?>[] target, Object... args )
-    {
-        if( args == null || args.length == 0 )
-        {
-            return target.length == 0;             
-        }
-        if( target == null )
-        {
-            return args.length == 0; 
-        }
-        if( target.length == 0 )
-        {
-            return args.length == 0;
-        }        
-        if( target.length == args.length )
-        {   //they have the same number of arguments, but are they type compatible?
-            //System.out.println( "Same Arg count" );
-            for( int pt = 0; pt < target.length; pt++ )
-            {
-                //System.out.println( "test target "+ target[ pt ]+" against args "+ args[pt] );
-                //if( !isArgAssignable( args[ pt ].getClass(), target[ pt ] ) )
-                if( args[ pt ] == null )
-                {
-                    continue;
-                }
-                if( target[ pt ].equals( args[ pt ].getClass() ) )
-                {
-                    continue;
-                }
-                if( !isArgAssignable( target[ pt ], args[ pt ] ) )
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-        //TODO handle varargs
-        
-        return false;
-    }
-
-    /**
-     * matches and returns a static method with the methodName that matches 
-     * arguments
-     * 
-     * @param methods all methods to search
-     * @param methodName the target method name
-     * @param args the arguments to the method
-     * @return the java.lang.reflect.Method
-     */
     public static Method getStaticMethod( 
         Method[] methods, String methodName, Object[] args )
     {
-        for( int i = 0; i < methods.length; i++ )
-        {
-            if( Modifier.isStatic( methods[ i ].getModifiers() )
-                && methods[ i ].getName().equals( methodName ) )
-            {
-                //if( allArgsAssignable( methods[ i ].getParameterTypes(), args ) )
-                if( allArgsAssignable( methods[ i ], args ) )
-                {
-                    return methods[ i ];
-                }
-            }
-        }
-        return null;
+        return JavaReflection.getStaticMethod( methods, methodName, args );
     }
-
-    /** 
-     * given a Class, find all methods with a given name and return them
-     * @param clazz
-     * @param methodName
-     * @return  all methods of a given name
-     */
-    public static List<Method> getMethods( Class clazz, String methodName )
+    
+    public static List<Method> getMethodsByName( Class clazz, String methodName )
     {
-        List<Method> methodsOfName = new ArrayList<Method>();
-        Method[] methods = clazz.getMethods();
-        for( int i=0; i< methods.length; i++ )
-        {
-            if( methods[ i ].getName().equals( methodName ) )
-            {
-                methodsOfName.add( methods[ i ] );                
-            }
-        }
-        return methodsOfName;
+        return JavaReflection.getMethods( clazz, methodName );
     }
     
     public static Method getMethod( 
         Method[] methods, String methodName, Object... args )
     {
-        for( int i = 0; i < methods.length; i++ )
-        {
-            if( methods[ i ].getName().equals( methodName ) )
-            {                
-                //System.out.println( "FOUND METHOD " );
-                //    "Try Method " + methods[ i ]+" for "+  args[0] +" " + args[0].getClass() );
-                //if( allArgsAssignable( methods[ i ].getParameterTypes(), args ) )
-                if( allArgsAssignable( methods[ i ], args ) )
-                {
-                    return methods[ i ];
-                }
-            }
-        }
-        return null;
-    }
-    
-    /*
-	public static Object getStaticFieldValue( Class<?> clazz, String fieldName ) 
-	{
-		try 
-		{
-			Field f = clazz.getField( fieldName );
-            return getStaticFieldValue( f );
-		} 
-		catch( NoSuchFieldException e ) 
-		{
-			throw new VarException( "No Such field \"" + fieldName + "\"", e );
-		} 		
-        catch( SecurityException e ) 
-        {
-            throw new VarException( "Security Exception for field \"" + fieldName + "\"", e );
-        }
-        catch( IllegalArgumentException e ) 
-        {
-            throw new VarException( "Illegal Argument for field \"" + fieldName + "\"", e );
-        }        	
-	}
-    */
-    
-    public static Object getStaticFieldValue( Field field )
-    {
-    	try 
-	{
-	    return field.get( null );
-	} 
-	catch( IllegalArgumentException e ) 
-	{
-            throw new VarException( "Illegal Argument for field "+ field, e );
-	} 	    
-        catch (IllegalAccessException e) 
-        {
-            throw new VarException( "Illegal Acccess for field "+ field, e );
-        } 	    
+        return JavaReflection.getMethod( methods, methodName, args );
     }
 }

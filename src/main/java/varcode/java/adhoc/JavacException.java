@@ -1,3 +1,18 @@
+/*
+ * Copyright 2017 M. Eric DeFazio.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package varcode.java.adhoc;
 
 import java.io.BufferedReader;
@@ -9,16 +24,14 @@ import javax.tools.Diagnostic.Kind;
 import javax.tools.DiagnosticCollector;
 import javax.tools.JavaFileObject;
 
-import varcode.VarException;
-
 /**
- * Compiler Exception Derived from running Javac at runtime
- * and interpreting the Diagnostics
+ * Exception from running the Javac Java source to Class compiler at runtime
+ * and interpreting the Diagnostics.
  *  
  * @author M. Eric DeFazio eric@varcode.io
  */
 public final class JavacException
-	extends VarException
+    extends AdHocException
 {
     private static final String N = "\r\n";
 	
@@ -27,7 +40,7 @@ public final class JavacException
     public final List<Diagnostic<? extends JavaFileObject>> diagnostics;
 	
     public static String composeStackTrace( 
-        Collection<AdHocJavaFile> javaCode, 	
+        //Collection<AdHocJavaFile> javaCode, 	
         DiagnosticCollector<JavaFileObject>diagnosticsCollector )
     {			
         List<Diagnostic<? extends JavaFileObject>> diagnostics = 
@@ -49,7 +62,7 @@ public final class JavacException
             {   //the source that originated the error is not available 
                 return sb.toString();
             }
-            String className = ((AdHocJavaFile)d.getSource()).getClassName(); 
+            String className = ((AdHocJavaFile)d.getSource()).getQualifiedName(); 
             sb.append( N );
             sb.append( className ); //javaCode.className );
             sb.append( ".class" );		
@@ -83,12 +96,26 @@ public final class JavacException
         return sb.toString();		
     }
 	
+    
+    public JavacException( 
+        //Iterable<AdHocJavaFile> javaCode,
+        DiagnosticCollector<JavaFileObject> diagnostics )
+    {
+        super( "Failed Compilation of workspace" + N
+            + composeStackTrace( //(Collection)javaCode, 
+                diagnostics ) );
+        
+         this.diagnostics = diagnostics.getDiagnostics();
+    }
+    
     public JavacException( 
         Collection<AdHocJavaFile> javaCode,
         DiagnosticCollector<JavaFileObject> diagnostics )
     {
         super( "Failed Compilation of workspace" + N
-            + composeStackTrace( javaCode, diagnostics ) );
+            + composeStackTrace( 
+                //javaCode, 
+                diagnostics ) );
        
         this.diagnostics = diagnostics.getDiagnostics();
     }

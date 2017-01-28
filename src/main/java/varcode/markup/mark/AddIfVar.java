@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 M. Eric DeFazio.
+ * Copyright 2017 M. Eric DeFazio.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,29 +15,33 @@
  */
 package varcode.markup.mark;
 
-import java.util.Set;
-
-import varcode.doc.translate.TranslateBuffer;
-import varcode.context.VarContext;
-import varcode.markup.mark.Mark.BlankFiller;
-import varcode.markup.mark.Mark.HasVars;
+import java.lang.reflect.Array;
+import java.util.Collection;
+import varcode.translate.TranslateBuffer;
+import varcode.context.Context;
+import varcode.markup.mark.Mark.HasVar;
+import varcode.markup.mark.Mark.Bind;
 
 /**
+ * If a var is bound in the {@code Context} (and non-null) write some static text 
+ * to the document.
+ * 
  * A Form of Code (one or more java statements) that is <I>conditionally</I> 
  * written to the tailored source.
  * 
  * There are (2) variants: 
  * <UL>
  *  <LI><B>On name</B> will write the block to the tailored source if the name
- *  resolves to a <B>non-null</B> value.<PRE> 
- *  / *{?(log!=null):
+ *  resolves to a <B>non-null</B> value (AND FOR COLLECTIONS/ARRAYS, the length
+ * /size must be > 0).<PRE> 
+ *  / *{?log:
  *  import org.slf4j.LoggerFactory;
  *  import org.slf4j.Logger;
  *  }* /</PRE>
  *  
  *  <LI><B>On name equals</B> will write the block to the tailored source is the
  *  name resolves to a value that is is <B>equal to a target value</B>.<PRE>
- *  / *{?(log=trace):
+ *  / *{?log==trace:
  *  LOG.trace( "Inside Loop : \"" + methodName + "\"" ); 
  *  }* /</PRE>
  * </UL> 
@@ -49,7 +53,7 @@ import varcode.markup.mark.Mark.HasVars;
        }*/
 public class AddIfVar
     extends Mark
-    implements BlankFiller, HasVars
+    implements Bind, HasVar
 {
     /** the var name in the context to test*/
     private final String varName;
@@ -71,9 +75,9 @@ public class AddIfVar
         this.varName = name;
         this.targetValue = targetValue;
         this.conditionalText = conditionalText;            
-    }
-   
+    }   
 
+    @Override
     public String getVarName()
     {
         return varName;
@@ -89,33 +93,43 @@ public class AddIfVar
         return conditionalText;
     }
     
-    public void fill( VarContext context, TranslateBuffer buffer )
+    @Override
+    public void bind( Context context, TranslateBuffer buffer )
     {
         buffer.append( derive( context ) );
     }
     
     @Override
-    public Object derive( VarContext context )
+    public Object derive( Context context )
     {
         Object resolved = context.resolveVar( varName );
         if( resolved == null )
         {        	
             return null;
         }
+        if( resolved.getClass().isArray() )
+        {
+            if( Array.getLength( resolved ) == 0 )
+            {
+                return null;
+            }
+        }
+        else if( Collection.class.isAssignableFrom( resolved.getClass() ) )
+        {
+            Collection c = (Collection)resolved;
+            if( c.isEmpty() )
+            {
+                return null;
+            }
+        }
         if( targetValue == null )
         {
             return conditionalText;                    	
-        }
+        }        
         if ( resolved.toString().equals( targetValue ) )
         {
             return conditionalText;            
         }
         return null;
-    }
-    
-    public void collectVarNames( Set<String>varNames, VarContext context )
-    {
-       varNames.add( varName );
-    }
-    
+    }  
 }

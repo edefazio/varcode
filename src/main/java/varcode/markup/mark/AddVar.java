@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 M. Eric DeFazio.
+ * Copyright 2017 M. Eric DeFazio.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,17 +17,16 @@ package varcode.markup.mark;
 
 import java.util.Set;
 
-import varcode.doc.translate.TranslateBuffer;
-import varcode.context.VarContext;
+import varcode.translate.TranslateBuffer;
+import varcode.context.Context;
 import varcode.context.VarBindException.NullVar;
-import varcode.markup.mark.Mark.BlankFiller;
-import varcode.markup.mark.Mark.HasVars;
-import varcode.markup.mark.Mark.IsNamed;
 import varcode.markup.mark.Mark.MayBeRequired;
+import varcode.markup.mark.Mark.HasVar;
+import varcode.markup.mark.Mark.Bind;
 
 /**
- * Adds Code (bound to a given var name). 
- * Optionally provide a default in case the var name resolves to null.
+ * Adds Code (bound to a given var name). Optionally provide a default in case
+ * the var name resolves to null.
  */
 //
 //example      : "{+name+}"
@@ -36,89 +35,89 @@ import varcode.markup.mark.Mark.MayBeRequired;
 //    VarName  : "name"
 //    Default  : ""
 //    Required : false
-
 // example      : "/*{+name+}*/"
 //	   Prefix   : "/*{+"
 //     Postfix  : "+}*/"
 //     VarName  : "name"
 //     Default  : ""
 //     Required : false
-
 // example      : "/*{+name|default+}*/"
 //     Prefix   : "/*{+"
 //     Postfix  : "+}*/"
 //     VarName  : "name"
 //     Default  : "default"
 //     Required : false
-
 // example      : "/*{+name*+}*/"
 //     Prefix   : "/*{+"
 //     Postfix  : "+}*/"
 //     VarName  : "name"
 //     Default  : "default"
 //     Required : true 
-
 public class AddVar
     extends Mark
-	implements IsNamed, BlankFiller, HasVars, MayBeRequired 
-{	
-	private final String varName;
-	
-	private final String defaultValue;
-	
-	private final boolean isRequired;
+    implements Bind, HasVar, MayBeRequired
+{
+    private final String varName;
 
-	public AddVar( 
-	    String text, 
-	    int lineNumber,
-	    String varName, 
-	    boolean isRequired,
-	    String defaultValue )
-	{
-	    super( text, lineNumber );
-	    this.varName = varName;
-	    this.defaultValue = defaultValue;
-	    this.isRequired = isRequired;
-	}
+    private final String defaultValue;
 
-	public String getVarName()
-	{
-		return varName; 
-	}
+    private final boolean isRequired;
 
-	public Object derive( VarContext context ) 
-	{
-		Object resolved = 
-			context.getVarResolver().resolveVar( context, varName );
-		
-		if ( resolved == null )
-		{
-		    if( isRequired )
+    public AddVar(
+        String text,
+        int lineNumber,
+        String varName,
+        boolean isRequired,
+        String defaultValue )
+    {
+        super( text, lineNumber );
+        this.varName = varName;
+        this.defaultValue = defaultValue;
+        this.isRequired = isRequired;
+    }
+
+    @Override
+    public String getVarName()
+    {
+        return varName;
+    }
+
+    @Override
+    public Object derive( Context context )
+    {
+        Object resolved
+            = context.getVarResolver().resolveVar( context, varName );
+
+        if( resolved == null )
+        {
+            if( isRequired )
             {
-		    	throw new NullVar( varName, text, lineNumber );                
+                throw new NullVar( varName, text, lineNumber );
             }
-		    resolved = defaultValue;
-		}
-		return resolved;	
-	}
+            resolved = defaultValue;
+        }
+        return resolved;
+    }
 
-	public void fill( VarContext context, TranslateBuffer buffer )
-	{
-	    buffer.append( derive( context ) );
-	}
-	
-	public boolean isRequired()
-	{
-	    return isRequired;
-	}
-	
+    @Override
+    public void bind( Context context, TranslateBuffer buffer )
+    {
+        buffer.append( derive( context ) );
+    }
+
+    @Override
+    public boolean isRequired()
+    {
+        return isRequired;
+    }
+
     public String getDefault()
     {
         return this.defaultValue;
     }
 
-    public void collectVarNames( Set<String>varNames, VarContext context )
+    public void collectVarNames( Set<String> varNames, Context context )
     {
-       varNames.add( varName );
+        varNames.add( varName );
     }
-}	
+}
