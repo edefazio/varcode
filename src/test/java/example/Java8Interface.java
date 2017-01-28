@@ -19,13 +19,18 @@ import varcode.java.model._interface;
 import varcode.java.model._methods._method;
 
 /**
- *
+ * This Test should be run when using Java8+
+ * 
+ * it is commented out since the (default) build is 1.6
+ * (basically we want to support lower versions of Java
+ * AND ALSO features in modern Java)
+ * 
  * @author Eric
  */
-public interface NewInterface
+public interface Java8Interface
     
 {
-    
+    /* COMMENTED THIS OUT TO ENSURE THINGS WORK FOR Java 1.6
     public default String getId( String prefix )
     {
         System.out.println( prefix );
@@ -42,9 +47,9 @@ public interface NewInterface
         
         //System.out.println( m );
         
-        CompilationUnit cu = Java.astFrom( NewInterface.class );
+        CompilationUnit cu = Java.astFrom(Java8Interface.class );
         
-        _interface _i = _JavaLoad._interfaceFrom( NewInterface.class );
+        _interface _i = _JavaLoad._interfaceFrom(Java8Interface.class );
         
         //System.out.println( _i );
         
@@ -64,4 +69,5 @@ public interface NewInterface
         
         
     }
+*/
 }

@@ -75,7 +75,11 @@ public class SerializableInstance
             //now verify the date (on the deserialized object is the same)
             assertEquals( d, Java.call( deserialized, "getDate" ) );              
         }
-        catch( IOException | ClassNotFoundException ex ) 
+        catch( IOException ex ) 
+        {
+            fail( "could not Serialiaze/ Deserialize" );
+        }
+        catch( ClassNotFoundException ex ) 
         {
             fail( "could not Serialiaze/ Deserialize" );
         }

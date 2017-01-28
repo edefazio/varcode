@@ -38,7 +38,7 @@ public class TestOnTheFly
         //now test the results of the static getRandom() method
         for( int i = 0; i < 10000; i++ )
         {   //invoke getRandom() static method on AdHocClass
-            int res = (int)Java.call( clazz, "getRandom" );
+            Integer res = (Integer)Java.call( clazz, "getRandom" );
             assertTrue( res >= 0 && res < 100 );
         }            
     }
@@ -65,7 +65,7 @@ public class TestOnTheFly
         //test the result of the instance method
         for( int i = 0; i < 10000; i++ )
         {   //invoke the getRandom instance method on oneTo100
-            int res = (int)Java.call( oneTo100, "getRandom" );
+            Integer res = (Integer)Java.call( oneTo100, "getRandom" );
             assertTrue( res >= min && res < max );
         }          
     }

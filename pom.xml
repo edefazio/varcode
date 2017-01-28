@@ -5,10 +5,10 @@
     <groupId>io.varcode</groupId>
     <artifactId>varcode</artifactId>  
     <packaging>jar</packaging>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.1.0-SNAPSHOT</version>
     <name>varcode</name>
     <properties>
-        <jdk.version>1.8</jdk.version>
+        <jdk.version>1.6</jdk.version>
         <junit.version>3.8.1</junit.version>
         <log4j.version>1.2.17</log4j.version>
     </properties>
@@ -99,7 +99,7 @@
                     <archive>
                         <manifest>
                             <!-- Jar file entry point 
-                            <mainClass>com.mkyong.core.utils.App</mainClass> -->
+                            <mainClass>SomeApp</mainClass> -->
                         </manifest>
                     </archive>
                 </configuration>

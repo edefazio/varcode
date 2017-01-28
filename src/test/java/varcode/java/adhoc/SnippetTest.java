@@ -95,8 +95,8 @@ public class SnippetTest
         
         Snippet onlyBody = Snippet.of( "System.out.println( new java.util.Date() );" );                
         Snippet returns = Snippet.of( "String{return java.util.UUID.randomUUID().toString();}" );
-        int sum = (int)add.call( 1 , 2 );
-        assertEquals( sum, 5 );
+        Integer sum = (Integer)add.call( 1 , 2 );
+        assertEquals( sum, new Integer(5) );
         
         //Snippet varargs = Snippet.of( 
         //    "(int...vars){for(int i=0; i< vars.length; i++){ System.out.println(vars[i]); } }" );
