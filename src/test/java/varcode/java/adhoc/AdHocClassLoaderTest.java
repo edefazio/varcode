@@ -33,10 +33,10 @@ public class AdHocClassLoaderTest
         AdHocClassLoader ahcl = new AdHocClassLoader();
         try
         {
-            Class c = ahcl.find( "NotFound" );
+            Class c = ahcl.findClass( "NotFound" );
             fail( "expected exception for classNotFound " );
         }
-        catch( VarException ve )
+        catch( ClassNotFoundException ve )
         {
             //expected
         }

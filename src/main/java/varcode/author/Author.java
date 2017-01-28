@@ -50,7 +50,8 @@ public enum Author
     ;
     
     /** Translates Java Objects to a textual representation inside a document */
-    private static final JavaTranslate TRANSLATE = JavaTranslate.INSTANCE;
+    //private static final JavaTranslate TRANSLATE = 
+    //    JavaTranslate.INSTANCE;
     
     /**
      * 

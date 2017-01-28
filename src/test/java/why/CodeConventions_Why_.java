@@ -17,25 +17,25 @@ package why;
 
 import java.util.Map;
 import java.util.UUID;
-import varcode.java.lang._args;
-import varcode.java.lang._class;
-import varcode.java.lang._code;
-import varcode.java.lang._constructors;
-import varcode.java.lang._constructors._constructor;
-import varcode.java.lang._enum;
-import varcode.java.lang._fields;
-import varcode.java.lang._fields._field;
-import varcode.java.lang._imports;
-import varcode.java.lang._interface;
-import varcode.java.lang._javadoc;
-import varcode.java.lang._methods;
-import varcode.java.lang._methods._method;
-import varcode.java.lang._modifiers;
-import varcode.java.lang._modifiers._modifier;
-import varcode.java.lang._nests;
-import varcode.java.lang._parameters;
-import varcode.java.lang._parameters._parameter;
-import varcode.java.lang._var;
+import varcode.java.model._args;
+import varcode.java.model._class;
+import varcode.java.model._code;
+import varcode.java.model._constructors;
+import varcode.java.model._constructors._constructor;
+import varcode.java.model._enum;
+import varcode.java.model._fields;
+import varcode.java.model._fields._field;
+import varcode.java.model._imports;
+import varcode.java.model._interface;
+import varcode.java.model._javadoc;
+import varcode.java.model._methods;
+import varcode.java.model._methods._method;
+import varcode.java.model._modifiers;
+import varcode.java.model._modifiers._modifier;
+import varcode.java.model._nests;
+import varcode.java.model._parameters;
+import varcode.java.model._parameters._parameter;
+import varcode.java.model._var;
 
 /**
  * 

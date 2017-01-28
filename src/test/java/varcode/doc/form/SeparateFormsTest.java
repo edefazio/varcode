@@ -1,8 +1,8 @@
 package varcode.doc.form;
 
 import junit.framework.TestCase;
-import varcode.doc.form.SeriesFormatter.AfterEach;
-import varcode.doc.form.SeriesFormatter.BetweenTwo;
+import varcode.markup.form.SeriesFormatter.AfterEach;
+import varcode.markup.form.SeriesFormatter.BetweenTwo;
 
 public class SeparateFormsTest
     extends TestCase

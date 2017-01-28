@@ -16,8 +16,8 @@
 package varcode_v_codegen;
 
 import varcode.java.Java;
-import varcode.java._Java;
-import varcode.java.lang._class;
+import varcode.java.Java;
+import varcode.java.model._class;
 
 /**
  *
@@ -39,7 +39,7 @@ public class varcode_example
         
         //TODO add an invokeMain( Class or Object );
         
-        _Java.invokeMain( instance );
+        Java.callMain( instance );
         //Java.invoke(instance, methodName, args)
         
         

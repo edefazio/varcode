@@ -3,7 +3,7 @@ package howto.markup;
 import java.util.Date;
 import junit.framework.TestCase;
 import varcode.VarException;
-import varcode.doc.form.Form;
+import varcode.markup.form.Form;
 import varcode.markup.forml.ForML;
 
 /**
@@ -55,7 +55,7 @@ public class _1_FormML
      
     public void testAllForMLMarks()
     {
-        String doc = SimpleMarksForm.compose(
+        String doc = SimpleMarksForm.author( 
             "a", 1, 
             "b", 2 );
         
@@ -67,19 +67,19 @@ public class _1_FormML
         Form ADD_MARKS = ForML.compile( 
             "{+add+} {+addOrDefault|default+} {+addRequired*+}" );
         
-        assertEquals( "+ default 1234", ADD_MARKS.compose( 
+        assertEquals( "+ default 1234", ADD_MARKS.author( 
             "add", "+", 
             "addOrDefault", null,
             "addRequired", 1234 ) );
         
-        assertEquals( "+ value 1234", ADD_MARKS.compose( 
+        assertEquals( "+ value 1234", ADD_MARKS.author( 
             "add", "+", 
             "addOrDefault", "value",
             "addRequired", 1234 ) );
         
         try
         {
-            ADD_MARKS.compose(  );
+            ADD_MARKS.author(  );
             fail( 
                 "expected exception for missing required field \"addRequired\"" );
         }
@@ -102,7 +102,7 @@ public class _1_FormML
             "Param1 " +
             "PARAM1 " +
             "1", 
-            ADD_SCRIPT_RESULT.compose( "param", "param1" ) );
+            ADD_SCRIPT_RESULT.author( "param", "param1" ) );
     }
     
     public void testAddExpressionResult()
@@ -110,7 +110,7 @@ public class _1_FormML
         Form ADD_EXPRESSION_RESULT = ForML.compile(
             "{+(( 1 + 2 | 0 ))+} {+(( p1 + p2 ))+} {+(( p1 / 3 ))+}" );
         
-        String res = ADD_EXPRESSION_RESULT.compose( 
+        String res = ADD_EXPRESSION_RESULT.author( 
             "p1", 3,
             "p2", 3.14159d );
         
@@ -127,24 +127,24 @@ public class _1_FormML
         "{+?condition:LOG.debug( \"got here\" );+}" );
         
         //condition is null, nothing is output 
-        assertEquals( "", IF_ANY_CONDITIONAL.compose( ) );
+        assertEquals( "", IF_ANY_CONDITIONAL.author( ) );
         
         assertEquals( "", 
-            IF_ANY_CONDITIONAL.compose( "condition", null ) );
+            IF_ANY_CONDITIONAL.author( "condition", null ) );
         
         //condition is NOT null (true), output ...
         assertEquals( "LOG.debug( \"got here\" );", 
-            IF_ANY_CONDITIONAL.compose( "condition", true ) );
+            IF_ANY_CONDITIONAL.author( "condition", true ) );
         
         //condition is false (which is NOT-null), output...
         assertEquals( "LOG.debug( \"got here\" );", 
-            IF_ANY_CONDITIONAL.compose( "condition", false ) );
+            IF_ANY_CONDITIONAL.author( "condition", false ) );
         
         assertEquals( "LOG.debug( \"got here\" );", 
-            IF_ANY_CONDITIONAL.compose( "condition", "A" ) );
+            IF_ANY_CONDITIONAL.author( "condition", "A" ) );
         
         assertEquals( "LOG.debug( \"got here\" );", 
-            IF_ANY_CONDITIONAL.compose( "condition", new Date() ) );
+            IF_ANY_CONDITIONAL.author( "condition", new Date() ) );
     }
 
     public void testIfIsCondition()
@@ -155,26 +155,26 @@ public class _1_FormML
             "{+?condition==true:LOG.debug( \"got here\" );+}" );
         
         //condition is null =/= true, nothing is output 
-        assertEquals( "", IF_IS_CONDITIONAL.compose( ) );
+        assertEquals( "", IF_IS_CONDITIONAL.author( ) );
         
         assertEquals( "", 
-            IF_IS_CONDITIONAL.compose( "condition", null ) );
+            IF_IS_CONDITIONAL.author( "condition", null ) );
         
         //condition == true, output ...
         assertEquals( "LOG.debug( \"got here\" );", 
-            IF_IS_CONDITIONAL.compose( "condition", true ) );
+            IF_IS_CONDITIONAL.author( "condition", true ) );
         
         assertEquals( "LOG.debug( \"got here\" );", 
-            IF_IS_CONDITIONAL.compose( "condition", "true" ) );
+            IF_IS_CONDITIONAL.author( "condition", "true" ) );
         
         //condition is false (which is NOT-null), output...
         assertEquals( "LOG.debug( \"got here\" );", 
-            IF_IS_CONDITIONAL.compose( "condition", false ) );
+            IF_IS_CONDITIONAL.author( "condition", false ) );
         
         assertEquals( "LOG.debug( \"got here\" );", 
-            IF_IS_CONDITIONAL.compose( "condition", "A" ) );
+            IF_IS_CONDITIONAL.author( "condition", "A" ) );
         
         assertEquals( "LOG.debug( \"got here\" );", 
-            IF_IS_CONDITIONAL.compose( "condition", new Date() ) );
+            IF_IS_CONDITIONAL.author( "condition", new Date() ) );
     }
 }

@@ -1,7 +1,7 @@
 package quickstart.java;
 
-import varcode.java._Java;
-import varcode.java.lang._class;
+import varcode.java.Java;
+import varcode.java.model._class;
 
 public class TailorExistingCode 
 {
@@ -16,7 +16,7 @@ public class TailorExistingCode
     public static void main( String[] args )
     {
         /* load the _class model from the Existing java nested class */
-        _class _c = _Java._classFrom( Existing.class );
+        _class _c = Java._classFrom( Existing.class );
         
         /* change the _class model */
         _c.setName( "Tailored" ); //rename class from "Existing" to "Tailored"

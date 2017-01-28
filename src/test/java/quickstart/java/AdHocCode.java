@@ -1,6 +1,6 @@
 package quickstart.java;
 
-import varcode.java.lang._class;
+import varcode.java.model._class;
 
 public class AdHocCode 
 {

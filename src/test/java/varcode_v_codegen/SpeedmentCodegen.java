@@ -1,4 +1,4 @@
-/*
+ /*
  * Copyright 2016 Eric.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,8 +15,8 @@
  */
 package varcode_v_codegen;
 
-import varcode.java._Java;
-import varcode.java.lang._class;
+import varcode.java.Java;
+import varcode.java.model._class;
 
 /**
  *
@@ -35,7 +35,7 @@ public class SpeedmentCodegen
         System.out.println( _c.author() ); //write the code to System out
         Class clazz = _c.loadClass( ); //create instance
         
-        _Java.invokeMain( clazz );
+        Java.callMain( clazz );
         
         
         

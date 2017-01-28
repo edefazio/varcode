@@ -2,8 +2,8 @@ package howto.java.tailor;
 
 import java.util.UUID;
 import junit.framework.TestCase;
-import varcode.java.lang._class;
-import varcode.java._Java;
+import varcode.java.model._class;
+import varcode.java.Java;
 
 /**
  * "Tailoring" .java code in varcode involves
@@ -38,7 +38,7 @@ public class _2_TailorCode
         // 1) find the .java source and load the _class for SourceClass
         //_class _c = _Load._classOf( SourceClass.class );
         //_class _c = _JavaLoader._Class.from( SourceClass.class );
-        _class _c = _Java._classFrom( SourceClass.class );
+        _class _c = Java._classFrom( SourceClass.class );
         
         // 2) mutate the 
         _c.imports( UUID.class );
@@ -46,7 +46,7 @@ public class _2_TailorCode
         _c.setModifiers( "public" ); //reset class modifiers
         
         //modify the greetings method
-        _c.getMethodNamed( "greetings" )
+        _c.getMethod( "greetings" )
             .body( "return \"Tailored Greeting!\";");
         
         //.property adds a field AND getter/setter 
@@ -58,18 +58,18 @@ public class _2_TailorCode
         
         //invoke the static greetings method on the "Tailored" ad hoc class
         assertEquals( "Tailored Greeting!", 
-            _Java.invoke( adHocClass, "greetings" ) );        
+            Java.call( adHocClass, "greetings" ) );        
         
         //create a new instance of the "Tailored" class
         Object instance = _c.instance();
         
         //set the name and count on the instance
-        _Java.invoke( instance, "setName", "Eric" );
-        _Java.invoke( instance, "setCount", 10 );
+        Java.call( instance, "setName", "Eric" );
+        Java.call( instance, "setCount", 10 );
         
         //verify the name and count on the instance
-        assertEquals( 10, _Java.invoke( instance,"getCount" ) );
-        assertEquals( "Eric", _Java.invoke( instance,"getName" ) );
+        assertEquals( 10, Java.call( instance,"getCount" ) );
+        assertEquals( "Eric", Java.call( instance,"getName" ) );
         
     }
 }

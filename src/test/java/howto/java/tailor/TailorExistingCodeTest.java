@@ -2,8 +2,8 @@ package howto.java.tailor;
 
 import java.lang.reflect.Modifier;
 import junit.framework.TestCase;
-import varcode.java._Java;
-import varcode.java.lang._class;
+import varcode.java.Java;
+import varcode.java.model._class;
 
 /**
  * varcode can load and change the .java source code for existing Classes at 
@@ -31,7 +31,7 @@ public class TailorExistingCodeTest
     
     public void testTailorClass()
     {   /* load the _class model from an existing Java class */
-        _class _c = _Java._classFrom( Existing.class );
+        _class _c = Java._classFrom( Existing.class );
         
         /* change the _class */
         _c.setName( "Tailored" ); //rename class to "Tailored"
@@ -50,12 +50,12 @@ public class TailorExistingCodeTest
         Object tailoredObj = _c.instance( 100 ); 
         
         // call instance method "getCount" on the Tailored instance 
-        assertEquals( 100, _Java.invoke( tailoredObj, "getCount" ) );
+        assertEquals( 100, Java.call( tailoredObj, "getCount" ) );
         
         // call "setCount" on the Tailored instance to set count to 200
-        _Java.invoke( tailoredObj, "setCount", 200 );
+        Java.call( tailoredObj, "setCount", 200 );
         
         //call "getCount" again to verify count is 200
-        assertEquals( 200, _Java.invoke( tailoredObj, "getCount" ) );
+        assertEquals( 200, Java.call( tailoredObj, "getCount" ) );
     }
 }
