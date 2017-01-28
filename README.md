@@ -42,8 +42,8 @@ public class Model
 }
 ```
 
-## using the api to build & mutate models ##
-building a model for a ( [\_class](https://gist.github.com/edefazio/b491989cd6ef72ad7ea2bc0005895c81), [\_interface](https://gist.github.com/edefazio/adbbd9cd500617d3202b2a2a3c7ebf68), [\_enum](https://gist.github.com/edefazio/0e566868ab5f134720cfde6db24b9b11), [\_annotationType](https://gist.github.com/edefazio/f1bed02ff66524149c215311c6d6f356) ) can be done in a single compound statement, or by calling individual mutator methods on the model. 
+## building models fluently and incrementally ##
+models for ( [\_class](https://gist.github.com/edefazio/b491989cd6ef72ad7ea2bc0005895c81), [\_interface](https://gist.github.com/edefazio/adbbd9cd500617d3202b2a2a3c7ebf68), [\_enum](https://gist.github.com/edefazio/0e566868ab5f134720cfde6db24b9b11), [\_annotationType](https://gist.github.com/edefazio/f1bed02ff66524149c215311c6d6f356) ) can be built in a single compound statement using the fluent api.  models are mutable and can also be constructed incrementally, using mutator methods. 
 ```java 
 _class _c = _class.of( "package ex.mutable;",
     _imports.of( Serializable.class ),
