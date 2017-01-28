@@ -74,7 +74,7 @@ public class ExportTest
         _class _c = _class.of("package ex.my;", "public class A")
              .mainMethod( "System.out.println(\"Hi\");");
              
-        AdHocClassFile classFile = AdHoc.compileToFile( _c ); //.getAdHocClassFileByName( _c.getFullClassName() );
+        AdHocClassFile classFile = AdHoc.compileToFile( _c ); //.findClassFile( _c.getFullClassName() );
        
         URI exportedTo = Export.TEMP_DIR.toFile( classFile );
         
@@ -152,7 +152,7 @@ public class ExportTest
                 _interface.of( 
                     "package my.interf", "public interface IFA" ) );
             
-        AdHocClassFile[] files = adHoc.getAllAdHocClassFiles().toArray( 
+        AdHocClassFile[] files = adHoc.allAdHocClassFiles().toArray( 
             new AdHocClassFile[ 0 ] );
         for( int i = 0; i < files.length; i++ )
         {

@@ -89,7 +89,7 @@ public class Export
         if( classLoader instanceof AdHocClassLoader )
         {
             AdHocClassLoader adhoc = (AdHocClassLoader)classLoader;
-            return toFile ( adhoc.getAdHocClassFileByName( clazz.getCanonicalName() ) );
+            return toFile ( adhoc.findClassFile( clazz.getCanonicalName() ) );
         }
         throw new AdHocException( 
             "Class " + clazz + " cannot be exported;" + 
@@ -158,7 +158,7 @@ public class Export
                 new JarOutputStream( new FileOutputStream( f ), manifest);
         
             AdHocClassFile[] classFiles = 
-                adHocClassLoader.getAllAdHocClassFiles().toArray( new AdHocClassFile[ 0 ] );
+                adHocClassLoader.allAdHocClassFiles().toArray( new AdHocClassFile[ 0 ] );
             for( int i = 0; i < classFiles.length; i++ )
             {
                 JarEntry entry = new JarEntry( 
@@ -214,7 +214,7 @@ public class Export
                     
             /** Class files */    
             AdHocClassFile[] classFiles = 
-                adHocClassLoader.getAllAdHocClassFiles().toArray( new AdHocClassFile[ 0 ] );
+                adHocClassLoader.allAdHocClassFiles().toArray( new AdHocClassFile[ 0 ] );
             for( int i = 0; i < classFiles.length; i++ )
             {
                 JarEntry entry = new JarEntry( 
@@ -359,7 +359,7 @@ public class Export
         throws AdHocException
     {
         AdHocClassFile[] javaClassFiles = 
-            adHocClassLoader.getAllAdHocClassFiles().toArray( new AdHocClassFile[ 0 ] );
+            adHocClassLoader.allAdHocClassFiles().toArray( new AdHocClassFile[ 0 ] );
         URI[] uris = new URI[ javaClassFiles.length ];
         for( int i = 0; i < javaClassFiles.length; i++ )
         {

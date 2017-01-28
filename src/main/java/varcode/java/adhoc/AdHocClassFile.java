@@ -221,9 +221,9 @@ public class AdHocClassFile
             // so NOW i should 
             super.close();
             //here is where I should register the class with the 
-            adHocClassFile.classLoader.loadAdHocClass( adHocClassFile );
+            adHocClassFile.classLoader.load( adHocClassFile );
             this.isWritten.set( true );
-            //this.classLoader.loadAdHocClass( this );            
+            //this.classLoader.load( this );            
         }
         
     }

@@ -40,7 +40,7 @@ public class CompilerFlags
         
         //compiling the workspace normally should work just fine
         AdHocClassLoader adHocClassLoader = AdHoc.compile( ws );
-        assertNotNull( adHocClassLoader.getClassOf( _c ) );
+        assertNotNull( adHocClassLoader.findClass( _c ) );
         
         try
         {

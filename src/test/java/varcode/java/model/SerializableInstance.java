@@ -54,7 +54,7 @@ public class SerializableInstance
             
             AdHocClassLoader classLoader = 
                 AdHoc.compile( _SerializableBean );
-            Class myBeanClass = classLoader.getClassOf( _SerializableBean );
+            Class myBeanClass = classLoader.findClass( _SerializableBean );
                     //_SerializableBean.loadClass();            
             Object instance = Java.instance( myBeanClass, d );
             

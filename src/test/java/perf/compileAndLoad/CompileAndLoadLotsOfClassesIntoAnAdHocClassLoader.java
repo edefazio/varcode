@@ -5,7 +5,7 @@ import java.util.UUID;
 import varcode.java.adhoc.AdHoc;
 import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.adhoc.AdHocJavaFile;
-import varcode.java.adhoc.ClassLoaderUtils;
+import varcode.java.adhoc.AdHocClassPublisher;
 import varcode.java.adhoc.Workspace;
 import varcode.java.model._class;
 
@@ -53,7 +53,7 @@ public class CompileAndLoadLotsOfClassesIntoAnAdHocClassLoader
         AdHocClassLoader adHocCL = compileAllAtSameTimeInOneWorkspace( JF ); //_cs );
         
         long start = System.currentTimeMillis();
-        ClassLoaderUtils.promoteAdHocClassesToParentClassLoader( adHocCL );        
+        AdHocClassPublisher.publishToParent( adHocCL );        
         long end = System.currentTimeMillis();
         
         System.out.println( "Promoting, took "+ (end - start) );

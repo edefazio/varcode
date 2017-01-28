@@ -9,7 +9,7 @@ import junit.framework.TestCase;
 import varcode.java.Java;
 import varcode.java.adhoc.AdHoc;
 import varcode.java.adhoc.AdHocClassLoader;
-import varcode.java.adhoc.ClassLoaderUtils;
+import varcode.java.adhoc.AdHocClassPublisher;
 import varcode.java.model._class;
 
 /**
@@ -35,7 +35,7 @@ public class AdHocToParentClassLoad
         ClassLoader parent = adHocClassLoader.getParent();
         
         
-        ClassLoaderUtils.promoteAdHocClassesToParentClassLoader( adHocClassLoader );
+        AdHocClassPublisher.publishToParent( adHocClassLoader );
         
         Class cl = adHocClassLoader.loadClass( _c.getQualifiedName() );
         
@@ -67,10 +67,10 @@ public class AdHocToParentClassLoad
         ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
         
         
-        ClassLoaderUtils.defineClass( 
+        AdHocClassPublisher.publishClass( 
             systemClassLoader, 
             _c.getQualifiedName(),
-            adHocCL.getAdHocClassFile( _c ).toByteArray() );                
+            adHocCL.findClassFile( _c ).toByteArray() );                
     }
     
     public void testDefineClassInParentClassLoader()
@@ -86,10 +86,10 @@ public class AdHocToParentClassLoad
         ClassLoader parentClassLoader = adHocCL.getParent();
         
         //define the class in the parent ClassLoader
-        ClassLoaderUtils.defineClass( 
+        AdHocClassPublisher.publishClass( 
             parentClassLoader, 
             _c.getQualifiedName(), 
-            adHocCL.getAdHocClassFileByName( _c.getQualifiedName() ).toByteArray() );
+            adHocCL.findClassFile( _c.getQualifiedName() ).toByteArray() );
         
         try
         {

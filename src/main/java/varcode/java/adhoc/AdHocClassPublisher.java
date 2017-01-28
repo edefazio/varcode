@@ -20,7 +20,11 @@ import java.lang.reflect.Method;
 import java.net.URL;
 
 /**
- * Normally Not a fan of "Util" methods, but in this case, we are doing something
+ * Publishes AdHocClasses to more standard {@link ClassLoader}s (i.e. 
+ * the SystemClassLoader) for the purpose of using AdHocClasses in the 
+ * same manner as classes loaded directly from of the class path at startup.
+ * 
+ * Normally Not a fan of "Util" classes, but in this case, we are doing something
  * "nonstandard" in order to have some behavior (load custom Class files into 
  * a (parent) ClassLoader that we don't necessarily "own") that is valuable
  * but not intrinsically supported by the JVM.
@@ -35,6 +39,7 @@ import java.net.URL;
  * <A HREF="https://github.com/OpenHFT/Java-Runtime-Compiler/blob/master/compiler/src/main/java/net/openhft/compiler/CompilerUtils.java">OpenHFT</A> 
  * project
  * 
+ * Here I'm using the word "Publish" to mean "Make Generally Known"
  * 
  * I might want to "barrow" another method, (set ClassPath) from the above OpenHFT
  * code, because, well it'd be nice to: 
@@ -45,12 +50,12 @@ import java.net.URL;
  *  <LI>update the ClassPath and include the newly minted jar
  *  <LI>run code this way 
  * </OL>
- * NOTE: if I dio this I need to reload the Javac compiler tool to include the
+ * NOTE: if I do this I need to reload the Javac compiler tool to include the
  * updated classpath)
  * 
  * @author M. Eric DeFazio eric@varcode.io
  */
-public class ClassLoaderUtils
+public class AdHocClassPublisher
 {
     /** 
      * THIS is a reference to the method :
@@ -59,10 +64,21 @@ public class ClassLoaderUtils
      * which is "protected" and "final" by default.
      * 
      * we have to "hack" the JVM accessibility to make this method available
-     * to us at runtime (so we can define Classes via bytecode)
+     * to us at runtime (so we can define Classes via bytecode into a ClassLoader
+     * that we dont "own")
      */
     private static final Method DEFINE_CLASS_METHOD;
     
+    /**
+     * This is a reference to the method :
+     *  {@link java.lang.ClassLoader#definePackage(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.net.URL) 
+     * 
+     * which is protected by default.
+     * 
+     * we have to "hack" the JVM accessibility to make this method available
+     * to us at runtime (so we can define Packages into a ClassLoader
+     * that we dont "own")
+     */
     private static final Method DEFINE_PACKAGE_METHOD;
     
     static 
@@ -70,8 +86,7 @@ public class ClassLoaderUtils
         try 
         {
             DEFINE_CLASS_METHOD = 
-                ClassLoader.class.getDeclaredMethod(
-                    "defineClass", 
+                ClassLoader.class.getDeclaredMethod( "defineClass", 
                     String.class, //className
                     byte[].class, //class bytecode
                     int.class, //start index into the byte Array
@@ -100,14 +115,14 @@ public class ClassLoaderUtils
     }
 
     /**
-     * "Promotes" AdHocClassFiles loaded in the {@link AdHocClassLoader} to the 
-     * AdHocClassLoader's Parent {@code ClassLoader}.
-     * 
-     * NOTE: this does some "tricks" to make the defineClass method accessible
+     * "Promotes" all {@link AdHocClassFile}s loaded in the 
+     * {@link AdHocClassLoader} to the parent {@code ClassLoader}.
+     *
+     * Allows a Class that was defined in an AdHoc Manner to be "visible" to things like Class.forName(...), and Serialization.
+     * NOTE: this does some "tricks" to make the publishClass method accessible
      * and within the existing "ProtectionDomain"
-     * 
      * this allows us to circumvent having to either:
-     * <UL>
+     *  <UL>
      *  <LI> Write classes to a Path already on the classpath then request
      *       the classloader to load the class
      *  <LI> Update the classpath to include the new path (this also requires
@@ -120,43 +135,45 @@ public class ClassLoaderUtils
      * @param adHocClassLoader the AdHocClassLoader that is a Child of an existing
      * (parent) ClassLoader
      */
-    public static void promoteAdHocClassesToParentClassLoader( 
-        AdHocClassLoader adHocClassLoader )
+    public static void publishToParent( AdHocClassLoader adHocClassLoader )
     {
         AdHocClassFile[] adHocClassFiles = 
-            adHocClassLoader.getAllAdHocClassFiles().toArray( 
+            adHocClassLoader.allAdHocClassFiles().toArray( 
                 new AdHocClassFile[ 0 ] );
         
         Package[] packages = 
-            adHocClassLoader.getAllAdHocPackages().toArray( new Package[ 0 ] );
+            adHocClassLoader.allAdHocPackages().toArray( new Package[ 0 ] );
         
         ClassLoader parent = adHocClassLoader.getParent();
         //System.out.println( "Promoting Packages " );
         for( int i = 0; i < packages.length; i++ )
         {
             System.out.println( "Promoting Package "+ packages[ i ] );
-            Package p = definePackage( parent, packages[ i ] );
+            Package p = publishPackage( parent, packages[ i ] );
             System.out.println( p );
         }
         for( int i = 0; i < adHocClassFiles.length; i++ )
         {
-            defineClass( parent, adHocClassFiles[ i ] );
+            AdHocClassPublisher.publishClass( parent, adHocClassFiles[ i ] );
         }
         //since we loaded the classes in the Parent class loader, 
         //we dont need to adHoc copies anymore, they will still "resolve"
         // through this
-        adHocClassLoader.unloadAllAdHocClasses();
+        adHocClassLoader.unloadAll();
     }
 
     /** 
      * Call the definePackage method on a given classLoader instance
      * (Probably the parent classLoader of the AdHocClassLoader)
      * 
-     * @param classLoader
-     * @param packageDef
-     * @return 
+     * @param classLoader the classLoader to publish the package
+     * @param packageDef the definition of the package
+     * @return the Package Object that was created
+     * @throws AdHocException if an error occurs
      */
-    public static Package definePackage( ClassLoader classLoader, Package packageDef )
+    public static Package publishPackage( 
+        ClassLoader classLoader, Package packageDef )
+        throws AdHocException
     {
         try
         {
@@ -177,24 +194,28 @@ public class ClassLoaderUtils
         }
         catch( IllegalAccessException e ) 
         {
-            throw new AssertionError( e );
+            throw new AdHocException( "Illegal Access defining package", e );
         } 
         catch( InvocationTargetException e ) 
         {
             //noinspection ThrowInsideCatchBlockWhichIgnoresCaughtException
-            throw new AssertionError( e.getCause() );
+            throw new AdHocException( 
+                "Invocation Target Exception definining package", e.getCause() );
         }
     }
     /**
-     * This was "lifted" from OpenHFT
-     * Define a class for byte code.
-     *
+     * Publishes a class (defined by a name and a byte[]) to the invoking 
+     * Threads' {@link ClassLoader}
+     * <BLOCKQUOTE>
+     * NOTE: Code was "lifted" from OpenHFT's defineClass method
+     * </BLOCKQUOTE>
+     * 
      * @param className expected to load.
      * @param bytes     of the byte code.
      */
-    public static void defineClass( String className, byte[] bytes ) 
+    public static void publishClass( String className, byte[] bytes ) 
     {
-        defineClass(
+        AdHocClassPublisher.publishClass(
             Thread.currentThread().getContextClassLoader(), className, bytes);
     }
 
@@ -204,30 +225,33 @@ public class ClassLoaderUtils
      * @param adHocClassFile the AdHocClassFile
      * @return the Class
      */
-    public static Class defineClass( 
+    public static Class publishClass( 
         ClassLoader targetClassLoader, AdHocClassFile adHocClassFile )
     {
-        return defineClass( 
+        return AdHocClassPublisher.publishClass( 
             targetClassLoader, 
             adHocClassFile.getQualifiedName(), 
             adHocClassFile.toByteArray() );
     }
     
     /**
-     * This was "lifted" from OpenHFT
-     * Define a class for byte code.
+     * Publishes a Class (via byte[]) to a {@link ClassLoader}
+ 
+ This was "lifted" from OpenHFT's publishClass() method 
+ publishes a class to a specific {@link ClassLoader} (one that we don't
+     * own)
      *
-     * @param classLoader to load the class into.
+     * @param targetClassLoader to load the class into.
      * @param className   expected to load.
      * @param bytes       of the byte code.
+     * @return 
      */
-    public static Class defineClass(
-        ClassLoader classLoader, String className, byte[] bytes) 
+    public static Class publishClass(
+        ClassLoader targetClassLoader, String className, byte[] bytes ) 
     {
         try 
         {
-            return (Class)DEFINE_CLASS_METHOD.invoke(
-                classLoader, 
+            return (Class)DEFINE_CLASS_METHOD.invoke( targetClassLoader, 
                 className, 
                 bytes, 
                 0, 

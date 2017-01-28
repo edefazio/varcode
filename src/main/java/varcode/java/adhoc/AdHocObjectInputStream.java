@@ -22,11 +22,9 @@ import java.io.ObjectStreamClass;
 
 /**
  * Extension of an ObjectInputStream that uses a provided ClassLoader
- * to store/serialize or load/deserialize an object that was created 
- * and loaded by a potentially custom AdHocClassLoader.
- * 
- * NOTE: this InputStream can use ANY ClassLoader (not only AdHocClassLoader
- * instances)
+ * (usually an AdHocClassLoader) to store/serialize or load/deserialize 
+ * an object that was created and loaded by a potentially 
+ * custom {@link ClassLoader}.
  * 
  * @author M. Eric DeFazio eric@varcode.io
  */

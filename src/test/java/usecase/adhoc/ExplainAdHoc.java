@@ -37,7 +37,7 @@ public class ExplainAdHoc
         AdHocClassLoader adHocClassLoader = AdHoc.compile( adHocJavaFile );
         
         //**4) return the Loaded Class 
-        Class adHocClass  = adHocClassLoader.getAdHocClassBySimpleName( _c.getName() );
+        Class adHocClass  = adHocClassLoader.findClassBySimpleName( _c.getName() );
         
         //**5) create a new instance of the Class
         Object adHocInstance = Java.instance( adHocClass );

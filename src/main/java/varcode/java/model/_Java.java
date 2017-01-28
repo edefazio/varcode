@@ -167,7 +167,7 @@ public interface _Java
         public final Class loadClass()
         {
             return AdHoc.compile( toJavaFile() )
-                .getAdHocClassBySimpleName( getName() );
+                .findClassBySimpleName( getName() );
         }
             
         /**

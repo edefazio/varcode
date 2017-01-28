@@ -50,7 +50,7 @@ public class AdHocClassLoaderTest
             //expected
         }
         //verify we don't have anything loaded in the AdHocClassMap    
-        assertEquals( 0, ahcl.getAdHocClassMap().size() );
+        assertEquals( 0, ahcl.classMap().size() );
         
         ClassLoader parent = ahcl.getParent();
         if( parent instanceof URLClassLoader )

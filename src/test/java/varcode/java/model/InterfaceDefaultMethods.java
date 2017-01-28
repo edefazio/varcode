@@ -56,7 +56,7 @@ public class InterfaceDefaultMethods
             AdHoc.compile( THE_INTERFACE, THE_IMPLEMENTER );
             //Workspace.compileNow( THE_INTERFACE, THE_IMPLEMENTER );
         
-        Class implc = adHocClassLoader.getClassOf( THE_IMPLEMENTER );
+        Class implc = adHocClassLoader.findClass( THE_IMPLEMENTER );
         Object implObject = Java.instance( implc );
         //calls the default method on the implementation (defined on the interface)
         assertNotNull( Java.call( implObject, "getID" ) );        
@@ -88,7 +88,7 @@ public class InterfaceDefaultMethods
         AdHocClassLoader adHocClassLoader = 
             AdHoc.compile( THE_INTERFACE, THE_IMPLEMENTER_OVERRIDE );
         
-        Class implc = adHocClassLoader.getClassOf( THE_IMPLEMENTER_OVERRIDE );
+        Class implc = adHocClassLoader.findClass( THE_IMPLEMENTER_OVERRIDE );
         Object implObject = Java.instance( implc );
         //calls the overridden method on the implementation (defined on the interface)
         assertEquals( "OVERRIDE", Java.call( implObject, "getID" ) );        

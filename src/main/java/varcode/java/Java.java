@@ -197,7 +197,7 @@ public class Java
         adHocClassLoader = AdHoc.compile( Workspace.of( javaFile ), 
             adHocClassLoader,             
             compilerOptions );
-        return adHocClassLoader.getClassOf( javaFile );
+        return adHocClassLoader.findClass( javaFile );
     }
     
     /**
@@ -550,8 +550,8 @@ public class Java
         AdHocClassLoader adHocClassLoader = 
             AdHoc.compile( _c.toJavaFile( ) );
         
-        Class c = adHocClassLoader.getClassOf( _c );
-        //Class c = adHocClassLoader.getClassByName( _c.getQualifiedName() );
+        Class c = adHocClassLoader.findClass( _c );
+        //Class c = adHocClassLoader.classByName( _c.getQualifiedName() );
         return instance( c, constructorArgs );
     }
     

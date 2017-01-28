@@ -57,7 +57,7 @@ public class AdHocClassLoader
      * 
      * @return a Set of Packages that were created for housing adHocFiles
      */
-    public Set<Package> getAllAdHocPackages()
+    public Set<Package> allAdHocPackages()
     {
         return adHocPackages;
     }
@@ -78,13 +78,15 @@ public class AdHocClassLoader
         classNameToAdHocClass = new HashMap<String, AdHocClassFile>();
         this.pckgDefine = pkgDefine;
     }
+    
     /** 
      * Adds the AdHocClassFile to the {@code classNameToAdHocClass} Map
      * @param adHocClassFile 
      */
-    public void loadAdHocClass( AdHocClassFile adHocClassFile ) 
+    public void load( AdHocClassFile adHocClassFile ) 
     {
-        classNameToAdHocClass.put( adHocClassFile.getName(), adHocClassFile );
+        classNameToAdHocClass.put( 
+            adHocClassFile.getName(), adHocClassFile );
     }
 
     /** 
@@ -92,7 +94,7 @@ public class AdHocClassLoader
      * in Memory
      * @return the Map of classname to {@link AdHocClassFile}
      */
-    public Map<String, AdHocClassFile>getAdHocClassMap()
+    public Map<String, AdHocClassFile>classMap()
     {
     	return classNameToAdHocClass;
     }
@@ -101,14 +103,14 @@ public class AdHocClassLoader
      * Returns a Collection of all the AdHocClasses
      * @return all AddHocClassFiles
      */
-    public Collection<AdHocClassFile> getAllAdHocClassFiles()
+    public Collection<AdHocClassFile> allAdHocClassFiles()
     {
         return this.classNameToAdHocClass.values();
     }
     
     /**
      * Loads the class by name (in this classLoader <B>or the parent classLoader</B>) 
-     * (Unlike getClassByName(), throws an UNCHECKED VarException and not a 
+     * (Unlike classByName(), throws an UNCHECKED VarException and not a 
      * CheckedException if the class is not found)
      * 
      * @param qualifiedClassName the fully qualified class name to resolve 
@@ -162,13 +164,21 @@ public class AdHocClassLoader
     
     
     /**
+     * Finds and returns an {@link AdHocClassFile} 
      * 
-     * @param model the model to look for
+     * @param model any ClassNameQualified:
+     * <UL>
+     *  <LI>{@link varcode.java.model._class} 
+     *  <LI>{@link varcode.java.model._enum} 
+     *  <LI>{@link varcode.java.model._interface}
+     *  <LI>{@link varcode.java.model._annotationType} 
+     *  <LI>{@link AdHocJavaFile}
+     * </UL>
      * @return the AdHocClassFile containing the compiled class bytecode
      */
-    public AdHocClassFile getAdHocClassFile( ClassNameQualified model )
+    public AdHocClassFile findClassFile( ClassNameQualified model )
     {
-        return getAdHocClassFileByName( model.getQualifiedName() );
+        return findClassFile( model.getQualifiedName() );
     }
     
     /**
@@ -182,9 +192,10 @@ public class AdHocClassLoader
      * @return the AdHocClassFile
      * @throws AdHocException if there is a problem finding/loading the class
      */
-    public AdHocClassFile getAdHocClassFileByName( String qualifiedClassName )
+    public AdHocClassFile findClassFile( String qualifiedClassName )
     {
-        AdHocClassFile adHocClassFile = classNameToAdHocClass.get( qualifiedClassName );
+        AdHocClassFile adHocClassFile = 
+            classNameToAdHocClass.get( qualifiedClassName );
         if( adHocClassFile == null )
         {
             throw new AdHocException(
@@ -197,10 +208,10 @@ public class AdHocClassLoader
      * Finds the first class loaded within THIS classLoader that has this
      * simple name (i.e. no .'s )
  DO:
- Class c = getAdHocClassBySimpleName( "Map" ); 
+ Class c = findClassBySimpleName( "Map" ); 
  
  DON'T: 
- Class c = getAdHocClassBySimpleName( "java.util.Map" );
+ Class c = findClassBySimpleName( "java.util.Map" );
  
  NOTE, this method Does NOT check the parent classLoader for this class
  NOR does it differentiate between two classes that have the same SimpleName 
@@ -210,7 +221,7 @@ public class AdHocClassLoader
      * @return the Class with this name or null if it is not found
      * @throws AdHocException if there is no class found with this simple name
      */
-    public Class<?> getAdHocClassBySimpleName( String simpleName )
+    public Class<?> findClassBySimpleName( String simpleName )
         throws AdHocException
     {
         String[] classNames = 
@@ -233,7 +244,7 @@ public class AdHocClassLoader
             {
                 try
                 {
-                    return findClass( classNames[ i ] );
+                    return AdHocClassLoader.this.findClass( classNames[ i ] );
                 }
                 catch( ClassNotFoundException cnfe )
                 {
@@ -250,12 +261,12 @@ public class AdHocClassLoader
      * Allows you to return the Class associated with an {@link ClassNameQualified}
      * ... examples of {@link ClassNameQualified}s are:
      * <UL>
-     *   <LI> _class            adHocClassLoader.getClassOf( _c );
-   <LI> _interface        adHocClassLoader.getClassOf( _i );
-   <LI> _enum             adHocClassLoader.getClassOf( _e ); 
-   <LI> _annotationType   adHocClassLoader.getClassOf( _a );
-   <LI> AdHocJavaFile     adHocClassLoader.getClassOf( adHocJavaFile );
-   <LI> AdHocClassFile    adHocClassLoader.getClassOf( adHocClassFile );
+     *   <LI> _class            adHocClassLoader.findClass( _c );
+   <LI> _interface        adHocClassLoader.findClass( _i );
+   <LI> _enum             adHocClassLoader.findClass( _e ); 
+   <LI> _annotationType   adHocClassLoader.findClass( _a );
+   <LI> AdHocJavaFile     adHocClassLoader.findClass( adHocJavaFile );
+   <LI> AdHocClassFile    adHocClassLoader.findClass( adHocClassFile );
  </UL>  
      *   
      * @param classNameQualified any entity that is class name qualified
@@ -263,10 +274,10 @@ public class AdHocClassLoader
      * @throws AdHocException if a Class for the entity cannot be found in the 
      * classLoader
      */
-    public Class<?> getClassOf( ClassNameQualified classNameQualified )
+    public Class<?> findClass( ClassNameQualified classNameQualified )
         throws AdHocException
     {
-        return getClassByName( classNameQualified.getQualifiedName() );
+        return classByName( classNameQualified.getQualifiedName() );
     }
     
     /**
@@ -278,29 +289,30 @@ public class AdHocClassLoader
      * NOTE: searches AdHocClassFiles that match the name first, then
      * check the Parent ClassLoader for the Class.
      * 
-     * @param className the name of the class to resolve
+     * @param qualifiedClassName the name of the class to resolve
      * @return the Class
      * @throws AdHocException (wrapping a Checked RuntimeException) 
      * if the class cannot be found
      */
-    public Class<?> getClassByName( String className )
+    public Class<?> classByName( String qualifiedClassName )
         throws AdHocException
     {
         try 
         {
-            return findClass( className );
+            return AdHocClassLoader.this.findClass(qualifiedClassName );
         }
         catch( ClassNotFoundException ex ) 
         {
             throw new AdHocException(
-                "Could not resolve class \"" + className + "\"", ex);
+                "Could not resolve class \"" + qualifiedClassName + "\"", ex);
         }
     }
         
     /**
      * Remove ALL adHoc Classes from this Class Loader
+     * 
      */
-    public void unloadAllAdHocClasses()
+    public void unloadAll()
     {
         this.classNameToAdHocClass.clear();
     }    
@@ -310,7 +322,7 @@ public class AdHocClassLoader
     {
         return "AdHocClassLoader@" + Integer.toHexString( this.hashCode() ) + System.lineSeparator() + 
             "  child of " + this.getParent().toString() + System.lineSeparator() +
-            "    " + this.getAllAdHocClassFiles();
+            "    " + this.allAdHocClassFiles();
     }
         
     /**
@@ -362,7 +374,8 @@ public class AdHocClassLoader
         String implTitle, String implVersion, String implVendor, URL sealBase)
         throws IllegalArgumentException
     {
-        Package pkg = super.definePackage( name, specTitle, specVersion, specVendor,
+        Package pkg = super.definePackage( 
+            name, specTitle, specVersion, specVendor,
             implTitle, implVersion, implVendor, sealBase );        
         
         this.adHocPackages.add( pkg );

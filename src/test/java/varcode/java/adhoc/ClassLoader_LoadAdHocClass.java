@@ -25,7 +25,7 @@ public class ClassLoader_LoadAdHocClass
             .field("public int count = 1;")
             .field("public String name = \"Eric\";") ) );
         
-        AdHocClassFile c = adHocCL.getAdHocClassFileByName( "A" ); 
+        AdHocClassFile c = adHocCL.findClassFile( "A" ); 
             
         ClassLoader cl = ClassLoader.getSystemClassLoader();
         

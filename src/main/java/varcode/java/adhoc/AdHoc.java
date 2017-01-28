@@ -119,7 +119,7 @@ public class AdHoc
         Workspace ws = new Workspace();
         ws.add( fileModel );
         AdHocClassLoader adHocClassLoader = compile( ws );
-        return adHocClassLoader.getAdHocClassFileByName( fileModel.getQualifiedName() );
+        return adHocClassLoader.findClassFile( fileModel.getQualifiedName() );
     }
     
     

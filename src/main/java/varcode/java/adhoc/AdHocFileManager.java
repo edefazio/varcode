@@ -115,7 +115,7 @@ public class AdHocFileManager
             List<JavaFileObject> javaFiles = new ArrayList<JavaFileObject>();
             
             //adds all the Class files in the AdHocClassLoader
-            javaFiles.addAll( this.adHocClassLoader.getAdHocClassMap().values() );
+            javaFiles.addAll( this.adHocClassLoader.classMap().values() );
             System.out.println( javaFiles );
             Iterator<JavaFileObject> it = theList.iterator();
             while( it.hasNext() )
@@ -158,7 +158,7 @@ public class AdHocFileManager
     {
         // check if we already loaded this class
         AdHocClassFile adHocClass
-            = this.adHocClassLoader.getAdHocClassMap().get( className );
+            = this.adHocClassLoader.classMap().get( className );
 
         if( adHocClass != null )
         {   // return the already-loaded class

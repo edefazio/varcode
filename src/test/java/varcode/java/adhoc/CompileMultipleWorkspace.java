@@ -51,11 +51,11 @@ public class CompileMultipleWorkspace
             AdHoc.compile( _IDGEN, _UUIDGEN, _RANDOMGEN );       
         
         Object uuidGenInstance = //create instance of the class
-            Java.instance( adHocClassLoader.getClassOf( _UUIDGEN ) );
+            Java.instance( adHocClassLoader.findClass( _UUIDGEN ) );
         
         System.out.println( "ID = " + Java.call( uuidGenInstance, "genId" ) );
         
-        Class randomGenEnum = adHocClassLoader.getClassOf( _RANDOMGEN );
+        Class randomGenEnum = adHocClassLoader.findClass( _RANDOMGEN );
         //get the INSTANCE field/constant
         Object enumINSTANCE = Java.getFieldValue( randomGenEnum, "INSTANCE" );
         //
