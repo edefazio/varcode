@@ -15,6 +15,7 @@
  */
 package varcode.java.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import varcode.context.Context;
 import varcode.context.Directive;
@@ -208,11 +209,43 @@ public interface _Java
             return JavaAuthor.toJavaFile( className, template, context, directives );            
         }
         
+        public final List<String>getAllClassNames()
+        {
+            String qualifiedName = getQualifiedName();
+            List<String> cn = getAllNestClassNames( qualifiedName );
+            cn.add( qualifiedName );
+            return cn;
+        }
+        
+        public final List<String> getAllNestClassNames()
+        {
+            return getAllNestClassNames( new ArrayList<String>(), getQualifiedName() );
+        }
+        
+        public final List<String> getAllNestClassNames( String qualifiedClassName )
+        {
+            return getAllNestClassNames( new ArrayList<String>(), qualifiedClassName );
+        }
         /**
          * Returns a String[] representing all class Names (for the top level and
          * all nested classes, enums, interfaces)
-         *
-         * @return all Names for the
+         * NOTE: uses the canonical form (i.e. ALL '.' paths)
+         * i.e.
+         * <PRE>
+         * package io.ef;
+         * 
+         * public class Declaring
+         * {
+         *    public static class Nested
+         *    {}
+         * }
+         * </PRE>
+         * would use "io.ef.Declaring.Nested" for the nested class
+         * (NOT io.ef.Declaring$Nested)
+         * 
+         * @param nestClassNames the accumulated Nested class names so far
+         * (since this recursively looks through all nests of nests of nests)
+         * @return all Names for the nest class names
          */
         @Override
         public final List<String> getAllNestClassNames(
@@ -222,7 +255,7 @@ public interface _Java
             {
                 _model nest = this.getNests().getAt( i );
                 String nestedClassName = nest.getName();
-                String thisNestClassName = containerClassName + ".$" + nestedClassName;
+                String thisNestClassName = containerClassName + "." + nestedClassName;
                 nestClassNames.add( thisNestClassName );
                 for( int j = 0; j < nest.getNestCount(); j++ )
                 {

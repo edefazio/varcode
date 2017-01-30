@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package usecase.adhoc;
+package howto.java.adhoc;
 
 import junit.framework.TestCase;
 import varcode.java.Java;
@@ -13,13 +13,12 @@ import varcode.java.adhoc.AdHocClassPublisher;
 import varcode.java.model._class;
 
 /**
- *
+ * Test that 
  * @author Eric
  */
-public class AdHocToParentClassLoad
+public class PublishClassesToParentClassLoader
     extends TestCase
 {
-    
     
     public void testPromoteAdHocClasses()
         throws Exception

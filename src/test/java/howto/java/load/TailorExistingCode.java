@@ -1,4 +1,4 @@
-package usecase.load;
+package howto.java.load;
 
 import varcode.java.Java;
 import varcode.java.adhoc.Export;

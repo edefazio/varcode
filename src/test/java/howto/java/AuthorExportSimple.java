@@ -3,7 +3,7 @@
  * To change this template toFile, choose Tools | Templates
  * and open the template in the editor.
  */
-package usecase.model;
+package howto.java;
 
 import varcode.java.adhoc.Export;
 import varcode.java.model._class;

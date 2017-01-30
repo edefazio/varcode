@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package usecase.load;
+package howto.java.load;
 
 import varcode.java.load.*;
 import junit.framework.TestCase;

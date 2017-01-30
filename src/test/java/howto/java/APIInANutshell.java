@@ -1,4 +1,4 @@
-package usecase.model;
+package howto.java;
 
 import java.util.UUID;
 import varcode.java.Java;

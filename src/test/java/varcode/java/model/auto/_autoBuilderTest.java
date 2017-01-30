@@ -23,7 +23,7 @@ public class _autoBuilderTest
     public void testNoFields()
     {
         
-        //_class _t2 = apply( CONSTRUCTOR, GETTERS )
+        //_class _t2 = macro( CONSTRUCTOR, GETTERS )
         //    .to( _class.of( "Immutable") );
         
         _class _t2 = _class.of( "Immutable" );
@@ -44,7 +44,7 @@ public class _autoBuilderTest
                 .field( "private final int count;" );
         
         _auto.to( _immut ).apply( CONSTRUCTOR, BUILDER, EQUALS );
-        //_auto.to( _immut ).apply( CONSTRUCTOR, GETTERS, BUILDER, EQUALS, HASHCODE );
+        //_auto.to( _immut ).macro( CONSTRUCTOR, GETTERS, BUILDER, EQUALS, HASHCODE );
         
         
         System.out.println( _immut );

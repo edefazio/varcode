@@ -112,7 +112,7 @@ public enum _autoSettersFluent
     }
     
     public static final Template SIGNATURE = BindML.compile(
-        "public {+className+} set{+$Name+}( {+type+} {+name+} )" );
+        "public {+className+} set{+Name+}( {+type+} {+name+} )" );
 
     public static final Template BODY = BindML.compile(
         "this.{+name+} = {+name+};" + "\r\n"

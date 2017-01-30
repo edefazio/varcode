@@ -1,4 +1,4 @@
-package quickstart.java;
+package howto.java;
 
 import varcode.java.model._class;
 

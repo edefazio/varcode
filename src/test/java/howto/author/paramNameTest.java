@@ -1,4 +1,4 @@
-package usecase.author;
+package howto.author;
 
 import junit.framework.TestCase;
 import varcode.author.Author;

@@ -1,4 +1,4 @@
-package usecase.model;
+package howto.java;
 
 import java.io.Serializable;
 import junit.framework.TestCase;

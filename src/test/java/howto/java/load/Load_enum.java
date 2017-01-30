@@ -1,4 +1,4 @@
-package usecase.load;
+package howto.java.load;
 
 import example.ExEnum;
 import junit.framework.TestCase;

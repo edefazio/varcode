@@ -22,7 +22,7 @@ import varcode.java.model._enum;
 import varcode.java.model._fields;
 import varcode.java.model._fields._field;
 import varcode.java.model._methods._method;
-import varcode.java.model.auto._autoApply._autoApplyOrdered;
+import varcode.java.model.auto._autoApply._autoMacro;
 
 /**
  * API for applying "Automatic Programming" / Macros  to _class models.
@@ -34,6 +34,7 @@ import varcode.java.model.auto._autoApply._autoApplyOrdered;
  */
 public class _auto
 {   
+    
     public static final _autoBuilder BUILDER = _autoBuilder.INSTANCE;
     public static final _autoConstructor CONSTRUCTOR = _autoConstructor.INSTANCE;
     public static final _autoEquals EQUALS = _autoEquals.INSTANCE;
@@ -46,19 +47,26 @@ public class _auto
     public static final _autoMethodJavadocs METHOD_JAVADOCS = _autoMethodJavadocs.INSTANCE;
     public static final _autoToString TO_STRING = _autoToString.INSTANCE;
     
-    //I COULD do a serialVersionUID, but for now, it's fine
-    
+    public static class macro
+    {
+        /**
+         * A MACRO to apply to a _class to make it an 
+         * Immutable Data Class
+         */
+        public static final _autoMacro IMMUTABLE_DATA_CLASS =         
+            macro( CONSTRUCTOR, BUILDER, EQUALS, HASHCODE, GETTERS, TO_STRING );
+    }
     /**
-     * Returns an instance of an _autoApplyOrdered 
+     * Returns an instance of an _autoMacro 
      * (an ordered list of autoprogramming macros)
-     * that can be applied to
+     * that can be applied to a _class
      * 
      * @param applyInOrder
      * @return 
      */
-    public static _autoApplyOrdered apply( _autoApply...applyInOrder )
+    public static _autoMacro macro( _autoApply...applyInOrder )
     {
-        return new _autoApplyOrdered( applyInOrder );
+        return new _autoMacro( applyInOrder );
     }
     
     

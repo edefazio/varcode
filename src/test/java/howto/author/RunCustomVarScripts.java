@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package usecase.author;
+package howto.author;
 
 import junit.framework.TestCase;
 import varcode.author.Author;

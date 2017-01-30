@@ -1,4 +1,4 @@
-package usecase.load;
+package howto.java.load;
 
 import junit.framework.TestCase;
 import varcode.java.Java;

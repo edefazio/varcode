@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package usecase.model;
+package howto.java;
 
 import varcode.author.Author;
 import varcode.java.model._methods;

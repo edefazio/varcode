@@ -1,4 +1,4 @@
-package usecase.adhoc;
+package howto.java.adhoc;
 
 import java.util.UUID;
 import varcode.java.Java;

@@ -363,6 +363,12 @@ public class _methods
             return this;
         }
 
+        public _method setParameters( _parameters params )
+        {
+            this.signature.setParameters( params );
+            return this;
+        }
+        
         public _method setParameters( String parameters )
         {
             this.signature.params = _parameters.of( parameters );
@@ -785,6 +791,7 @@ public class _methods
             {
                 return new _signature( prototype );                
             }
+            
 
             private _modifiers modifiers;
             private _typeParams genericTypeParams;
@@ -815,6 +822,11 @@ public class _methods
                 visitor.visit( this );
             }
 
+            public _signature setParameters( _parameters _ps )
+            {
+                this.params = _ps;
+                return this;
+            }
             public _signature setGenericTypeParams( _typeParams _tp )
             {
                 this.genericTypeParams = _tp;

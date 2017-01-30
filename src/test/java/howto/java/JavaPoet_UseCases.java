@@ -1,4 +1,4 @@
-package usecase.model;
+package howto.java;
 
 import varcode.author.Author;
 import varcode.java.model._anonClass;

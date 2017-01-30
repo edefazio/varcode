@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package usecase.load;
+package howto.java.load;
 
 import example.ExAnnotationType;
 import java.util.UUID;

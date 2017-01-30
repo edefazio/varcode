@@ -38,6 +38,8 @@ import varcode.java.model._parameters._parameter;
 import varcode.java.model._var;
 
 /**
+ * Explain "Why?" we used the _ (underscore)
+ * convention for referring to 
  * 
  * <BLOCKQUOTE>"_" = "meta language model of..."</BLOCKQUOTE>
  * 

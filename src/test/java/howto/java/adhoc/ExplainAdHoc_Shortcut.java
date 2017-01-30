@@ -1,4 +1,4 @@
-package usecase.adhoc;
+package howto.java.adhoc;
 
 import varcode.java.Java;
 import varcode.java.model._class;

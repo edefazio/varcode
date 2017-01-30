@@ -17,6 +17,7 @@ package varcode.java.model;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
@@ -326,6 +327,15 @@ public class _imports
                 (((_imports)importClass).importClasses) );
             this.staticImports.addAll(
                 (((_imports)importClass).staticImports) );
+            return this;
+        }
+        if( importClass instanceof List )
+        {
+            List l = (List)importClass;
+            for( int i = 0; i< l.size(); i++ )
+            {
+                addImport( imports, l.get( i ), isStatic );
+            }
             return this;
         }
         if( importClass instanceof Class )

@@ -26,6 +26,7 @@ import varcode.java.model._class;
  */
 public interface _autoApply
 {
+        
     /** 
      * apply the _automatic modification and return the modified _class
      * @param _c model of a class to be applied
@@ -37,40 +38,40 @@ public interface _autoApply
      * An ordered list of auto-programming "macros" that can be applied to 
      * any _class model.
      */
-    public static class _autoApplyOrdered
+    public static class _autoMacro
         implements _autoApply
     {
         /** list of _autoApply macros to be applied in order*/
         private List<_autoApply>toApply = new ArrayList<_autoApply>();
         
-        public static _autoApplyOrdered of( _autoApply... applyInOrder )
+        public static _autoMacro of( _autoApply... applyInOrder )
         {
-            return new _autoApplyOrdered( applyInOrder );
+            return new _autoMacro( applyInOrder );
         }
         
         /** 
-         * construct a orderd list of _autoprogramming macros to be applied
+         * construct a ordered list of auto programming macros to be applied
          * in order
-         * @param applyInOrder 
+         * @param macros 
          */
-        public _autoApplyOrdered( _autoApply...applyInOrder )
+        public _autoMacro( _autoApply...macros )
         {
-            for( int i = 0; i < applyInOrder.length; i++ )
+            for( int i = 0; i < macros.length; i++ )
             {
-                toApply.add( applyInOrder[ i ] );
+                toApply.add( macros[ i ] );
             }            
         }
 
         /** 
          * add more macros to the end
-         * @param applyInOrder
+         * @param macro
          * @return this (after adding the _autoApply macros)
          */
-        public _autoApplyOrdered add( _autoApply...applyInOrder )
+        public _autoMacro add( _autoApply...macro )
         {
-            for( int i = 0; i < applyInOrder.length; i++ )
+            for( int i = 0; i < macro.length; i++ )
             {
-                toApply.add( applyInOrder[ i ] );
+                toApply.add(macro[ i ] );
             }
             return this;
         }

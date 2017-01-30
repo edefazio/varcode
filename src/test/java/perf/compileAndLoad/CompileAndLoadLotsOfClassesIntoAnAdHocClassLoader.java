@@ -23,7 +23,7 @@ public class CompileAndLoadLotsOfClassesIntoAnAdHocClassLoader
             //10;       //took 360ms, 360ms, 372 millis to compile and load 10 classes 
             //100;    //took 406ms, 422ms, 448ms to compile and load 100 classes
             //1000;   //took 797ms, 781ms to compile and load 1000 classes
-            10000;  //took 1890ms, 2766ms to compile and 9078 total time
+            10;  //took 1890ms, 2766ms to compile and 9078 total time
         
         //IF we call the compiler for EACH individual java file, it takes 
         // CONSIDERABLY LONGER
@@ -69,16 +69,16 @@ public class CompileAndLoadLotsOfClassesIntoAnAdHocClassLoader
         ws.add( javaFiles );        
         AdHocClassLoader adHocCL = AdHoc.compile( ws );   
         long end = System.currentTimeMillis();
-        System.out.println("TOOK "+ (end - start) );
+        System.out.println( "TOOK "+ (end - start) );
         return adHocCL;
     }
     
-    public static AdHocClassLoader compileOneAtATime(AdHocJavaFile[] javaFiles )        
+    public static AdHocClassLoader compileOneAtATime( AdHocJavaFile[] javaFiles )        
     {
         long start = System.currentTimeMillis();
         Workspace ws = new Workspace();
         AdHocClassLoader adHocClassLoader = new AdHocClassLoader();
-        for(int i=0; i< javaFiles.length; i++ )
+        for( int i = 0; i< javaFiles.length; i++ )
         {
             ws.clear();
             ws.add( javaFiles[ i ] );

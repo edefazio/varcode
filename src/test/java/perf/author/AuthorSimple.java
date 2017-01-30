@@ -12,13 +12,15 @@ import varcode.markup.Template;
 import varcode.markup.bindml.BindML;
 
 /**
- *
- * @author Eric
+ * This is here just to throw a bunch of automated load at the 
+ * Author so that I can look at performance implications.
+ * 
+ * @author M. Eric DeFazio
  */
 public class AuthorSimple
     extends TestCase
 {
-    public static final int COUNT = 100000; //100000 took 1289 ms
+    public static final int COUNT = 10; //100000 took 1289 ms
     
     public void testProfile()
     {

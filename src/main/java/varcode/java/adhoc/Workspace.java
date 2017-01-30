@@ -17,6 +17,7 @@ package varcode.java.adhoc;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import varcode.java.model._Java.FileModel;
 
@@ -79,6 +80,16 @@ public class Workspace
         return classNameToAdHocJavaFileMap.values();
     }
     
+    public final Workspace add( Workspace...workspaces )
+    {
+        for( int i = 0; i < workspaces.length; i++ )
+        {
+            this.classNameToAdHocJavaFileMap.putAll( 
+                workspaces[ i ].classNameToAdHocJavaFileMap );
+        }
+        return this;
+    }
+    
     /**
      * Directly adds (_class, _enum, _interface, _annotationType)s
      * to the workspace
@@ -94,6 +105,10 @@ public class Workspace
         return this;
     }
     
+    public final Workspace add( List<FileModel> fileModels )
+    {
+        return add( fileModels.toArray( new FileModel[ 0 ] ) );
+    }
     /**
      * Adds one or more {@code AdHocJavaFile}s to the Workspace 
      *
