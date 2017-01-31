@@ -38,7 +38,7 @@ public class UseAutoMacros
     public void testUsePrebuildMacro()
     {
         _class _c = 
-            _class.of( "A" ).imports( Date.class )
+            _class.of( "package ex;", "A" ).imports( Date.class )
                 .fields( "final int a;", "final String b;", "final Date c;" );
         
         macro.IMMUTABLE_DATA_CLASS.apply( _c );
@@ -60,15 +60,18 @@ public class UseAutoMacros
         assertNotNull( _builder.getMethod( "c") ); //macrobuilder  created a method
         assertNotNull( _builder.getMethod( "build") ); //macrobuilder  created a method
         
-        CodeSpace.of( _c ).imports( Date.class )
-            .importStatic( TestCase.class.getCanonicalName() + ".*" )
+        CodeSpace cs = CodeSpace.of( _c ).extend( TestCase.class )
             .code( 
             "Date d = new Date();",
             "A constructed = new A(100, \"eric\", d);",
             "A built = A.builder().a(100).b(\"eric\").c(d).build();",
             "assertEquals( constructed, built );" );
+        _class theClass = cs.buildSpaceClass();
+        
+        System.out.println( theClass );
+        cs.eval( );
         //
-        //Object instance = _c.instance( 100, "eric", new Date() );
+        //Object space = _c.space( 100, "eric", new Date() );
         
     }
     

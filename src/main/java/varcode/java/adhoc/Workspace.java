@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import varcode.java.model._Java.FileModel;
 
 /**
@@ -50,6 +51,15 @@ public class Workspace
         Workspace workspace = new Workspace();
         workspace.add(javaModels );
         return workspace;
+    }
+    
+    /**
+     * Gets the fully qualified names of all Java class files in the workspace
+     * @return 
+     */
+    public Set<String>getAllClassNames()
+    {
+        return this.classNameToAdHocJavaFileMap.keySet();
     }
     
     /**

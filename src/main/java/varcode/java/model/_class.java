@@ -1024,7 +1024,10 @@ public class _class
     public _class extend( Class baseClass )
     {
         this.signature.extendsFrom.clear();
-        this.signature.extendsFrom.addExtends( baseClass );
+        if( baseClass != null )
+        {
+            this.signature.extendsFrom.addExtends( baseClass );
+        }
         return this;
     }
 

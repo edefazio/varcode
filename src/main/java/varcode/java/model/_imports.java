@@ -321,6 +321,10 @@ public class _imports
     private _imports addImport(
         Set<String> imports, Object importClass, boolean isStatic )
     {
+        if( importClass == null )
+        {
+            return this;
+        }
         if( importClass instanceof _imports )
         {
             this.importClasses.addAll(

@@ -100,6 +100,7 @@ public class _fields
      * @param index
      * @return the field at the index
      */
+    @Override
     public _field getAt( int index )
     {
         if( index < count() && index >= 0 )
@@ -165,6 +166,33 @@ public class _fields
         return null;
     }
 
+    /**
+     * Sets these modifiers to all fields
+     * @param modifiers the modifiers to set
+     * @return this
+     */
+    public _fields setModifiers( String...modifiers )
+    {
+        for( int i = 0; i< count(); i++ )
+        {
+            fields.get( i ).setModifiers( modifiers );
+        }
+        return this;
+    }
+    
+    /**
+     * Adds these modifiers to all fields
+     * @param modifiers the modifiers to set
+     * @return this
+     */
+    public _fields addModifiers( String... modifiers )
+    {
+        for( int i = 0; i< count(); i++ )
+        {
+            fields.get( i ).mods.set( modifiers );
+        }
+        return this;
+    }
     public List<_field> getByType( String typeName )
     {
         List<_field> found = new ArrayList<_field>();
@@ -319,10 +347,24 @@ public class _fields
             return new _field( prototype );
         }
 
-        
-        public _field init( String initialization )
+        /**
+         * Updated the init, because the initialization COULD be many 
+         * lines of code
+         * @param initialization
+         * @return 
+         */
+        public _field init( String... initialization )
         {
-            return init( _init.of( initialization ) );
+            StringBuilder sb = new StringBuilder();
+            for(int i=0; i< initialization.length; i++ )
+            {
+                if( i > 0 )
+                {
+                    sb.append( System.lineSeparator());
+                }
+                sb.append(initialization[ i ] );                
+            }            
+            return init( _init.of( sb.toString() ) );
         }
         
         /**
@@ -363,6 +405,13 @@ public class _fields
             return this.mods;
         }
 
+        //adds all of the modifiers to all the fields
+        public _field addModifiers( String...modifiers )
+        {
+            this.mods.set( modifiers );
+            return this;
+        }
+        
         public _field setModifiers( String... modifiers )
         {
             this.mods = _modifiers.of( modifiers );

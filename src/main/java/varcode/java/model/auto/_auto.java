@@ -55,6 +55,9 @@ public class _auto
          */
         public static final _autoMacro IMMUTABLE_DATA_CLASS =         
             macro( CONSTRUCTOR, BUILDER, EQUALS, HASHCODE, GETTERS, TO_STRING );
+        
+        public static final _autoMacro DATA_CLASS =
+            macro( GETTERS, SETTERS, EQUALS, HASHCODE, TO_STRING );
     }
     /**
      * Returns an instance of an _autoMacro 

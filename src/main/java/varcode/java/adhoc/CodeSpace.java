@@ -19,12 +19,13 @@ import java.util.ArrayList;
 import java.util.List;
 import varcode.java.Java;
 import varcode.java.model._Java;
+import varcode.java.model._Java.FileModel;
 import varcode.java.model._class;
 import varcode.java.model._code;
-import varcode.java.model._extends;
+import varcode.java.model._fields;
+import varcode.java.model._fields._field;
 import varcode.java.model._imports;
 import varcode.java.model._methods._method;
-import varcode.java.model._parameters;
 
 /**
  * Convenient way to "run" a block of Java code with using AdHoc classes.
@@ -41,11 +42,11 @@ public class CodeSpace
 {
     public List<_Java.FileModel> models = new ArrayList<_Java.FileModel>();
     public _imports imports = new _imports(); 
-    public _parameters _params = new _parameters();
+    public _fields fields = new _fields();    
     public _code code = new _code();
-    public _extends extendsFrom;
+    public Class extendsFrom;
     
-    public static CodeSpace of ( String...linesOfCode )
+    public static CodeSpace of( String...linesOfCode )
     {
         return new CodeSpace( new ArrayList<_Java.FileModel>(), linesOfCode );
     }
@@ -57,11 +58,23 @@ public class CodeSpace
         return new CodeSpace( files, codeLines );
     }
  
-    
     public CodeSpace( List<_Java.FileModel> models, String...linesOfCode )
     {
         this.models = models;
         this.code.addTailCode( (Object[])linesOfCode );
+    }
+    
+    public CodeSpace init( String...fieldDeclarations )
+    {        
+        _fields _fs = _fields.of(  fieldDeclarations ).addModifiers( "public" );        
+        this.fields.add( _fs );        
+        return this;        
+    }
+    
+    public CodeSpace extend( Class baseClass )
+    {
+        this.extendsFrom = baseClass;
+        return this;
     }
     
     public CodeSpace imports( Object...imports )
@@ -82,30 +95,50 @@ public class CodeSpace
         return this;
     }
     
-    public Object eval( Object...params )
+    public Space space()
     {
-        Workspace workspace = new Workspace();
-        //add all the AdHoc Entities
-        _class _spaceClass = buildSpaceClass();
-        workspace.add( this.models );
-        workspace.add( _spaceClass );
+        return new Space( 
+            this.models, this.buildSpaceClass() ) ; //, this.stateKeyValues );
+    }
+
+    
+    public static Object bake( String...code )
+    {
+        return bake( new Workspace(), new _imports(), code );
+    }
+    
+    
+    /**
+     * This is code that returns the evaluation
+     * @param code
+     * @return 
+     */
+    public static Object bake( 
+        Workspace ws, _imports imports, String... code )
+    {
+        Workspace combined = new Workspace();
+        combined.add( ws );
         
-        try
-        {
-            AdHocClassLoader adHocCL = AdHoc.compile(workspace );
-            Class spaceClass = adHocCL.findClass( _spaceClass );
-            Object instance = Java.instance( spaceClass );
+        //create a new class
+        _class _c = _class.of(
+            "package adhoc.eval", "public class Eval" )
+            .imports( imports )
+            .imports( (Object[])ws.getAllClassNames().toArray( new String[ 0 ] ) )
+            .field( _field.of( "public static Object e;" ).init( code ) );
         
-            return Java.call( instance, 
-                _spaceClass.getMethods().getAt( 0 ).getName(), 
-                params );
-        }
-        catch( JavacException je )
-        {
-            throw new AdHocException( 
-                "unable to compile CodeSpace "+ System.lineSeparator() +
-                _spaceClass, je );
-        }        
+        combined.add( _c );
+        //compile
+        AdHocClassLoader adHocCL = AdHoc.compile( combined );        
+        //get the class
+        Class clazz = adHocCL.findClass( _c );
+        
+        //get The value e on the class
+        return Java.get(  clazz, "e" );
+    }
+    
+    public Object eval(  )
+    {
+        return space().eval();
     }
     
     /**
@@ -120,17 +153,103 @@ public class CodeSpace
         //add all the models in the workspace as imports
         _imports modelImports = new _imports();
         for( int i = 0; i < this.models.size(); i++ )
-        {            
-            modelImports.add( this.models.get( i ).getAllClassNames() );  
+        {   
+            //add all models as imports 
+            modelImports.add( this.models.get( i ).getAllClassNames() );
+            
             //automatically add all imports from all models classes
             modelImports.add( this.models.get( i ).getImports() );
         }
-        return _class.of("CodeSpace" )
+        _class _c = _class.of( "CodeSpace" )
             .packageName( "adhoc.codespace" )
-            .imports( this.imports ).imports( modelImports )
+            .extend( this.extendsFrom )
+            .imports( this.imports ).imports( modelImports ).imports( this.extendsFrom )
+            .fields( this.fields )
             .method( _method.of( 
-                "public static void eval( )", this.code )
-                .setParameters( this._params ) );
+                "public void eval( )", this.code ) );
+        return _c;
+    }
+ 
+    /**
+     * This is a fully realized Instance WITH the source code that has set
+     */
+    public static class Space
+    {
+        /** Workspace containing the source */
+        public final Workspace workspace;
+        
+        /** the loaded Classes */
+        public final AdHocClassLoader adHocClassLoader; 
+        
+        // the space representing the space
+        public final Object instance;
+        
+        // the Source of the class
+        public final _class _class;
+        
+        public Space( 
+            List<FileModel> models, _class _c ) //, List<KeyValue> stateKeyValues )
+        {
+            this.workspace = Workspace.of( models.toArray( new FileModel[ 0 ] ) );
+            this.workspace.add( _c );
+            this._class = _c;
+            try
+            {
+                this.adHocClassLoader = AdHoc.compile( workspace );
+                Class spaceClass = this.adHocClassLoader.findClass( _class );                
+                this.instance = Java.instance( spaceClass );
+            }
+            catch( JavacException je )
+            {
+                throw new AdHocException( 
+                    "unable to compile CodeSpace "+ System.lineSeparator() +
+                    _class, je );
+            }        
+        }        
+        
+        public Space eval()
+        {
+            Java.call( instance, 
+                _class.getMethods().getAt( 0 ).getName() );
+            
+            return this;
+        }
+        
+        /**
+         *evaluates the code count number of times 
+         * @param count the count of iterations
+         * @return the modified Space
+         */
+        public Space iterate( int count )
+        {
+            for( int i = 0; i < count; i++ )
+            {
+                eval();
+            }
+            return this;
+        }
+        
+        public Object get( String param )
+        {
+            return Java.get( instance, param );
+        }
+        
+        public Space set( String param, Object value )
+        {
+            Java.set( instance, param, value );
+            return this;
+        }
     }
     
+    public static class KeyValue
+    {
+        public String key;
+        public Object value;
+        
+        public KeyValue( String key, Object value )
+        {
+            this.key = key;
+            this.value = value;
+        }
+    }
 }

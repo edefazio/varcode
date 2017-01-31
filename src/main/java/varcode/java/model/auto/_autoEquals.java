@@ -76,18 +76,18 @@ public enum _autoEquals
         return _c.method(  of( _c ) );
     }
     
-    public static _method of( _class _m )
+    public static _method of( _class _c )
     {
-        _fields _fs = _m.getFields();
+        _fields _fs = _c.getFields();
         List<_field> eqFields = new ArrayList<_field>();
-        for( int i=0; i< _fs.count(); i++ )
+        for( int i = 0; i < _fs.count(); i++ )
         {
             if( !_fs.getAt( i ).getModifiers().contains( "static" ) )
             {
                 eqFields.add( _fs.getAt( i ) );
             }
         }
-        return of( _m.getName(), eqFields.toArray( new _field[ 0 ] ) );
+        return of(_c.getName(), eqFields.toArray( new _field[ 0 ] ) );
     }
 
     public static _method of( String className, _field... fields )
