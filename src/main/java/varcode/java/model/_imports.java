@@ -74,6 +74,16 @@ public class _imports
         visitor.visit( this );
     }
 
+    public _imports remove( String...toRemove )
+    {
+        for( int i=0; i< toRemove.length; i++ )
+        {
+            this.importClasses.remove( toRemove[ i ] );
+            this.staticImports.remove( toRemove[ i ] );
+        }
+        return this;
+    }
+    
     public boolean containsAll( Class... imports )
     {
         for( int i = 0; i < imports.length; i++ )

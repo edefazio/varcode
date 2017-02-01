@@ -15,6 +15,7 @@
  */
 package varcode.java.adhoc;
 
+import java.util.Date;
 import java.util.UUID;
 import junit.framework.TestCase;
 import varcode.java.adhoc.CodeSpace.Space;
@@ -40,11 +41,13 @@ public class CodeSpaceTest
      */
     public void testBake()
     {
-        assertEquals( new Integer(9), CodeSpace.bake( "4 + 5" ) );        
-        assertEquals( new Double(1.0), CodeSpace.bake( "1.0d * 1" ) ); 
+        assertEquals( 9, CodeSpace.bake( "4 + 5" ) );        
+        assertEquals( 1.0d, CodeSpace.bake( "1.0d * 1" ) ); 
     }
     
     
+    //its about TIME not State (we control the execution of time)
+    // low level cause and effect 
     public void testInitVars()
     {
         Space space = 
@@ -54,17 +57,22 @@ public class CodeSpaceTest
                 "String prefix = \"prefix\";",
                 "String postfix = \"postfix\";")
             .space();
+         
+        assertEquals( "", space.get( "s" ) );
+        
         assertEquals( "prefixpostfix", space.eval( ).get( "s" ) );
         
         //ok, lets change prefix
         space.set( "prefix", "pre" );
         assertEquals( "preprefixpostfixpostfix", space.eval( ).get( "s" ) );
         
-        space.get( "s" );
-        
+        space.set( "s", "" ); //change 
+        assertEquals("", space.get("s") );
+        assertEquals( "prepostfix", space.eval( ).get( "s" ) );
         
     }
-    public void testCodeSpaceParamString()
+    
+    public void testCodeSpaceIterate ()
     {
         Space space = CodeSpace.of(             
             "this.s += postfix;" ) 
@@ -73,11 +81,11 @@ public class CodeSpaceTest
             .init( "String postfix= \"1\";" )
             .space();
         
-        assertEquals("S", space.get( "s" ) );        
+        assertEquals( "S", space.get( "s" ) );        
         
         
-        assertEquals("S1", space.eval().get( "s" ) );          
-        assertEquals("S11", space.eval().get( "s" ) );  
+        assertEquals( "S1", space.eval().get( "s" ) );          
+        assertEquals( "S11", space.eval().get( "s" ) );  
         
         space.set("s", "" );
         assertEquals("",  space.get( "s" ) );        
@@ -90,6 +98,29 @@ public class CodeSpaceTest
         
     }
     
+    public void testEvalGet()
+    {
+        Space space = CodeSpace.of( "s =  prefix + s + postfix;")
+            .init( "String prefix = \"{\";", 
+                "String s = \"\";", 
+                "String postfix = \"}\";" )
+            .space();
+        assertEquals("{}", space.eval( "s" ) );
+        assertEquals("{}", space.get( "s" ) );
+        space.set("s", "R"); //reset s
+        assertEquals("{R}", space.eval( "s" ) );        
+    }
+    
+    public void testSetDate()
+    {
+        Space space = CodeSpace.of(
+            "String d = startDate.toString();" ).imports( Date.class)
+            .init( "Date startDate = new Date();" )
+            .space();
+        space.eval( "startDate" );
+        space.set( "startDate", "new Date();" );
+        
+    }
     public void testCodeSpaceParam()
     {
         Space space = CodeSpace.of(
@@ -98,7 +129,7 @@ public class CodeSpaceTest
             .init( "int a = 4;" ).space() ;
         
         space.eval();
-        assertEquals( new Integer(9), space.get( "a" ) );
+        assertEquals( 9, space.get( "a" ) );
     }
     
     public void testModelInstance()

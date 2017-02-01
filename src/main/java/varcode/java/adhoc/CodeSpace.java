@@ -15,6 +15,7 @@
  */
 package varcode.java.adhoc;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import varcode.java.Java;
@@ -107,6 +108,10 @@ public class CodeSpace
         return bake( new Workspace(), new _imports(), code );
     }
     
+    public static Object bake( Workspace workspace, String...code )
+    {
+        return bake(  workspace, new _imports(), code );
+    }
     
     /**
      * This is code that returns the evaluation
@@ -136,6 +141,25 @@ public class CodeSpace
         return Java.get(  clazz, "e" );
     }
     
+    public static Object bake( _class _e, AdHocClassLoader cl, String...code )
+    {
+        //create a new class
+        _class _c = _class.of(
+            "package adhoc.eval", "public class Eval" )
+            .imports( _e.getImports() )
+            .imports( (Object[])cl.classMap().keySet().toArray( new String[ 0 ] ) )
+            .field( _field.of( "public static Object e;" ).init( code ) );
+        
+        _c.getImports().remove( "adhoc.codespace.CodeSpace" );
+        AdHoc.compile( cl, _c );
+        
+        //get the class
+        Class clazz = cl.findClass( _c );
+        
+        //get The value e on the class
+        return Java.get(  clazz, "e" );        
+    }
+    
     public Object eval(  )
     {
         return space().eval();
@@ -153,8 +177,7 @@ public class CodeSpace
         //add all the models in the workspace as imports
         _imports modelImports = new _imports();
         for( int i = 0; i < this.models.size(); i++ )
-        {   
-            //add all models as imports 
+        {   //add all models as imports 
             modelImports.add( this.models.get( i ).getAllClassNames() );
             
             //automatically add all imports from all models classes
@@ -215,6 +238,17 @@ public class CodeSpace
             return this;
         }
         
+        /** 
+         * evaluate and return the value of the param 
+         * runs a single eval on the current state and returns the value of the 
+         * param
+         */
+        public Object eval( String param )
+        {
+            eval();
+            return get( param );
+        }
+        
         /**
          *evaluates the code count number of times 
          * @param count the count of iterations
@@ -236,6 +270,30 @@ public class CodeSpace
         
         public Space set( String param, Object value )
         {
+            
+            if( value instanceof String )
+            {
+                try
+                {
+                    Field f = instance.getClass().getField( param );
+                    if( f.getType().equals( String.class ) )
+                    {
+                        Java.set( instance, param, value );
+                        return this;
+                    }
+                    else
+                    {
+                        Java.set( instance, param, 
+                            CodeSpace.bake( this._class, this.adHocClassLoader, (String)value ) );
+                        return this;
+                    }
+                }
+                catch( NoSuchFieldException nsfe )
+                {
+                    throw new AdHocException( "No Field named \""+ param +"\"" );
+                }
+            }
+            
             Java.set( instance, param, value );
             return this;
         }
