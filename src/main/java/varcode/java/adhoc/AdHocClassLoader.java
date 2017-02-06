@@ -16,11 +16,14 @@
 package varcode.java.adhoc;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.tools.JavaFileObject;
 import varcode.java.ClassNameQualified;
 import varcode.java.lang.ClassName;
 
@@ -124,15 +127,15 @@ public class AdHocClassLoader
         throws ClassNotFoundException 
     {
         //Why am I checking this first??? -- BECAUSE overhead of loading
-        Class loadedClass = this.findLoadedClass(qualifiedClassName );
+        Class loadedClass = this.findLoadedClass( qualifiedClassName );
         if( loadedClass != null )
         {
             return loadedClass;
         }
-    	AdHocClassFile adHocClass = classNameToAdHocClass.get(qualifiedClassName );
+    	AdHocClassFile adHocClass = classNameToAdHocClass.get( qualifiedClassName );
     	if( adHocClass == null ) 
     	{
-            return super.findClass(qualifiedClassName );
+            return super.findClass( qualifiedClassName );
     	}    	
     	
         //** OK FINAL STEP BEFORE WE DEFINE THE CLASS,        
@@ -244,7 +247,7 @@ public class AdHocClassLoader
             {
                 try
                 {
-                    return AdHocClassLoader.this.findClass( classNames[ i ] );
+                    return findClass( classNames[ i ] );
                 }
                 catch( ClassNotFoundException cnfe )
                 {
@@ -278,6 +281,45 @@ public class AdHocClassLoader
         throws AdHocException
     {
         return classByName( classNameQualified.getQualifiedName() );
+    }
+    
+    
+    /**
+     * This DOES NOT recurse
+     * @param packageName
+     * @return 
+     */
+    public List<JavaFileObject> adHocClassFilesByPackage( String packageName )
+    {
+        //System.out.println( "**** GETTING AD HOC FILES BY  *** \""+ packageName+"\"" );
+        //if(packageName == null || packageName.length() == 0 )
+        //{
+        //    return null; //I dunno
+        //}
+        List<JavaFileObject>classFilesByPackage = new ArrayList<JavaFileObject>();
+        String[] fullClassNames = this.classNameToAdHocClass.keySet().toArray( new String[ 0 ] );
+        
+        for( int i = 0; i < fullClassNames.length; i++ )
+        {
+            //System.out.println( "/////CHECKING "+ fullClassNames[ i ] );
+            if( packageName == null || packageName.length() == 0 )
+            {
+                if( fullClassNames[ i ].indexOf( "." ) < 0 )
+                {
+                    classFilesByPackage.add(  
+                        this.classNameToAdHocClass.get( fullClassNames[ i ] ) ); 
+                }
+            }
+            else if( fullClassNames[ i ].startsWith( packageName ) 
+                &&
+                !( fullClassNames[ i ].substring( packageName.length() + 1 ).contains( "." ) ) )
+            {
+                //System.out.println( " +++ FOUND " +fullClassNames[ i ] );
+                classFilesByPackage.add(  
+                    this.classNameToAdHocClass.get( fullClassNames[ i ] ) );                
+            }
+        }
+        return classFilesByPackage;        
     }
     
     /**

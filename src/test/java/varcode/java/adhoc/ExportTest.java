@@ -115,19 +115,21 @@ public class ExportTest
     {
         //author export a .java toFile
         Export.TEMP_DIR.toFile( 
-            _class.of( "public class MyClass" )
+            _class.of( "package adhoc;", "public class MyClass" )
                 .field( "public int number = 1234;" ) ); 
         
         //author, compile & export new Java .class        
+        
         Export.TEMP_DIR.toFile( 
-            _class.of("public class MyClass")
-                .field("int a = 1234;").loadClass());
+            _class.of("package adhoc", "public class MyClass")
+                .field("int a = 1234;").loadClass() );
         
         //author 
         Export.dir("C:\\temp").toFile( 
             _interface.of("package ex.in", "public interface Mine" ) );
     }
     
+
     public void testZipFile()
     {
         Workspace ws = Workspace.of( 

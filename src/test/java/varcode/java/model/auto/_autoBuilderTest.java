@@ -40,7 +40,7 @@ public class _autoBuilderTest
     public void testOneConstructor()
     {
         _class _immut = 
-            _class.of( "Immutable" )
+            _class.of( "package adhoc;", "Immutable" )
                 .field( "private final int count;" );
         
         _auto.to( _immut ).apply( CONSTRUCTOR, BUILDER, EQUALS );

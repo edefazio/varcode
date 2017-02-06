@@ -168,8 +168,6 @@ public class AdHocJavaFile
         return code;
     }
 
-    /**
-     * @return  a brief String description of the file */
     public String describe()
     {
         return getQualifiedName() + ".java : AdHocJavaFile@" + Integer.toHexString( this.hashCode() );

@@ -77,14 +77,7 @@ public class AdHocClassFile
     {
         return getQualifiedName() + ".class : AdHocClassFile@" + Integer.toHexString( hashCode() );
     }
-    
-    /** returns the className of the class 
-    public String getClassName()
-    {
-        return this.className;
-    }
-    */
-    
+        
     /** The"FileManager"/"ClassLoader" writes the class' bytecodes to the local 
      * {@code ByteArrayOutputStream}) {@code inMemoryClassBytes}
      * @return OutputStream
@@ -201,7 +194,6 @@ public class AdHocClassFile
         
         public byte[] toByteArray()
         {
-            //todo guard this
             if( this.isWritten.get() )
             {
                 return classBytecodeOutputStream.toByteArray();
@@ -224,7 +216,6 @@ public class AdHocClassFile
             adHocClassFile.classLoader.load( adHocClassFile );
             this.isWritten.set( true );
             //this.classLoader.load( this );            
-        }
-        
+        }        
     }
 }

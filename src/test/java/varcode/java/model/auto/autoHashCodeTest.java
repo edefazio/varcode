@@ -46,7 +46,7 @@ public class autoHashCodeTest
     
     public void testClassHc()
     {
-        _class _c = _class.of("public class A")
+        _class _c = _class.of("package app", "public class A")
             .field("public int a=1").field("public String name=\"Eric\"");
         
         _c.add(_autoHashCode.of( _c ) );

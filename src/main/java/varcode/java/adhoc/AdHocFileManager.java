@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 M. Eric DeFazio.
+ * Copyright 2017 Eric.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,133 +22,146 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import javax.tools.FileObject;
-import javax.tools.ForwardingJavaFileManager;
 import javax.tools.JavaFileManager;
 import javax.tools.JavaFileObject;
+import javax.tools.JavaFileObject.Kind;
 import javax.tools.StandardJavaFileManager;
 
 /**
- * {@link JavaFileManager} implementation for use within the Javac Compiler 
- * that manages the handling of {@code JavaFileObject}s when calling the 
- * Javac compiler at runtime
- * <UL>
- *   <LI>{@linkplain javax.tools.JavaFileObject.Kind.SOURCE}
- *   <LI>{@linkplain javax.tools.JavaFileObject.Kind.CLASS}
- * </UL>
- * we use the following implementations:
- * <UL>
- *   <LI>{@link AdHocClassFile} ( for {@link Kind.SOURCE} )
- *   <LI>{@link AdHocJavaFile} ( for {@link Kind.CLASS} )
- * </UL>
- * 
- * @author M. Eric DeFazio eric@varcode.io
+ * Forwards calls to a given file manager.  Subclasses of this class
+ * might override some of these methods and might also provide
+ * additional fields and methods.
+ *
+ * @author Peter von der Ah&eacute;
+ * @since 1.6
  */
-public class AdHocFileManager
-    extends ForwardingJavaFileManager<JavaFileManager>
+public class AdHocFileManager 
+    implements JavaFileManager 
 {
+      
+    /**
+     * The file manager which all methods are delegated to.
+     */
+    protected final StandardJavaFileManager fileManager;
+    
+    /** Loader for AdHocClasses */
     private final AdHocClassLoader adHocClassLoader;
-
-    public AdHocFileManager(
-        StandardJavaFileManager fileManager,
-        AdHocClassLoader adHocClassLoader )
+    
+    
+    public AdHocFileManager( AdHocClassLoader adHocClassLoader )
     {
-        super( fileManager );
+        this( Javac.STANDARD_FILE_MANAGER, adHocClassLoader );
+    }
+    
+    /**
+     * Creates a new instance of ForwardingJavaFileManager.
+     * @param fileManager delegate to this file manager
+     */
+    protected AdHocFileManager( 
+        StandardJavaFileManager fileManager, 
+        AdHocClassLoader adHocClassLoader ) 
+    {
+        fileManager.getClass(); // null check
+        this.fileManager = fileManager;
         this.adHocClassLoader = adHocClassLoader;
     }
 
     /**
-     * @param location
-     * @return 
      * @throws SecurityException {@inheritDoc}
      * @throws IllegalStateException {@inheritDoc}
      */
-    @Override
-    public ClassLoader getClassLoader( JavaFileManager.Location location )
+    public ClassLoader getClassLoader( JavaFileManager.Location location ) 
     {
-        return this.adHocClassLoader; //fileManager.getClassLoader(location);
-    }
-
-    //MED Added
-    /**
-     * @param location
-     * @param className
-     * @param kind
-     * @return 
-     * @throws java.io.IOException 
-     * @throws IllegalArgumentException {@inheritDoc}
-     * @throws IllegalStateException {@inheritDoc}
-     */
-    @Override
-    public JavaFileObject getJavaFileForInput( 
-        JavaFileManager.Location location,
-        String className,
-        JavaFileObject.Kind kind )
-        throws IOException
-    {
-        return fileManager.getJavaFileForInput( location, className, kind );
+        //System.out.println( "getting ClassLoader for "+ location );
+        return this.adHocClassLoader;
+        //return fileManager.getClassLoader(location);
     }
 
     /**
-     * @param location
-     * @param packageName
-     * @param kinds
-     * @param recurse
-     * @return 
      * @throws IOException {@inheritDoc}
      * @throws IllegalStateException {@inheritDoc}
      */
-    @Override
-    public Iterable<JavaFileObject> list( 
-        JavaFileManager.Location location,
-        String packageName,
-        Set<JavaFileObject.Kind> kinds,
-        boolean recurse )
+    public Iterable<JavaFileObject> list( JavaFileManager.Location location, 
+        String packageName, Set<Kind> kinds, boolean recurse )
         throws IOException
     {
-        //LOG.debug( "****** LISTING ****** " + location );
-        Iterable<JavaFileObject> theList
-            = fileManager.list( location, packageName, kinds, recurse );
-        if( "CLASS_PATH".equals( location.getName() )
-            && kinds.contains( JavaFileObject.Kind.CLASS )
-            && recurse )
-        {   //if they want the classpath, then Include the 
-            List<JavaFileObject> javaFiles = new ArrayList<JavaFileObject>();
-            
-            //adds all the Class files in the AdHocClassLoader
-            javaFiles.addAll( this.adHocClassLoader.classMap().values() );
-            System.out.println( javaFiles );
-            Iterator<JavaFileObject> it = theList.iterator();
-            while( it.hasNext() )
+        //System.out.println( "Listing " + location + " " + packageName + " " + recurse );
+        
+        
+        List<JavaFileObject>files = new ArrayList<JavaFileObject>();
+        
+        if( kinds.contains( Kind.CLASS ) )
+        {
+            files.addAll( this.adHocClassLoader.adHocClassFilesByPackage( packageName ) );
+            if( files.size() > 0 )
             {
-                javaFiles.add( it.next() );
+                //System.out.println("+++++FOUND FILES "+ files );
             }
-
-            //for( int i = 0; i < )
-            //javaFiles.addAll( theList. );
-            return javaFiles;
         }
-        return theList;
+        Iterable<JavaFileObject> parentFiles = 
+            fileManager.list( location, packageName, kinds, recurse );
+        Iterator<JavaFileObject> it = parentFiles.iterator();
+        while( it.hasNext() )
+        {
+            files.add( it.next() );
+        }
+        return files;
     }
 
     /**
-     * @param location
-     * @param packageName
-     * @param relativeName
-     * @return 
-     * @throws java.io.IOException 
+     * @throws IllegalStateException {@inheritDoc}
+     */
+    public String inferBinaryName( 
+        JavaFileManager.Location location, JavaFileObject file) 
+    {
+        //System.out.println( "inferring binary name of "+ location +" "+ file );  
+        return fileManager.inferBinaryName(location, file);
+    }
+
+    /**
+     * @throws IllegalArgumentException {@inheritDoc}
+     */
+    public boolean isSameFile( FileObject a, FileObject b ) 
+    {
+        //System.out.println( "is same file "+ a +" "+ b );  
+        return fileManager.isSameFile(a, b);
+    }
+
+    /**
      * @throws IllegalArgumentException {@inheritDoc}
      * @throws IllegalStateException {@inheritDoc}
      */
-    @Override
-    public FileObject getFileForInput( 
-        JavaFileManager.Location location,
-        String packageName,
-        String relativeName )
-        throws IOException
+    public boolean handleOption( String current, Iterator<String> remaining ) 
     {
-        return fileManager.getFileForInput( location, packageName, relativeName );
+        //System.out.println( "handleOption "+ current + " :: "+ remaining );  
+        return fileManager.handleOption(current, remaining);
     }
 
+    public boolean hasLocation( JavaFileManager.Location location ) 
+    {
+        //System.out.println( "hasLocation "+ location );  
+        return fileManager.hasLocation( location );
+    }
+
+    public int isSupportedOption( String option ) 
+    {
+        //System.out.println( "isSupportedOption "+ option );  
+        return fileManager.isSupportedOption( option );
+    }
+
+    /**
+     * @throws IllegalArgumentException {@inheritDoc}
+     * @throws IllegalStateException {@inheritDoc}
+     */
+    public JavaFileObject getJavaFileForInput( 
+        JavaFileManager.Location location, String className, Kind kind )
+        throws IOException
+    {
+        //System.out.println( "getJavaFileForInput "+ location+ " "+className+" "+ kind + " "  );         
+        return fileManager.getJavaFileForInput(location, className, kind);
+    }
+
+    
     @Override
     public JavaFileObject getJavaFileForOutput(
         JavaFileManager.Location location,
@@ -181,5 +194,57 @@ public class AdHocFileManager
                 "Unable to create output class for class \""
                 + className + "\"", e );
         }
+    }
+    
+    /**
+     * @throws IllegalArgumentException {@inheritDoc}
+     * @throws IllegalStateException {@inheritDoc}
+     
+    public JavaFileObject getJavaFileForOutput( JavaFileManager.Location location, 
+        String className, Kind kind, FileObject sibling )
+        throws IOException
+    {
+        System.out.println( "getJavaFileForOutput "+className+" "+ kind + " "+ sibling  ); 
+        return fileManager.getJavaFileForOutput(location, className, kind, sibling);
+    }
+    */
+
+    /**
+     * @throws IllegalArgumentException {@inheritDoc}
+     * @throws IllegalStateException {@inheritDoc}
+     */
+    public FileObject getFileForInput(JavaFileManager.Location location,
+                                      String packageName,
+                                      String relativeName)
+        throws IOException
+    {
+        //System.out.println( "getFileForInput "+location+" "+ packageName + " "+ relativeName  ); 
+        return fileManager.getFileForInput(location, packageName, relativeName);
+    }
+
+    /**
+     * @throws IllegalArgumentException {@inheritDoc}
+     * @throws IllegalStateException {@inheritDoc}
+     */
+    public FileObject getFileForOutput(JavaFileManager.Location location,
+        String packageName, String relativeName, FileObject sibling )
+        throws IOException
+    {
+        //System.out.println( "getFileForOutput "+location+" "+ packageName + " "+ relativeName+ "  "+ sibling ); 
+        return fileManager.getFileForOutput(location, packageName, relativeName, sibling);
+    }
+
+    public void flush() 
+        throws IOException 
+    {
+        //System.out.println( "FLUSHING" );
+        fileManager.flush();
+    }
+
+    public void close() 
+        throws IOException 
+    {
+        //System.out.println( "CLOSING" );
+        fileManager.close();
     }
 }

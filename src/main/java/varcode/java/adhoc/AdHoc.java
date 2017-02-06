@@ -67,15 +67,14 @@ public class AdHoc
             //...                     "Map<K,V>" (We dont want this)
             //...just the simple name "Map"      (We want this)
             TypeDeclaration typeDecl = JavaAst.findRootTypeDeclaration( astRoot );
-            String rootTypeName = typeDecl.getName();
+            String topClassName = typeDecl.getName();
             
             if( packageName != null && packageName.trim().length() > 0 )
             {
                 //System.out.println( "PACKAGE NAME "+ packageName.trim()  );
-                return compile( packageName.trim() + "." + rootTypeName, javaCode );
+                return compile( packageName.trim() + "." + topClassName, javaCode );
             }
-            return compile( rootTypeName, javaCode );
-            
+            return compile( topClassName, javaCode );            
         }
         catch( ParseException pe )
         {
@@ -250,6 +249,7 @@ public class AdHoc
         throws JavacException
     {
         AdHocClassLoader adHocClassLoader = null;
+        
         if( parentClassLoader instanceof AdHocClassLoader )
         {   //the "parent" is already an AdHocClassLoader
             adHocClassLoader = (AdHocClassLoader)parentClassLoader;
@@ -259,11 +259,14 @@ public class AdHoc
             adHocClassLoader = new AdHocClassLoader( parentClassLoader );
         }
         
+        /*
         AdHocFileManager adHocFileManager = 
             new AdHocFileManager( 
                 Javac.getStandardJavaFileManager(),
                 adHocClassLoader );
-        /* OLD
+        */
+        AdHocFileManager mfm = new AdHocFileManager( adHocClassLoader );
+        /*
         AdHocFileManager adHocFileManager = 
             new AdHocFileManager( 
                 Javac.COMPILER.getStandardFileManager(
@@ -273,7 +276,7 @@ public class AdHoc
                 ,adHocClassLoader );
         */
         Javac.doCompile( 
-            adHocFileManager, 
+            mfm, //adHocFileManager, 
             workspace.getJavaFiles(),
             compilerOptions );
         return adHocClassLoader;

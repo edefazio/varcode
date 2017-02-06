@@ -148,9 +148,9 @@ public class AdHocClassPublisher
         //System.out.println( "Promoting Packages " );
         for( int i = 0; i < packages.length; i++ )
         {
-            System.out.println( "Promoting Package "+ packages[ i ] );
+            //System.out.println( "Publishing Package "+ packages[ i ] );
             Package p = publishPackage( parent, packages[ i ] );
-            System.out.println( p );
+            //System.out.println( p );
         }
         for( int i = 0; i < adHocClassFiles.length; i++ )
         {
@@ -188,7 +188,7 @@ public class AdHocClassPublisher
                 packageDef.getImplementationVendor(),
                 null  ); // sealBase))
             
-            System.out.println( "SEALED " + adHocPackage.isSealed() );
+            //System.out.println( "SEALED " + adHocPackage.isSealed() );
             return adHocPackage;
             
         }
