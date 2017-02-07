@@ -170,7 +170,7 @@ public class AdHocFileManager
         FileObject sibling )
     {
         // check if we already loaded this class
-        AdHocClassFile adHocClass
+        JavaClassFile adHocClass
             = this.adHocClassLoader.classMap().get( className );
 
         if( adHocClass != null )
@@ -179,7 +179,8 @@ public class AdHocFileManager
         }
         try
         {   // create a "home" for the compiled bytes
-            adHocClass = new AdHocClassFile( this.adHocClassLoader, className );
+            adHocClass = new JavaClassFile( className );
+            this.adHocClassLoader.load( adHocClass );
             return adHocClass;
         }
         catch( IllegalArgumentException e ) 

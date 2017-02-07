@@ -1,5 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
+ * To change this license header, choose License Headers in SourceFolder Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -10,7 +10,7 @@ import junit.framework.TestCase;
 import varcode.java.Java;
 import varcode.java.adhoc.AdHoc;
 import varcode.java.adhoc.AdHocClassLoader;
-import varcode.java.adhoc.Workspace;
+import varcode.java.adhoc.SourceFolder;
 import varcode.java.model._class;
 import varcode.java.model._interface;
 

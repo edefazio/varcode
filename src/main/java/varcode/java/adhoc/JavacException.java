@@ -58,11 +58,11 @@ public final class JavacException
             }            
             sb.append( d.getMessage( null ) );
 		
-            if( ! ( d.getSource() instanceof AdHocJavaFile ) )
+            if( ! ( d.getSource() instanceof JavaSourceFile ) )
             {   //the source that originated the error is not available 
                 return sb.toString();
             }
-            String className = ((AdHocJavaFile)d.getSource()).getQualifiedName(); 
+            String className = ((JavaSourceFile)d.getSource()).getQualifiedName(); 
             sb.append( N );
             sb.append( className ); //javaCode.className );
             sb.append( ".class" );		
@@ -109,7 +109,7 @@ public final class JavacException
     }
     
     public JavacException( 
-        Collection<AdHocJavaFile> javaCode,
+        Collection<JavaSourceFile> javaCode,
         DiagnosticCollector<JavaFileObject> diagnostics )
     {
         super( "Failed Compilation of workspace" + N

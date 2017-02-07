@@ -38,6 +38,14 @@ public class ModelClass
             "public ModelOfClass( int fieldValue )",
             "this.memberField = fieldValue;" );
 
+    public void test()
+    {
+        //create an instance, pass 100 in as argument
+        Object instance = _ModelOfClass.instance( 100 );
+
+        Java.callMain( instance ); //prints "Hello World"
+        Java.call( instance, "getId", "somePrefix" );
+    }
     public static void main( String[] args )
     {
         Export.dir("C:\\MyApp\\src\\main\\java\\").toFile(_ModelOfClass );

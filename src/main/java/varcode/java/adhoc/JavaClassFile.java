@@ -34,38 +34,27 @@ import varcode.java.ClassNameQualified;
  * 
  * @author M. Eric DeFazio eric@varcode.io
  */
-public class AdHocClassFile 
+public class JavaClassFile 
     extends SimpleJavaFileObject 
     implements ClassNameQualified
 {	        
-    /** 
-     * Specific OutputStream used to register the 
-     * Class when the JAVAC process has completed writing to the
-     * in-memory Stream at runtime. (Delays registering a Class in
-     * the AdHocClassLoader until after it has 
-     */
-    private final RegisterOnCloseOutputStream adHocClassBytecode;
+    private final CacheBytesOutputStream cacheBytesOutputStream;
     
     /** the name of the Class */
     private final String className;
     
-    /** the Class Loader */
-    private final AdHocClassLoader classLoader;
-    
     /**
      * Initialize an in memory Java Class for a given class Name
-     * @param classLoader
      * @param className the full class name "io.varcode.MyValueObject"
      * @throws IllegalArgumentException
      * @throws URISyntaxException
      */
-    public AdHocClassFile( AdHocClassLoader classLoader, String className ) 
+    public JavaClassFile( String className ) 
         throws IllegalArgumentException, URISyntaxException 
     {
         super( new URI( className ), Kind.CLASS );
         this.className = className;
-        this.adHocClassBytecode = new RegisterOnCloseOutputStream( this );
-        this.classLoader = classLoader;
+        this.cacheBytesOutputStream = new CacheBytesOutputStream( uri );       
     }
 
     /**
@@ -87,15 +76,15 @@ public class AdHocClassFile
     public OutputStream openOutputStream() 
         throws IOException 
     {
-        return adHocClassBytecode;
+        return cacheBytesOutputStream;
     }
 
     /** gets the Class bytecodes as an array of bytes
      * @return the byte array
      */
     public byte[] toByteArray() 
-    {
-        return adHocClassBytecode.toByteArray();
+    {        
+        return this.cacheBytesOutputStream.toByteArray();
     }
 
     @Override
@@ -103,6 +92,7 @@ public class AdHocClassFile
     {
         return this.className;
     }
+    
     
     /**
      * This class exists to delay the registering of a Class
@@ -116,29 +106,41 @@ public class AdHocClassFile
      * that has not been loaded, and when the class
      * has finally been read in, compiled and the finalized
      */
-    public static class RegisterOnCloseOutputStream 
+    public static class CacheBytesOutputStream 
         extends OutputStream
     {
-        /** Binary in-memory representation of the Class' bytecodes */
-        private final ByteArrayOutputStream classBytecodeOutputStream;
+        /** 
+         * Binary in-memory representation of the Class' bytecodes 
+         * This Stream is used the First 
+         */
+        private final ByteArrayOutputStream initialOutputStream;
         
-        private final AdHocClassFile adHocClassFile;
-        
+        /** Has the initialInputStream been completely written to? */
         private final AtomicBoolean isWritten;
         
-        public RegisterOnCloseOutputStream( AdHocClassFile adHocClassFile )
+        /** The Cached bytes that are stored locally (representing the Class bytecodes) */ 
+        private byte[] bytes;
+            
+        /** the time in millis when the class was last modified */
+        protected long lastModifiedMillis;
+        
+        /** the URI for the class file to be written */
+        private final URI uri;
+        
+        public CacheBytesOutputStream( URI uri ) //AdHocJavaClassFile adHocClassFile )
         {   //this is the underlying OutputStream 
-            classBytecodeOutputStream = new ByteArrayOutputStream();
-            //this.classLoader = classLoader;
-            this.adHocClassFile = adHocClassFile;
+            this.uri = uri;
+            initialOutputStream = new ByteArrayOutputStream();            
             this.isWritten = new AtomicBoolean( false );
+            this.lastModifiedMillis = System.currentTimeMillis();            
         }
         
         @Override
         public void write( int b ) 
             throws IOException
         {
-            classBytecodeOutputStream.write( b );
+            initialOutputStream.write( b );
+            this.lastModifiedMillis = System.currentTimeMillis();
         }
         
         /**
@@ -152,9 +154,11 @@ public class AdHocClassFile
         * @see        java.io.OutputStream#write(byte[], int, int)
         */
         @Override
-        public void write(byte b[]) throws IOException 
+        public void write( byte b[] ) 
+            throws IOException 
         {
-            classBytecodeOutputStream.write( b, 0, b.length );
+            initialOutputStream.write( b, 0, b.length );
+            this.lastModifiedMillis = System.currentTimeMillis();
         }
 
         /**
@@ -186,17 +190,19 @@ public class AdHocClassFile
         *             stream is closed.
         */
         @Override
-        public void write(byte b[], int off, int len) 
+        public void write( byte b[], int off, int len ) 
             throws IOException 
         {
-            classBytecodeOutputStream.write( b, off, len );
+            initialOutputStream.write( b, off, len );
+            this.lastModifiedMillis = System.currentTimeMillis();
         }
         
         public byte[] toByteArray()
         {
+            //todo guard this
             if( this.isWritten.get() )
             {
-                return classBytecodeOutputStream.toByteArray();
+                return bytes;
             }
             throw new AdHocException( "the class has not been fully loaded yet" );
         }
@@ -209,13 +215,13 @@ public class AdHocClassFile
         public void close()
             throws IOException
         {
-            //this is saying that I finished writing data to the class
-            // so NOW i should 
+            super.flush();
+            //now it's just bytes
+            this.bytes = this.initialOutputStream.toByteArray();            
             super.close();
-            //here is where I should register the class with the 
-            adHocClassFile.classLoader.load( adHocClassFile );
             this.isWritten.set( true );
-            //this.classLoader.load( this );            
+            this.lastModifiedMillis = System.currentTimeMillis();
+            //LOG.trace( "finshed writing bytes to class " + uri );
         }        
     }
 }

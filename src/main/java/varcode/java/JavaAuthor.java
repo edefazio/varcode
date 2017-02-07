@@ -24,7 +24,7 @@ import varcode.context.Context;
 import varcode.context.Directive;
 import varcode.context.VarContext;
 import varcode.context.VarScope;
-import varcode.java.adhoc.AdHocJavaFile;
+import varcode.java.adhoc.JavaSourceFile;
 import varcode.java.ast.JavaAst;
 import varcode.java.lang.ClassName;
 import varcode.markup.Template;
@@ -67,7 +67,7 @@ public class JavaAuthor
      * @param keyValuePairs keyValuePairs for parameters
      * @return an AdHocJavaFile containing the authored .java source code
      */
-    public static AdHocJavaFile toJavaFile( 
+    public static JavaSourceFile toJavaFile( 
         String className, Template template, Object...keyValuePairs )
     {
         return JavaAuthor.toJavaFile( className, template, VarContext.of( keyValuePairs ) );
@@ -78,7 +78,7 @@ public class JavaAuthor
      * @param javaSourceCode Java source code as a String
      * @return 
      */
-    public static AdHocJavaFile toJavaFile( CharSequence javaSourceCode )
+    public static JavaSourceFile toJavaFile( CharSequence javaSourceCode )
     {
         try
         {
@@ -92,7 +92,7 @@ public class JavaAuthor
             
             TypeDeclaration td = JavaAst.findRootTypeDeclaration( astRoot );
             String className = td.getName();
-            return new AdHocJavaFile( 
+            return new JavaSourceFile( 
                 packageName, 
                 className, 
                 javaSourceCode.toString() );            
@@ -114,7 +114,7 @@ public class JavaAuthor
      * @param directives optional pre and post processing commands 
      * @return an AdHocJavaFile
      */
-    public static AdHocJavaFile toJavaFile(
+    public static JavaSourceFile toJavaFile(
     	String className, Template template, Context context, Directive...directives )    
     {       	
     	AuthorState authorState = 
@@ -132,8 +132,8 @@ public class JavaAuthor
         
         if( pckgClass[ 0 ] != null )
         {
-            AdHocJavaFile adHocJavaFile =
-                new AdHocJavaFile( 
+            JavaSourceFile adHocJavaFile =
+                new JavaSourceFile( 
                     pckgClass[ 0 ], 
                     pckgClass[ 1 ], 
                     authorState.getTranslateBuffer().toString() );
@@ -142,7 +142,7 @@ public class JavaAuthor
             return adHocJavaFile;
         }
         //LOG.debug( "Authored : \"" + pckgClass[ 1 ] + ".java\"" );
-        return new AdHocJavaFile( 
+        return new JavaSourceFile( 
             pckgClass[ 1 ], authorState.getTranslateBuffer().toString() ); 
     }
     

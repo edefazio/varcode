@@ -115,7 +115,7 @@ public class AdHocClassPublisher
     }
 
     /**
-     * "Promotes" all {@link AdHocClassFile}s loaded in the 
+     * "Promotes" all {@link JavaClassFile}s loaded in the 
      * {@link AdHocClassLoader} to the parent {@code ClassLoader}.
      *
      * Allows a Class that was defined in an AdHoc Manner to be "visible" to things like Class.forName(...), and Serialization.
@@ -137,9 +137,8 @@ public class AdHocClassPublisher
      */
     public static void publishToParent( AdHocClassLoader adHocClassLoader )
     {
-        AdHocClassFile[] adHocClassFiles = 
-            adHocClassLoader.allAdHocClassFiles().toArray( 
-                new AdHocClassFile[ 0 ] );
+        JavaClassFile[] adHocClassFiles = 
+            adHocClassLoader.allAdHocClassFiles().toArray(new JavaClassFile[ 0 ] );
         
         Package[] packages = 
             adHocClassLoader.allAdHocPackages().toArray( new Package[ 0 ] );
@@ -220,13 +219,13 @@ public class AdHocClassPublisher
     }
 
     /**
-     * Defines an {@link AdHocClassFile} in the {@code targetClassLoader}
+     * Defines an {@link JavaClassFile} in the {@code targetClassLoader}
      * @param targetClassLoader the class loader to define the class in
      * @param adHocClassFile the AdHocClassFile
      * @return the Class
      */
     public static Class publishClass( 
-        ClassLoader targetClassLoader, AdHocClassFile adHocClassFile )
+        ClassLoader targetClassLoader, JavaClassFile adHocClassFile )
     {
         return AdHocClassPublisher.publishClass( 
             targetClassLoader, 

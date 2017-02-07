@@ -35,7 +35,7 @@ import varcode.java.ClassNameQualified;
  * 
  * @author M. Eric DeFazio eric@varcode.io
  */
-public class AdHocJavaFile
+public class JavaSourceFile
     extends SimpleJavaFileObject
     implements ClassNameQualified
 {    
@@ -63,9 +63,9 @@ public class AdHocJavaFile
      * @param code the source code for the class
      * @return the AdHocJavaFile
      */
-    public static AdHocJavaFile of( String packageName, String className, String code )
+    public static JavaSourceFile of( String packageName, String className, String code )
     {
-        return new AdHocJavaFile( packageName, className, code );
+        return new JavaSourceFile( packageName, className, code );
     }
     
     /**
@@ -74,9 +74,9 @@ public class AdHocJavaFile
      * @param code the source code for the class
      * @return the AdHocJavaFile
      */
-    public static AdHocJavaFile of( String className, String code )
+    public static JavaSourceFile of( String className, String code )
     {
-        return new AdHocJavaFile( className, code );
+        return new JavaSourceFile( className, code );
     }
     
     /**
@@ -84,7 +84,7 @@ public class AdHocJavaFile
      * @param javaFileObject object representing a Java File (class)
      * @return the generated AdHocJavaCode
      */
-    public static AdHocJavaFile of( JavaFileObject javaFileObject )
+    public static JavaSourceFile of( JavaFileObject javaFileObject )
     {
     	String code = null;
     	try
@@ -118,15 +118,15 @@ public class AdHocJavaFile
                 fullName.substring( fullName.lastIndexOf( "." ) + 1 );
             String packageName = 
                 fullName.substring( 0, fullName.lastIndexOf( "." ) );
-            return new AdHocJavaFile( packageName, className, code );
+            return new JavaSourceFile( packageName, className, code );
     	}
     	else
     	{
-            return new AdHocJavaFile( fullName, code );
+            return new JavaSourceFile( fullName, code );
     	}
     }
     
-    public AdHocJavaFile( String className, String code )
+    public JavaSourceFile( String className, String code )
     {
         super( 
             URI.create( 
@@ -137,7 +137,7 @@ public class AdHocJavaFile
         this.code = code;
     }
     
-    public AdHocJavaFile( 
+    public JavaSourceFile( 
         String packageName, String className, String code )
         throws AdHocException
     {

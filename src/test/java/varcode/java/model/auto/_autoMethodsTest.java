@@ -14,7 +14,7 @@ import varcode.java.model._constructors._constructor;
  *
  * @author Eric
  */
-public class _autoTest
+public class _autoMethodsTest
     extends TestCase
 {
     

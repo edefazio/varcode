@@ -5,8 +5,6 @@ import java.util.Random;
 import java.util.UUID;
 import junit.framework.TestCase;
 import varcode.java.Java;
-import varcode.java.adhoc.AdHoc;
-import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.model._class;
 import varcode.java.model._enum;
 import varcode.java.model._interface;
@@ -24,7 +22,7 @@ public class CompileMultipleWorkspace
     public static _interface _IDGEN = _interface.of( 
         "use.java.langmodel", "public interface IdGen extends Serializable" )
         .imports( Serializable.class )
-        .method( "String genId()" );
+        .method( "String genId();" );
     
     //Class dependent on the IdGen interface
     public static _class _UUIDGEN = _class.of( 
@@ -44,7 +42,7 @@ public class CompileMultipleWorkspace
         .method( "public String genId()", 
             "return \"\" + Math.abs( this.rand.nextLong());" );
     
-    public void testCompileWorkspace() throws ClassNotFoundException
+    public void testCompileMultiple() throws ClassNotFoundException
     {
         //compile all (3) classes into an new AdHocClassLoader
         AdHocClassLoader adHocClassLoader = 

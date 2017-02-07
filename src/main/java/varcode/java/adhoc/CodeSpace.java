@@ -105,10 +105,10 @@ public class CodeSpace
     
     public static Object bake( String...code )
     {
-        return bake( new Workspace(), new _imports(), code );
+        return bake( new SourceFolder(), new _imports(), code );
     }
     
-    public static Object bake( Workspace workspace, String...code )
+    public static Object bake( SourceFolder workspace, String...code )
     {
         return bake(  workspace, new _imports(), code );
     }
@@ -119,9 +119,9 @@ public class CodeSpace
      * @return 
      */
     public static Object bake( 
-        Workspace ws, _imports imports, String... code )
+        SourceFolder ws, _imports imports, String... code )
     {
-        Workspace combined = new Workspace();
+        SourceFolder combined = new SourceFolder();
         combined.add( ws );
         
         //create a new class
@@ -198,8 +198,8 @@ public class CodeSpace
      */
     public static class Space
     {
-        /** Workspace containing the source */
-        public final Workspace workspace;
+        /** SourceFolder containing the source */
+        public final SourceFolder workspace;
         
         /** the loaded Classes */
         public final AdHocClassLoader adHocClassLoader; 
@@ -213,7 +213,7 @@ public class CodeSpace
         public Space( 
             List<FileModel> models, _class _c ) //, List<KeyValue> stateKeyValues )
         {
-            this.workspace = Workspace.of( models.toArray( new FileModel[ 0 ] ) );
+            this.workspace = SourceFolder.of( models.toArray( new FileModel[ 0 ] ) );
             this.workspace.add( _c );
             this._class = _c;
             try

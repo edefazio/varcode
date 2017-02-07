@@ -30,7 +30,7 @@ import varcode.java.lang.ClassName;
 /**
  * {@link ClassLoader}  built for loading Class files in an AdHoc manner (classes 
  * compiled via Javac at Runtime) that maintains a cache Map of 
- * {@link AdHocClassFile}s by name and delegates to the parent {@link ClassLoader} 
+ * {@link JavaClassFile}s by name and delegates to the parent {@link ClassLoader} 
  * when resolving classes by name.
  * 
  * @author M. Eric DeFazio eric@varcode.io
@@ -39,7 +39,7 @@ public class AdHocClassLoader
     extends ClassLoader
 {   
     /** Maps the class name to the AdHocJavaClass */
-    private final Map<String, AdHocClassFile> classNameToAdHocClass;
+    private final Map<String, JavaClassFile> classNameToAdHocClass;
     
     /** Packages defined in an AdHoc Manner for housing the AdHocClasses */
     private final Set<Package>adHocPackages = new HashSet<Package>();
@@ -78,7 +78,7 @@ public class AdHocClassLoader
     public AdHocClassLoader ( ClassLoader parent, PackagePropertyDefiner pkgDefine )
     {
         super( parent );
-        classNameToAdHocClass = new HashMap<String, AdHocClassFile>();
+        classNameToAdHocClass = new HashMap<String, JavaClassFile>();
         this.pckgDefine = pkgDefine;
     }
     
@@ -86,18 +86,18 @@ public class AdHocClassLoader
      * Adds the AdHocClassFile to the {@code classNameToAdHocClass} Map
      * @param adHocClassFile 
      */
-    public void load( AdHocClassFile adHocClassFile ) 
+    public void load( JavaClassFile adHocClassFile ) 
     {
         classNameToAdHocClass.put( 
             adHocClassFile.getName(), adHocClassFile );
     }
 
     /** 
-     * String className to {@link AdHocClassFile} Mapping for classes loaded 
+     * String className to {@link JavaClassFile} Mapping for classes loaded 
      * in Memory
-     * @return the Map of classname to {@link AdHocClassFile}
+     * @return the Map of classname to {@link JavaClassFile}
      */
-    public Map<String, AdHocClassFile>classMap()
+    public Map<String, JavaClassFile>classMap()
     {
     	return classNameToAdHocClass;
     }
@@ -106,7 +106,7 @@ public class AdHocClassLoader
      * Returns a Collection of all the AdHocClasses
      * @return all AddHocClassFiles
      */
-    public Collection<AdHocClassFile> allAdHocClassFiles()
+    public Collection<JavaClassFile> allAdHocClassFiles()
     {
         return this.classNameToAdHocClass.values();
     }
@@ -132,7 +132,7 @@ public class AdHocClassLoader
         {
             return loadedClass;
         }
-    	AdHocClassFile adHocClass = classNameToAdHocClass.get( qualifiedClassName );
+    	JavaClassFile adHocClass = classNameToAdHocClass.get( qualifiedClassName );
     	if( adHocClass == null ) 
     	{
             return super.findClass( qualifiedClassName );
@@ -167,7 +167,7 @@ public class AdHocClassLoader
     
     
     /**
-     * Finds and returns an {@link AdHocClassFile} 
+     * Finds and returns an {@link JavaClassFile} 
      * 
      * @param model any ClassNameQualified:
      * <UL>
@@ -179,7 +179,7 @@ public class AdHocClassLoader
      * </UL>
      * @return the AdHocClassFile containing the compiled class bytecode
      */
-    public AdHocClassFile findClassFile( ClassNameQualified model )
+    public JavaClassFile findClassFile( ClassNameQualified model )
     {
         return findClassFile( model.getQualifiedName() );
     }
@@ -195,9 +195,9 @@ public class AdHocClassLoader
      * @return the AdHocClassFile
      * @throws AdHocException if there is a problem finding/loading the class
      */
-    public AdHocClassFile findClassFile( String qualifiedClassName )
+    public JavaClassFile findClassFile( String qualifiedClassName )
     {
-        AdHocClassFile adHocClassFile = 
+        JavaClassFile adHocClassFile = 
             classNameToAdHocClass.get( qualifiedClassName );
         if( adHocClassFile == null )
         {

@@ -6,9 +6,6 @@
 package varcode.java.adhoc;
 
 import junit.framework.TestCase;
-import varcode.java.adhoc.AdHoc;
-import varcode.java.adhoc.AdHocClassFile;
-import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.model._class;
 import varcode.java.model.auto._autoToString;
 
@@ -25,7 +22,7 @@ public class ClassLoader_LoadAdHocClass
             .field("public int count = 1;")
             .field("public String name = \"Eric\";") ) );
         
-        AdHocClassFile c = adHocCL.findClassFile( "A" ); 
+        JavaClassFile c = adHocCL.findClassFile( "A" ); 
             
         ClassLoader cl = ClassLoader.getSystemClassLoader();
         

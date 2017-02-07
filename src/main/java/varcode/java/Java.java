@@ -25,7 +25,7 @@ import varcode.context.Context;
 import varcode.context.Directive;
 import varcode.markup.Template;
 import varcode.java.adhoc.AdHocClassLoader;
-import varcode.java.adhoc.AdHocJavaFile;
+import varcode.java.adhoc.JavaSourceFile;
 import varcode.java.adhoc.Javac.JavacOptions;
 import varcode.java.ast.JavaAst;
 import varcode.java.model._class;
@@ -35,7 +35,7 @@ import varcode.java.load._JavaLoad;
 import varcode.LoadException;
 import varcode.java.adhoc.AdHoc;
 import varcode.java.adhoc.JavacException;
-import varcode.java.adhoc.Workspace;
+import varcode.java.adhoc.SourceFolder;
 import varcode.java.ast.FormatJavaCode_AllmanScanStyle;
 import varcode.java.ast.JavaCodeFormatVisitor;
 import varcode.java.model._annotationType;
@@ -137,7 +137,7 @@ public class Java
      * @param keyValuePairs parameters comprising the context
      * @return the Authored AdHocJavaFile containing the (.java) source
      */
-    public static AdHocJavaFile authorJavaFile( 
+    public static JavaSourceFile authorJavaFile( 
         String className, Template template, Object...keyValuePairs )
     {
         return JavaAuthor.toJavaFile( className, template, keyValuePairs );
@@ -154,7 +154,7 @@ public class Java
      * @param directives optional pre and post processing commands 
      * @return an AdHocJavaFile
      */
-    public static AdHocJavaFile authorJavaFile(
+    public static JavaSourceFile authorJavaFile(
     	String className, Template template, Context context, Directive...directives )    
     {       
         return JavaAuthor.toJavaFile( className, template, context, directives );    	
@@ -171,7 +171,7 @@ public class Java
      * @throws JavacException if unable to compile the toJavaFile
      */
     public static Class<?> compileAndLoadClass( 
-    	AdHocJavaFile javaFile,
+    	JavaSourceFile javaFile,
     	JavacOptions.CompilerOption...compilerOptions )
         throws JavacException
     {
@@ -191,10 +191,10 @@ public class Java
      */
     public static Class<?> compileAndLoadClass( 
     	AdHocClassLoader adHocClassLoader, 
-    	AdHocJavaFile javaFile,
+    	JavaSourceFile javaFile,
     	JavacOptions.CompilerOption...compilerOptions )
     {
-        adHocClassLoader = AdHoc.compile( Workspace.of( javaFile ), 
+        adHocClassLoader = AdHoc.compile(SourceFolder.of( javaFile ), 
             adHocClassLoader,             
             compilerOptions );
         return adHocClassLoader.findClass( javaFile );

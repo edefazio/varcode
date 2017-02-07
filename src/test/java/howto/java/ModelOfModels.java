@@ -6,6 +6,7 @@
 package howto.java;
 
 import java.io.Serializable;
+import junit.framework.TestCase;
 import varcode.java.model._class;
 import varcode.java.model._fields._field;
 import varcode.java.model._imports;
@@ -16,9 +17,9 @@ import varcode.java.model._methods._method;
  * @author Eric
  */
 public class ModelOfModels
+    extends TestCase
 {
-    
-    public static void main( String[] args )
+    public void testModelOfModels()
     {
         _class _c = _class.of( "package ex.mutable;",
             _imports.of( Serializable.class ),

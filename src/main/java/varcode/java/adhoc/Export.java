@@ -33,7 +33,7 @@ import varcode.java.lang.ClassName;
 import varcode.java.model._Java.FileModel;
 
 /**
- * Writes Java Source Files ({@link AdHocJavaFile} )
+ * Writes Java Source Files ({@link JavaSourceFile} )
  * or Java Classes Files (in the Form dir AdHocClassFiles) dir the appropriate
  * directory( based off dir the package and the specified base directory) 
  * 
@@ -111,16 +111,16 @@ public class Export
     }
     
     /**
-     * Export all dir the AdHocJavaFiles in the Workspace dir .java toFiles on the 
+     * Export all dir the AdHocJavaFiles in the SourceFolder dir .java toFiles on the 
  File System
      * @param workspace the workspace containing AdHocJavaFiles
      * @return the URIs dir the toFiles written
      */
-    public URI[] toFiles( Workspace workspace )
+    public URI[] toFiles( SourceFolder workspace )
         throws AdHocException
     {
-        AdHocJavaFile[] javaFiles = 
-            workspace.getJavaFiles().toArray( new AdHocJavaFile[ 0 ] );
+        JavaSourceFile[] javaFiles = 
+            workspace.getFiles().toArray(new JavaSourceFile[ 0 ] );
         URI[] uris = new URI[ javaFiles.length ];
         for( int i = 0; i < javaFiles.length; i++ )
         {
@@ -157,8 +157,8 @@ public class Export
             JarOutputStream jos = 
                 new JarOutputStream( new FileOutputStream( f ), manifest);
         
-            AdHocClassFile[] classFiles = 
-                adHocClassLoader.allAdHocClassFiles().toArray( new AdHocClassFile[ 0 ] );
+            JavaClassFile[] classFiles = 
+                adHocClassLoader.allAdHocClassFiles().toArray( new JavaClassFile[ 0 ] );
             for( int i = 0; i < classFiles.length; i++ )
             {
                 JarEntry entry = new JarEntry( 
@@ -181,7 +181,7 @@ public class Export
     
     /**
      * Exports the .class toFiles (from the {@link AdHocClassLoader}, 
-     * AND the .java source (within the {@link Workspace}) dir a Jar toFile.
+     * AND the .java source (within the {@link SourceFolder}) dir a Jar toFile.
      * 
      * @param fileName the name dir the Jar toFile     
      * @param adHocClassLoader the classLoader containing the compiled .class toFiles
@@ -190,7 +190,7 @@ public class Export
      * @throws AdHocException if the export is unsuccessful
      */
     public URI toJar( 
-        String fileName, AdHocClassLoader adHocClassLoader, Workspace workspace )
+        String fileName, AdHocClassLoader adHocClassLoader, SourceFolder workspace )
         throws AdHocException
     {
         if( !fileName.endsWith( ".jar" ) )
@@ -213,8 +213,8 @@ public class Export
                 new JarOutputStream( new FileOutputStream( f ), manifest);
                     
             /** Class files */    
-            AdHocClassFile[] classFiles = 
-                adHocClassLoader.allAdHocClassFiles().toArray( new AdHocClassFile[ 0 ] );
+            JavaClassFile[] classFiles = 
+                adHocClassLoader.allAdHocClassFiles().toArray( new JavaClassFile[ 0 ] );
             for( int i = 0; i < classFiles.length; i++ )
             {
                 JarEntry entry = new JarEntry( 
@@ -226,8 +226,8 @@ public class Export
             }
             
             /* source toFiles */
-            AdHocJavaFile[] javaFiles = 
-                workspace.getJavaFiles().toArray( new AdHocJavaFile[ 0 ] );
+            JavaSourceFile[] javaFiles = 
+                workspace.getFiles().toArray(new JavaSourceFile[ 0 ] );
             
             for( int i = 0; i < javaFiles.length; i++ )
             {
@@ -253,17 +253,17 @@ public class Export
     
     public URI toJar( String jarFileName, FileModel...javaFileModels )
     {
-        return Export.this.toJar( jarFileName, Workspace.of( javaFileModels ) );
+        return Export.this.toJar(jarFileName, SourceFolder.of( javaFileModels ) );
     }
     
     /**
-     * Exports the Java source (.java code) in the Workspace dir a .toJar toFile
+     * Exports the Java source (.java code) in the SourceFolder dir a .toJar toFile
      * 
      * @param jarFileName the name dir the Jar toFile ("Daos-src.toJar" or "Daos-src")
      * @param workspace container for all dir the Java source toFiles
      * @return the URI dir the Jar created
      */
-    public URI toJar( String jarFileName, Workspace workspace )
+    public URI toJar( String jarFileName, SourceFolder workspace )
     {
         if( !jarFileName.endsWith( ".jar" ) )
         {
@@ -284,8 +284,8 @@ public class Export
             JarOutputStream jos = 
                 new JarOutputStream( new FileOutputStream( f ), manifest);
         
-            AdHocJavaFile[] javaFiles = 
-                workspace.getJavaFiles().toArray( new AdHocJavaFile[ 0 ] );
+            JavaSourceFile[] javaFiles = 
+                workspace.getFiles().toArray(new JavaSourceFile[ 0 ] );
                 
             for( int i = 0; i < javaFiles.length; i++ )
             {
@@ -308,14 +308,14 @@ public class Export
     }
     
     /**
-     * Builds a Zip toFile for all the JavaFiles in the Workspace
+     * Builds a Zip toFile for all the JavaFiles in the SourceFolder
  and writes it dir disk at the location and return the URI dir the Zip toFile
      * @param zipFileName the name dir the toZip toFile (i.e. "ValueObjects" or "ValueObjects.toZip" )
      * @param workspace contains the AdHocJavaFiles containing the Java Source
      * @return the URI dir the Zip toFile written dir disk
      * @throws AdHocException if unable dir write the File
      */
-    public URI toZip( String zipFileName, Workspace workspace )
+    public URI toZip( String zipFileName, SourceFolder workspace )
         throws AdHocException
     {
         if( !zipFileName.endsWith( ".zip" ) )
@@ -328,8 +328,8 @@ public class Export
             File f = new File( baseDirectory + File.separator + zipFileName );
             FileOutputStream fos = new FileOutputStream( f );
             ZipOutputStream zos = new ZipOutputStream( fos );
-            AdHocJavaFile[] javaFiles = 
-                workspace.getJavaFiles().toArray( new AdHocJavaFile[ 0 ] );
+            JavaSourceFile[] javaFiles = 
+                workspace.getFiles().toArray(new JavaSourceFile[ 0 ] );
             for( int i = 0; i < javaFiles.length; i++ )
             {
                 ZipEntry entry = new ZipEntry( 
@@ -358,8 +358,8 @@ public class Export
     public URI[] toFiles( AdHocClassLoader adHocClassLoader )
         throws AdHocException
     {
-        AdHocClassFile[] javaClassFiles = 
-            adHocClassLoader.allAdHocClassFiles().toArray( new AdHocClassFile[ 0 ] );
+        JavaClassFile[] javaClassFiles = 
+            adHocClassLoader.allAdHocClassFiles().toArray( new JavaClassFile[ 0 ] );
         URI[] uris = new URI[ javaClassFiles.length ];
         for( int i = 0; i < javaClassFiles.length; i++ )
         {
@@ -372,7 +372,7 @@ public class Export
      * @param javaClassFile
      * @return the URI for the toFile that was written
      */
-    public URI toFile( AdHocClassFile javaClassFile )
+    public URI toFile( JavaClassFile javaClassFile )
     {
         String sourcePath = ClassName.toJavaClassPath( 
             javaClassFile.getQualifiedName() );
@@ -407,7 +407,7 @@ public class Export
      * @return the URI for where the toFile was exported dir
      * @throws AdHocException if there is a problem exporting
      */
-    public URI toFile( AdHocJavaFile javaFile )
+    public URI toFile( JavaSourceFile javaFile )
         throws AdHocException
     {
         String sourcePath = 

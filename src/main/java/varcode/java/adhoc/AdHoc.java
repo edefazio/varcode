@@ -26,7 +26,7 @@ import varcode.java.model._Java.FileModel;
  * Unified API for dealing with AdHoc compilation of code. <BR><BR>
  * 
  * Mechanism for Compiling one or more in memory Java source files 
- * {@link AdHocJavaFile} into in memory Java class files {@code AdHocClassFile}s 
+ * {@link JavaSourceFile} into in memory Java class files {@code AdHocClassFile}s 
  * and loading the Classes into a new {@code AdHocClassLoader} (at runtime).
  * 
  * @author M. Eric DeFazio eric@varcode.io
@@ -97,7 +97,7 @@ public class AdHoc
         String qualifiedClassName, String javaCode )
         throws JavacException
     {
-        return compile( new AdHocJavaFile( qualifiedClassName, javaCode ) );
+        return compile( new JavaSourceFile( qualifiedClassName, javaCode ) );
     }
     
     /**
@@ -113,14 +113,13 @@ public class AdHoc
      * it's own file
      * @return the AdHocClassFile (containing the compiled bytecodes fro this file)
      */
-    public static AdHocClassFile compileToFile( FileModel fileModel )
+    public static JavaClassFile compileToFile( FileModel fileModel )
     {
-        Workspace ws = new Workspace();
-        ws.add( fileModel );
-        AdHocClassLoader adHocClassLoader = compile( ws );
+        SourceFolder sourceFolder = new SourceFolder();
+        sourceFolder.add( fileModel );
+        AdHocClassLoader adHocClassLoader = compile( sourceFolder );
         return adHocClassLoader.findClassFile( fileModel.getQualifiedName() );
     }
-    
     
     /**
      * Compiles one or more (_class, _interface, _enum, ...) JavaFileModels
@@ -129,9 +128,9 @@ public class AdHoc
      */
      public static AdHocClassLoader compile( FileModel...fileModels )
     {
-        Workspace ws = new Workspace();
-        ws.add( fileModels );
-        return compile( ws );
+        SourceFolder sourceFolder = new SourceFolder();
+        sourceFolder.add( fileModels );
+        return compile( sourceFolder );
     }
     
     /**
@@ -141,7 +140,7 @@ public class AdHoc
      * @param javaFiles Java code to be compiled
      * @return an AdHocClassLoader containing the compiled .classes
      */
-    public static AdHocClassLoader compile( AdHocJavaFile... javaFiles )
+    public static AdHocClassLoader compile( JavaSourceFile... javaFiles )
         throws JavacException
     {
         return compile( new AdHocClassLoader(), javaFiles );
@@ -150,14 +149,14 @@ public class AdHoc
     public static AdHocClassLoader compile(
         ClassLoader parentClassLoader, FileModel...fileModels )
     {
-        Workspace ws = new Workspace();
-        ws.add( fileModels );
-        return compile( ws, parentClassLoader );
+        SourceFolder project = new SourceFolder();
+        project.add( fileModels );
+        return compile( project, parentClassLoader );
     }
     
     /**
-     * Creates a Workspace, adds the Java Files, compiles to Java Files and
-     * loads the classes into the {@code adHocClassLoader} and returns the
+     * Creates a SourceFolder, adds the Java Files, compiles to Java Files and
+ loads the classes into the {@code adHocClassLoader} and returns the
      * updated {@code AdHocClassLoader}
      *
      * @param parentClassLoader the classLoader where files are to be loaded
@@ -167,11 +166,11 @@ public class AdHoc
      */
     public static AdHocClassLoader compile(
         ClassLoader parentClassLoader,
-        AdHocJavaFile... javaSourceFiles )
+        JavaSourceFile... javaSourceFiles )
         throws JavacException
     {
-        Workspace ws = Workspace.of( javaSourceFiles );
-        return compile( ws, parentClassLoader );
+        SourceFolder project = SourceFolder.of( javaSourceFiles );
+        return compile( project, parentClassLoader );
     }
 
     /**
@@ -182,7 +181,7 @@ public class AdHoc
      * @throws JavacException 
      */
     public static AdHocClassLoader compile(
-        List<AdHocJavaFile> javaSourceFiles,
+        List<JavaSourceFile> javaSourceFiles,
         Javac.JavacOptions.CompilerOption... compilerOptions )
         throws JavacException
     {
@@ -205,45 +204,42 @@ public class AdHoc
      */
     public static AdHocClassLoader compile(
         ClassLoader parentClassLoader,
-        List<AdHocJavaFile> javaFiles,
+        List<JavaSourceFile> javaFiles,
         Javac.JavacOptions.CompilerOption... compilerOptions )
         throws JavacException
     {
-        Workspace ws = Workspace.of( javaFiles.toArray( new AdHocJavaFile[ 0 ] ) );
+        SourceFolder ws = SourceFolder.of( javaFiles.toArray(new JavaSourceFile[ 0 ] ) );
         return compile( ws, parentClassLoader, compilerOptions );
     }
     
     /**
-     * Pass in a Workspace, compile it and return the AdHocClassLoader 
-     * containing the Classes 
+     * Pass in a SourceFolder, compile it and return the AdHocClassLoader containing the Classes 
      * 
-     * @param workspace workspace containing Java source files to be compiled
+     * @param sourceFolder sourceFolder containing Java source files to be compiled
      * @param compilerOptions options passed to the runtime JAVAC compiler
      * @return the AdHocClassLoader containing the compiled .class files
      * @throws JavacException if an error occurs when compiling
      */
-    public static AdHocClassLoader compile( 
-        Workspace workspace,
+    public static AdHocClassLoader compile( SourceFolder sourceFolder,
         Javac.JavacOptions.CompilerOption...compilerOptions )        
         throws JavacException
     {
-        return compile( 
-            workspace, 
+        return compile(sourceFolder, 
             ClassLoader.getSystemClassLoader(), 
             compilerOptions );
     }
     
     /**
-     * Compile the contents of the Workspace into a new AdHocClassLoader
+     * Compile the contents of the SourceFolder into a new AdHocClassLoader
      *
-     * @param workspace workspace containing files
+     * @param sourceFolder sourceFolder containing files
      * @param parentClassLoader the Parent ClassLoader
      * @param compilerOptions compiler options for the runtime Javac
      * @return the populated AdHocClassLoader containing the compiled classes
-     * @throws JavacException if the workspace did not compile
+     * @throws JavacException if the sourceFolder did not compile
      */
     public static AdHocClassLoader compile(
-        Workspace workspace,
+        SourceFolder sourceFolder,
         ClassLoader parentClassLoader,
         Javac.JavacOptions.CompilerOption...compilerOptions )        
         throws JavacException
@@ -258,26 +254,11 @@ public class AdHoc
         {
             adHocClassLoader = new AdHocClassLoader( parentClassLoader );
         }
-        
-        /*
+
         AdHocFileManager adHocFileManager = 
-            new AdHocFileManager( 
-                Javac.getStandardJavaFileManager(),
-                adHocClassLoader );
-        */
-        AdHocFileManager mfm = new AdHocFileManager( adHocClassLoader );
-        /*
-        AdHocFileManager adHocFileManager = 
-            new AdHocFileManager( 
-                Javac.COMPILER.getStandardFileManager(
-                    null, //use default DiagnosticListener
-                    null, //use default Locale
-                    null ) //use default CharSet 
-                ,adHocClassLoader );
-        */
-        Javac.doCompile( 
-            mfm, //adHocFileManager, 
-            workspace.getJavaFiles(),
+            new AdHocFileManager( adHocClassLoader );
+
+        Javac.doCompile(adHocFileManager, sourceFolder.getFiles(),
             compilerOptions );
         return adHocClassLoader;
     }    

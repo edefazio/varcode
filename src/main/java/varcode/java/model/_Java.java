@@ -23,7 +23,7 @@ import varcode.java.ClassNameQualified;
 import varcode.java.JavaAuthor;
 import varcode.java.adhoc.AdHoc;
 import varcode.markup.Template;
-import varcode.java.adhoc.AdHocJavaFile;
+import varcode.java.adhoc.JavaSourceFile;
 import varcode.Model;
 
 /**
@@ -179,7 +179,7 @@ public interface _Java
          * code formatting, etc.)
          * @return the AdHocJavaFile 
          */
-        public final AdHocJavaFile toJavaFile( Directive... directives )
+        public final JavaSourceFile toJavaFile( Directive... directives )
         {
             return authorJavaFile(
                 getQualifiedName(), 
@@ -201,7 +201,7 @@ public interface _Java
          * @param directives optional pre and post processing commands
          * @return an AdHocJavaFile
          */
-        protected static AdHocJavaFile authorJavaFile(
+        protected static JavaSourceFile authorJavaFile(
             String className, Template template, Context context,
             Directive... directives )
         {

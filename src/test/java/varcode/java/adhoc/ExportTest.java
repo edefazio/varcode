@@ -15,12 +15,12 @@ public class ExportTest
 {
     
     /** 
-     * test that I can create a Workspace dir Models and Export them
+     * test that I can create a SourceFolder dir Models and Export them
  dir a Directory all at once
      */
     public void testExportWorkspace()
     {
-        Workspace ws = Workspace.of(
+        SourceFolder ws = SourceFolder.of(
             _class.of( "package ex.port;", "public class MyExportClass" )
             .mainMethod( "System.out.println( \"MyMainMethod\");" ),        
             
@@ -74,7 +74,7 @@ public class ExportTest
         _class _c = _class.of("package ex.my;", "public class A")
              .mainMethod( "System.out.println(\"Hi\");");
              
-        AdHocClassFile classFile = AdHoc.compileToFile( _c ); //.findClassFile( _c.getFullClassName() );
+        JavaClassFile classFile = AdHoc.compileToFile( _c ); //.findClassFile( _c.getFullClassName() );
        
         URI exportedTo = Export.TEMP_DIR.toFile( classFile );
         
@@ -92,7 +92,7 @@ public class ExportTest
             "public class MyClass" )
             .field("public static final int ID = 100;");
         
-        AdHocJavaFile javaFile = _c.toJavaFile(  );
+        JavaSourceFile javaFile = _c.toJavaFile(  );
         
         System.out.println( System.getProperty( "java.io.tmpdir" ) );
         
@@ -132,7 +132,7 @@ public class ExportTest
 
     public void testZipFile()
     {
-        Workspace ws = Workspace.of( 
+        SourceFolder ws = SourceFolder.of( 
             _class.of(
                 "package example.mine;",
                 "public class MyClass" )
@@ -154,8 +154,8 @@ public class ExportTest
                 _interface.of( 
                     "package my.interf", "public interface IFA" ) );
             
-        AdHocClassFile[] files = adHoc.allAdHocClassFiles().toArray( 
-            new AdHocClassFile[ 0 ] );
+        JavaClassFile[] files = adHoc.allAdHocClassFiles().toArray( 
+            new JavaClassFile[ 0 ] );
         for( int i = 0; i < files.length; i++ )
         {
             System.out.println( files[ i ]);
@@ -169,7 +169,7 @@ public class ExportTest
     
     public void testSourceClassJarFile()
     {
-        Workspace ws = Workspace.of( 
+        SourceFolder ws = SourceFolder.of( 
             _class.of(
                 "package comb.ex.mine;",
                 "public class MyClass" )

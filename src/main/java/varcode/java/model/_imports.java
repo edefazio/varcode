@@ -32,6 +32,7 @@ import varcode.java.model._Java.Countable;
 import varcode.java.model._Java._facet;
 import varcode.markup.bindml.BindML;
 import varcode.ModelException;
+import varcode.java.ClassNameQualified;
 
 /**
  * Handles imports
@@ -378,6 +379,10 @@ public class _imports
         {
             String s = (String)importClass;
 
+            if( s.startsWith( "import " ) ) 
+            {
+                s = s.substring( 7 );
+            }
             if( Arrays.binarySearch( PRIMITIVES, s ) < 0
                 //&& !s.startsWith( "java.lang" ) 
                 && !EXCLUDE_IMPORTS.contains( s )
@@ -393,6 +398,11 @@ public class _imports
                     imports.add( s );
                 }
             }
+        }
+        else if( importClass instanceof ClassNameQualified )
+        {
+            _Java.FileModel fm = (_Java.FileModel)importClass;
+            imports.add( ((FileModel)importClass).getQualifiedName() );
         }
         else if( importClass.getClass().isArray() )
         {

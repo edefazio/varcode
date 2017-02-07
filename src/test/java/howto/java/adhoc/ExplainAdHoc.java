@@ -4,7 +4,7 @@ import java.util.UUID;
 import varcode.java.Java;
 import varcode.java.adhoc.AdHoc;
 import varcode.java.adhoc.AdHocClassLoader;
-import varcode.java.adhoc.AdHocJavaFile;
+import varcode.java.adhoc.JavaSourceFile;
 import varcode.java.model._class;
 
 /**
@@ -31,7 +31,7 @@ public class ExplainAdHoc
                 "return UUID.randomUUID().toString();" );
         
         //**2) author an AdHocJavaFile (so we can compile it)
-        AdHocJavaFile adHocJavaFile = _c.toJavaFile(  ); 
+        JavaSourceFile adHocJavaFile = _c.toJavaFile(  ); 
         
         //**3) Compile and Load the Java file into a new AdHocClassLoader
         AdHocClassLoader adHocClassLoader = AdHoc.compile( adHocJavaFile );
