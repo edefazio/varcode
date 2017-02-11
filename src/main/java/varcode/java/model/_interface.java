@@ -36,7 +36,7 @@ import varcode.java.model._generic._typeParams;
 import varcode.LoadException;
 import varcode.context.Context;
 import varcode.java.ast.JavaAst;
-import varcode.java.model._Java.FileModel;
+import varcode.java.model._JavaFileModel;
 import varcode.ModelException;
 
 /**
@@ -45,7 +45,7 @@ import varcode.ModelException;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _interface
-    extends FileModel
+    extends _JavaFileModel
     implements _model
 {
     public static final Template INTERFACE

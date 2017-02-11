@@ -31,43 +31,38 @@ import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
 
 /**
- * Model for using the Javac compiler at Runtime
+ * Runtime Javac compiler tool abstraction 
  * 
  * @author M. Eric DeFazio eric@varcode.io
  */
 public enum Javac
 {
     ;
-    
-    /** Handle to the Runtime Java Compiler */
-    public static final JavaCompiler COMPILER
-        = ToolProvider.getSystemJavaCompiler();
-        
-    
-    public static final StandardJavaFileManager STANDARD_FILE_MANAGER = 
-        COMPILER.getStandardFileManager( null, null, null );
-    
+
     public static JavaCompiler getSystemJavaCompiler()
     {
-        return COMPILER; //ToolProvider.getSystemJavaCompiler();
+        return ToolProvider.getSystemJavaCompiler();
     }
     
-    
     /**
-     * At the moment, I just create a new one every time, I could cache
+     * At the moment, I just create a new one every time. 
+     * 
+     * BEWARE of using a cached instance if you want to create and load
+     * adHoc instances at runtime...
+     * 
+     * Basically the standard file manager is LIKE 
+     * 
      * a single instance, but 
      * @return 
      */
     public static StandardJavaFileManager getStandardJavaFileManager()
-    {
-        return STANDARD_FILE_MANAGER;
-        /*
+    {       
         return getSystemJavaCompiler()
             .getStandardFileManager( 
-                    null, //use default DiagnosticListener
-                    null, //use default Locale
-                    null ); //use default CharSet 
-        */
+                null, //use default DiagnosticListener
+                null, //use default Locale
+                null ); //use default CharSet 
+        
     }
     
     public static void doCompile( 
@@ -125,6 +120,7 @@ public enum Javac
         DiagnosticCollector<JavaFileObject> diagnostics
             = new DiagnosticCollector<JavaFileObject>();
 
+        
         JavaCompiler.CompilationTask task = Javac.getSystemJavaCompiler()
             .getTask( 
                 errOutput, 
@@ -182,9 +178,7 @@ public enum Javac
     {
         Iterable<String> compilerOpts = 
             JavacOptions.optionsFrom( compilerOptions );
-
-        
-        
+       
         List<String>annotationPros = new ArrayList<String>();
         /*
         if( annotationProcessors != null )
@@ -273,15 +267,23 @@ public enum Javac
         public static Iterable<String> optionsFrom(
             JavacOptions.CompilerOption... compilerOptions )
         {
-            if( (compilerOptions == null) || compilerOptions.length == 0 )
+            //System.out.println( "compilerOptions"+compilerOptions );
+            //System.out.println( "compilerOptions"+compilerOptions[ 0 ]  );
+            if( ( compilerOptions == null ) || compilerOptions.length == 0 )
             {
+                //System.out.println( "compilerOptions == null or 0" );
                 return null;
             }
             ArrayList<String> javacOptions = new ArrayList<String>();
             for( int i = 0; i < compilerOptions.length; i++ )
-            {
+            {                
                 compilerOptions[ i ].addToOptions( javacOptions );
             }
+            //System.out.println( "** javacOptions *** ");
+            //for(int i=0; i< javacOptions.size(); i++ )
+            //{
+            //    System.out.println( "** javacOptions ["+i+"] "+ javacOptions.get( i ) );    
+            // }
             return javacOptions;
         }
 
@@ -346,6 +348,7 @@ public enum Javac
                 return description;
             }
 
+            @Override
             public void addToOptions( List<String> javacOptions )
             {
                 javacOptions.add( flag );
@@ -377,6 +380,7 @@ public enum Javac
                 this.value = value;
             }
 
+            @Override
             public void addToOptions( List<String> optionsList )
             {
                 optionsList.add( "-A" + key );
@@ -407,9 +411,10 @@ public enum Javac
                 this.path = path;
             }
 
+            @Override
             public void addToOptions( List<String> optionsList )
             {
-                optionsList.add( "-classpath" );
+                optionsList.add( "-cp" );
                 optionsList.add( path );
             }
         }

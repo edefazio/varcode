@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 import varcode.java.Java;
+import varcode.java.model._JavaFileModel;
 import varcode.java.model._Java;
 import varcode.java.model._class;
 import varcode.java.model.auto._autoTestSuite;
@@ -51,11 +52,11 @@ public class Project
     }
     
     
-    public final Map<String, _Java.FileModel> source = 
-        new HashMap<String, _Java.FileModel>();
+    public final Map<String, _JavaFileModel> source = 
+        new HashMap<String, _JavaFileModel>();
     
-    public final Map<String, _Java.FileModel> test = 
-        new HashMap<String, _Java.FileModel>();
+    public final Map<String, _JavaFileModel> test = 
+        new HashMap<String, _JavaFileModel>();
     
     public static Project of( String name )
     {
@@ -73,7 +74,7 @@ public class Project
         this.name = name;
     }
     
-    public Project add( _Java.FileModel... sourceModels )
+    public Project add( _JavaFileModel... sourceModels )
     {
         for( int i = 0; i < sourceModels.length; i++ )
         {
@@ -82,7 +83,7 @@ public class Project
         return this;
     }
 
-    public Project test( _Java.FileModel... testModels )
+    public Project test( _JavaFileModel... testModels )
     {
         for( int i = 0; i < testModels.length; i++ )
         {
@@ -94,9 +95,9 @@ public class Project
     /** compiles the source only and returns the classes in an AdHocClassLoader */
     public AdHocClassLoader compile()
     {
-        return AdHoc.compile( 
-            this.source.values().toArray( new _Java.FileModel[ 0 ] ) );
+        return AdHoc.compile(this.source.values().toArray(new _JavaFileModel[ 0 ] ) );
     }
+    
     
     /**
      * Compiles BOTH models and Tests
@@ -111,7 +112,7 @@ public class Project
     {
         List<JavaSourceFile> sourceFiles = new ArrayList<JavaSourceFile>();
         
-        _Java.FileModel[] testModels = test.values().toArray( new _Java.FileModel[ 0 ] );
+        _JavaFileModel[] testModels = test.values().toArray(new _JavaFileModel[ 0 ] );
         
         for( int i = 0; i < testModels.length; i++ )
         {
@@ -123,8 +124,8 @@ public class Project
         
         sourceFiles.add( _testSuite.toJavaFile( ) );
             
-        _Java.FileModel[] srcModels = 
-            source.values().toArray( new _Java.FileModel[ 0 ] );
+        _JavaFileModel[] srcModels = 
+            source.values().toArray(new _JavaFileModel[ 0 ] );
         
         for( int i = 0; i < srcModels.length; i++ )
         {

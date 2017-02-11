@@ -30,8 +30,8 @@ import varcode.java.model._fields._field;
 import varcode.java.model._methods._method;
 import varcode.markup.bindml.BindML;
 import varcode.java.model._Java._model;
-import varcode.java.lang.RefRenamer;
-import varcode.java.model._Java.FileModel;
+import varcode.java.naming.RefRenamer;
+import varcode.java.model._JavaFileModel;
 import varcode.ModelException;
 
 /**
@@ -40,7 +40,7 @@ import varcode.ModelException;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _enum
-    extends FileModel
+    extends _JavaFileModel
     implements _model
 {
     private _javadoc javadoc = new _javadoc();
@@ -897,23 +897,19 @@ public class _enum
         {
             if( this == obj )
             {
-                System.out.println( "SAME OBJ");
                 return true;
             }
             if( obj == null )
             {
-                System.out.println( "NULL OBJ");
                 return false;
             }
             if( getClass() != obj.getClass() )
             {
-                System.out.println( "DIFF CLASS");
                 return false;
             }
             final _constants other = (_constants)obj;
             if( !Objects.equals( this.constants, other.constants ) )
             {
-                System.out.println( "DIFF CONST");
                 return false;
             }
             return true;
@@ -1197,33 +1193,27 @@ public class _enum
             {
                 if( this == obj )
                 {
-                    System.out.println( "SAME OBJ");
                     return true;
                 }
                 if( obj == null )
                 {
-                    System.out.println( "NULL OBJ");
                     return false;
                 }
                 if( getClass() != obj.getClass() )
                 {
-                    System.out.println( "DIFF CLASS");
                     return false;
                 }
                 final _constant other = (_constant)obj;
                 if( !Objects.equals( this.name, other.name ) )
                 {
-                    System.out.println( "DIFF NAME"+ this.name + other.name);
                     return false;
                 }
                 if( !Objects.equals( this.args, other.args ) )
                 {
-                    System.out.println( "DIFF ARGS"+ this.args + other.args);
                     return false;
                 }
                 if( ! Objects.equals( this.constantBody, other.constantBody ) )
                 {
-                    System.out.println( "DIFF CONST BODY"+ this.constantBody + other.constantBody);
                     return false;
                 }
                 return true;
@@ -1621,73 +1611,59 @@ public class _enum
     {
         if( this == obj )
         {
-            System.out.println ("SAME OBJ");
             return true;
         }
         if( obj == null )
         {
-            System.out.println ("DIFF OBJ");
             return false;
         }
         if( getClass() != obj.getClass() )
         {
-            System.out.println ("DIFF CLASS");
             return false;
         }
         final _enum other = (_enum)obj;
         if( !Objects.equals( this.pckage, other.pckage ) )
         {
-            System.out.println ("DIFF PACKAGE");
             return false;
         }
         if( !Objects.equals( this.imports, other.imports ) )
         {
-            System.out.println ("DIFF IMPORTS");
             return false;
         }
         if( !Objects.equals( this.javadoc, other.javadoc ) )
         {
-            System.out.println ("DIFF JAVADOC");
             return false;
         }
         if( !Objects.equals( this.annotations, other.annotations ) )
         {
-            System.out.println ("DIFF ANN");
             return false;
         }
         if( !Objects.equals( this.signature, other.signature ) )
         {
-            System.out.println ("DIFF SIG");
             return false;
         }
         if( !Objects.equals( this.constructors, other.constructors ) )
         {
-            System.out.println ("DIFF CTORS");
             return false;
         }
         if( !Objects.equals( this.staticBlock, other.staticBlock ) )
         {
-            System.out.println ("DIFF STATIC BLOCK");
             return false;
         }
         if( !Objects.equals( this.fields, other.fields ) )
         {
-            System.out.println ("DIFF FIELDS");
             return false;
         }
         if( !Objects.equals( this.constants, other.constants ) )
         {
-            System.out.println ("DIFF CONSTN");
             return false;
         }
         if( !Objects.equals( this.methods, other.methods ) )
         {
-            System.out.println ("DIFF METHODS");
             return false;
         }
         if( !Objects.equals( this.nests, other.nests ) )
         {
-            System.out.println ("DIFF NESTS");
             return false;
         }
         return true;

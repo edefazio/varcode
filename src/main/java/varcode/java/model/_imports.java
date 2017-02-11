@@ -26,13 +26,13 @@ import varcode.author.Author;
 import varcode.context.Context;
 import varcode.context.Directive;
 import varcode.markup.Template;
-import varcode.java.lang.RefRenamer;
+import varcode.java.naming.RefRenamer;
 import varcode.java.model._Java.Authored;
 import varcode.java.model._Java.Countable;
 import varcode.java.model._Java._facet;
 import varcode.markup.bindml.BindML;
 import varcode.ModelException;
-import varcode.java.ClassNameQualified;
+import varcode.java.naming.ClassNameQualified;
 
 /**
  * Handles imports
@@ -401,8 +401,8 @@ public class _imports
         }
         else if( importClass instanceof ClassNameQualified )
         {
-            _Java.FileModel fm = (_Java.FileModel)importClass;
-            imports.add( ((FileModel)importClass).getQualifiedName() );
+            _JavaFileModel fm = (_JavaFileModel)importClass;
+            imports.add( ((_JavaFileModel)importClass).getQualifiedName() );
         }
         else if( importClass.getClass().isArray() )
         {

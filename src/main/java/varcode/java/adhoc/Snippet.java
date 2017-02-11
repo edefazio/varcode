@@ -18,6 +18,8 @@ package varcode.java.adhoc;
 import java.lang.reflect.Method;
 import varcode.java.JavaException;
 import varcode.java.JavaReflection;
+import varcode.java.adhoc.AdHocException;
+import varcode.java.adhoc.JavacException;
 import varcode.java.model._class;
 import varcode.java.model._imports;
 import varcode.java.model._methods._method;

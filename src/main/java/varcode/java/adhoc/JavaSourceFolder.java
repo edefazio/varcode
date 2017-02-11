@@ -15,18 +15,15 @@
  */
 package varcode.java.adhoc;
 
-import java.text.SimpleDateFormat;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import varcode.java.model._Java.FileModel;
+import varcode.java.model._JavaFileModel;
 
 /**
- * An In Memory "SourceFolder" (like an IDE sourceFolder in IntelliJ, eclipse, etc.) 
+ * An In Memory "JavaSourceFolder" (like an IDE sourceFolder in IntelliJ, eclipse, etc.) 
  containing a group of source files as {@code JavaSourceFile}s and optionally 
  * some tests as {@code JavaTestFiles} intended to be 
  * compiled together into a single {@link AdHocClassLoader} containing the 
@@ -34,29 +31,36 @@ import varcode.java.model._Java.FileModel;
  * 
  * @author M. Eric DeFazio eric@varcode.io
  */
-public class SourceFolder
+public class JavaSourceFolder
 {
-    /** *  Qualified Class Name -> Java source files of the {@code SourceFolder}*/
+    /** *  Qualified Class Name -> Java source files of the {@code JavaSourceFolder}*/
     private final Map<String, JavaSourceFile> classNameToJavaSourceFileMap
         = new HashMap<String, JavaSourceFile>();
         
-    /** creates a SourceFolder of AdHocJavaFiles */
-    public static SourceFolder of( JavaSourceFile...adHocJavaFiles )
+    /** creates a JavaSourceFolder of AdHocJavaFiles */
+    public static JavaSourceFolder of( JavaSourceFile...adHocJavaFiles )
     {
-        SourceFolder sourceFolder = new SourceFolder();
+        JavaSourceFolder sourceFolder = new JavaSourceFolder();
         sourceFolder.add( adHocJavaFiles );
         return sourceFolder;
     }
     
-    /** Creates a SourceFolder given one or more JavaFileModels */
-    public static SourceFolder of( FileModel... javaModels )
+    /** Creates a JavaSourceFolder given one or more JavaFileModels */
+    public static JavaSourceFolder of( _JavaFileModel... javaModels )
     {
-        SourceFolder sourceFolder = new SourceFolder();
+        JavaSourceFolder sourceFolder = new JavaSourceFolder();
         sourceFolder.add( javaModels );
         return sourceFolder;
     }
     
-    public SourceFolder()
+    public static JavaSourceFolder of( List<_JavaFileModel> fileModels )
+    {
+        JavaSourceFolder sourceFolder = new JavaSourceFolder();
+        sourceFolder.add( fileModels );
+        return sourceFolder;
+    }
+    
+    public JavaSourceFolder()
     {
     }
     
@@ -86,7 +90,7 @@ public class SourceFolder
         return classNameToJavaSourceFileMap.values();
     }
     
-    public final SourceFolder add( SourceFolder...sourceFolders )
+    public final JavaSourceFolder add( JavaSourceFolder...sourceFolders )
     {
         for( int i = 0; i < sourceFolders.length; i++ )
         {
@@ -102,7 +106,7 @@ public class SourceFolder
      * @param fileModels any top Level Java file type
      * @return the updated sourceFolder
      */
-    public final SourceFolder add( FileModel...fileModels )
+    public final JavaSourceFolder add( _JavaFileModel...fileModels )
     {
         for( int i = 0; i < fileModels.length; i++ )
         {
@@ -111,18 +115,18 @@ public class SourceFolder
         return this;
     }
     
-    public final SourceFolder add( List<FileModel> fileModels )
+    public final JavaSourceFolder add( List<_JavaFileModel> fileModels )
     {
-        return add( fileModels.toArray( new FileModel[ 0 ] ) );
+        return add(fileModels.toArray(new _JavaFileModel[ 0 ] ) );
     }
     /**
-     * Adds one or more {@code AdHocJavaFile}s to the SourceFolder 
+     * Adds one or more {@code AdHocJavaFile}s to the JavaSourceFolder 
      *
      * @param adHocJavaFiles one or more {@code AdHocJavaFile}s to add to the 
-     * {@code SourceFolder}
-     * @return the SourceFolder containing the AdHocJavaFiles
+     * {@code JavaSourceFolder}
+     * @return the JavaSourceFolder containing the AdHocJavaFiles
      */
-    public final SourceFolder add( JavaSourceFile... adHocJavaFiles )
+    public final JavaSourceFolder add( JavaSourceFile... adHocJavaFiles )
     {
         for( int i = 0; i < adHocJavaFiles.length; i++ )
         {            

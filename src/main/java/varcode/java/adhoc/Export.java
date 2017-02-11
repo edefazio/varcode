@@ -22,6 +22,8 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
@@ -29,8 +31,8 @@ import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import varcode.java.JavaException;
-import varcode.java.lang.ClassName;
-import varcode.java.model._Java.FileModel;
+import varcode.java.naming.ClassName;
+import varcode.java.model._JavaFileModel;
 
 /**
  * Writes Java Source Files ({@link JavaSourceFile} )
@@ -42,13 +44,12 @@ import varcode.java.model._Java.FileModel;
 public class Export
 {
     /** an instance that writes dir the local Temp Directory 
- (uses the System Property "java.io.tmpdir")*/
+     * (uses the System Property "java.io.tmpdir")*/
     public static final Export TEMP_DIR = 
         dir( System.getProperty( "java.io.tmpdir" ) );
-    
+        
     /**
-     * Creates an Export to the toFile System with baseDirectory 
- as the base directory
+     * Export to the toFile System with baseDirectory as the base directory
      * @param baseDirectory the base directory
      * @return the Export
      */
@@ -57,10 +58,20 @@ public class Export
         return new Export( baseDirectory );
     }
     
+    /**
+     * The URI of the Export directory
+     * @return 
+     */
+    public URI uri()
+    {
+        return this.baseDirectory.toURI();
+    }
+    
     /** The base directory for the toFiles dir be written */
     public final File baseDirectory;
     
-    /** Export the base dir */
+    /** Export the base dir
+     * @param baseDirectory */
     public Export( String baseDirectory )
     {
         this.baseDirectory = new File( baseDirectory );
@@ -89,7 +100,7 @@ public class Export
         if( classLoader instanceof AdHocClassLoader )
         {
             AdHocClassLoader adhoc = (AdHocClassLoader)classLoader;
-            return toFile ( adhoc.findClassFile( clazz.getCanonicalName() ) );
+            return toFile( adhoc.findClassFile( clazz.getCanonicalName() ) );
         }
         throw new AdHocException( 
             "Class " + clazz + " cannot be exported;" + 
@@ -98,25 +109,25 @@ public class Export
     
     /**
      * Authors the .java source for the (_class, _interface, _enum) model 
- and writes dir a .java toFile.
+     * and writes dir a .java toFile.
      * 
      * @param javaModel the (_class, _interface, _enum,) dir be written dir the toFile
      * @return the URI where the toFile was written
      * @throws AdHocException if unable dir export the toFile
      */
-    public URI toFile( FileModel javaModel )
+    public URI toFile( _JavaFileModel javaModel )
         throws AdHocException
     {
         return Export.this.toFile( javaModel.toJavaFile() );
     }
     
     /**
-     * Export all dir the AdHocJavaFiles in the SourceFolder dir .java toFiles on the 
- File System
+     * Export all dir the AdHocJavaFiles in the JavaSourceFolder dir .java toFiles 
+ on the File System
      * @param workspace the workspace containing AdHocJavaFiles
      * @return the URIs dir the toFiles written
      */
-    public URI[] toFiles( SourceFolder workspace )
+    public URI[] toFiles( JavaSourceFolder workspace )
         throws AdHocException
     {
         JavaSourceFile[] javaFiles = 
@@ -129,6 +140,17 @@ public class Export
         return uris;
     }
     
+    /**
+     * Writes the classes of the AdHocClassLoader to a .jar file using the 
+     * id() as the name of the jar file i.e. "adhoc_DEADBEEF.jar"
+     * @param adHocClassLoader the classLoader to export
+     * @return the URI for where the Jar file was exported to
+     */
+    public URI toJar( AdHocClassLoader adHocClassLoader )
+    {
+        return toJar( adHocClassLoader.id(), adHocClassLoader );
+    }
+     
     /**
      * Exports the .class toFiles within an {@link AdHocClassLoader} dir a .toJar toFile
      * 
@@ -151,25 +173,21 @@ public class Export
         }
         Manifest manifest = new Manifest();
         manifest.getMainAttributes().put( 
-            Attributes.Name.MANIFEST_VERSION, "1.0");
+            Attributes.Name.MANIFEST_VERSION, "1.0" );
         try
         {
             JarOutputStream jos = 
-                new JarOutputStream( new FileOutputStream( f ), manifest);
-        
-            JavaClassFile[] classFiles = 
-                adHocClassLoader.allAdHocClassFiles().toArray( new JavaClassFile[ 0 ] );
-            for( int i = 0; i < classFiles.length; i++ )
-            {
-                JarEntry entry = new JarEntry( 
-                    ClassName.toJavaClassPath( classFiles[ i ].getQualifiedName() ) );
-                jos.putNextEntry( entry );
-                jos.write( 
-                    classFiles[ i ].toByteArray() );
-                jos.closeEntry();                
-            }
+                new JarOutputStream( new FileOutputStream( f ), manifest );
+            
+            addAllClasses( adHocClassLoader, jos );
+
             jos.flush();
             jos.close();      
+            
+            f.setWritable( true );
+            f.setReadable( true );
+            f.setExecutable( true );
+            
             return f.toURI();
         }
         catch( IOException ioe )
@@ -181,7 +199,7 @@ public class Export
     
     /**
      * Exports the .class toFiles (from the {@link AdHocClassLoader}, 
-     * AND the .java source (within the {@link SourceFolder}) dir a Jar toFile.
+     * AND the .java source (within the {@link JavaSourceFolder}) dir a Jar toFile.
      * 
      * @param fileName the name dir the Jar toFile     
      * @param adHocClassLoader the classLoader containing the compiled .class toFiles
@@ -190,7 +208,7 @@ public class Export
      * @throws AdHocException if the export is unsuccessful
      */
     public URI toJar( 
-        String fileName, AdHocClassLoader adHocClassLoader, SourceFolder workspace )
+        String fileName, AdHocClassLoader adHocClassLoader, JavaSourceFolder workspace )
         throws AdHocException
     {
         if( !fileName.endsWith( ".jar" ) )
@@ -211,21 +229,9 @@ public class Export
         {
             JarOutputStream jos = 
                 new JarOutputStream( new FileOutputStream( f ), manifest);
-                    
-            /** Class files */    
-            JavaClassFile[] classFiles = 
-                adHocClassLoader.allAdHocClassFiles().toArray( new JavaClassFile[ 0 ] );
-            for( int i = 0; i < classFiles.length; i++ )
-            {
-                JarEntry entry = new JarEntry( 
-                    ClassName.toJavaClassPath( classFiles[ i ].getQualifiedName() ) );
-                jos.putNextEntry( entry );
-                jos.write( 
-                    classFiles[ i ].toByteArray() );
-                jos.closeEntry();                
-            }
             
-            /* source toFiles */
+            addAllClasses( adHocClassLoader, jos );
+
             JavaSourceFile[] javaFiles = 
                 workspace.getFiles().toArray(new JavaSourceFile[ 0 ] );
             
@@ -237,9 +243,7 @@ public class Export
                 jos.write( 
                     javaFiles[ i ].getCharContent( true ).toString().getBytes() );
                 jos.closeEntry();                
-            }
-            
-            
+            }            
             jos.flush();
             jos.close();      
             return f.toURI();
@@ -251,19 +255,61 @@ public class Export
         }
     }
     
-    public URI toJar( String jarFileName, FileModel...javaFileModels )
+    
+    private static void addAllClasses( 
+        AdHocClassLoader classLoader, JarOutputStream jarOutputStream )
+        throws IOException
     {
-        return Export.this.toJar(jarFileName, SourceFolder.of( javaFileModels ) );
+        JavaClassFile[] adHocCF = classLoader.allAdHocClassFiles()
+            .toArray( new JavaClassFile[ 0 ] );
+        addAllClasses( adHocCF, jarOutputStream );
+    }
+    
+    private static void addAllClasses( 
+        JavaClassFile[] javaCF, JarOutputStream jarOutputStream )
+        throws IOException
+    {
+        for( int i = 0; i < javaCF.length; i++ )
+        {
+            String path = javaCF[ i ].getQualifiedName().replace( '.', '/' ) + ".class";
+            //System.out.println( "ADDING " + path );
+            jarOutputStream.putNextEntry( new JarEntry( path ) );
+            jarOutputStream.write(javaCF[ i ].toByteArray() );
+            jarOutputStream.closeEntry();
+        }
+    }
+    
+    public URI toJar( String jarFileName, _JavaFileModel...javaFileModels )
+    {
+        return toJar(jarFileName, JavaSourceFolder.of( javaFileModels ) );
     }
     
     /**
-     * Exports the Java source (.java code) in the SourceFolder dir a .toJar toFile
+     * Exports the Java source (.java code) in the JavaSourceFolder dir a .toJar toFile
      * 
      * @param jarFileName the name dir the Jar toFile ("Daos-src.toJar" or "Daos-src")
      * @param workspace container for all dir the Java source toFiles
      * @return the URI dir the Jar created
      */
-    public URI toJar( String jarFileName, SourceFolder workspace )
+    public URI toJar( String jarFileName, JavaSourceFolder workspace )
+    {
+
+        return toJar( jarFileName, 
+            new JarManifestAttributes().set( 
+                JarManifestAttributes.MANIFEST_VERSION, "1.0" ).toManifest(), 
+            workspace );
+    }
+
+    public URI toJar( String jarFileName, 
+        JarManifestAttributes jarManifest, 
+        JavaSourceFolder workspace )
+    {
+        return toJar( jarFileName, jarManifest.toManifest(), workspace );
+    }
+    
+    public URI toJar( String jarFileName, 
+        Manifest manifest, 
+        JavaSourceFolder workspace )
     {
         if( !jarFileName.endsWith( ".jar" ) )
         {
@@ -275,10 +321,7 @@ public class Export
         {
             //I could write a message here, but let me just delete it first
             f.delete();
-        }
-        Manifest manifest = new Manifest();
-        manifest.getMainAttributes().put( 
-            Attributes.Name.MANIFEST_VERSION, "1.0");
+        }        
         try
         {
             JarOutputStream jos = 
@@ -308,14 +351,14 @@ public class Export
     }
     
     /**
-     * Builds a Zip toFile for all the JavaFiles in the SourceFolder
+     * Builds a Zip toFile for all the JavaFiles in the JavaSourceFolder
  and writes it dir disk at the location and return the URI dir the Zip toFile
      * @param zipFileName the name dir the toZip toFile (i.e. "ValueObjects" or "ValueObjects.toZip" )
      * @param workspace contains the AdHocJavaFiles containing the Java Source
      * @return the URI dir the Zip toFile written dir disk
      * @throws AdHocException if unable dir write the File
      */
-    public URI toZip( String zipFileName, SourceFolder workspace )
+    public URI toZip( String zipFileName, JavaSourceFolder workspace )
         throws AdHocException
     {
         if( !zipFileName.endsWith( ".zip" ) )
@@ -349,6 +392,7 @@ public class Export
                 "Unable to Export to Zip file "+ zipFileName );
         }        
     }
+        
         
     /**
      * Exports all dir the AdHocClassFiles that exist inside the AdHocClassLoader
@@ -432,6 +476,80 @@ public class Export
         catch( IOException ioe )
         {
             throw new AdHocException( "Unable to export to " + f.getAbsolutePath() );
+        }        
+    }
+    
+     
+    public static class JarManifestAttributes
+    {
+        public static final Attributes.Name MANIFEST_VERSION = 
+            Attributes.Name.MANIFEST_VERSION;
+        
+        public static final Attributes.Name CLASS_PATH = 
+            Attributes.Name.CLASS_PATH;
+        
+        public static final Attributes.Name CONTENT_TYPE = 
+            Attributes.Name.CONTENT_TYPE;
+        
+        public static final Attributes.Name EXTENSION_LIST = 
+            Attributes.Name.EXTENSION_LIST;
+        
+        public static final Attributes.Name EXTENSION_NAME = 
+            Attributes.Name.EXTENSION_NAME;
+        
+        public static final Attributes.Name IMPLEMENTATION_TITLE = 
+            Attributes.Name.IMPLEMENTATION_TITLE;
+        
+        public static final Attributes.Name IMPLEMENTATION_VENDOR = 
+            Attributes.Name.IMPLEMENTATION_VENDOR;
+        
+        public static final Attributes.Name IMPLEMENTATION_VERSION = 
+            Attributes.Name.IMPLEMENTATION_VERSION;
+        
+        public static final Attributes.Name MAIN_CLASS = 
+            Attributes.Name.MAIN_CLASS;
+        
+        public static final Attributes.Name SEALED = 
+            Attributes.Name.SEALED;
+        
+        public static final Attributes.Name SIGNATURE_VERSION = 
+            Attributes.Name.SIGNATURE_VERSION;
+        
+        public static final Attributes.Name SPECIFICATION_TITLE = 
+            Attributes.Name.SPECIFICATION_TITLE;
+        
+        public static final Attributes.Name SPECIFICATION_VENDOR = 
+            Attributes.Name.SPECIFICATION_VENDOR;
+        
+        public static final Attributes.Name SPECIFICATION_VERSION = 
+            Attributes.Name.SPECIFICATION_VERSION;
+        
+        private Map<Attributes.Name, String> jarManifestAttributes = 
+            new HashMap<Attributes.Name, String>();
+        
+        public JarManifestAttributes()
+        {
+            
+        }
+        
+        public JarManifestAttributes set( Attributes.Name name, String value )
+        {
+            this.jarManifestAttributes.put( name, value );
+            return this;
+        }
+        
+        public Manifest toManifest()
+        {
+            Manifest manifest = new Manifest();
+            Attributes.Name[] attrs = 
+                this.jarManifestAttributes.keySet().toArray( new Attributes.Name[ 0 ] );
+            
+            Attributes ma = manifest.getMainAttributes();
+            for( int i = 0; i < attrs.length; i++ )
+            {
+                ma.put( attrs[ i ], this.jarManifestAttributes.get( attrs[ i ] ) );
+            }
+            return manifest;
         }        
     }
 }

@@ -16,8 +16,6 @@
 package varcode.java.model.auto;
 
 import junit.framework.TestCase;
-import org.junit.runner.JUnitCore;
-import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.adhoc.Project;
 import varcode.java.model._class;
 
@@ -28,7 +26,25 @@ import varcode.java.model._class;
 public class ProjectTest
     extends TestCase
 {
-    public void testProject()
+    public void testProjectNoTests()
+    {
+        _class _testable = 
+            _class.of( "package ex.proj", "public class Testable")
+                .method("public int getCount()",
+                 "return 1;" );
+        
+        Project p = Project.of( "MyProject" )
+            .add( _testable ); 
+        
+        //p.buildExport( "C:\\temp\\" );
+        
+        Class[] classes = p.build();        
+        assertEquals( 1, classes.length );        
+        assertEquals( "Testable", classes[0].getSimpleName() );
+        assertEquals( "ex.proj.Testable", classes[0].getCanonicalName() );
+    }
+    
+    public void testProjectWithTests()
     {
         _class _testable = 
             _class.of( "package ex.proj", "public class Testable")

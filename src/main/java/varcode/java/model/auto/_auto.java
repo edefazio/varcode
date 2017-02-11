@@ -15,7 +15,7 @@
  */
 package varcode.java.model.auto;
 
-import varcode.java.lang.ClassName;
+import varcode.java.naming.ClassName;
 import varcode.java.model._class;
 import varcode.java.model._constructors._constructor;
 import varcode.java.model._enum;

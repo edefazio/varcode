@@ -9,7 +9,8 @@ import junit.framework.TestCase;
 import varcode.java.Java;
 import varcode.java.adhoc.AdHoc;
 import varcode.java.adhoc.AdHocClassLoader;
-import varcode.java.adhoc.AdHocClassPublisher;
+import varcode.java.adhoc.Publisher;
+import varcode.java.adhoc.Publisher;
 import varcode.java.model._class;
 
 /**
@@ -27,14 +28,13 @@ public class PublishClassesToParentClassLoader
             .method( "public String toString()",
                 "return \"Hello DynamicThenPromoteClass\";" );
         
-        AdHocClassLoader adHocClassLoader = AdHoc.compile( 
-            Thread.currentThread().getContextClassLoader(), _c );
+        AdHocClassLoader adHocClassLoader = AdHoc.compile( _c );
         
         //
         ClassLoader parent = adHocClassLoader.getParent();
         
         
-        AdHocClassPublisher.publishToParent( adHocClassLoader );
+        Publisher.publishToParent( adHocClassLoader );
         
         Class cl = adHocClassLoader.loadClass( _c.getQualifiedName() );
         
@@ -66,7 +66,7 @@ public class PublishClassesToParentClassLoader
         ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
         
         
-        AdHocClassPublisher.publishClass( 
+        Publisher.publishClass( 
             systemClassLoader, 
             _c.getQualifiedName(),
             adHocCL.findClassFile( _c ).toByteArray() );                
@@ -85,7 +85,7 @@ public class PublishClassesToParentClassLoader
         ClassLoader parentClassLoader = adHocCL.getParent();
         
         //define the class in the parent ClassLoader
-        AdHocClassPublisher.publishClass( 
+        Publisher.publishClass( 
             parentClassLoader, 
             _c.getQualifiedName(), 
             adHocCL.findClassFile( _c.getQualifiedName() ).toByteArray() );

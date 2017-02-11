@@ -9,7 +9,7 @@ import junit.framework.TestCase;
 import varcode.java.Java;
 import varcode.java.adhoc.AdHoc;
 import varcode.java.adhoc.AdHocClassLoader;
-import varcode.java.adhoc.AdHocClassPublisher;
+import varcode.java.adhoc.Publisher;
 import varcode.java.model._class;
 
 import static varcode.java.model.auto._auto.*;
@@ -89,7 +89,7 @@ public class _autoBuilderTest
         AdHocClassLoader adHocCL = AdHoc.compile( _t );
         //Class immutableTarget = _t.loadClass();
         
-        AdHocClassPublisher.publishToParent( adHocCL );
+        Publisher.publishToParent( adHocCL );
         
         //Class c = adHocCL.findClass(_t.getQualifiedName() );
         Package.getPackage( _t.getPackageName() );

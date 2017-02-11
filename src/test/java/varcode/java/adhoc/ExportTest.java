@@ -14,13 +14,26 @@ public class ExportTest
     extends TestCase
 {
     
+    public void testExportJarNoPackage()
+    {        
+        URI uri = Export.dir("C:\\temp").toJar(
+            AdHoc.compile( 
+                _class.of("public class AAAA" )
+                    .field("public static final int ID = 100;" ), 
+                _class.of("package pc;", "public class BBBB" )
+                    .field("public static final int B = 200;" )) 
+            );
+        
+        System.out.println( uri );
+        
+    }
     /** 
-     * test that I can create a SourceFolder dir Models and Export them
+     * test that I can create a JavaSourceFolder dir Models and Export them
  dir a Directory all at once
      */
     public void testExportWorkspace()
     {
-        SourceFolder ws = SourceFolder.of(
+        JavaSourceFolder ws = JavaSourceFolder.of(
             _class.of( "package ex.port;", "public class MyExportClass" )
             .mainMethod( "System.out.println( \"MyMainMethod\");" ),        
             
@@ -132,7 +145,7 @@ public class ExportTest
 
     public void testZipFile()
     {
-        SourceFolder ws = SourceFolder.of( 
+        JavaSourceFolder ws = JavaSourceFolder.of( 
             _class.of(
                 "package example.mine;",
                 "public class MyClass" )
@@ -169,7 +182,7 @@ public class ExportTest
     
     public void testSourceClassJarFile()
     {
-        SourceFolder ws = SourceFolder.of( 
+        JavaSourceFolder ws = JavaSourceFolder.of( 
             _class.of(
                 "package comb.ex.mine;",
                 "public class MyClass" )

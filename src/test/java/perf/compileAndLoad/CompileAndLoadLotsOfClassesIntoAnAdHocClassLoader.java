@@ -5,8 +5,8 @@ import java.util.UUID;
 import varcode.java.adhoc.AdHoc;
 import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.adhoc.JavaSourceFile;
-import varcode.java.adhoc.AdHocClassPublisher;
-import varcode.java.adhoc.SourceFolder;
+import varcode.java.adhoc.Publisher;
+import varcode.java.adhoc.JavaSourceFolder;
 import varcode.java.model._class;
 
 /**
@@ -18,12 +18,12 @@ public class CompileAndLoadLotsOfClassesIntoAnAdHocClassLoader
     public static void main( String[] args )
         throws Exception
     {
-        //IF we build a SourceFolder and call the compiler one on :
+        //IF we build a JavaSourceFolder and call the compiler one on :
         int classCount = 
             //10;       //took 360ms, 360ms, 372 millis to compile and load 10 classes 
             //100;    //took 406ms, 422ms, 448ms to compile and load 100 classes
-            //1000;   //took 797ms, 781ms to compile and load 1000 classes
-            10;  //took 1890ms, 2766ms to compile and 9078 total time
+            1000;   //took 797ms, 781ms to compile and load 1000 classes
+            //10;  //took 1890ms, 2766ms to compile and 9078 total time
         
         //IF we call the compiler for EACH individual java file, it takes 
         // CONSIDERABLY LONGER
@@ -53,7 +53,7 @@ public class CompileAndLoadLotsOfClassesIntoAnAdHocClassLoader
         AdHocClassLoader adHocCL = compileAllAtSameTimeInOneWorkspace( JF ); //_cs );
         
         long start = System.currentTimeMillis();
-        AdHocClassPublisher.publishToParent( adHocCL );        
+        Publisher.publishToParent( adHocCL );        
         long end = System.currentTimeMillis();
         
         System.out.println( "Promoting, took "+ (end - start) );
@@ -65,7 +65,7 @@ public class CompileAndLoadLotsOfClassesIntoAnAdHocClassLoader
     {
         //long start = System.currentTimeMillis();
         long start = System.currentTimeMillis();
-        SourceFolder ws = new SourceFolder();
+        JavaSourceFolder ws = new JavaSourceFolder();
         ws.add( javaFiles );        
         AdHocClassLoader adHocCL = AdHoc.compile( ws );   
         long end = System.currentTimeMillis();
@@ -73,19 +73,21 @@ public class CompileAndLoadLotsOfClassesIntoAnAdHocClassLoader
         return adHocCL;
     }
     
+    
+    //** JUST DONT USE THIS ONE */
     public static AdHocClassLoader compileOneAtATime( JavaSourceFile[] javaFiles )        
     {
         long start = System.currentTimeMillis();
-        SourceFolder ws = new SourceFolder();
-        AdHocClassLoader adHocClassLoader = new AdHocClassLoader();
+        JavaSourceFolder ws = new JavaSourceFolder();
+        //AdHocClassLoader adHocClassLoader = new AdHocClassLoader();
         for( int i = 0; i< javaFiles.length; i++ )
         {
             ws.clear();
             ws.add( javaFiles[ i ] );
-            AdHoc.compile( ws, adHocClassLoader );    
+            AdHoc.compile( ws );    
         }
         long end = System.currentTimeMillis();
         System.out.println( "TOOK "+ (end - start) );
-        return adHocClassLoader;
+        return new AdHocClassLoader();
     }
 }

@@ -27,7 +27,7 @@ import varcode.java.Java;
 import varcode.java.adhoc.AdHoc;
 import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.adhoc.AdHocObjectInputStream;
-import varcode.java.adhoc.SourceFolder;
+import varcode.java.adhoc.JavaSourceFolder;
 import varcode.java.model._class;
 /**
  *

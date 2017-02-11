@@ -17,6 +17,7 @@ package varcode.java.model.auto;
 
 import java.util.ArrayList;
 import java.util.List;
+import varcode.java.model._JavaFileModel;
 import varcode.java.model._Java;
 import varcode.java.model._class;
 import varcode.java.model._methods._method;
@@ -95,7 +96,7 @@ public class _autoTestSuite
      * @param models
      * @return 
      */
-    public static _class from( _Java.FileModel... models )
+    public static _class from( _JavaFileModel... models )
     {
         List<_class>_testClasses = new ArrayList<_class>();
         

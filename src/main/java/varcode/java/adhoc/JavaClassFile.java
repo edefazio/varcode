@@ -23,7 +23,7 @@ import java.net.URISyntaxException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.tools.SimpleJavaFileObject;
-import varcode.java.ClassNameQualified;
+import varcode.java.naming.ClassNameQualified;
 
 /** 
  * Container to hold a Java (.class file) (bytecodes) in memory
@@ -64,7 +64,7 @@ public class JavaClassFile
     @Override
     public String toString()
     {
-        return getQualifiedName() + ".class : AdHocClassFile@" + Integer.toHexString( hashCode() );
+        return getQualifiedName() + ".class : JavaClassFile@" + Integer.toHexString( hashCode() );
     }
         
     /** The"FileManager"/"ClassLoader" writes the class' bytecodes to the local 
@@ -92,7 +92,6 @@ public class JavaClassFile
     {
         return this.className;
     }
-    
     
     /**
      * This class exists to delay the registering of a Class

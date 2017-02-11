@@ -30,7 +30,7 @@ import varcode.author.lib.EscapeString;
 import varcode.context.Context;
 import varcode.context.VarBindException;
 import varcode.context.VarScript;
-import varcode.java.lang.RefRenamer;
+import varcode.java.naming.RefRenamer;
 import varcode.java.model._Java.Authored;
 import varcode.markup.bindml.BindML;
 import varcode.ModelException;

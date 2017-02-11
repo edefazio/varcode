@@ -32,7 +32,7 @@ import varcode.context.Context;
 import varcode.context.Directive;
 import varcode.markup.Template;
 import varcode.java.ast.JavaAst;
-import varcode.java.lang.RefRenamer;
+import varcode.java.naming.RefRenamer;
 import varcode.java.model._generic._typeParams;
 import varcode.java.model._parameters._parameter;
 import varcode.java.model._Java.Authored;
@@ -604,38 +604,31 @@ public class _constructors
         {
             if( this == obj )
             {
-                System.out.println ("SAME OBJ");
                 return true;
             }
             if( obj == null )
             {
-                System.out.println ("NUll OBJ");
                 return false;
             }
             if( getClass() != obj.getClass() )
             {
-                System.out.println ("DIff CLASS");
                 return false;
             }
             final _constructor other = (_constructor)obj;
             if( !Objects.equals( this.annotations, other.annotations ) )
             {
-                System.out.println ("DIFF ANN");
                 return false;
             }
             if( !Objects.equals( this.javadoc, other.javadoc ) )
             {
-                System.out.println ("DIFF JAVADOC");
                 return false;
             }
             if( !Objects.equals( this.constructorSig, other.constructorSig ) )
             {
-                System.out.println ("DIFF SIG");
                 return false;
             }
             if( !Objects.equals( this.body, other.body ) )
             {
-                System.out.println ("DIFF BODY");
                 return false;
             }
             return true;
@@ -906,23 +899,19 @@ public class _constructors
     {
         if( this == obj )
         {
-            System.out.println ("SAME OBJ");
             return true;
         }
         if( obj == null )
         {
-            System.out.println ("DIFF OBJ");
             return false;
         }
         if( getClass() != obj.getClass() )
         {
-            System.out.println ("DIFF CLASS");
             return false;
         }
         final _constructors other = (_constructors)obj;
         if( !Objects.equals( this.constructors, other.constructors ) )
         {
-            System.out.println("DIFF " + this.constructors + other.constructors );
             return false;
         }
         return true;

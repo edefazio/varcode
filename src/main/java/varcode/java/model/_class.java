@@ -40,9 +40,9 @@ import varcode.java.model._generic._typeParams;
 import varcode.LoadException;
 import varcode.context.Context;
 import varcode.java.ast.JavaAst;
-import varcode.java.lang.RefRenamer;
+import varcode.java.naming.RefRenamer;
 import varcode.java.JavaReflection;
-import varcode.java.model._Java.FileModel;
+import varcode.java.model._JavaFileModel;
 import varcode.ModelException;
 
 /**
@@ -57,7 +57,7 @@ import varcode.ModelException;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _class
-    extends FileModel
+    extends _JavaFileModel
     implements _Java._model
 {
     private _javadoc javadoc;
@@ -1384,68 +1384,55 @@ public class _class
     {
         if( this == obj )
         {
-            System.out.println( "SAME BODY" );
             return true;
         }
         if( obj == null )
         {
-            System.out.println( "SAME OBJ" );
             return false;
         }
         if( getClass() != obj.getClass() )
         {
-            System.out.println( "DIFF CLASS" );
             return false;
         }
         final _class other = (_class)obj;
         if( !Objects.equals( this.pckage, other.pckage ) )
         {
-            System.out.println( "DIFF PACKAGE" );
             return false;
         }
         if( !Objects.equals( this.imports, other.imports ) )
         {
-            System.out.println( "DIFF IMPORTS" );
             return false;
         }
         if( !Objects.equals( this.javadoc, other.javadoc ) )
         {
-            System.out.println( "DIFF JAVADOC" );
             return false;
         }
         if( !Objects.equals( this.signature, other.signature ) )
         {
-            System.out.println( "DIFF SIGN" );
             return false;
         }
         if( !Objects.equals( this.annotations, other.annotations ) )
         {
-            System.out.println( "DIFF ANN" );
             return false;
         }
         if( !Objects.equals( this.constructors, other.constructors ) )
         {
-            System.out.println( "DIFF CTORS" );
             return false;
         }
         if( !Objects.equals( this.fields, other.fields ) )
         {
-            System.out.println( "DIFF FIELDS" );
             return false;
         }
         if( !Objects.equals( this.methods, other.methods ) )
         {
-            System.out.println( "DIFF METHODS" );
             return false;
         }
         if( !Objects.equals( this.staticBlock, other.staticBlock ) )
         {
-            System.out.println( "DIFF STATIC BLOCK" );
             return false;
         }
         if( !Objects.equals( this.nesteds, other.nesteds ) )
         {
-            System.out.println( "DIFF NESTED" );
             return false;
         }
         return true;

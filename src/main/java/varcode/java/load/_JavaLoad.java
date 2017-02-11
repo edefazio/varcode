@@ -23,7 +23,6 @@ import com.github.javaparser.ast.body.AnnotationDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.EnumDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
-import varcode.java.BaseJavaSourceLoader;
 import varcode.java.ast.FormatJavaCode_AllmanScanStyle;
 import varcode.java.ast.JavaCodeFormatVisitor;
 import varcode.java.model._annotationType;

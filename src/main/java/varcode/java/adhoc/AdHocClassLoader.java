@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.tools.JavaFileObject;
-import varcode.java.ClassNameQualified;
-import varcode.java.lang.ClassName;
+import varcode.java.naming.ClassNameQualified;
+import varcode.java.naming.ClassName;
 
 /**
  * {@link ClassLoader}  built for loading Class files in an AdHoc manner (classes 
@@ -53,7 +53,6 @@ public class AdHocClassLoader
      * {@link #definePackage(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.net.URL) }
      */ 
     private final PackagePropertyDefiner pckgDefine;
-    
     
     /**
      * All Ad hoc packages that were created
@@ -359,10 +358,16 @@ public class AdHocClassLoader
         this.classNameToAdHocClass.clear();
     }    
     
+    /** Identifier for this class loader */
+    public String id()
+    {
+        return "adhoc_" + Integer.toHexString( this.hashCode() );
+    }
+    
     @Override
     public String toString()
     {
-        return "AdHocClassLoader@" + Integer.toHexString( this.hashCode() ) + System.lineSeparator() + 
+        return  id() + System.lineSeparator() + 
             "  child of " + this.getParent().toString() + System.lineSeparator() +
             "    " + this.allAdHocClassFiles();
     }
@@ -458,7 +463,7 @@ public class AdHocClassLoader
         @Override
         public String getSpecTitle()
         {
-            return "AdHoc";
+            return "adhoc";
         }
 
         @Override
@@ -476,7 +481,7 @@ public class AdHocClassLoader
         @Override
         public String getImplTitle()
         {
-            return "Ad Hoc Code";
+            return "adhoc code";
         }
 
         @Override
@@ -495,8 +500,6 @@ public class AdHocClassLoader
         public URL getSealBase()
         {
             return null;
-        }
-        
-    }
-    
+        }        
+    }    
 }

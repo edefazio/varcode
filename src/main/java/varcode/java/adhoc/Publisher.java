@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 M. Eric DeFazio.
+ * Copyright 2017 Eric.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,8 @@ import java.lang.reflect.Method;
 import java.net.URL;
 
 /**
- * Publishes AdHocClasses to more standard {@link ClassLoader}s (i.e. 
- * the SystemClassLoader) for the purpose of using AdHocClasses in the 
+ * Publishes "AdHoc" Classes to more standard {@link ClassLoader}s (i.e. 
+ * the SystemClassLoader) for the purpose of using "AdHoc" Classes in the 
  * same manner as classes loaded directly from of the class path at startup.
  * 
  * Normally Not a fan of "Util" classes, but in this case, we are doing something
@@ -55,9 +55,9 @@ import java.net.URL;
  * 
  * @author M. Eric DeFazio eric@varcode.io
  */
-public class AdHocClassPublisher
+public class Publisher
 {
-    /** 
+     /** 
      * THIS is a reference to the method :
      * {@link java.lang.ClassLoader#defineClass( String, byte[], int, int ) }
      * 
@@ -65,9 +65,20 @@ public class AdHocClassPublisher
      * 
      * we have to "hack" the JVM accessibility to make this method available
      * to us at runtime (so we can define Classes via bytecode into a ClassLoader
-     * that we dont "own")
+     * i.e. the SystemClassLoader that we dont "own")
      */
     private static final Method DEFINE_CLASS_METHOD;
+    
+        /** 
+     * IF we are creating a Class in a "new" package 
+     * (that does not exist in the parentClassLoader)
+     * we will need to create a new Package, this entity will
+     * provided properties in the creation of the package
+     * 
+     * {@link #definePackage(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.net.URL) }
+     */ 
+    private final PackagePropertyDefiner pckgDefine = 
+        DefaultPackagePropertyDefiner.INSTANCE;
     
     /**
      * This is a reference to the method :
@@ -94,6 +105,7 @@ public class AdHocClassPublisher
                 );
             
             DEFINE_CLASS_METHOD.setAccessible( true );
+            
             
             DEFINE_PACKAGE_METHOD = 
                 ClassLoader.class.getDeclaredMethod( "definePackage", 
@@ -153,7 +165,7 @@ public class AdHocClassPublisher
         }
         for( int i = 0; i < adHocClassFiles.length; i++ )
         {
-            AdHocClassPublisher.publishClass( parent, adHocClassFiles[ i ] );
+            publishClass( parent, adHocClassFiles[ i ] );
         }
         //since we loaded the classes in the Parent class loader, 
         //we dont need to adHoc copies anymore, they will still "resolve"
@@ -214,8 +226,8 @@ public class AdHocClassPublisher
      */
     public static void publishClass( String className, byte[] bytes ) 
     {
-        AdHocClassPublisher.publishClass(
-            Thread.currentThread().getContextClassLoader(), className, bytes);
+        publishClass(
+            ClassLoader.getSystemClassLoader(), className, bytes);
     }
 
     /**
@@ -227,7 +239,7 @@ public class AdHocClassPublisher
     public static Class publishClass( 
         ClassLoader targetClassLoader, JavaClassFile adHocClassFile )
     {
-        return AdHocClassPublisher.publishClass( 
+        return publishClass( 
             targetClassLoader, 
             adHocClassFile.getQualifiedName(), 
             adHocClassFile.toByteArray() );
@@ -266,4 +278,182 @@ public class AdHocClassPublisher
             throw new AssertionError( e.getCause() );
         }
     }
+    
+    public void definePackage( String packageName )
+    {        
+        //System.out.println( "Creating a Package \"" + packageName + "\" " );
+        
+        this.publishPackage( 
+            packageName, //package name
+            this.pckgDefine.getSpecTitle(), 
+            this.pckgDefine.getSpecVersion(),
+            this.pckgDefine.getSpecVendor(),
+            this.pckgDefine.getImplTitle(),
+            this.pckgDefine.getImplVersion(),
+            this.pckgDefine.getImplVendor(),
+            this.pckgDefine.getSealBase() );        
+    }
+    
+     /**
+     * Copied from original method on ClassLoader
+     * 
+     * Defines a package by name in this <tt>ClassLoader</tt>.  This allows
+ class loaders to defineClass the packages for their classes. Packages must
+ be created before the class is defined, and package names must be
+ unique within a class loader and cannot be redefined or changed once
+ created.
+     *
+     * @param  name
+     *         The package name
+     *
+     * @param  specTitle
+     *         The specification title
+     *
+     * @param  specVersion
+     *         The specification version
+     *
+     * @param  specVendor
+     *         The specification vendor
+     *
+     * @param  implTitle
+     *         The implementation title
+     *
+     * @param  implVersion
+     *         The implementation version
+     *
+     * @param  implVendor
+     *         The implementation vendor
+     *
+     * @param  sealBase
+     *         If not <tt>null</tt>, then this package is sealed with
+     *         respect to the given code source {@link java.net.URL
+     *         <tt>URL</tt>}  object.  Otherwise, the package is not sealed.
+     *
+     * @return  The newly defined <tt>Package</tt> object
+     *
+     * @throws  IllegalArgumentException
+     *          If package name duplicates an existing package either in this
+     *          class loader or one of its ancestors
+     *
+     * @since  1.2
+     */
+    public Package publishPackage(
+        String name, String specTitle,String specVersion, String specVendor,
+        String implTitle, String implVersion, String implVendor, URL sealBase)
+        throws IllegalArgumentException
+    {        
+        try
+        {
+            Package pkg = publishPackage( 
+                ClassLoader.getSystemClassLoader(),
+                name, specTitle, specVersion, specVendor,
+                implTitle, implVersion, implVendor, sealBase );        
+        
+            //System.out.println( "Defining Package " + pkg );            
+            return pkg;        
+        }
+        catch( IllegalAccessException iae )
+        {
+            throw new AdHocException("illegal Access ", iae ); 
+        }
+        catch( InvocationTargetException ivt )
+        {
+            throw new AdHocException( "InvocationTarget Exception", ivt.getCause() );
+        }
+    }
+    
+    
+    public static Package publishPackage( 
+        ClassLoader targetClassLoader, String name, String specTitle, 
+        String specVersion, String specVendor, String implTitle, 
+        String implVersion, String implVendor, URL sealBase ) 
+        throws IllegalAccessException, 
+            IllegalArgumentException, 
+            InvocationTargetException
+    {
+         return (Package)DEFINE_PACKAGE_METHOD.invoke( targetClassLoader, 
+                name, 
+                specTitle, 
+                specVersion, 
+                specVendor,
+                implTitle, 
+                implVersion, 
+                implVendor, 
+                sealBase ); 
+    }
+    
+    /**
+     * 
+     */
+    public interface PackagePropertyDefiner
+    {
+        public String getSpecTitle();
+        
+        public String getSpecVersion();
+        
+        public String getSpecVendor();
+        
+        public String getImplTitle();
+        
+        public String getImplVersion();
+        
+        public String getImplVendor();
+        
+        public URL getSealBase();
+    }
+    
+    /**
+     * This will create "DEFAULT" properties for a package when a Package
+     * needs to be created
+     * 
+     * 
+     */
+    public enum DefaultPackagePropertyDefiner
+        implements PackagePropertyDefiner
+    {
+        INSTANCE;
+        
+        @Override
+        public String getSpecTitle()
+        {
+            return "AdHoc";
+        }
+
+        @Override
+        public String getSpecVersion()
+        {
+            return "1.0";
+        }
+
+        @Override
+        public String getSpecVendor()
+        {
+            return "varcode.java.adhoc";
+        }
+
+        @Override
+        public String getImplTitle()
+        {
+            return "Ad Hoc Code";
+        }
+
+        @Override
+        public String getImplVersion()
+        {
+            return "1.0";
+        }
+
+        @Override
+        public String getImplVendor()
+        {
+            return "io.varcode";
+        }
+
+        @Override
+        public URL getSealBase()
+        {
+            return null;
+        }        
+    }
+    
 }

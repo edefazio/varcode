@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package varcode.java;
+package varcode.java.naming;
 
 /**
  * Representation of a Class that have fully qualified names (They represent a 

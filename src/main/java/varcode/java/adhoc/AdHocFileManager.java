@@ -50,7 +50,7 @@ public class AdHocFileManager
     
     public AdHocFileManager( AdHocClassLoader adHocClassLoader )
     {
-        this( Javac.STANDARD_FILE_MANAGER, adHocClassLoader );
+        this( Javac.getStandardJavaFileManager(), adHocClassLoader );
     }
     
     /**

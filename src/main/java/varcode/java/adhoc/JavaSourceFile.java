@@ -20,7 +20,7 @@ import java.net.URI;
 
 import javax.tools.JavaFileObject;
 import javax.tools.SimpleJavaFileObject;
-import varcode.java.ClassNameQualified;
+import varcode.java.naming.ClassNameQualified;
 
 /**
  * In memory representation of a .java source file. (as apposed to a .java 
@@ -30,7 +30,7 @@ import varcode.java.ClassNameQualified;
  * {@code SimpleJavaFileObject} to be "fed" into the Javac compiler at Runtime 
  * (to convert from .java source to a .class bytecode)
  * 
- * NOTE: a single {@code AdHocJavaFile} can contain MANY Class Declarations 
+ * NOTE: a single {@code JavaSourceFile} can contain MANY Class Declarations 
  * (Inner Classes, Anonymous Classes) as Member/Nested classes.
  * 
  * @author M. Eric DeFazio eric@varcode.io

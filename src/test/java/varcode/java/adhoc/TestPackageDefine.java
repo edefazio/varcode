@@ -53,7 +53,7 @@ public class TestPackageDefine
         //it DOESNT EXIST globally (it's local to the AdHocClassLoader)
         assertClassNotFound( "ex.io.C" );
         
-        AdHocClassPublisher.publishToParent( adHoc );
+        Publisher.publishToParent( adHoc );
         
         ClassLoader cl = adHoc.getParent();
         Class c = Class.forName( "ex.io.C" );

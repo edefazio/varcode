@@ -21,7 +21,7 @@ import varcode.author.Author;
 import varcode.context.Context;
 import varcode.context.Directive;
 import varcode.context.VarContext;
-import varcode.java.lang.RefRenamer;
+import varcode.java.naming.RefRenamer;
 import varcode.java.model._fields._field;
 import varcode.java.model._methods._method;
 import varcode.java.model._Java.Authored;

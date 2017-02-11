@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.Objects;
 import varcode.ModelException;
 
-import varcode.java.lang.IdentifierName;
-import varcode.java.lang.TypeName;
+import varcode.java.naming.IdentifierName;
+import varcode.java.naming.TypeName;
 import varcode.markup.Template;
 import varcode.markup.bindml.BindML;
 

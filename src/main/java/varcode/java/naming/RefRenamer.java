@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package varcode.java.lang;
+package varcode.java.naming;
 
 /**
  * A more evolved String "replace" for replacing references within .java source code

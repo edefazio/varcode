@@ -3,7 +3,7 @@ package varcode.java.load.complex;
 import junit.framework.TestCase;
 import varcode.java.load.Load_class;
 import static junit.framework.TestCase.assertEquals;
-import varcode.java.BaseJavaSourceLoader;
+import varcode.java.load.BaseJavaSourceLoader;
 import varcode.java.Java;
 import varcode.java.adhoc.Export;
 import varcode.java.model._class;

@@ -36,7 +36,7 @@ import varcode.context.Directive;
 import varcode.markup.Template;
 import varcode.translate.JavaTranslate;
 import varcode.java.ast.JavaAst;
-import varcode.java.lang.RefRenamer;
+import varcode.java.naming.RefRenamer;
 import varcode.java.model._generic._typeParams;
 import varcode.java.model._parameters._parameter;
 import varcode.java.model._Java.Authored;

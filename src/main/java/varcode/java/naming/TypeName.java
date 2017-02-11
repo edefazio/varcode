@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package varcode.java.lang;
+package varcode.java.naming;
 
 import java.util.HashSet;
 import java.util.Set;
+import varcode.java.JavaException;
 import varcode.java.JavaException;
 
 /**

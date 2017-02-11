@@ -23,8 +23,8 @@ import varcode.author.Author;
 import varcode.context.Directive;
 import varcode.context.Context;
 import varcode.context.VarContext;
-import varcode.java.lang.RefRenamer;
-import varcode.java.model._Java.FileModel;
+import varcode.java.naming.RefRenamer;
+import varcode.java.model._JavaFileModel;
 import varcode.java.model._annotations._annotation;
 import varcode.java.model._Java.Authored;
 import varcode.markup.Template;
@@ -58,7 +58,7 @@ public @interface ClassPreamble //<-- _signature
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class _annotationType
-    extends FileModel
+    extends _JavaFileModel
     implements _Java._model, Authored
 {
     public static final String N = System.lineSeparator();
@@ -86,43 +86,35 @@ public class _annotationType
     {
         if( this == obj )
         {
-            System.out.println( "SAME OBJ");
             return true;
         }
         if( obj == null )
         {
-            System.out.println( "NULL OBJ");
             return false;
         }
         if( getClass() != obj.getClass() )
         {
-            System.out.println( "DIFF CLASS");
             return false;
         }
         final _annotationType other = (_annotationType)obj;
         if( !Objects.equals( this.javadoc, other.javadoc ) )
         {
-            System.out.println( "DIFF JAVADOC");
             return false;
         }
         if( !Objects.equals( this.signature, other.signature ) )
         {
-            System.out.println( "DIFF SIGN");
             return false;
         }
         if( !Objects.equals( this.annotations, other.annotations ) )
         {
-            System.out.println( "DIFF ANN");
             return false;
         }
         if( !Objects.equals( this.annotationProperties, other.annotationProperties ) )
         {
-            System.out.println( "DIFF ANN PROP");
             return false;
         }
         if( !Objects.equals( this.nests, other.nests ) )
         {
-            System.out.println( "DIFF NESTS ");
             return false;
         }
         return true;

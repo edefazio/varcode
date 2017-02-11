@@ -15,13 +15,14 @@
  */
 package howto.java.auto;
 
-import varcode.java.adhoc.CodeSpace;
 import java.util.Date;
 import junit.framework.TestCase;
+import junit.framework.TestResult;
 import varcode.java.model._class;
 import varcode.java.model.auto._auto;
 import static varcode.java.model.auto._auto.*;
 import varcode.java.model.auto._autoApply._autoMacro;
+import howto.java.adhoc.AdHocTest;
 
 /**
  * Illustrates how auto programming can DRAMATICALLY reduce the effort needed
@@ -60,6 +61,19 @@ public class UseAutoMacros
         assertNotNull( _builder.getMethod( "c") ); //macrobuilder  created a method
         assertNotNull( _builder.getMethod( "build") ); //macrobuilder  created a method
         
+        AdHocTest.of( _c, 
+            "Date d = new Date();",
+            "A constr = new A(100, \"eric\", d);",
+            "A built = A.builder().a(100).b(\"eric\").c(d).build();",            
+            "assertEquals( constr, built );"
+            //"assertFalse( constr.equals( built ) );"
+            ).run() ;
+       
+       
+       /*
+        _class _c = _class.of( "public class CSTest extends TestCase" )
+            .imports(TestCase.class, Date.class)
+            .method( "public void testThing" )
         CodeSpace cs = CodeSpace.of( _c ).extend( TestCase.class )
             .code( 
             "Date d = new Date();",
@@ -70,6 +84,7 @@ public class UseAutoMacros
         
         System.out.println( theClass );
         cs.eval( );
+        */
         //
         //Object space = _c.space( 100, "eric", new Date() );
         

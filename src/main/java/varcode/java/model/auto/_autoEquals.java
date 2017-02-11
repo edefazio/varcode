@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import varcode.author.Author;
 import varcode.markup.Template;
-import varcode.java.lang.Primitive;
+import varcode.java.naming.Primitive;
 import varcode.java.model._class;
 import varcode.java.model._fields;
 import varcode.java.model._fields._field;

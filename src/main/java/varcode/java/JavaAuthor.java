@@ -15,6 +15,7 @@
  */
 package varcode.java;
 
+import varcode.java.naming.ClassName;
 import com.github.javaparser.ParseException;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.TypeDeclaration;
@@ -26,7 +27,6 @@ import varcode.context.VarContext;
 import varcode.context.VarScope;
 import varcode.java.adhoc.JavaSourceFile;
 import varcode.java.ast.JavaAst;
-import varcode.java.lang.ClassName;
 import varcode.markup.Template;
 
 /**

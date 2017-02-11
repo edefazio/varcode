@@ -15,6 +15,7 @@
  */
 package varcode.java;
 
+import varcode.java.load.BaseJavaSourceLoader;
 import com.github.javaparser.ParseException;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.TypeDeclaration;
@@ -26,7 +27,6 @@ import varcode.context.Directive;
 import varcode.markup.Template;
 import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.adhoc.JavaSourceFile;
-import varcode.java.adhoc.Javac.JavacOptions;
 import varcode.java.ast.JavaAst;
 import varcode.java.model._class;
 import varcode.java.model._enum;
@@ -34,8 +34,6 @@ import varcode.java.model._interface;
 import varcode.java.load._JavaLoad;
 import varcode.LoadException;
 import varcode.java.adhoc.AdHoc;
-import varcode.java.adhoc.JavacException;
-import varcode.java.adhoc.SourceFolder;
 import varcode.java.ast.FormatJavaCode_AllmanScanStyle;
 import varcode.java.ast.JavaCodeFormatVisitor;
 import varcode.java.model._annotationType;
@@ -169,36 +167,19 @@ public class Java
      * @param compilerOptions Optional Compiler Arguments (@see JavacOptions)
      * @return a new Class compiled and loaded into a new AdHocClassLoader
      * @throws JavacException if unable to compile the toJavaFile
-     */
+     
     public static Class<?> compileAndLoadClass( 
     	JavaSourceFile javaFile,
     	JavacOptions.CompilerOption...compilerOptions )
         throws JavacException
     {
-        AdHocClassLoader adHocClassLoader = new AdHocClassLoader();
-        return compileAndLoadClass( adHocClassLoader, javaFile, compilerOptions );        
-    }
-    
-    /**
-     * Compiles the toJavaFile and loads the Class into the 
- {@code adHocClassLoader}
-     * 
-     * @param adHocClassLoader the classLoader to load the compiled classes
-     * @param javaFile toJavaFile containing at least one top level Java class
- (and potentially many nested classes)
-     * @param compilerOptions options passed to the Runtime Javac compiler
-     * @return the Class (loaded in the ClassLoader)
-     */
-    public static Class<?> compileAndLoadClass( 
-    	AdHocClassLoader adHocClassLoader, 
-    	JavaSourceFile javaFile,
-    	JavacOptions.CompilerOption...compilerOptions )
-    {
-        adHocClassLoader = AdHoc.compile(SourceFolder.of( javaFile ), 
-            adHocClassLoader,             
-            compilerOptions );
+        AdHocClassLoader adHocClassLoader = 
+            AdHoc.compile( JavaSourceFolder.of( javaFile ),              
+                compilerOptions );
         return adHocClassLoader.findClass( javaFile );
+              
     }
+    */ 
     
     /**
      * Load the (.java) source for a given Class

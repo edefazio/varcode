@@ -20,7 +20,7 @@ import varcode.java.adhoc.AdHoc;
 import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.adhoc.Javac.JavacOptions;
 import varcode.java.adhoc.JavacException;
-import varcode.java.adhoc.SourceFolder;
+import varcode.java.adhoc.JavaSourceFolder;
 import varcode.java.model._class;
 
 /**
@@ -36,7 +36,7 @@ public class CompilerFlags
         _c.annotate( "@Deprecated" );
         
         //create a 
-        SourceFolder ws = SourceFolder.of( _c );
+        JavaSourceFolder ws = JavaSourceFolder.of( _c );
         
         //compiling the workspace normally should work just fine
         AdHocClassLoader adHocClassLoader = AdHoc.compile( ws );
@@ -58,7 +58,7 @@ public class CompilerFlags
         _c.getAnnotations().removeAt( 0 );
         
         //we need to re-add the class to the workspace (since it changed)
-        ws = SourceFolder.of( _c );
+        ws = JavaSourceFolder.of( _c );
         
         //compiling with Java1.3 source flag w/o annotations will succeed
         AdHoc.compile( ws, JavacOptions.SourceVersion.MajorVersion._1_3 );
