@@ -1,5 +1,5 @@
 <img src="https://github.com/edefazio/varcode/blob/master/varcode_greenOnWhite.png?raw=true" width="60"/>
-varcode combines a model based **code generator** and **ad-hoc tools** to **compile, load, and run .java source code at runtime**.  
+varcode combines a **code generator** and **ad-hoc tools** to **compile, load, and run .java source code at runtime**.  
 
 ## best of both worlds (statically typed code & dynamic runtime behavior) ##
 varcode extends what traditional "code generators" do by letting you **compile, load and use** generated .java code in one step. 
