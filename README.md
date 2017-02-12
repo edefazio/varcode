@@ -1,9 +1,7 @@
 <!-- <img src="https://github.com/edefazio/varcode/blob/master/varcode_greenOnWhite.png?raw=true" width="60"/>
 ## **model** based **source** code generation ## -->
 ## dynamically generate .java code and run it ##
-varcode provides models for **generating and runing dynamic .java code**.  
- 
-build a model:
+varcode **generates and runs dynamic code**.  
 ```java
 _class _model = _class.of( "package mymodel;", 
     "public class Model" )
@@ -11,7 +9,7 @@ _class _model = _class.of( "package mymodel;",
     .method( "public String createId()",
         "return UUID.randomUUID().toString();" );
 ```
-to create a **new instance** of the model **dynamically**:
+to create a **new instance at runtime**:
 ```java
 Object dynamicModel = _model.instance();
 ```
@@ -20,7 +18,7 @@ Object dynamicModel = _model.instance();
 String id1 = (String)Java.call( dynamicModel, "createId" );
 String id2 = (String)Java.call( dynamicModel, "createId" );     
 ```
-export the **.java source** and the compiled **.class** files:
+export the **.java source** and **.class** files:
 ```java
 //export "C:\MyApp\src\main\java\mymodel\Model.java"
 Export.dir( "C:\\MyApp\\src\\main\\java\\").toFile( _model );
