@@ -1,6 +1,6 @@
 <!-- <img src="https://github.com/edefazio/varcode/blob/master/varcode_greenOnWhite.png?raw=true" width="60"/>
 ## **model** based **source** code generation ## -->
-## dynamically generate .java code and run it ##
+## generate .java code and use at at runtime ##
 varcode **generates and runs dynamic code**.  
 ```java
 _class _model = _class.of( "package mymodel;", 
