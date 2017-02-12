@@ -40,8 +40,8 @@ public class Model
 }
 ```
 
-## construct classes in one step or peice by peice##
-classes for ( [\_class](https://gist.github.com/edefazio/b491989cd6ef72ad7ea2bc0005895c81), [\_interface](https://gist.github.com/edefazio/adbbd9cd500617d3202b2a2a3c7ebf68), [\_enum](https://gist.github.com/edefazio/0e566868ab5f134720cfde6db24b9b11), [\_annotationType](https://gist.github.com/edefazio/f1bed02ff66524149c215311c6d6f356) ) can be built in a single compound statement, (convenient for static fields).  alternatively classes can be built incrementally using simple mutator methods. 
+## construct classes peice by peice##
+classes for ( [\_class](https://gist.github.com/edefazio/b491989cd6ef72ad7ea2bc0005895c81), [\_interface](https://gist.github.com/edefazio/adbbd9cd500617d3202b2a2a3c7ebf68), [\_enum](https://gist.github.com/edefazio/0e566868ab5f134720cfde6db24b9b11), [\_annotationType](https://gist.github.com/edefazio/f1bed02ff66524149c215311c6d6f356) ) can be built in a single compound statement or incrementally using simple mutator methods. 
 ```java 
 _class _c = _class.of( "package ex.mutable;",
     _imports.of( Serializable.class ),
@@ -61,8 +61,8 @@ _field _f = _field.of( "/** field javadoc */",
 _c.add( _f ); //add the "ID" field to the _class
 ```    
 
-## read and modify existing code ##
-to support **metaprogramming**, varcode can load the .java source of any (class, enum, interface, or annotationType) and **build a  ```( _class, _enum, _interface, _annotationType )``` automatically**. 
+## read in, modify, and run existing code ##
+varcode makes **metaprogramming** easy. **load a  ```( _class, _enum, _interface, _annotationType )```** from an existing class, modify it, then compile, instantiate and invoke methods on it (no restarting required). 
 
 ```java
 // 1. build the _class model from the .java source of the Class
