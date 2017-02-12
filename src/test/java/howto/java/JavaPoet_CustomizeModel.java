@@ -5,7 +5,7 @@
  */
 package howto.java;
 
-import varcode.author.Author;
+import varcode.author.Fill;
 import varcode.java.model._methods;
 import varcode.markup.Template;
 import varcode.markup.bindml.BindML;
@@ -32,8 +32,8 @@ public class JavaPoet_CustomizeModel
         String name, int from, int to, String op )
     {
         return _methods._method.of( 
-            Author.fillSeries( METHOD_SIG, name ),
-            Author.fillSeries( RANGE_BODY, from, to, op )
+            Fill.of( METHOD_SIG, name ),
+            Fill.of( RANGE_BODY, from, to, op )
         );        
     }
     

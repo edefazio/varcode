@@ -19,14 +19,13 @@ import varcode.context.Directive;
 import varcode.context.Context;
 import varcode.context.VarBindException;
 import varcode.context.VarContext;
-import varcode.markup.BindSeries;
-import varcode.markup.FillInTheBlanks.BlankBinding;
+//import varcode.markup.BindSeries;
+//import varcode.markup.FillInTheBlanks.BlankBinding;
 import varcode.markup.bindml.BindML;
 import varcode.markup.mark.Mark;
 import varcode.markup.Template;
-import varcode.markup.mark.Mark.Bind;
-import varcode.markup.mark.Mark.HasVar;
-import varcode.translate.JavaTranslate;
+//import varcode.markup.mark.Mark.Bind;
+//import varcode.markup.mark.Mark.HasVar;
 
 /**
  * The Process for specializing {@code Template}s with Data/Functionality 
@@ -307,7 +306,7 @@ public enum Author
      * @param template the template  
      * @param bindSeries series of Objects to fill in the document (in order or appearance)
      * @return 
-     */ 
+     
     public static String fillSeries( Template template, Object...bindSeries )
     {
         BindSeries bs = BindSeries.of( bindSeries );
@@ -330,50 +329,5 @@ public enum Author
     {
         return Author.fillSeries(BindML.compile(markup ), bindSeries );            
     }
-    
-    
-    /**  
-    public static class Series
-    {
-        /**
-         * Given a Template defined as {@link BindML} markup, compile
-         * the {@link Template} then bind parameters in the bindSeries
-         * to create a String document and return
-         * 
-         * @param bindMLMarkup the markup
-         * @param bindSeries series of Objects to fill in the document (in order or appearance)
-         * @return 
-         
-        public static String toString( 
-            String bindMLMarkup, Object... bindSeries )
-        {    
-            return toString( BindML.compile( bindMLMarkup ), bindSeries );
-        }
-        
-        /**
-         * 
-         * @param template the (simple) Template to be filled
-         * @param bindSeries series of Objects to fill in the document (in order or appearance)
-         * @return a String populated document
-        
-        public static String toString( 
-            Template template, Object...bindSeries )
-        {
-            BindSeries bs = BindSeries.of( bindSeries );
-            Bind[] bindMarks = template.getBindMarks();
-            BlankBinding bb = template.getBlankBinding();
-            Object[] fills = new Object[ bb.getBlanksCount() ]; 
-            for( int i = 0; i < bindMarks.length; i++ )
-            {
-                if( bindMarks[ i ] instanceof Mark.HasVar )
-                {                    
-                    HasVar hv = (HasVar)bindMarks[ i ];
-                    
-                    fills[ i ] = bs.resolve( hv.getVarName() );                    
-                }
-            }
-            return bb.bind( fills );                        
-        }
-    }
-    */ 
+    * */
 }

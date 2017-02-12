@@ -16,6 +16,7 @@
 package varcode.java.model.auto;
 
 import varcode.author.Author;
+import varcode.author.Fill;
 import varcode.java.model._class;
 import varcode.java.model._fields;
 import varcode.java.model._methods._method;
@@ -59,8 +60,8 @@ public enum _autoGetters
 
     public static _method of( Object type, Object name )
     {
-        return _method.of( Author.fillSeries( SIGNATURE, type, name ),
-            Author.fillSeries( BODY, name ) );
+        return _method.of( Fill.of( SIGNATURE, type, name ),
+            Fill.of( BODY, name ) );
     }
     
     public static _class to( _class _c )

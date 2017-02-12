@@ -16,6 +16,7 @@
 package varcode.java.model.auto;
 
 import varcode.author.Author;
+import varcode.author.Fill;
 import varcode.java.model._class;
 import varcode.java.model._fields;
 import varcode.java.model._fields._field;
@@ -101,8 +102,8 @@ public enum _autoSettersFluent
     public static _method of( String className, Object type, String fieldName )
     {
         return _method.of( 
-            Author.fillSeries( SIGNATURE, className, fieldName, type ),
-            Author.fillSeries( BODY, fieldName ) );
+            Fill.of( SIGNATURE, className, fieldName, type ),
+            Fill.of( BODY, fieldName ) );
     }
         
     @Override

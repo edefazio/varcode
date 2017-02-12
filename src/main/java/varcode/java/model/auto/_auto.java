@@ -46,8 +46,6 @@ public class _auto
     public static final _autoHashCode HASHCODE = _autoHashCode.INSTANCE;
     public static final _autoMethodJavadocs METHOD_JAVADOCS = _autoMethodJavadocs.INSTANCE;
     public static final _autoToString TO_STRING = _autoToString.INSTANCE;
-
-
     
     public static class macro
     {

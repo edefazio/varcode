@@ -34,6 +34,7 @@ import varcode.java.naming.RefRenamer;
 import varcode.java.model._Java.Authored;
 import varcode.markup.bindml.BindML;
 import varcode.ModelException;
+import varcode.author.Fill;
 
 /**
  * A JavaDoc comment
@@ -197,21 +198,21 @@ public class _javadoc
      */
     public _javadoc atVersion( Object version )
     {   
-        add( Author.fillSeries( "@version {+version+}", version ) );
+        add( Fill.of( "@version {+version+}", version ) );
         return this;
     }
     
     public _javadoc atLink( Object target )
     {
         this.comment += 
-            Author.fillSeries( " {@link {+target+}} ", target );
+            Fill.of( " {@link {+target+}} ", target );
         return this;    
     }
     
     public _javadoc atSee( Object target )
     {
         add(
-            Author.fillSeries( "@see {+target+}", target ) );
+            Fill.of( "@see {+target+}", target ) );
         return this;    
     }
         
@@ -223,11 +224,11 @@ public class _javadoc
                 "yyyy-MM-dd:hh:mm:ss" );
             String dateString = sdf.format( (Date)since );
             add( 
-                Author.fillSeries( "@version {+since+}", dateString ) );
+                Fill.of( "@version {+since+}", dateString ) );
             return this;
         }
         return add( 
-            Author.fillSeries( "@since {+since+}", since ) );
+            Fill.of( "@since {+since+}", since ) );
     }
     
     /**
@@ -237,7 +238,7 @@ public class _javadoc
      */
     public _javadoc atAuthor( String name )
     {   
-        add( Author.fillSeries( "@author {+name+}", name ) );
+        add( Fill.of( "@author {+name+}", name ) );
         return this;
     }
     
@@ -249,7 +250,7 @@ public class _javadoc
      */
     public _javadoc atParam( String name, String description )
     {   
-        add( Author.fillSeries( "@param {+name+} {+description+}", 
+        add( Fill.of( "@param {+name+} {+description+}", 
             name, 
             description ) );
         return this;

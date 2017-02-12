@@ -18,19 +18,7 @@ import varcode.markup.bindml.BindML;
 public class AuthorTest
     extends TestCase
 {
-    
-    public void testAuthorSerial()
-    {
-        //a capital letter
-        assertEquals( "A", Author.fillSeries( "{+A+}", "a" ));         
-        assertEquals( "A", Author.fillSeries( "{+Z+}", "a" )); 
-        assertEquals( "Ayyy", Author.fillSeries( "{+Z+}", "ayyy" )); 
-        
-        assertEquals( "count", Author.fillSeries( "{+name+}", "count" ));         
-        assertEquals( "Count", Author.fillSeries( "{+Name+}", "count" )); 
-        assertEquals( "COUNT", Author.fillSeries( "{+NAME+}", "count" )); 
-        
-    }
+
     
     public void testAuthorNoMarks()
     {
