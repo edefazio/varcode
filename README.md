@@ -1,7 +1,12 @@
-<!-- <img src="https://github.com/edefazio/varcode/blob/master/varcode_greenOnWhite.png?raw=true" width="60"/>
-## **model** based **source** code generation ## -->
-## generate .java code and use at at runtime ##
-varcode **generates and runs dynamic code**.  
+<img src="https://github.com/edefazio/varcode/blob/master/varcode_greenOnWhite.png?raw=true" width="60"/>
+varcode **generates and runs dynamic .java code** combining a model based **code generator** and **ad-hoc tools** to compile, load, and run .java source code at runtime.  
+
+## best of both worlds (fast & safe statically typed java code, dynamic runtime behavior) ##
+varcode extends what traditional "code generators" do by letting you **compile, load and use** generated .java code in one step.  
+you build, compile, load, run, and export familiar java code _(no need to fiddle with bytecodes or understand the JVM stack machine model)_.  this simplicity comes at the cost of **invoking the javac compiler at runtime**, but this "cost" can be hidden by generating code during the build or at bootstrap. _(after compiling, the code acts like regular compiled Java bytecode.)_    
+
+## how to generate and use .java code at runtime ##
+first generate a model: 
 ```java
 _class _model = _class.of( "package mymodel;", 
     "public class Model" )
@@ -9,14 +14,13 @@ _class _model = _class.of( "package mymodel;",
     .method( "public String createId()",
         "return UUID.randomUUID().toString();" );
 ```
-to create a **new instance at runtime**:
+create a **new instance**:
 ```java
 Object dynamicModel = _model.instance();
 ```
 **run** methods on the dynamic instance:
 ```java
-String id1 = (String)Java.call( dynamicModel, "createId" );
-String id2 = (String)Java.call( dynamicModel, "createId" );     
+String id1 = (String)Java.call( dynamicModel, "createId" );    
 ```
 export the **.java source** and **.class** files:
 ```java
@@ -40,7 +44,7 @@ public class Model
 }
 ```
 
-## construct classes peice by peice##
+## construct classes step by step##
 classes for ( [\_class](https://gist.github.com/edefazio/b491989cd6ef72ad7ea2bc0005895c81), [\_interface](https://gist.github.com/edefazio/adbbd9cd500617d3202b2a2a3c7ebf68), [\_enum](https://gist.github.com/edefazio/0e566868ab5f134720cfde6db24b9b11), [\_annotationType](https://gist.github.com/edefazio/f1bed02ff66524149c215311c6d6f356) ) can be built in a single compound statement or incrementally using simple mutator methods. 
 ```java 
 _class _c = _class.of( "package ex.mutable;",
