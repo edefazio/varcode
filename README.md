@@ -63,8 +63,8 @@ _field _f = _field.of( "/** field javadoc */",
 _c.add( _f ); //add the "ID" field to the _class
 ```    
 
-## read existing code into models ##
-to support **metaprogramming**, varcode can load the .java source of any (class, enum, interface, or annotationType) and **build the  ```( _class, _enum, _interface, _annotationType )``` automatically**. 
+## read and modify existing code ##
+to support **metaprogramming**, varcode can load the .java source of any (class, enum, interface, or annotationType) and **build a  ```( _class, _enum, _interface, _annotationType )``` automatically**. 
 
 ```java
 // 1. build the _class model from the .java source of the Class
