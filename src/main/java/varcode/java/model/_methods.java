@@ -769,6 +769,12 @@ public class _methods
             return this.signature.getThrows();
         }
 
+        public _method setReturnType( Class clazz )
+        {
+            this.signature.returnType = clazz.getCanonicalName();
+            return this;
+        }
+        
         public _method setReturnType( String returnType )
         {
             this.signature.returnType = returnType;

@@ -31,7 +31,6 @@ import varcode.java.model._methods._method;
 import varcode.markup.bindml.BindML;
 import varcode.java.model._Java._model;
 import varcode.java.naming.RefRenamer;
-import varcode.java.model._JavaFileModel;
 import varcode.ModelException;
 
 /**
@@ -81,6 +80,30 @@ public class _enum
         return new _enum( prototype );
     }
 
+    /**
+     * Compiles (JAVAC) and loads the _enum into a new ClassLoader
+     * then returns a specific constant named constantName
+     * from the loaded Enum
+     * 
+     * @param constantName
+     * @return the Enum by name constantName
+     */
+    public Enum loadConstant( String constantName )
+    {
+        Class enumClass = loadClass();
+        Object[] enumConstants = enumClass.getEnumConstants();
+        for( int i = 0; i < enumConstants.length; i++ )
+        {
+            Enum e = (Enum)enumConstants[ i ];
+            if( e.name().equals( constantName ) )
+            {
+                return e;
+            }
+        }
+        throw new ModelException(
+            "No enum constant named \"" + constantName+"\"" );
+    }
+    
     @Override
     public void visit( ModelVisitor visitor )
     {
@@ -203,7 +226,7 @@ public class _enum
 
     public _enum implement( Class... implementClass )
     {
-        this.signature.implementsFrom.implement( implementClass );
+        this.signature.implementsFrom.implement( implementClass );        
         return this;
     }
 
@@ -700,7 +723,7 @@ public class _enum
         return field( new _field( modifiers, type, name, init ) );
     }
 
-    public _field getFieldByName( String fieldName )
+    public _field getField( String fieldName )
     {
         return this.fields.getByName( fieldName );
     }

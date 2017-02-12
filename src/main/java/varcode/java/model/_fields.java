@@ -206,6 +206,19 @@ public class _fields
         return found;
     }
 
+    public _fields remove( String name )
+    {
+        for( int i = 0; i < this.fields.size(); i++ )
+        {
+            if( this.fields.get( i ).getName().equals( name ) )
+            {
+                this.fields.remove( this.fields.get( i ) );
+                return this;
+            }
+        }
+        return this;
+    }
+    
     public _fields remove( _field..._fs )
     {
         return remove( Arrays.asList( _fs ) );
@@ -288,6 +301,20 @@ public class _fields
         return this;
     }
 
+    public static _fields of( String[] names, String[] types )
+    {
+        if( names.length != types.length )
+        {
+            throw new ModelException("the number of names does not match the number of types");
+        }
+        _fields _fs = new _fields();
+        for(int i=0; i< names.length; i++ )
+        {
+            _fs.add( _field.of( names[ i ], types[ i ] ) );
+        }
+        return _fs;
+    }
+    
     /**
      * Create a new _fields of the member fields
      *
@@ -462,32 +489,32 @@ public class _fields
             final _field other = (_field)obj;
             if( !Objects.equals( this.type, other.type ) )
             {
-                System.out.println( "TYPE NOT EQUAL");
+                //System.out.println( "TYPE NOT EQUAL");
                 return false;
             }
             if( !Objects.equals( this.name, other.name ) )
             {
-                System.out.println( "NAME NOT EQUAL");
+                //System.out.println( "NAME NOT EQUAL");
                 return false;
             }
             if( !Objects.equals( this.fieldAnnotations, other.fieldAnnotations ) )
             {
-                System.out.println( "ANNS NOT EQUAL");
+                //System.out.println( "ANNS NOT EQUAL");
                 return false;
             }
             if( !Objects.equals( this.javadoc, other.javadoc ) )
             {
-                System.out.println( "JAVADOC NOT EQUAL");
+                //System.out.println( "JAVADOC NOT EQUAL");
                 return false;
             }
             if( !Objects.equals( this.mods, other.mods ) )
             {
-                System.out.println( "MODS NOT EQUAL");
+                //System.out.println( "MODS NOT EQUAL");
                 return false;
             }
             if( !Objects.equals( this.init, other.init ) )
             {
-                System.out.println( "INIT NOT EQUAL \""+ this.init.initCode + "\" \"" + other.init.initCode+"\"");
+                //System.out.println( "INIT NOT EQUAL \""+ this.init.initCode + "\" \"" + other.init.initCode+"\"");
                 return false;
             }
             return true;
@@ -732,6 +759,12 @@ public class _fields
             return init != null && !init.isEmpty();
         }
 
+        public _field setType( Class type )
+        {
+            this.type = type.getCanonicalName();
+            return this;
+        }
+        
         public _field setType( String newType )
         {
             this.type = newType;

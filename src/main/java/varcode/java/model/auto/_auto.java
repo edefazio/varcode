@@ -46,6 +46,8 @@ public class _auto
     public static final _autoHashCode HASHCODE = _autoHashCode.INSTANCE;
     public static final _autoMethodJavadocs METHOD_JAVADOCS = _autoMethodJavadocs.INSTANCE;
     public static final _autoToString TO_STRING = _autoToString.INSTANCE;
+
+
     
     public static class macro
     {
@@ -72,6 +74,16 @@ public class _auto
         return new _autoMacro( applyInOrder );
     }
     
+    
+    public static _class defaultNoArgCtorTo( _class _c )
+    {
+        return _autoConstructor.defaultNoArgTo( _c );
+    }
+
+    public static void defaultNoArgCtor( _class _c )
+    {
+        throw new UnsupportedOperationException( "Not supported yet." ); //To change body of generated methods, choose Tools | Templates.
+    }
     
     public static To to( _class _c )
     {
@@ -289,7 +301,6 @@ public class _auto
     {
         return _c.add( constructor( _c ) );
     }
-    
     
     /**
      * Builds and returns a _constructor that looks at the FINAL

@@ -97,6 +97,23 @@ public enum _autoConstructor
         return of( _e.getName(), _e.getFields() );
     }
     
+    
+    /**
+     * builds and returns a default no arg constructor
+     * @param _c the class
+     * @return a no-arg constructor for the class
+     */
+    public static _constructor defaultNoArg( _class _c )
+    {
+        return _constructor.of( "public " + _c.getName() + "()",
+            "// default no arg constructor" );
+    }
+    
+    public static _class defaultNoArgTo( _class _c )
+    {
+        return _c.constructor( defaultNoArg( _c ) );
+    }
+    
     public static _constructor of( String name, _fields _fs )
     {
         //we need a constructor with all the uninitialized final fields
@@ -117,6 +134,8 @@ public enum _autoConstructor
             }
         }
         
+        return ofFields( name, uninitializedFinalFields );
+        /*
         String paramList = "";
         
         //this will be the set the field
@@ -138,6 +157,31 @@ public enum _autoConstructor
         String constructorSig = 
             "public " + name + "( " + paramList + " )";
         
-        return _constructor.of( constructorSig, _constructorBody );        
+        return _constructor.of( constructorSig, _constructorBody );   
+        */
     }    
+    
+    public static _constructor ofFields( String name, List<_field> fields )
+    {
+        String paramList = "";
+        _code _constructorBody = new _code();
+        for( int i = 0; i < fields.size(); i++ )
+        {
+            _field f = fields.get( i );
+            if( i > 0 )
+            {
+                paramList += ", ";
+            }
+            paramList +=  f.getType() + " " + f.getName();
+            
+            //initialize the final fields 
+            _constructorBody.addTailCode( 
+                "this." + f.getName() + " = " + f.getName() + ";" );
+        }
+            
+        String constructorSig = 
+            "public " + name + "( " + paramList + " )";
+        
+        return _constructor.of( constructorSig, _constructorBody );   
+    }
 }
