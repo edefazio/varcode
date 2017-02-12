@@ -1,9 +1,10 @@
 <img src="https://github.com/edefazio/varcode/blob/master/varcode_greenOnWhite.png?raw=true" width="60"/>
-varcode **generates and runs dynamic .java code** combining a model based **code generator** and **ad-hoc tools** to compile, load, and run .java source code at runtime.  
+varcode combines a model based **code generator** and **ad-hoc tools** to **compile, load, and run .java source code at runtime**.  
 
-## best of both (fast/safe statically typed code & dynamic runtime behavior) ##
-varcode extends what traditional "code generators" do by letting you **compile, load and use** generated .java code in one step.  
-you build, compile, load, run, and export familiar java code _(no need to fiddle with bytecodes or understand the JVM stack machine model)_.  this simplicity comes at the cost of **invoking the javac compiler at runtime**, but this "cost" can be hidden by generating code during the build or at bootstrap. _(after compiling, the code acts like regular compiled Java bytecode.)_    
+## best of both worlds (statically typed code & dynamic runtime behavior) ##
+varcode extends what traditional "code generators" do by letting you **compile, load and use** generated .java code in one step. 
+
+varcode works by **invoking the compiler on dynamic java code at runtime**. _(don't worry, we can compile 1000s of classes sub-second, and after compiling the code is regular bytecode.)_    
 
 ## how to generate and use .java code at runtime ##
 first generate a model: 
