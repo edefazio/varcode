@@ -19,13 +19,9 @@ import varcode.context.Directive;
 import varcode.context.Context;
 import varcode.context.VarBindException;
 import varcode.context.VarContext;
-//import varcode.markup.BindSeries;
-//import varcode.markup.FillInTheBlanks.BlankBinding;
 import varcode.markup.bindml.BindML;
 import varcode.markup.mark.Mark;
 import varcode.markup.Template;
-//import varcode.markup.mark.Mark.Bind;
-//import varcode.markup.mark.Mark.HasVar;
 
 /**
  * The Process for specializing {@code Template}s with Data/Functionality 
@@ -42,15 +38,12 @@ import varcode.markup.Template;
  * <LI> ...
  * </UL>
  * 
+ * @see varcode.markup.Fill 
  * @author M. Eric DeFazio eric@varcode.io
  */
 public enum Author
 {       
     ;
-    
-    /** Translates Java Objects to a textual representation inside a document */
-    //private static final JavaTranslate TRANSLATE = 
-    //    JavaTranslate.INSTANCE;
     
     /**
      * 
@@ -298,36 +291,4 @@ public enum Author
         }             
         return authorState;
     }        
-    
-    /**
-     * A Simplified "Fill in the blank" way of processing a 
-     * Simple Template (for Simple Templates with only a 
-     * few variables to be bound and <B>no VarScripts or Directives</B> )
-     * @param template the template  
-     * @param bindSeries series of Objects to fill in the document (in order or appearance)
-     * @return 
-     
-    public static String fillSeries( Template template, Object...bindSeries )
-    {
-        BindSeries bs = BindSeries.of( bindSeries );
-        Bind[] bindMarks = template.getBindMarks();
-        BlankBinding bb = template.getBlankBinding();
-        Object[] fills = new Object[ bb.getBlanksCount() ]; 
-        for( int i = 0; i < bindMarks.length; i++ )
-        {
-            if( bindMarks[ i ] instanceof Mark.HasVar )
-            {                    
-                HasVar hv = (HasVar)bindMarks[ i ];
-                    
-                fills[ i ] = bs.resolve( hv.getVarName() );                    
-            }
-        }
-        return bb.bind( fills );        
-    }
-    
-    public static String fillSeries( String markup, Object...bindSeries )
-    {
-        return Author.fillSeries(BindML.compile(markup ), bindSeries );            
-    }
-    * */
 }

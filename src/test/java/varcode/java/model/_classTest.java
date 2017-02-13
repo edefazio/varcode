@@ -48,32 +48,32 @@ public class _classTest
         
     
     
-    public void testClassEqualsHashcode2()
-    {
-        _class _c = Java._classFrom( ExampleClass.class );
-        _class _s = _class.of( "@Deprecated",
-            "/** Javadoc */",
-            "package varcode.java.model;",
-            _imports.of( UUID.class ),
-            "public class ExampleClass")
-            .add( 
-                _field.of( _annotation.of( "@Deprecated"), 
-                    "public static final int count = 1;" ),
-                _method.of( "@Deprecated", 
-                    "public String getStuff( int count )",
-                    "System.out.println( \"Hi\" );",
-                    "return \"STUFF\";"),
-                _method.of( "@Override", "@Deprecated",
-                    "public String toString()",                    
-                    "return \"TOSTRING\";" )
-            );
-        System.out.println( _s );
-        System.out.println( _c.hashCode() );
-        System.out.println( _s.hashCode() );
-        _c.equals( _s );
-        assertEquals( _c, _s );
-        assertEquals( _c.hashCode(), _s.hashCode() );
-    }
+//    public void testClassEqualsHashcode2()
+//    {
+//        _class _c = Java._classFrom( ExampleClass.class );
+//        _class _s = _class.of( "@Deprecated",
+//            "/** Javadoc */",
+//            "package varcode.java.model;",
+//            _imports.of( UUID.class ),
+//            "public class ExampleClass")
+//            .add( 
+//                _field.of( _ann.of( "@Deprecated"), 
+//                    "public static final int count = 1;" ),
+//                _method.of( "@Deprecated", 
+//                    "public String getStuff( int count )",
+//                    "System.out.println( \"Hi\" );",
+//                    "return \"STUFF\";"),
+//                _method.of( "@Override", "@Deprecated",
+//                    "public String toString()",                    
+//                    "return \"TOSTRING\";" )
+//            );
+//        System.out.println( _s );
+//        System.out.println( _c.hashCode() );
+//        System.out.println( _s.hashCode() );
+//        _c.equals( _s );
+//        assertEquals( _c, _s );
+//        assertEquals( _c.hashCode(), _s.hashCode() );
+//    }
     
     public void testRenameBug()
     {

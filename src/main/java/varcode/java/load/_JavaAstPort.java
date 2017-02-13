@@ -64,6 +64,9 @@ import varcode.java.model._package;
 import varcode.java.model._parameters;
 import varcode.java.model._throws;
 import varcode.ModelException;
+import varcode.java.model._Java.Annotated;
+import varcode.java.model._anns;
+import varcode.java.model._ann;
 
 /**
  * "Ports" Java code from the Java AST (Node-based) representation 
@@ -146,6 +149,20 @@ public class _JavaAstPort
         return _interfaceFromAST( _i, astInterface, codeFormatter );
     }
         
+    public static void annotate( 
+        Annotated at, List<AnnotationExpr>astAnnotations )
+    {        
+        _anns _anns = new _anns();
+        for( int i = 0; i < astAnnotations.size(); i++ )
+        {
+            AnnotationExpr astAnn = astAnnotations.get( i );
+            _ann _ann = new _ann( astAnn.getName().toString() );
+            System.out.println( astAnn.getChildrenNodes() );
+            _anns.add( _ann );
+            
+        }
+        at.annotate( _anns );
+    }
     /**
      * build/update an _interface MetaLang model based on the contents within a 
      * interface AST node  
@@ -654,7 +671,7 @@ public class _JavaAstPort
         }
         for( int k = 0; k < astMethodAnnots.size(); k++ )
         {
-            _m.annotate( astMethodAnnots.get( k ).toString() );
+            _m.annotate( _ann.of(  astMethodAnnots.get( k ).toString() ) );
         }
         return _m;                                
     }
@@ -713,7 +730,7 @@ public class _JavaAstPort
             
         for( int j = 0; j < astCtorAnnots.size(); j++ )
         {
-            _ctor.annotate( astCtorAnnots.get( j ).toString() );
+            _ctor.annotate( _ann.of(  astCtorAnnots.get( j ).toString() ) );
         }
                 
         if( astCtor.getJavaDoc() != null )
@@ -775,7 +792,7 @@ public class _JavaAstPort
             
             for( int k = 0; k < astFieldAnnots.size(); k++ )
             {
-                _f.annotate( astFieldAnnots.get( k ).toString() );
+                _f.annotate( _ann.of( astFieldAnnots.get( k ).toString()) );
             }
             
             if( astFieldJavaDoc != null)
@@ -809,7 +826,7 @@ public class _JavaAstPort
         List<AnnotationExpr>astClassAnnots = astClass.getAnnotations();
         for( int i = 0; i < astClassAnnots.size(); i++ )
         {
-            _c.annotate( astClassAnnots.get( i ).toString() );
+            _c.annotate( _ann.of( astClassAnnots.get( i ).toString()) );
         }
         
         List<ClassOrInterfaceType>astExtends = astClass.getExtends();
@@ -993,7 +1010,7 @@ public class _JavaAstPort
         List<AnnotationExpr>astEnumAnnots = astEnum.getAnnotations();
         for( int i = 0; i < astEnumAnnots.size(); i++ )
         {   
-            _e.annotate( astEnumAnnots.get( i ).toString() );
+            _e.annotate( _ann.of( astEnumAnnots.get( i ).toString()) );
         }        
         List<ClassOrInterfaceType>astImplements = astEnum.getImplements();
         if( astImplements != null && astImplements.size() > 0 )

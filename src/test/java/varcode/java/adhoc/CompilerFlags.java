@@ -21,6 +21,7 @@ import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.adhoc.Javac.JavacOptions;
 import varcode.java.adhoc.JavacException;
 import varcode.java.adhoc.JavaSourceFolder;
+import varcode.java.model._ann;
 import varcode.java.model._class;
 
 /**
@@ -33,7 +34,7 @@ public class CompilerFlags
     public void testCompilerFlags()
     {
         _class _c = _class.of( "public class A" );
-        _c.annotate( "@Deprecated" );
+        _c.annotate( _ann.of( "@Deprecated") );
         
         //create a 
         JavaSourceFolder ws = JavaSourceFolder.of( _c );

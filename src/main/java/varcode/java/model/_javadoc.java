@@ -34,7 +34,7 @@ import varcode.java.naming.RefRenamer;
 import varcode.java.model._Java.Authored;
 import varcode.markup.bindml.BindML;
 import varcode.ModelException;
-import varcode.author.Fill;
+import varcode.markup.Fill;
 
 /**
  * A JavaDoc comment

@@ -54,6 +54,60 @@ public class Template
 {
     public static final Template EMPTY = textOnly( "" );
     
+    
+    /**
+     * Specification for multiple fields on a model
+     * i.e.
+     * 
+     * @fields("public int {+name+};")
+     * public int x;
+     * public int y;
+     * 
+     */
+    public @interface fields
+    {
+        String value();
+    }
+    
+    /**
+     * Annotation applied to the signature of 
+     * class, enum, interface definitions, methods, constructors, fields... 
+     * contains the markup to be compiled to a {@link Template} for 
+     * creating the signature:
+     * 
+     * @sig("public static {+returnType+} doThisMethod( {{+:{+type+} {+name+}, +}} )") 
+     * public static MyObj doThisMethod( String f1, int f2 )
+     * {
+     *  //...
+     * }
+     */
+    public @interface sig
+    {
+        /** the BindML markup used to create a Template for the signature */
+        String value();
+    }
+    
+    /**
+     * Applied to methods, and constructors, defines the template 
+     * for the body text
+     * 
+     * @body("return {{+:{+FIELDNAME+}.storeState( {+name+} ) | +}};" )
+     * public long store( Boolean value1, Boolean value2 )
+     * {
+     *   return FIELD1.storeState( value1 ) | FIELD2.storeState( value2 );
+     * }
+     */
+    public @interface body
+    {
+        /** the BindML markup used to create a Template for the body */
+        String value();
+    }
+    
+    public @interface remove
+    {
+        
+    }
+    
     /**
      * Builds and returns a Dom implementation that is "only" text... (no Marks)
      *
@@ -101,11 +155,6 @@ public class Template
      * static text and "blanks" corresponding to the {@code BlankFiller}s
      */
     private final BlankBinding blankBinding;
-
-    /**
-     * static Data bindings collected when parsing the markup
-     */
-    //private final Context parseContext;
 
     /**
      * Creates a {@code Dom} containing {@code Mark}s and text
@@ -157,13 +206,11 @@ public class Template
         FillInTheBlanks.BlankBinding marksBinding,
         Mark.Bind[] fillMarks,
         FillInTheBlanks.BlankBinding fillMarksBinding ) 
-        //Context domContext )
     {
         this.blankBinding = fillMarksBinding;
         this.blankFillMarks = fillMarks;
         this.marksBinding = marksBinding;
         this.marks = marks;
-        //this.parseContext = domContext;
     }
 
     public Mark[] getMarks()

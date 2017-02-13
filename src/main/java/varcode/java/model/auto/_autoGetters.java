@@ -16,7 +16,7 @@
 package varcode.java.model.auto;
 
 import varcode.author.Author;
-import varcode.author.Fill;
+import varcode.markup.Fill;
 import varcode.java.model._class;
 import varcode.java.model._fields;
 import varcode.java.model._methods._method;

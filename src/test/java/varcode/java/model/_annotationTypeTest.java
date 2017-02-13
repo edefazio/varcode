@@ -5,11 +5,7 @@
  */
 package varcode.java.model;
 
-import varcode.java.model._javadoc;
-import varcode.java.model._annotationType;
-import varcode.java.model._package;
-import varcode.java.model._modifiers;
-import varcode.java.model._imports;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -19,7 +15,6 @@ import java.util.UUID;
 import junit.framework.TestCase;
 import varcode.author.Author;
 import varcode.java.model._annotationType._annotationProperty;
-import varcode.java.model._annotations._annotation;
 
 /**
  *
@@ -104,7 +99,7 @@ public class _annotationTypeTest
         _annotationType _a = _annotationType.of( 
             _package.of("blah"), 
             _javadoc.of("javadoc"),
-            _annotation.of( "@Anno" ),
+            _ann.of( "@Anno" ),
             _imports.of( Map.class ),            
             "public @interface A"
         );
@@ -125,7 +120,7 @@ public class _annotationTypeTest
         _annotationType _a = _annotationType.of( 
             _package.of("blah"), 
             _javadoc.of("javadoc"),
-            _annotation.of( "@Anno" ),
+            _ann.of( "@Anno" ),
             _imports.of( Map.class ),            
             "public @interface A"
         ).add( _annotationProperty.of( "String", "label" ) );

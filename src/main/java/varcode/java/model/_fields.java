@@ -342,7 +342,7 @@ public class _fields
      * model for a field
      */
     public static class _field
-        implements _Java, _facet, Authored
+        implements _Java, _facet, Authored, Annotated
     {
         public static final Template FIELD = BindML.compile(
             "{+javadoc+}{+annotations+}{+modifiers+}{+type*+} {+name*+}{+init+};" );
@@ -355,7 +355,7 @@ public class _fields
 
         public _field( _field prototype )
         {
-            this.fieldAnnotations = _annotations.cloneOf(  prototype.fieldAnnotations );
+            this.annotations = _anns.cloneOf(prototype.annotations );
             this.mods = _modifiers.cloneOf( prototype.mods );
             this.init = _init.cloneOf(  prototype.init );
             this.javadoc = _javadoc.cloneOf( prototype.javadoc );
@@ -411,15 +411,22 @@ public class _fields
             return this;
         }
 
-        public _field annotate( Object... annotations )
+        public _field annotate( _ann... annotations )
         {
-            this.fieldAnnotations.add( annotations );
+            this.annotations.add( annotations );
             return this;
         }
 
-        public _annotations getAnnotations()
+        @Override
+        public _field annotate( _anns annotations )
         {
-            return this.fieldAnnotations;
+            this.annotations = annotations;
+            return this;
+        }
+        
+        public _anns getAnnotations()
+        {
+            return this.annotations;
         }
 
         public String getType()
@@ -457,7 +464,7 @@ public class _fields
             this.javadoc = javadoc.replace( target, replacement );
             this.init = 
                 init.replace( target, replacement );
-            this.fieldAnnotations = fieldAnnotations.replace( target, replacement );
+            this.annotations = annotations.replace( target, replacement );
             this.name = 
                 RefRenamer.apply( this.name, target, replacement );
             this.type = 
@@ -468,7 +475,7 @@ public class _fields
         @Override
         public int hashCode()
         {
-            return Objects.hash( javadoc, init, fieldAnnotations, name, mods, type);
+            return Objects.hash(javadoc, init, annotations, name, mods, type);
         }
 
         @Override
@@ -497,7 +504,7 @@ public class _fields
                 //System.out.println( "NAME NOT EQUAL");
                 return false;
             }
-            if( !Objects.equals( this.fieldAnnotations, other.fieldAnnotations ) )
+            if( !Objects.equals(this.annotations, other.annotations ) )
             {
                 //System.out.println( "ANNS NOT EQUAL");
                 return false;
@@ -599,9 +606,8 @@ public class _fields
         @Override
         public Context getContext()
         {
-            return VarContext.of(
-                "javadoc", this.javadoc,
-                "annotations", this.fieldAnnotations,
+            return VarContext.of("javadoc", this.javadoc,
+                "annotations", this.annotations,
                 "modifiers", this.mods,
                 "type", this.type,
                 "name", this.name,
@@ -634,7 +640,7 @@ public class _fields
             return author();
         }
 
-        private _annotations fieldAnnotations = new _annotations();
+        private _anns annotations = new _anns();
         private _javadoc javadoc;
         private _modifiers mods;
         private String type;
@@ -644,7 +650,7 @@ public class _fields
         private static class FieldParams
         {
             _javadoc javadoc; // starts with /* ends with */
-            _annotations annots = new _annotations(); //starts with @
+            _anns annots = new _anns(); //starts with @
             String fieldSignature;
         }
 
@@ -661,13 +667,13 @@ public class _fields
                 {
                     cd.javadoc = (_javadoc)components[ i ];
                 }
-                else if( components[ i ] instanceof _annotations._annotation )
+                else if( components[ i ] instanceof _ann )
                 {
-                    cd.annots.add( (_annotations._annotation)components[ i ] );
+                    cd.annots.add( (_ann)components[ i ] );
                 }
-                else if( components[ i ] instanceof _annotations )
+                else if( components[ i ] instanceof _anns )
                 {
-                    cd.annots = (_annotations)components[ i ];
+                    cd.annots = (_anns)components[ i ];
                 }
             }
             _field _f = parseFieldDeclarationFrom( cd.fieldSignature );
@@ -698,7 +704,7 @@ public class _fields
             }
             else if( component.startsWith( "@" ) )
             {
-                cd.annots.add( _annotations._annotation.of( component ) );
+                cd.annots.add( _ann.of( component ) );
             }
             else
             {
@@ -718,7 +724,7 @@ public class _fields
             this.name = name;
             this.javadoc = new _javadoc();
             this.init = new _init();
-            this.fieldAnnotations = new _annotations();
+            this.annotations = new _anns();
         }
 
         public _field( _modifiers modifiers, String type, String name, _init init )
@@ -728,7 +734,7 @@ public class _fields
             this.name = name;
             this.init = init;
             this.javadoc = new _javadoc();
-            this.fieldAnnotations = new _annotations();
+            this.annotations = new _anns();
         }
 
         public _field setInit( String init )

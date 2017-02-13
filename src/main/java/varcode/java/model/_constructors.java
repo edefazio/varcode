@@ -113,6 +113,7 @@ public class _constructors
         return this.constructors;
     }
 
+    @Override
     public _constructor getAt( int index )
     {
         if( index >= 0 && index < count() )
@@ -238,7 +239,7 @@ public class _constructors
         private static class CtorParams
         {
             _javadoc javadoc; // starts with /* ends with */
-            _annotations annots = new _annotations(); //starts with @
+            _anns annots = new _anns(); //starts with @
             String signature;
             List<Object> body = new ArrayList<Object>(); //anything AFTER signature is populated
         }
@@ -300,13 +301,13 @@ public class _constructors
                 {
                     mp.javadoc = (_javadoc)parts[ i ];
                 }
-                else if( parts[ i ] instanceof _annotations._annotation )
+                else if( parts[ i ] instanceof _ann )
                 {
-                    mp.annots.add( (_annotations._annotation)parts[ i ] );
+                    mp.annots.add( (_ann)parts[ i ] );
                 }
-                else if( parts[ i ] instanceof _annotations )
+                else if( parts[ i ] instanceof _anns )
                 {
-                    mp.annots = (_annotations)parts[ i ];
+                    mp.annots = (_anns )parts[ i ];
                 }
             }
 
@@ -338,7 +339,7 @@ public class _constructors
             }
             else if( component.startsWith( "@" ) )
             {
-                mp.annots.add( _annotations._annotation.of( component ) );
+                mp.annots.add( _ann.of( component ) );
             }
             else
             {
@@ -371,7 +372,7 @@ public class _constructors
             return new _constructor( prototype );
         }
 
-        private _annotations annotations;
+        private _anns annotations;
 
         private _javadoc javadoc = new _javadoc();
         private _signature constructorSig;
@@ -411,13 +412,13 @@ public class _constructors
         public _constructor( _signature sig )
         {
             this.constructorSig = sig;
-            this.annotations = new _annotations();
+            this.annotations = new _anns();
         }
 
         public _constructor( _constructor prototype )
         {
             this.constructorSig = _signature.cloneOf( prototype.constructorSig );
-            this.annotations = _annotations.cloneOf( prototype.annotations );
+            this.annotations = _anns.cloneOf( prototype.annotations );
             this.body = _code.cloneOf( prototype.body );
             this.javadoc = _javadoc.cloneOf( prototype.javadoc );            
         }
@@ -425,10 +426,17 @@ public class _constructors
         public _constructor( String constructorSignature )
         {
             this.constructorSig = _signature.of( constructorSignature );
-            this.annotations = new _annotations();
+            this.annotations = new _anns();
         }
 
-        public _constructor annotate( Object... annotations )
+        @Override
+        public _constructor annotate( _anns annotations )
+        {
+            this.annotations = annotations;
+            return this;
+        }
+        
+        public _constructor annotate( _ann... annotations )
         {
             this.annotations.add( annotations );
             return this;
@@ -462,14 +470,14 @@ public class _constructors
             return this.javadoc;
         }
 
-        public _constructor setAnnotations( _annotations annotations )
+        public _constructor setAnnotations( _anns annotations )
         {
             this.annotations = annotations;
             return this;
         }
 
         @Override
-        public _annotations getAnnotations()
+        public _anns getAnnotations()
         {
             return this.annotations;
         }

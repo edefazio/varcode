@@ -379,7 +379,7 @@ public class _parameters
             {
                 p.setFinal();
             }
-            p.annotations = _annotations.cloneOf( prototype.annotations );
+            p.annotations = _anns.cloneOf( prototype.annotations );
             return p;
         }
 
@@ -431,27 +431,26 @@ public class _parameters
         }
         
         @Override
-        public _annotations getAnnotations()
+        public _anns getAnnotations()
         {
             return this.annotations;
         }
-
-        public _parameter annotate( _annotations annotations )
+    
+        @Override
+        public _parameter annotate( _anns annotations )
         {
-            this.annotations.add( annotations );
+            this.annotations =  annotations;
             return this;
         }
 
-        public _parameter annotate( _annotation annotation )
+        public _parameter annotate( _ann annotation )
         {
-            //this.parameterAnnotation = new _annotation( annotation.getAnnotation() );
             this.annotations.add( annotation );
             return this;
         }
 
         public _parameter annotate( String annotation )
         {
-            //this.parameterAnnotation = new _annotation( annotation );
             this.annotations.add( annotation );
             return this;
         }
@@ -474,20 +473,22 @@ public class _parameters
             pd.name = parts[parts.length -1 ].toString();
             for( int i = 0; i < parts.length -2; i++ )
             {
-                if( parts[ i ] instanceof _annotation )
+                if( parts[ i ] instanceof _ann )
                 {
-                    pd.annotations.add( parts[ i ] );
+                    pd.annotations.add( (_ann)parts[ i ] );
+                    //pd.annotations.add( annotations )
                 }
-                if( parts[ i ] instanceof _annotations )
+                if( parts[ i ] instanceof _anns )
                 {
-                    pd.annotations.add( parts[ i ] );
+                    //pd.annotations.add( parts[ i ] );
+                    pd.annotations = (_anns)parts[ i ];
                 }
                 if( parts[ i ] instanceof String )
                 {
                     String str = (String)parts[i];
                     if( str.startsWith( "@" ) )
                     {
-                        pd.annotations.add( parts[ i ] );
+                        pd.annotations.add( _ann.of( str ) );
                     }
                     else if( str.equals( "final" ) )
                     {
@@ -504,18 +505,11 @@ public class _parameters
         private static class ParamData
         {
             //pass in true to use "inline" annotation style
-            public _annotations annotations = new _annotations( true );
+            public _anns annotations = new _anns( true );
             public boolean isFinal = false;
             public String name;
             public Object type;            
         }
-        
-        /*
-        public static _parameter of( Object type, String name )
-        {
-            return new _parameter( type, name );
-        }
-        */
 
         /** type of the parameter ( int, String, ... ) */
         private String type;
@@ -537,7 +531,7 @@ public class _parameters
 
         //private _annotation parameterAnnotation;
         //pass in TRUE to have the annotations be the inline style
-        private _annotations annotations = new _annotations( true );
+        private _anns annotations = new _anns( true );
 
         public static final Template PARAMS
             = BindML.compile(
@@ -551,7 +545,7 @@ public class _parameters
             this.parameterAnnotation = iv.parameterAnnotation= 
                 new _annotation( iv.parameterAnnotation.getAnnotation() );
              */
-            this.annotations = _annotations.cloneOf( iv.annotations );
+            this.annotations = _anns.cloneOf( iv.annotations );
             this.isFinal = iv.isFinal;
             this.type = iv.type + "";
             this.name = iv.name + "";
@@ -603,7 +597,7 @@ public class _parameters
                 }
                 else if( tokens[ i ].startsWith( "@" ) )
                 {
-                    this.annotations.add( new _annotation( tokens[ i ] ) );
+                    this.annotations.add( _ann.of( tokens[ i ] ) );
                 }
                 else if( type == null )
                 {
@@ -636,7 +630,7 @@ public class _parameters
                 this.type = type.toString();
             }
             //this.type = type.toString();
-            this.name = name.toString();
+            this.name = name;
         }
 
         @Override
@@ -704,6 +698,7 @@ public class _parameters
         }
     }
 
+    @Override
     public _parameter getAt( int index )
     {
         if( index < count() )

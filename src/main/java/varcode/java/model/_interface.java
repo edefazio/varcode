@@ -36,7 +36,6 @@ import varcode.java.model._generic._typeParams;
 import varcode.LoadException;
 import varcode.context.Context;
 import varcode.java.ast.JavaAst;
-import varcode.java.model._JavaFileModel;
 import varcode.ModelException;
 
 /**
@@ -100,9 +99,9 @@ public class _interface
 
     public _interface add( _facet facet )
     {
-        if( facet instanceof _annotations._annotation )
+        if( facet instanceof _ann )
         {
-            this.annotations.add( facet );
+            this.annotations.add( (_ann)facet );
             return this;
         }
         if( facet instanceof _field )
@@ -134,7 +133,7 @@ public class _interface
         _package pack;
         _imports imports = new _imports(); // "import Java.lang", Class
         _javadoc javadoc; // starts with /* ends with */
-        _annotations annots = new _annotations(); //starts with @
+        _anns annots = new _anns(); //starts with @
         _interface._signature signature; //starts with 
         List<_facet> facets = new ArrayList<_facet>();
         _nests nesteds = new _nests();
@@ -153,7 +152,7 @@ public class _interface
             {
                 if( ((Class)components[ i ]).isAnnotation() )
                 {
-                    ip.annots.add( components[ i ] );
+                    ip.annots.add( ((Class)components[ i ]).getCanonicalName() );
                     ip.imports.addImport( components[ i ] );
                 }
                 else
@@ -175,7 +174,7 @@ public class _interface
             }
             else if( components[ i ] instanceof _annotations )
             {
-                ip.annots = (_annotations)components[ i ];
+                ip.annots = (_anns)components[ i ];
             }
             else if( components[ i ] instanceof _interface._signature )
             {
@@ -241,7 +240,7 @@ public class _interface
         }
         else if( component.startsWith( "@" ) )
         {
-            cd.annots.add( _annotations._annotation.of( component ) );
+            cd.annots.add( _ann.of( component ) );
         }
         else
         {
@@ -265,7 +264,7 @@ public class _interface
     }
 
     private _javadoc javadoc;
-    private _annotations annotations;
+    private _anns annotations;
     private _signature interfaceSignature;
     private _fields fields;
     private _methods methods;
@@ -294,7 +293,7 @@ public class _interface
     public _interface( _interface prototype )
     {
         this.pckage = _package.cloneOf( prototype.pckage );
-        this.annotations = _annotations.cloneOf( prototype.annotations );
+        this.annotations = _anns.cloneOf( prototype.annotations );
         this.javadoc = _javadoc.cloneOf( prototype.javadoc );
         this.interfaceSignature = _signature.cloneOf( prototype.interfaceSignature );
         this.fields = _fields.cloneOf( prototype.fields );
@@ -313,7 +312,7 @@ public class _interface
     public _interface( String packageName, _signature signature )
     {
         this.pckage = _package.of( packageName );
-        this.annotations = new _annotations();
+        this.annotations = new _anns();
         this.interfaceSignature = signature; //_signature.of( interfaceSignature );
         this.javadoc = new _javadoc();
         this.methods = new _methods();
@@ -345,11 +344,19 @@ public class _interface
         return this;
     }
 
-    public _annotations getAnnotations()
+    @Override
+    public _anns getAnnotations()
     {
         return this.annotations;
     }
 
+    @Override
+    public _interface annotate( _anns annotations )
+    {
+        this.annotations = annotations;
+        return this;
+    }
+        
     public _signature getSignature()
     {
         return this.interfaceSignature;
@@ -485,11 +492,11 @@ public class _interface
      */
     public _interface annotate( String... annotations )
     {
-        this.annotations.add( (Object[])annotations );
+        this.annotations.add( annotations );
         return this;
     }
 
-    public _interface annotate( Object annotation )
+    public _interface annotate( _ann annotation )
     {
         this.annotations.add( annotation );
         return this;

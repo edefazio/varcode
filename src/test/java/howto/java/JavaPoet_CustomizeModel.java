@@ -5,7 +5,7 @@
  */
 package howto.java;
 
-import varcode.author.Fill;
+import varcode.markup.Fill;
 import varcode.java.model._methods;
 import varcode.markup.Template;
 import varcode.markup.bindml.BindML;

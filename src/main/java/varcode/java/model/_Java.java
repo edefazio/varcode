@@ -129,7 +129,9 @@ public interface _Java
      */
     public interface Annotated
     {
-        _annotations getAnnotations();
+        _anns getAnnotations();
+        
+        Annotated annotate( _anns _annotations );
     }
 
     public interface Declares

@@ -116,30 +116,30 @@ public enum FillInTheBlanks
      */
     public static BlankBinding of( String... data )
     {
-        Builder b = new Builder();
+        Builder builder = new Builder();
 
         if( data == null )
         {
-            b.blank();
-            return b.compile();
+            builder.blank();
+            return builder.compile();
         }
         for( int i = 0; i < data.length; i++ )
         {
             if( data[ i ] == null )
             {
-                b.blank();
+                builder.blank();
             }
             else
             {
-                b.text( data[ i ] );
+                builder.text( data[ i ] );
                 if( i < data.length - 1
                     && data[ i + 1 ] != null )
                 {   //add a blank AFTER text provided there is ANOTHER data element AFTER this one
-                    b.blank();
+                    builder.blank();
                 }
             }
         }
-        return b.compile();
+        return builder.compile();
     }
 
     /**

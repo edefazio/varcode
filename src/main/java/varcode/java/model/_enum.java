@@ -43,7 +43,7 @@ public class _enum
     implements _model
 {
     private _javadoc javadoc = new _javadoc();
-    private _annotations annotations = new _annotations();
+    private _anns annotations = new _anns();
     private _signature signature;
     private _constructors constructors = new _constructors();
     private _staticBlock staticBlock = new _staticBlock( (Object[])null );
@@ -121,9 +121,9 @@ public class _enum
 
     public _enum add( _facet facet )
     {
-        if( facet instanceof _annotations._annotation )
+        if( facet instanceof _ann )
         {
-            this.annotations.add( facet );
+            this.annotations.add( (_ann)facet );
             return this;
         }
         if( facet instanceof _constructor )
@@ -164,7 +164,7 @@ public class _enum
         this.pckage = _package.cloneOf( prototype.pckage );
         this.imports = _imports.cloneOf( prototype.imports );
         this.javadoc = _javadoc.cloneOf( prototype.javadoc );
-        this.annotations = _annotations.cloneOf( prototype.annotations );
+        this.annotations = _anns.cloneOf( prototype.annotations );
         this.signature = _signature.cloneOf( prototype.signature );
         this.constructors = _constructors.cloneOf( prototype.constructors );
         this.staticBlock = _staticBlock.cloneOf( prototype.staticBlock );
@@ -202,11 +202,18 @@ public class _enum
     }
 
     @Override
-    public _annotations getAnnotations()
+    public _anns getAnnotations()
     {
         return this.annotations;
     }
 
+    @Override
+    public _enum annotate( _anns annotations )
+    {
+        this.annotations = annotations;
+        return this;
+    }
+        
     @Override
     public Context getContext()
     {   
@@ -328,7 +335,7 @@ public class _enum
         /* package io.varcode....*/
         _imports imports = new _imports(); // "import Java.lang", Class
         _javadoc javadoc; // starts with /* ends with */
-        _annotations annots = new _annotations(); //starts with @
+        _anns annots = new _anns(); //starts with @
         _enum._signature signature; //starts with 
         List<_facet> facets = new ArrayList<_facet>();
         _nests nesteds = new _nests();
@@ -347,7 +354,7 @@ public class _enum
             {
                 if( ((Class)components[ i ]).isAnnotation() )
                 {
-                    eParams.annots.add( components[ i ] );
+                    eParams.annots.add( ((Class)components[ i ]).getCanonicalName() );
                     eParams.imports.addImport( components[ i ] );
                 }
                 else
@@ -367,9 +374,9 @@ public class _enum
             {
                 eParams.javadoc = (_javadoc)components[ i ];
             }
-            else if( components[ i ] instanceof _annotations )
+            else if( components[ i ] instanceof _anns )
             {
-                eParams.annots = (_annotations)components[ i ];
+                eParams.annots = (_anns)components[ i ];
             }
             else if( components[ i ] instanceof _class._signature )
             {
@@ -436,7 +443,7 @@ public class _enum
         }
         else if( component.startsWith( "@" ) )
         {
-            cd.annots.add( _annotations._annotation.of( component ) );
+            cd.annots.add( _ann.of( component ) );
         }
         else
         {
@@ -633,12 +640,8 @@ public class _enum
     }
     */
 
-    public _enum annotate( Object... annotations )
+    public _enum annotate( _ann... annotations )
     {
-        if( this.annotations == null )
-        {
-            this.annotations = new _annotations();
-        }
         this.annotations.add( annotations );
         return this;
     }

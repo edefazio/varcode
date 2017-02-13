@@ -29,7 +29,6 @@ import varcode.context.VarContext;
 import varcode.author.Author;
 import varcode.context.Directive;
 import varcode.markup.Template;
-import varcode.java.model._annotations._annotation;
 import varcode.java.model._constructors._constructor;
 import varcode.java.model._fields._field;
 import varcode.java.model._methods._method;
@@ -42,7 +41,6 @@ import varcode.context.Context;
 import varcode.java.ast.JavaAst;
 import varcode.java.naming.RefRenamer;
 import varcode.java.JavaReflection;
-import varcode.java.model._JavaFileModel;
 import varcode.ModelException;
 
 /**
@@ -62,7 +60,7 @@ public class _class
 {
     private _javadoc javadoc;
     private _signature signature;
-    private _annotations annotations;
+    private _anns annotations;
     private _constructors constructors;
     private _fields fields;
     private _methods methods;
@@ -111,9 +109,9 @@ public class _class
             this.fields.add( (_fields)facet );
             return this;
         }
-        if( facet instanceof _annotation )
+        if( facet instanceof _ann )
         {
-            this.annotations.add( facet );
+            this.annotations.add( (_ann)facet );
             return this;
         }
         if( facet instanceof _constructor )
@@ -148,7 +146,7 @@ public class _class
         /* package io.varcode....*/
         _imports imports = new _imports(); // "import Java.lang", Class
         _javadoc javadoc; // starts with /* ends with */
-        _annotations annots = new _annotations(); //starts with @
+        _anns annots = new _anns(); //starts with @
         _class._signature signature; //starts with 
         List<_facet> facets = new ArrayList<_facet>();
         _nests nesteds = new _nests();
@@ -167,7 +165,7 @@ public class _class
             {
                 if( ((Class)components[ i ]).isAnnotation() )
                 {
-                    cp.annots.add( components[ i ] );
+                    cp.annots.add( ((Class)components[ i ]).getCanonicalName() );
                     cp.imports.addImport( components[ i ] );
                 }
                 else
@@ -187,9 +185,9 @@ public class _class
             {
                 cp.javadoc = (_javadoc)components[ i ];
             }
-            else if( components[ i ] instanceof _annotations )
+            else if( components[ i ] instanceof _anns )
             {
-                cp.annots = (_annotations)components[ i ];
+                cp.annots = (_anns)components[ i ];
             }
             else if( components[ i ] instanceof _class._signature )
             {
@@ -255,7 +253,7 @@ public class _class
         }
         else if( component.startsWith( "@" ) )
         {
-            cd.annots.add( _annotation.of( component ) );
+            cd.annots.add( _ann.of( component ) );
         }
         else
         {
@@ -310,7 +308,7 @@ public class _class
 
     public _class( _package pack, _signature sig )
     {
-        this.annotations = new _annotations();
+        this.annotations = new _anns();
         this.pckage = pack; //_package.of( packageName );
         this.javadoc = new _javadoc();
         this.signature = sig; //_signature.of( classSignature );
@@ -329,7 +327,7 @@ public class _class
      */
     public _class( _class prototype )
     {
-        this.annotations = _annotations.cloneOf( prototype.annotations );
+        this.annotations = _anns.cloneOf( prototype.annotations );
         this.pckage = _package.cloneOf( prototype.pckage );
         this.imports = _imports.cloneOf( prototype.imports );
         this.signature = _signature.cloneOf( prototype.signature );
@@ -417,7 +415,7 @@ public class _class
     }
 
     @Override
-    public _annotations getAnnotations()
+    public _anns getAnnotations()
     {
         return this.annotations;
     }
@@ -425,33 +423,6 @@ public class _class
     @Override
     public Context getContext()
     {        
-        /*
-        _imports imp = null;
-        if( this.getImports().count() > 0 )
-        {
-            imp = this.getImports();
-        }
-        _staticBlock sb = null;
-        if( !this.staticBlock.isEmpty() )
-        {
-            sb = this.staticBlock;
-        }
-        _fields mem = null;
-        if( this.fields.count() > 0 )
-        {
-            mem = this.fields;
-        }
-        _methods meth = null;
-        if( this.methods.count() > 0 )
-        {
-            meth = this.methods;
-        }
-        _constructors cs = null;
-        if( this.constructors != null && this.constructors.count() > 0 )
-        {
-            cs = this.constructors;
-        }
-        */
         return VarContext.of(
             "package", pckage,
             "imports", getImports(), //this find all imports from nested classes
@@ -572,7 +543,14 @@ public class _class
         return this;
     }
 
-    public _class annotate( Object... annotations )
+    @Override
+    public _class annotate( _anns annotations )
+    {
+        this.annotations = annotations;
+        return this;
+    }
+    
+    public _class annotate( _ann... annotations )
     {
         this.annotations.add( annotations );
         return this;

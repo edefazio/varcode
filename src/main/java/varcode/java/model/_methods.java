@@ -327,7 +327,7 @@ public class _methods
      * model of a method
      */
     public static class _method
-        implements _Java, _facet, Authored
+        implements _Java, _facet, Authored, Annotated
     {
         public static final Template METHOD
             = BindML.compile(
@@ -352,7 +352,7 @@ public class _methods
         private static class MethodParams
         {
             _javadoc javadoc; // starts with /* ends with */
-            _annotations annots = new _annotations(); //starts with @
+            _anns annots = new _anns(); //starts with @
             String signature;
             List<Object> body = new ArrayList<Object>(); //anything AFTER signature is populated
         }
@@ -452,19 +452,19 @@ public class _methods
                 {
                     mp.javadoc = (_javadoc)parts[ i ];
                 }
-                else if( parts[ i ] instanceof _annotations._annotation )
+                else if( parts[ i ] instanceof _ann )
                 {
-                    mp.annots.add( (_annotations._annotation)parts[ i ] );
+                    mp.annots.add( (_ann)parts[ i ] );
                 }
                 else if( parts[ i ] instanceof _annotations )
                 {
-                    mp.annots = (_annotations)parts[ i ];
+                    mp.annots = (_anns)parts[ i ];
                 }
                 else if( parts[ i ] instanceof Class )
                 {
                     if( ((Class)parts[ i ]).isAnnotation() )
                     {
-                        mp.annots.add( parts[ i ] );
+                        mp.annots.add( ((Class)parts[ i ]).getCanonicalName() );
                     }
                 }
             }
@@ -502,7 +502,7 @@ public class _methods
             }
             else if( component.startsWith( "@" ) )
             {
-                mp.annots.add( _annotations._annotation.of( component ) );
+                mp.annots.add( _ann.of( component ) );
             }
             else
             {
@@ -542,11 +542,19 @@ public class _methods
             return this;
         }
 
-        public _annotations getAnnotations()
+        @Override
+        public _anns getAnnotations()
         {
             return this.annotations;
         }
 
+        @Override
+        public _method annotate( _anns annotations )
+        {
+            this.annotations = annotations;
+            return this;
+        }
+        
         public _javadoc getJavadoc()
         {
             return this.javadoc;
@@ -563,7 +571,7 @@ public class _methods
         }
 
         private _javadoc javadoc;
-        private _annotations annotations;
+        private _anns annotations;
         private _signature signature;
         private _code methodBody;
 
@@ -575,7 +583,7 @@ public class _methods
         public _method( _signature sig )
         {
             this.signature = sig;
-            this.annotations = new _annotations();
+            this.annotations = new _anns();
             this.methodBody = new _code();
             this.javadoc = new _javadoc();
         }
@@ -633,7 +641,7 @@ public class _methods
 
         public _method( _method prototype )
         {
-            this.annotations = _annotations.cloneOf( prototype.annotations );
+            this.annotations = _anns.cloneOf( prototype.annotations );
             this.javadoc = _javadoc.cloneOf( prototype.javadoc );
             this.methodBody = _code.cloneOf( prototype.methodBody );
             this.signature = _signature.cloneOf( prototype.signature );
@@ -644,7 +652,7 @@ public class _methods
             return this.methodBody;
         }
 
-        public _method annotate( Object... annotations )
+        public _method annotate( _ann... annotations )
         {
             this.annotations.add( annotations );
             return this;

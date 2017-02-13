@@ -15,7 +15,6 @@
  */
 package varcode.java.model;
 
-import varcode.java.model._annotations;
 import junit.framework.TestCase;
 import varcode.java.model._annotations._annotation;
 import varcode.java.model._annotations._attributes;
@@ -27,6 +26,21 @@ import varcode.java.model._annotations._attributes;
 public class _annotationTest
     extends TestCase
 {
+    
+    @interface Classes
+    {
+        Class[] value();
+    }
+    
+    @Classes( {String.class, int.class} )
+    public void testClasses()
+    {
+        //this doesnt work
+        //_annotation ann = _annotation.of( "@Classes", new Class[]{String.class, int.class} );        
+        //System.out.println( ann );
+    }
+    
+    
     @interface Headers
     {
         String accept();

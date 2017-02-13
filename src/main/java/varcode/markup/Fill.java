@@ -13,11 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package varcode.author;
+package varcode.markup;
 
-import varcode.markup.BindSeries;
-import varcode.markup.FillInTheBlanks;
-import varcode.markup.Template;
 import varcode.markup.bindml.BindML;
 import varcode.markup.mark.Mark;
 
@@ -25,6 +22,7 @@ import varcode.markup.mark.Mark;
  * Simple way of Filling a Template (it uses a First Come First Serve 
  * strategy
  * 
+ * @see varcode.author.Author;
  * @author M. Eric DeFazio
  */
 public enum Fill    

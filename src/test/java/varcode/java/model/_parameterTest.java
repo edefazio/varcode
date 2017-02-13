@@ -36,13 +36,13 @@ public class _parameterTest
         assertEquals( "String", _p.getType() );
         assertEquals( "name", _p.getName() );
         
-        _p = _parameter.of( _annotation.of( "@ann"), "String", "name" );
+        _p = _parameter.of( _ann.of( "@ann"), "String", "name" );
         assertEquals( "@ann ", _p.getAnnotations().author() );
         assertEquals( "String", _p.getType() );
         assertEquals( "name", _p.getName() );
         
-        _p = _parameter.of( _annotation.of( "@ann1"), 
-            _annotation.of("@ann2"), "String", "name" );
+        _p = _parameter.of( _ann.of( "@ann1"), 
+            _ann.of("@ann2"), "String", "name" );
         assertEquals( "@ann1 @ann2 ", _p.getAnnotations().author() );
         assertEquals( "String", _p.getType() );
         assertEquals( "name", _p.getName() );

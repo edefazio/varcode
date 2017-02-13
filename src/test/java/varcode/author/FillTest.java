@@ -15,6 +15,7 @@
  */
 package varcode.author;
 
+import varcode.markup.Fill;
 import junit.framework.TestCase;
 
 /**

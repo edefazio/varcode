@@ -65,7 +65,7 @@ public class _annotationType
     
     private _javadoc javadoc = new _javadoc();
     private _signature signature;
-    private _annotations annotations = new _annotations();
+    private _anns annotations = new _anns();
     private _annotationProperties annotationProperties = new _annotationProperties();
     private _nests nests = new _nests();
     
@@ -166,13 +166,13 @@ public class _annotationType
         {
             return _at.setPackage( (_package)part );
         }
-        if( part instanceof _annotations )
+        if( part instanceof _anns )
         {
-            return _at.annotate( (_annotations)part );            
+            return _at.annotate( (_anns)part );            
         }
-        if( part instanceof _annotation )
+        if( part instanceof _ann )
         {
-            return _at.annotate( (_annotation)part );            
+            return _at.annotate( (_ann)part );            
         }
         if( part instanceof _annotationProperties )
         {
@@ -223,7 +223,7 @@ public class _annotationType
     {
         this.signature = sig;                
         this.javadoc = new _javadoc();
-        this.annotations = new _annotations();
+        this.annotations = new _anns();
         this.nests = new _nests();
         this.annotationProperties = new _annotationProperties();
     }
@@ -234,7 +234,7 @@ public class _annotationType
         annotationProperties = 
             _annotationProperties.cloneOf(prototype.annotationProperties );
         annotations = 
-            _annotations.cloneOf(prototype.annotations );
+            new _anns( prototype.annotations );
         imports = 
             _imports.cloneOf(prototype.imports );
         javadoc = 
@@ -379,9 +379,14 @@ public class _annotationType
         return this;
     }
     
-    public _annotationType annotate( Object... _ann )
+    public _annotationType annotate( String...anns )
     {
-        this.annotations.add( (Object[]) _ann );
+        this.annotations.add( anns );
+        return this;
+    }
+    public _annotationType annotate( _ann... _ann )
+    {
+        this.annotations.add( _ann );
         return this;
     }
     
@@ -472,9 +477,16 @@ public class _annotationType
 
 
     @Override
-    public _annotations getAnnotations()
+    public _anns getAnnotations()
     {
         return this.annotations;
+    }
+    
+    @Override
+    public _annotationType annotate( _anns _anns )
+    {
+        this.annotations = _anns;
+        return this;
     }
 
     @Override

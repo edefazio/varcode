@@ -32,6 +32,10 @@ import varcode.markup.bindml.BindML;
 import varcode.ModelException;
 
 /**
+ * In truth, Im not too happy with this here, 
+ * but IRL annotations are kinda a mess, _annotation it works in most cases
+ * but will fall over for _annotation with complex state.
+ * 
  * This represents the act of annotating within a Java Class File
  * with something like ({@code @Override}, {@code @SuppressWarnings}) 
  * 
@@ -79,13 +83,32 @@ public class _annotations
         }               
     }
     
+    /**
+     * Since I can support annotations as String or as _annotation,
+     * just return the Stringified version (ALWAYS)
+     * @param annotationName
+     * @return 
+     */
+    public List<String> getNamed( String annotationName )
+    {
+        List<String> namedAnnotations = new ArrayList<String>();
+        for( int i = 0; i < this.listOfAnnotations.size(); i++ )
+        {
+            if( this.listOfAnnotations.get( i ).startsWith( annotationName ) )
+            {
+                namedAnnotations.add( this.listOfAnnotations.get( i ) );
+            }
+        }
+        return namedAnnotations;
+    }
+    
     public static _annotations cloneOf( _annotations annotations )
     {
         return new _annotations( annotations );
     }
     
     
-    public List<Object> getList()
+    public List<String> getList()
     {
         return this.listOfAnnotations;
     }
@@ -101,7 +124,7 @@ public class _annotations
      * _annotation.of("@Path", "
      * 
      */
-    private List<Object> listOfAnnotations  = new ArrayList<Object>();
+    private List<String> listOfAnnotations  = new ArrayList<String>();
     
     public static final Template ANNOTATION_LIST = 
         BindML.compile( "{{+:{+annotation+}" + N + "+}}" );
@@ -116,7 +139,7 @@ public class _annotations
     
     public _annotations( )
     {
-        this( new ArrayList<Object>(), false );
+        this( new ArrayList<String>(), false );
     }
     
     /** 
@@ -154,10 +177,10 @@ public class _annotations
     
     public _annotations( boolean inline )
     {
-        this( new ArrayList<Object>(), inline );
+        this( new ArrayList<String>(), inline );
     }
     
-    public _annotations( List<Object> annotations, boolean inlineStyle )
+    public _annotations( List<String> annotations, boolean inlineStyle )
     {
         this.listOfAnnotations = annotations;
         this.inlineStyle = inlineStyle;
@@ -181,6 +204,7 @@ public class _annotations
         return this;
     }
     
+    @Override
     public Context getContext()
     {
         return VarContext.of( "annotation", listOfAnnotations );
@@ -210,6 +234,7 @@ public class _annotations
      * @return the annotation
      * @throw VarException if invalid index
      */
+    @Override
     public Object getAt( int index )
     {
         if( index < count() && index >= 0 )
@@ -222,19 +247,20 @@ public class _annotations
     @Override
     public _annotations replace( String target, String replacement )
     {
-        List<Object> repList = new ArrayList<Object>();
+        List<String> repList = new ArrayList<String>();
         for( int i = 0; i < listOfAnnotations.size(); i++ )
         {
             Object o = listOfAnnotations.get( i );
-            if( o instanceof String )
-            {
+            //if( o instanceof String )
+            //{
                 //repList.add( ((String)o).replace( target, replacement ) );
                 repList.add( 
                     RefRenamer.apply( (String)o, target, replacement ) );
-            }
+            //}
+            /*
             else if( o instanceof _Java )
             {
-                repList.add(( (_Java)o ).replace( target, replacement ) );
+                repList.add( ( (_Java)o ).replace( target, replacement ).author() );
             }
             else
             {
@@ -242,6 +268,7 @@ public class _annotations
                     RefRenamer.apply( o.toString(), target, replacement ) );
                 //repList.add( o.toString().replace( target, replacement ) );
             }
+            */
         }
         this.listOfAnnotations = repList;
         return this;
@@ -279,6 +306,7 @@ public class _annotations
         return author();
     }
     
+    @Override
     public boolean isEmpty()
     {
         return this.listOfAnnotations.isEmpty();
@@ -318,11 +346,12 @@ public class _annotations
         return thisAnn.equals( otherAnn );
     }
         
-    public List<Object> getAnnotations()
+    public List<String> getAnnotations()
     {
         return this.listOfAnnotations;
     }
     
+    @Override
     public int count()
     {
         return this.listOfAnnotations.size();
@@ -424,6 +453,7 @@ public class _annotations
             return count() == 0;
         }
         
+        @Override
         public Object[] getAt( int index )
         {
             if( index < count() && index >= 0 )
@@ -531,6 +561,7 @@ public class _annotations
         public static final Template ATTRIBUTES = 
             BindML.compile( "{{+:{+name*+} = {+value*+}, +}}" );
         
+        @Override
         public Template getTemplate()
         {
             if( values.size() == 1 && names.get( 0 ) == null )
@@ -540,6 +571,7 @@ public class _annotations
             return ATTRIBUTES;
         }
         
+        @Override
         public Context getContext()
         {
              return VarContext.of( "name", names, "value", values );
@@ -778,6 +810,7 @@ public class _annotations
             return this;
         }
         
+        @Override
         public Context getContext()
         {
             if( this.name == null )
@@ -792,8 +825,19 @@ public class _annotations
                 VarContext.of("annotation", name, "attributes", attributes ); 
         }
         
+        public String getName()
+        {
+            return name;
+        }
+        
+        public _attributes getAttributes()
+        {
+            return this.attributes;
+        }
+        
         public static final Template EMPTY = BindML.compile("");
         
+        @Override
         public Template getTemplate()
         {
             if( this.name == null )
