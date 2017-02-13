@@ -1,9 +1,13 @@
-<!-- <img src="https://github.com/edefazio/varcode/blob/master/varcode_greenOnWhite.png?raw=true" width="60"/>
-## **model** based **source** code generation ## -->
-## dynamically generate .java code and run it ##
-varcode provides models for **generating and runing dynamic .java code**.  
- 
-build a model:
+<img src="https://github.com/edefazio/varcode/blob/master/varcode_greenOnWhite.png?raw=true" width="60"/>
+varcode combines a **code generator** and **ad-hoc tools** to **compile, load, and run .java source code at runtime**.  
+
+## best of both worlds (statically typed code & dynamic runtime behavior) ##
+varcode extends what traditional "code generators" do by letting you **compile, load and use** generated .java code in one step. 
+
+varcode works by **invoking the compiler on dynamic java code at runtime**. _(don't worry, we can compile 1000s of classes sub-second, and after compiling the code is regular bytecode.)_    
+
+## how to generate and use .java code at runtime ##
+first generate a model: 
 ```java
 _class _model = _class.of( "package mymodel;", 
     "public class Model" )
@@ -11,16 +15,15 @@ _class _model = _class.of( "package mymodel;",
     .method( "public String createId()",
         "return UUID.randomUUID().toString();" );
 ```
-to create a **new instance** of the model **dynamically**:
+create a **new instance**:
 ```java
 Object dynamicModel = _model.instance();
 ```
 **run** methods on the dynamic instance:
 ```java
-String id1 = (String)Java.call( dynamicModel, "createId" );
-String id2 = (String)Java.call( dynamicModel, "createId" );     
+String id1 = (String)Java.call( dynamicModel, "createId" );    
 ```
-export the **.java source** and the compiled **.class** files:
+export the **.java source** and **.class** files:
 ```java
 //export "C:\MyApp\src\main\java\mymodel\Model.java"
 Export.dir( "C:\\MyApp\\src\\main\\java\\").toFile( _model );
@@ -42,8 +45,8 @@ public class Model
 }
 ```
 
-## building models fluently and incrementally ##
-models for ( [\_class](https://gist.github.com/edefazio/b491989cd6ef72ad7ea2bc0005895c81), [\_interface](https://gist.github.com/edefazio/adbbd9cd500617d3202b2a2a3c7ebf68), [\_enum](https://gist.github.com/edefazio/0e566868ab5f134720cfde6db24b9b11), [\_annotationType](https://gist.github.com/edefazio/f1bed02ff66524149c215311c6d6f356) ) can be built in a single compound statement using the fluent api.  models are mutable and can also be constructed incrementally, using mutator methods. 
+## construct classes step by step##
+classes for ( [\_class](https://gist.github.com/edefazio/b491989cd6ef72ad7ea2bc0005895c81), [\_interface](https://gist.github.com/edefazio/adbbd9cd500617d3202b2a2a3c7ebf68), [\_enum](https://gist.github.com/edefazio/0e566868ab5f134720cfde6db24b9b11), [\_annotationType](https://gist.github.com/edefazio/f1bed02ff66524149c215311c6d6f356) ) can be built in a single compound statement or incrementally using simple mutator methods. 
 ```java 
 _class _c = _class.of( "package ex.mutable;",
     _imports.of( Serializable.class ),
@@ -63,8 +66,8 @@ _field _f = _field.of( "/** field javadoc */",
 _c.add( _f ); //add the "ID" field to the _class
 ```    
 
-## read existing code into models ##
-to support **metaprogramming**, varcode can load the .java source of any (class, enum, interface, or annotationType) and **build the  ```( _class, _enum, _interface, _annotationType )``` automatically**. 
+## read in, modify, and run existing code ##
+varcode makes **metaprogramming** easy. **load a  ```( _class, _enum, _interface, _annotationType )```** from an existing class, modify it, then compile, instantiate and invoke methods on it (no restarting required). 
 
 ```java
 // 1. build the _class model from the .java source of the Class
