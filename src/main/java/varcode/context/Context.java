@@ -17,6 +17,7 @@ package varcode.context;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.Collections;
 import java.util.Set;
 import varcode.context.resolve.DirectiveResolver;
 import varcode.context.resolve.VarResolver;
@@ -162,5 +163,130 @@ public interface Context
      * @return
      */
     Context setResolveBase( Class resolveBaseClass );
+    
+    /**
+     * Used to unify a Context and VarResolver containing NOTHING
+     * (primarily for testing
+     */
+    interface ContextVarResolver extends Context, VarResolver
+    {
+    }
+    
+    /**
+     * An Empty Immutable Context that always returns null 
+     * (or an exception)
+     * Used primarily for testing
+     */
+    public static final ContextVarResolver EMPTY 
+        = new ContextVarResolver()         
+    {
+        @Override
+        public Context register( Class staticFields )
+        {
+            throw new UnsupportedOperationException( "Not supported yet." );
+        }
+
+        @Override
+        public void setVarScriptResolver( VarScriptResolver scriptResolver )
+        {
+            throw new UnsupportedOperationException( "Not supported yet." ); 
+        }
+
+        @Override
+        public VarScriptResolver getVarScriptResolver()
+        {
+            throw new UnsupportedOperationException( "Not supported yet." );
+        }
+
+        @Override
+        public VarScript resolveScript( String scriptName, String scriptInput )
+        {
+            throw new UnsupportedOperationException( "Not supported yet." );
+        }
+
+        @Override
+        public void setVarResolver( VarResolver varResolver )
+        {
+            throw new UnsupportedOperationException( "Not supported yet." ); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public VarResolver getVarResolver()
+        {
+            return this;
+        }
+
+        @Override
+        public Object resolveVar( String varName )
+        {
+            return null;
+        }
+
+        @Override
+        public void setDirectiveResolver( DirectiveResolver directiveResolver )
+        {
+            throw new UnsupportedOperationException( "Not supported yet." ); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public DirectiveResolver getDirectiveResolver()
+        {
+            throw new UnsupportedOperationException( "Not supported yet." ); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public Directive resolveDirective( String name )
+        {
+            return null;
+        }
+
+        @Override
+        public Object get( String name )
+        {
+            return null;
+        }
+
+        @Override
+        public Context set( String name, Object value )
+        {
+            throw new UnsupportedOperationException( "Not supported yet." ); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public Context set( String name, Object value, VarScope scope )
+        {
+            throw new UnsupportedOperationException( "Not supported yet." ); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public void remove( String name )
+        {
+            throw new UnsupportedOperationException( "Not supported yet." ); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public Set<String> keySet()
+        {
+            return Collections.EMPTY_SET;
+        }
+
+        @Override
+        public Context clearAllScopeBindings( VarScope scope )
+        {
+            throw new UnsupportedOperationException( "Not supported yet." ); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public Context setResolveBase( Class resolveBaseClass )
+        {
+            throw new UnsupportedOperationException( "Not supported yet." ); //To change body of generated methods, choose Tools | Templates.
+        }        
+
+        @Override
+        public Object resolveVar( Context context, String varName )
+        {
+            return null;
+        }
+    };
     
 }
