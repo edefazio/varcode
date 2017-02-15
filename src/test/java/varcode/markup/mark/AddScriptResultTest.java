@@ -59,11 +59,11 @@ public class AddScriptResultTest
             = ForMLCompiler.AddScriptResultMark.of(
                 "{+$tab(name=this   is  tab separated   )+}",
                 0 );
-        assertEquals( "tab", fac.getScriptName() );
-        System.out.println( fac.getScriptInput() );
+        assertEquals( "tab", fac.getVarScriptName() );
+        System.out.println( fac.getVarScriptInput() );
         assertEquals( "name=this   is  tab separated   ",
-            fac.getScriptInput() );
-        assertEquals( fac.getScriptInput(), "name=this   is  tab separated   " );
+            fac.getVarScriptInput() );
+        assertEquals( fac.getVarScriptInput(), "name=this   is  tab separated   " );
 
     }
 }

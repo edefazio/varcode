@@ -20,10 +20,10 @@ import varcode.translate.TranslateBuffer;
 import varcode.context.VarBindException.NullResult;
 import varcode.context.Context;
 import varcode.context.VarBindException.NullVar;
-import varcode.markup.mark.Mark.HasScript;
 import varcode.markup.mark.Mark.MayBeRequired;
 import varcode.markup.mark.Mark.Bind;
 import varcode.context.VarScript;
+import varcode.markup.mark.Mark.HasVarScript;
 
 /**
  * Mark to Add Code within the varcode (given a name) Optionally provide a
@@ -40,7 +40,7 @@ import varcode.context.VarScript;
 /*{+$intframe(age[0...130]("years old"),height[0...200]("inches"),weight[0...900]("lbs."))*/
 public class AddScriptResult
     extends Mark
-    implements Bind, HasScript, MayBeRequired
+    implements Bind, HasVarScript, MayBeRequired
 {
     private final String scriptName;
 
@@ -101,7 +101,7 @@ public class AddScriptResult
     }
 
     @Override
-    public String getScriptName()
+    public String getVarScriptName()
     {
         return scriptName;
     }
@@ -113,7 +113,7 @@ public class AddScriptResult
     }
 
     @Override
-    public String getScriptInput()
+    public String getVarScriptInput()
     {
         return scriptInput;
     }

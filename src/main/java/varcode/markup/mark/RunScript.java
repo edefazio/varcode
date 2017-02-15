@@ -20,9 +20,9 @@ import varcode.context.VarBindException.NullResult;
 import varcode.context.VarBindException;
 import varcode.context.Context;
 import varcode.markup.mark.Mark.Derived;
-import varcode.markup.mark.Mark.HasScript;
 import varcode.markup.mark.Mark.MayBeRequired;
 import varcode.context.VarScript;
+import varcode.markup.mark.Mark.HasVarScript;
 
 /**
  * Calls a script with some input
@@ -51,7 +51,7 @@ import varcode.context.VarScript;
  */
 public class RunScript
     extends Mark
-    implements HasScript, Derived, MayBeRequired
+    implements HasVarScript, Derived, MayBeRequired
 {
     /**
      * the name of the script to eval
@@ -117,7 +117,7 @@ public class RunScript
     }
 
     @Override
-    public String getScriptName()
+    public String getVarScriptName()
     {
         return scriptName;
     }
@@ -129,7 +129,7 @@ public class RunScript
     }
 
     @Override
-    public String getScriptInput()
+    public String getVarScriptInput()
     {
         return scriptInput;
     }

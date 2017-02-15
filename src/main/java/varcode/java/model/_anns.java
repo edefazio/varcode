@@ -62,14 +62,12 @@ public class _anns
         return _a;
     }
     
-    /*
     public static _anns of( String...anns )
     {
         _anns _a = new _anns();
         _a.add( anns );
         return _a;
-    }
-    */
+    }   
     
     public _anns( _anns prototype )
     {
@@ -78,6 +76,27 @@ public class _anns
         {
             add( new _ann( prototype.getAt( i ) ) );
         }               
+    }
+    
+    /**
+     * Get all Annotations that are of the clazz
+     * @param clazz
+     * @return 
+     */
+    public List<_ann> getByClass( Class clazz )
+    {
+        String simpleName = clazz.getSimpleName();
+        List<_ann> byClass = new ArrayList<_ann>();
+        for( int i = 0; i< this.listOfAnnotations.size(); i++ )
+        {
+            _ann _a = this.listOfAnnotations.get(i);
+            if( _a.getName().equals( simpleName ) 
+                || _a.getName().equals( clazz.getCanonicalName() ) )
+            {
+                byClass.add( _a );
+            }
+        }
+        return byClass;
     }
     
     /**
@@ -94,7 +113,7 @@ public class _anns
             _ann _a = this.listOfAnnotations.get(i);
             if( _a.getName().equals( annotationName ) )
             {
-                
+                named.add( _a );
             }
         }
         return named;
@@ -161,11 +180,23 @@ public class _anns
             "Unable to find annotation that evaluates to \""+ ann + "\"" );
     }
     
+    public boolean contains( Class ann )
+    {
+        String canon = ann.getCanonicalName();
+        
+        return contains( canon ) || contains( ann.getSimpleName() );
+    }
+    
     public boolean contains( String ann )
     {
+        if( ann.startsWith( "@" ) )
+        {
+            ann = ann.substring( 1 );
+        }
         for( int i = 0; i < this.listOfAnnotations.size(); i++ )
-        {            
-            if( this.listOfAnnotations.get( i ).toString().trim().equals( ann ) )
+        {  
+            _ann a = this.listOfAnnotations.get( i );
+            if( a.getName().equals( ann ) )
             {
                 return true;
             }

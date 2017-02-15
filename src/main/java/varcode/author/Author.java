@@ -212,68 +212,43 @@ public enum Author
         throws VarBindException 
     {    	
         PreProcessor[] preProcess = authorState.getPreProcessors();
-        //LOG.trace("1) Pre-process (" + preProcess.length + ") directives" );
         
         if( preProcess.length > 0 )
         {
             for( int i = 0; i < preProcess.length; i++ )
-            {        		
-                //if( LOG.isTraceEnabled() ) 
-                //{ 
-                //    LOG.trace("   pre-process [" + i + "]: " + preProcess[ i ] ); 
-                //}
-                preProcess[ i ].preProcess(authorState );
+            {     
+                preProcess[ i ].preProcess( authorState );
             }
         }        
         //LOG.trace( "2) Derive / Bind instance vars to toState" );
         Mark[] marks = authorState.getTemplate().getMarks();
         
         for( int i = 0; i < marks.length; i++ )
-        {   //derive and bind all the dynamically defined Vars in the VarContext
-            if( marks[ i ] instanceof Mark.Dynamic )
-            {            	
-                Mark.Dynamic dynamicBound = (Mark.Dynamic)marks[ i ];
-                dynamicBound.define( authorState.getContext() ); //this will derive the var, then update the context
-                //if( LOG.isTraceEnabled() ) 
-                //{ 
-                //    String name = dynamicBound.getVarName();
-                //    Object varValue = authorState.getContext().resolveVar( name );
-                	//logValueBuffer.append( varValue );
-                //    LOG.trace("  bound: " + marks[ i ] +" as : \"" + name 
-                //            + "\"->" + TRANSLATE.translate( varValue ) );
-                //}
-            }
-            //it might be derived but not bound (i.e. input validation scripts, EvalScript)
-            else if ( marks[ i ] instanceof Mark.Derived 
+        {   
+            //it might be derived but not bound (i.e. input validation scripts, RunScript)
+            if( marks[ i ] instanceof Mark.Derived 
                 && !( marks[ i ] instanceof Mark.Bind ) )//don't derive fillers until they are to be populated 
-                //&& !( marks[ i ] instanceof Mark.Static ) ) //we don't need to derive static vars
             {            	
-                Mark.Derived dd = (Mark.Derived) marks[ i ];
-                Object derived = dd.derive(authorState.getContext() );
-                
-                //if( LOG.isTraceEnabled() ) 
-                //{
-                //    LOG.trace("  derived: " + marks[ i ] + 
-                //        " as \"" + TRANSLATE.translate( derived ) + "\"" );
-                //}
+                Mark.Derived dd = (Mark.Derived)marks[ i ];                
+                dd.derive( authorState.getContext() );                                
             }
-        }        
+        }   
+        
+        // for all blanks / "bindings"
         Mark.Bind[] bindToBlankMarks = authorState.getTemplate().getBindMarks();
         //LOG.trace("3) Fill-in toState with (" + bindToBlankMarks.length + ") blanks" );
         
+        // populate/derive a fill Sequence for all bound values
         Object[] fillSequence = new Object[ bindToBlankMarks.length ];
         for( int i = 0; i < bindToBlankMarks.length; i++ )
         {
             Object derived = bindToBlankMarks[ i ].derive( authorState.getContext() );
-            fillSequence[ i ] = derived;
-            //if( LOG.isTraceEnabled() ) 
-            //{
-            //    LOG.trace("   filled[" + i + "]: " 
-            //        + bindToBlankMarks[ i ].toString() + " with \"" 
-            //        + TRANSLATE.translate( derived ) + "\"");
-            //}            
+            fillSequence[ i ] = derived;          
         }
-        authorState.getTemplate().getBlankBinding().bind(authorState.getTranslateBuffer(), fillSequence );
+        
+        //sequentially fill the blanks in the document with the fillSequence
+        authorState.getTemplate().getBlankBinding().bind( 
+            authorState.getTranslateBuffer(), fillSequence );
         
         //5) Post Processing All Directives        
         PostProcessor[] postProcessors = authorState.getPostProcessors( );
@@ -282,10 +257,6 @@ public enum Author
         {
             for( int i = 0; i < postProcessors.length; i++ )
             {
-                //if( LOG.isTraceEnabled() ) 
-                //{ 
-                //    LOG.trace( "   post-process[" + i + "]: " + postProcessors[ i ] ); 
-                //}
                 postProcessors[ i ].postProcess(authorState );
             }
         }             

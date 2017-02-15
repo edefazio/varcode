@@ -17,7 +17,9 @@ package varcode.markup;
 
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import varcode.markup.FillInTheBlanks.BlankBinding;
 import varcode.markup.form.Form;
 import varcode.markup.mark.Mark;
@@ -54,60 +56,7 @@ public class Template
 {
     public static final Template EMPTY = textOnly( "" );
     
-    
-    /**
-     * Specification for multiple fields on a model
-     * i.e.
-     * 
-     * @fields("public int {+name+};")
-     * public int x;
-     * public int y;
-     * 
-     */
-    public @interface fields
-    {
-        String value();
-    }
-    
-    /**
-     * Annotation applied to the signature of 
-     * class, enum, interface definitions, methods, constructors, fields... 
-     * contains the markup to be compiled to a {@link Template} for 
-     * creating the signature:
-     * 
-     * @sig("public static {+returnType+} doThisMethod( {{+:{+type+} {+name+}, +}} )") 
-     * public static MyObj doThisMethod( String f1, int f2 )
-     * {
-     *  //...
-     * }
-     */
-    public @interface sig
-    {
-        /** the BindML markup used to create a Template for the signature */
-        String value();
-    }
-    
-    /**
-     * Applied to methods, and constructors, defines the template 
-     * for the body text
-     * 
-     * @body("return {{+:{+FIELDNAME+}.storeState( {+name+} ) | +}};" )
-     * public long store( Boolean value1, Boolean value2 )
-     * {
-     *   return FIELD1.storeState( value1 ) | FIELD2.storeState( value2 );
-     * }
-     */
-    public @interface body
-    {
-        /** the BindML markup used to create a Template for the body */
-        String value();
-    }
-    
-    public @interface remove
-    {
-        
-    }
-    
+
     /**
      * Builds and returns a Dom implementation that is "only" text... (no Marks)
      *
@@ -261,7 +210,14 @@ public class Template
         return blankBinding;
     }
 
-    public BlankBinding getAllMarksTemplate()
+    /**
+     * Blank Binding where ALL Marks (not just Marks associated with Blanks 
+     * in the document) after signified with _ "blanks"
+     * 
+     * @see #getMarks() 
+     * @return the BlankBinding
+     */
+    public BlankBinding getAllMarksBinding()
     {
         return this.marksBinding;
     }
@@ -285,10 +241,53 @@ public class Template
     @Override
     public String toString()
     {
-        return toSourceText() + "\r\n"
-            + "/*{- SUMMARY " + "\r\n"
-            + "  MARKS  : (" + marks.length + ")" + "\r\n"
-            + "  BLANKS : (" + blankFillMarks.length + ")" + "\r\n"
-            + "-}*/";
+        return "Template:" + "\r\n" + toSourceText();
+    }    
+    
+ 
+    public Set<String> getAllVarNames()
+    {
+        return getVarNames( this );
+    }
+    
+    private static Set<String> getVarNames( Template template )
+    {
+        Set<String> names = new HashSet<String>();        
+        getAllVarNames( template.getMarks(), names );
+        return names;
+    }
+
+    private static void getAllVarNames( Mark[] marks, Set<String> names )
+    {
+        for( int i = 0; i < marks.length; i++ )
+        {
+            if( marks[ i ] instanceof Mark.HasVar )
+            {
+                Mark.HasVar mhv = (Mark.HasVar)marks[ i ];
+                names.add( mhv.getVarName() );
+                //System.out.println( "VAR:" + mhv.getVarName() );
+            }
+            else if( marks[ i ] instanceof Mark.HasVarScript )
+            {
+                Mark.HasVarScript mhs = (Mark.HasVarScript)marks[ i ];
+                if( mhs.getVarScriptInput() != null )
+                {
+                    String[] vn = mhs.getVarScriptInput().split( "," );
+                    for( int j = 0; j < vn.length; j++ )
+                    {
+                        String varName = vn[ j ].trim();
+                        if( varName.length() > 0 )
+                        {
+                            names.add( varName );
+                        }
+                    }
+                }
+            }
+            else if( marks[ i ] instanceof Mark.HasVars )
+            {
+                Mark.HasVars mhvs = (Mark.HasVars)marks[ i ];
+                names.addAll(  mhvs.getVarNames() );
+            }
+        }
     }
 }

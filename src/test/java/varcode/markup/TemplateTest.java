@@ -23,7 +23,7 @@ public class TemplateTest
         AuthorState as = Author.toState( "" );
         assertEquals( 0, as.getDirectives().length );
         Template template = as.getTemplate();
-        assertEquals(0, template.getAllMarksTemplate().getBlanksCount() );
+        assertEquals(0, template.getAllMarksBinding().getBlanksCount() );
         assertEquals(0, template.getBindMarks().length );
         assertEquals(0, template.getBlankBinding().getBlanksCount() );
         assertEquals(0, template.getMarkIndicies().cardinality() );
@@ -39,7 +39,7 @@ public class TemplateTest
         as = Author.toState("{+a+}", "a", 1 );
         assertEquals( 0, as.getDirectives().length );
         template = as.getTemplate();
-        assertEquals(1, template.getAllMarksTemplate().getBlanksCount() );
+        assertEquals(1, template.getAllMarksBinding().getBlanksCount() );
         assertEquals(1, template.getBindMarks().length );
         assertEquals(1, template.getBlankBinding().getBlanksCount() );
         assertEquals(1, template.getMarkIndicies().cardinality() );

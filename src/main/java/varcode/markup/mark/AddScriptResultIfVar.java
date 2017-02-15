@@ -18,9 +18,9 @@ package varcode.markup.mark;
 import varcode.context.VarBindException;
 import varcode.translate.TranslateBuffer;
 import varcode.context.Context;
-import varcode.markup.mark.Mark.HasScript;
 import varcode.markup.mark.Mark.Bind;
 import varcode.context.VarScript;
+import varcode.markup.mark.Mark.HasVarScript;
 
 /**
  * If a var is either (not null or equal to a target value)
@@ -38,7 +38,7 @@ import varcode.context.VarScript;
 //     params     : inputVO
 public class AddScriptResultIfVar
     extends Mark
-    implements Bind, HasScript 
+    implements Bind, HasVarScript 
 {	
     private final String varName;
     
@@ -112,7 +112,7 @@ public class AddScriptResultIfVar
     }
 
     @Override
-    public String getScriptName()
+    public String getVarScriptName()
     {
         return scriptName;
     }
@@ -128,7 +128,7 @@ public class AddScriptResultIfVar
     }
     
     @Override
-    public String getScriptInput() 
+    public String getVarScriptInput() 
     {
 	return scriptInput;
     }

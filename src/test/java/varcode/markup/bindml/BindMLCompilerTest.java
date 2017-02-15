@@ -42,8 +42,8 @@ public class BindMLCompilerTest
         AddScriptResultIfVar asr = (AddScriptResultIfVar)m;
 
         assertEquals( "env", asr.getVarName() );
-        assertEquals( ">", asr.getScriptName() );
-        assertEquals( "input", asr.getScriptInput() );
+        assertEquals( ">", asr.getVarScriptName() );
+        assertEquals( "input", asr.getVarScriptInput() );
         assertEquals( null, asr.getTargetValue() );
         //String s = Compose.asString( d, "env", "YES" );
         //assertEquals( "    YES", s );
@@ -54,8 +54,8 @@ public class BindMLCompilerTest
         asr = (AddScriptResultIfVar)m2;
 
         assertEquals( "env", asr.getVarName() );
-        assertEquals( ">", asr.getScriptName() );
-        assertEquals( "input", asr.getScriptInput() );
+        assertEquals( ">", asr.getVarScriptName() );
+        assertEquals( "input", asr.getVarScriptInput() );
         assertEquals( "test", asr.getTargetValue() );
     }
 

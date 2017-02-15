@@ -605,6 +605,12 @@ public class _class
         return method( _method.of( parts ) );
     }
     
+    public _class staticBlock( _staticBlock staticBlock )
+    {
+        this.staticBlock = staticBlock;
+        return this;
+    }
+    
     public _class staticBlock( _code code )
     {
         this.staticBlock = _staticBlock.of( code );
@@ -679,7 +685,7 @@ public class _class
         String name = _f.getName();
         String nameCaps
             = Character.toUpperCase( name.charAt( 0 ) ) + name.substring( 1 );
-        //add a get method
+        //add a getByClass method
         this.methods.add( "public " + _f.getType() + " get" + nameCaps + "()",
             "return this." + name + ";" );
 

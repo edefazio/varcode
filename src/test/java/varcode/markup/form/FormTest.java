@@ -1,10 +1,7 @@
  package varcode.markup.form;
 
-import varcode.markup.form.VarForm;
-import varcode.markup.form.Form;
-import varcode.markup.form.FormTemplate;
-import varcode.markup.form.SeriesFormatter;
 import junit.framework.TestCase;
+import varcode.context.Context;
 import varcode.context.VarContext;
 import varcode.markup.forml.ForML;
 
@@ -15,6 +12,47 @@ import varcode.markup.forml.ForML;
 public class FormTest 
     extends TestCase
 {
+    /**
+     * Instead of having the Form return a single String
+     * have the form return a String Array of results
+     */
+    public void testFormAuthorSeries()
+    {
+        Form f = ForML.compile( "{+a+}" );        
+        String[] series = f.authorSeries( Context.EMPTY );        
+        assertEquals( 0, series.length );
+        
+        series = f.authorSeries( VarContext.of( "a", 1 ) );        
+        assertEquals( 1, series.length );
+        assertEquals( "1", series[0] );
+        System.out.println( series[0]);
+        
+        series = f.authorSeries( VarContext.of( "a", new int[]{1, 2} ) );        
+        assertEquals( 2, series.length );
+        assertEquals( "1", series[0] );
+        assertEquals( "2", series[1] );
+    }
+    
+    public void testFormAuthorSeriesComplex()
+    {
+        Form f = ForML.compile( "public {+type+} {+name+};" );        
+        String[] series = f.authorSeries( Context.EMPTY );        
+        assertEquals( 0, series.length );
+        
+        series = f.authorSeries( VarContext.of( "type", int.class, "name", "x" ) );        
+        assertEquals( 1, series.length );
+        assertEquals( "public int x;", series[0] );
+        System.out.println( series[0]);
+        
+        series = f.authorSeries( VarContext.of( 
+            "type", new Class[]{int.class, String.class}, 
+            "name", new String[]{"x", "name"} ) );        
+        assertEquals( 2, series.length );
+        assertEquals( "public int x;", series[0] );
+        assertEquals( "public java.lang.String name;", series[1] );
+    }
+    
+    
     public void testEmpty()
     {
         Form f = ForML.compile( "" );

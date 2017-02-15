@@ -24,7 +24,7 @@ import varcode.markup.FillInTheBlanks;
 import varcode.markup.FillInTheBlanks.BlankBinding;
 import varcode.markup.Template;
 import varcode.markup.mark.Mark;
-import varcode.markup.mark.Mark.WrapsText;
+//import varcode.markup.mark.Mark.WrapsText;
 
 /**
  * Creates a new {@code DocState} where all of the {@code Mark}s are removed and
@@ -44,7 +44,7 @@ public enum StripMarks
      */
     public static String stripFrom( Template template )
     {
-        BlankBinding allMarksTemplate = template.getAllMarksTemplate();
+        BlankBinding allMarksTemplate = template.getAllMarksBinding();
         Mark[] marks = template.getMarks();
 
         int blanksCount = allMarksTemplate.getBlanksCount();
@@ -52,11 +52,11 @@ public enum StripMarks
         sb.append( allMarksTemplate.getTextBeforeBlank( 0 ) );
         for( int i = 0; i < blanksCount; i++ )
         {
-            if( marks[ i ] instanceof WrapsText )
-            {
-                WrapsText wc = (WrapsText)marks[ i ];
-                sb.append( wc.getWrappedText() );
-            }
+            //if( marks[ i ] instanceof WrapsText )
+            //{
+            //    WrapsText wc = (WrapsText)marks[ i ];
+            //    sb.append( wc.getWrappedText() );
+            //}
             sb.append( allMarksTemplate.getTextAfterBlank( i ) );
         }
         return sb.toString();
@@ -64,7 +64,7 @@ public enum StripMarks
 
     public static String stripAndCut( Template template )
     {
-        BlankBinding markBinding = template.getAllMarksTemplate();
+        BlankBinding markBinding = template.getAllMarksBinding();
         Mark[] marks = template.getMarks();
 
         int blanksCount = markBinding.getBlanksCount();
@@ -72,11 +72,11 @@ public enum StripMarks
         sb.append( markBinding.getTextBeforeBlank( 0 ) );
         for( int i = 0; i < blanksCount; i++ )
         {
-            if( marks[ i ] instanceof WrapsText )
-            {
-                WrapsText wc = (WrapsText)marks[ i ];
-                sb.append( wc.getWrappedText() );
-            }
+            //if( marks[ i ] instanceof WrapsText )
+            //{
+            //    WrapsText wc = (WrapsText)marks[ i ];
+            //    sb.append( wc.getWrappedText() );
+            //}
             sb.append(markBinding.getTextAfterBlank( i ) );
         }
         return sb.toString();

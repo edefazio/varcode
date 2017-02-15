@@ -168,7 +168,8 @@ public interface Context
      * Used to unify a Context and VarResolver containing NOTHING
      * (primarily for testing
      */
-    interface ContextVarResolver extends Context, VarResolver
+    interface ContextResolver extends 
+        Context, VarResolver, VarScriptResolver, DirectiveResolver
     {
     }
     
@@ -177,8 +178,8 @@ public interface Context
      * (or an exception)
      * Used primarily for testing
      */
-    public static final ContextVarResolver EMPTY 
-        = new ContextVarResolver()         
+    public static final ContextResolver EMPTY 
+        = new ContextResolver()         
     {
         @Override
         public Context register( Class staticFields )
@@ -195,7 +196,7 @@ public interface Context
         @Override
         public VarScriptResolver getVarScriptResolver()
         {
-            throw new UnsupportedOperationException( "Not supported yet." );
+            return this;
         }
 
         @Override
@@ -231,7 +232,7 @@ public interface Context
         @Override
         public DirectiveResolver getDirectiveResolver()
         {
-            throw new UnsupportedOperationException( "Not supported yet." ); //To change body of generated methods, choose Tools | Templates.
+            return this;
         }
 
         @Override
@@ -284,6 +285,19 @@ public interface Context
 
         @Override
         public Object resolveVar( Context context, String varName )
+        {
+            return null;
+        }
+
+        @Override
+        public VarScript resolveScript( Context context, String scriptName,
+            String scriptInput )
+        {
+            return null;
+        }
+
+        @Override
+        public Directive resolveDirective( Context context, String directiveName )
         {
             return null;
         }

@@ -15,6 +15,7 @@
  */
 package varcode.java.model;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -75,6 +76,45 @@ public class _imports
         visitor.visit( this );
     }
 
+    /**
+     * Matches and returns all imports (static or otherwise) that
+     * contain the target text
+     * 
+     * @param targetText the target text
+     * @return a List of import Strings matching the targetText
+     */
+    public List<String> match( String targetText )
+    {
+        List<String> matches = new ArrayList<String>();
+        String[] importArr = this.importClasses.toArray( new String[0]);
+        for( int i = 0; i < importArr.length; i++ )
+        {
+            if( importArr[ i ].contains( targetText ) )
+            {
+                matches.add( importArr[ i ] );
+            }
+        }
+        String[] importStaticArr = this.staticImports.toArray( new String[0]);
+        for( int i = 0; i < importStaticArr.length; i++ )
+        {
+            if( importStaticArr[ i ].contains( targetText ) )
+            {
+                matches.add( importStaticArr[ i ] );
+            }
+        }
+        return matches;        
+    }
+    
+    public _imports remove( List<String> toRemove )
+    {
+        for( int i=0; i< toRemove.size(); i++ )
+        {
+            this.importClasses.remove( toRemove.get( i ) );
+            this.staticImports.remove( toRemove.get( i ) );
+        }
+        return this;
+    }
+    
     public _imports remove( String...toRemove )
     {
         for( int i=0; i< toRemove.length; i++ )

@@ -634,7 +634,7 @@ public class _enum
         for( int i = 0; i < nesteds.count(); i++ )
         {
             this.imports.mergeBindings(
-                nesteds.models.get( i ).getImports() );
+                nesteds.models.getByClass( i ).getImports() );
         }
         return this.imports;
     }
@@ -742,7 +742,7 @@ public class _enum
         String name = _f.getName();
         String nameCaps
             = Character.toUpperCase( name.charAt( 0 ) ) + name.substring( 1 );
-        //add a get method
+        //add a getByClass method
         return method( 
             "public " + _f.getType() + " get" + nameCaps + "()",
             "return this." + name + ";" );        
