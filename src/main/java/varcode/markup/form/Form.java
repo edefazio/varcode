@@ -44,6 +44,13 @@ public interface Form
      */ 
     String getText();
     
+    /**
+     * Author a Series each element will be a separate array 
+     * @param context
+     * @return 
+     */
+    String[] authorSeries( Context context );
+    
     /** 
      * Compose the content and return it as a String
      * @param context the context to compose the form
@@ -78,6 +85,12 @@ public interface Form
             return "STATIC FORM :" + "\r\n" + text;
         }
 
+        @Override
+        public String[] authorSeries( Context context )
+        {
+            return new String[] { text };
+        }
+        
         /** Gets the form in textual form */
         @Override
         public String getText()

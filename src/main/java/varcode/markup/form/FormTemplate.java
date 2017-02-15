@@ -25,11 +25,11 @@ import varcode.markup.FillInTheBlanks;
 import varcode.markup.FillInTheBlanks.BlankBinding;
 import varcode.markup.mark.Mark;
 import varcode.markup.mark.Mark.HasForm;
-import varcode.markup.mark.Mark.HasScript;
 import varcode.markup.mark.Mark.HasVar;
 import varcode.markup.mark.Mark.HasVars;
 import varcode.markup.mark.Mark.MayBeRequired;
 import varcode.markup.mark.Mark.Bind;
+import varcode.markup.mark.Mark.HasVarScript;
 
 /**
  * Variable {@code VarForm}'s {@code Dom}
@@ -264,10 +264,9 @@ public class FormTemplate
                 Mark.HasVars hvs = (HasVars)marks[ i ];
                 varNames.addAll( hvs.getVarNames() );
             }
-            if( marks[ i ] instanceof HasScript )
+            if( marks[ i ] instanceof HasVarScript )
             {
-                varNames.addAll( 
-                    parseVars( ((HasScript)marks[ i ]).getScriptInput() ) );
+                varNames.addAll(parseVars(((HasVarScript)marks[ i ]).getVarScriptInput() ) );
             }
         }
         return varNames;

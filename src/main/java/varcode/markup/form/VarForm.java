@@ -113,13 +113,10 @@ public class VarForm
     {
         try
         {
-            //Mark[] bindMarks = this.formTemplate.getMarks();
             Bind[] bindMarks = this.formTemplate.getBindMarks();
             String[] fills = new String[ bindMarks.length ];
             for( int i = 0; i < bindMarks.length; i++ )
             {
-                //Bind bindMark = (Bind)bindMarks[ i ];
-                //Bind bindMark = bindMarks[ i ];
                 fills[ i ] = tb.translate(
                     bindMarks[ i ].derive( context ) );
             }
@@ -263,7 +260,6 @@ public class VarForm
                                 + N + "failed at [" + index + "]" );
                         }
                         //failed range check (it's null, but "" will suffice)
-                        //loopBindings.put( varNames[ i ], "" );
                         context.set( varNames[ i ], "", VarScope.LOOP );
                     }
                 }
@@ -273,9 +269,6 @@ public class VarForm
 
                     if( l.size() > index )
                     {
-                        //loopBindings.put(
-                        //    varNames[ i ],
-                        //    l.toArray( new Object[ 0 ] )[ index ] );
                         context.set( varNames[ i ], 
                             l.toArray( new Object[ 0 ] )[ index ],
                             VarScope.LOOP );
@@ -288,7 +281,6 @@ public class VarForm
                                 "Cardinality Mismatch for Required Var \"" + varNames[ i ] + "\"" );
                         }
                         context.set( varNames[ i ], "", VarScope.LOOP);
-                        //loopBindings.put( varNames[ i ], "" );
                     }
                 }
             }
@@ -307,10 +299,27 @@ public class VarForm
     @Override
     public String author( Context context )
     {
-        TranslateBuffer textBuffer
-            = new TranslateBuffer();
+        TranslateBuffer textBuffer = new TranslateBuffer();
         deriveTo( context, textBuffer );
         return textBuffer.toString();
+    }
+    
+    public String[] authorSeries( Context context )
+    {
+        TranslateBuffer textBuffer = new TranslateBuffer();
+        
+        //find out the number of Forms
+        int cardinality = getFormInstanceCount( context );
+
+        //now generate Each Form
+        String[] series = new String[ cardinality ];
+        
+        for( int i = 0; i < cardinality; i++ )
+        {
+            series[ i ] = tailorAt( i, context, textBuffer );
+            series[ i ] = seriesFormatter.format( new String[]{series[ i ]} );
+        }
+        return series;        
     }
 
     @Override
