@@ -209,7 +209,44 @@ public class _ann
         public List<String>values = new ArrayList<String>();
         
         /**
-         * Takes the array 
+         * gets the raw String value for a key
+         * REMEMBER the RAW value might represent something other than a 
+         * String (i.e. an int, a float, an int[], a String[])
+         * 
+         * @param key the key of the attribute
+         * @return the Raw value associated with this key, or null
+         */
+        public String getRawValueForKey( String key )
+        {
+            for(int i=0; i< this.keys.size(); i++ )
+            {
+                if( keys.get( i ).equals( key ) )
+                {
+                    return values.get( i );
+                }
+            }
+            return null;
+        }
+        
+        /**
+         * String[] Attributes within annotations can be signified as
+         * one big String where internally the string can have 
+         * quotes " ", 
+         * braces '{' '}' 
+         * commas ','
+         * 
+         * this method will parse the one big string representing the attribute
+         * value to (as a String[])
+         * <PRE>
+         * for example
+         * @fields("int a;")  //without braces {}
+         * @fields({"int a;"}) //with braces{}
+         * @fields({"int a;", "int b;", "int c;"}) //with braces
+         * </PRE>
+         * 
+         * this method will "normalize" the String representation of the attribute
+         * as a String array
+         * 
          * @param array
          * @return 
          */
@@ -217,6 +254,11 @@ public class _ann
         {
             try
             {
+                array = array.trim();
+                if( !array.startsWith( "{" ) )
+                {
+                    array = "{" + array + "}";
+                }
                 FieldDeclaration fd = 
                     JavaAst.astFieldFrom( "String s = " + array + ";" );
             

@@ -348,6 +348,11 @@ public class Macro
         {
             _tailored.staticBlock( _staticBlock.cloneOf( _prototype ) );
         }
+
+        public void expandTo( _class _tailored, Context context )            
+        {
+            _tailored.staticBlock( _staticBlock.cloneOf( _prototype ) );
+        }
         
         public void expandTo( _enum _e, Object...keyValuePairs )            
         {
@@ -407,9 +412,10 @@ public class Macro
                 
         public void expandTo( _class _tailored, Object...keyValuePairs )            
         {
-            expandTo( _tailored, VarContext.of( keyValuePairs ) );
+            _tailored.constructor( _constructors._constructor.of( ctor ) );
         }
         
+   
         public void expandTo( _class _tailored, Context context )
         {
             _tailored.constructor( _constructors._constructor.of( ctor ) );
@@ -466,6 +472,11 @@ public class Macro
             _tailored.constructor( expand( VarContext.of( keyValuePairs ) ) );            
         }
         
+        public void expandTo( _class _tailored, Context context )            
+        {
+            _tailored.constructor( expand( context ) );            
+        }
+                
         public _constructor expand( Context context )
         {
             _constructors._constructor _c = null;
@@ -520,9 +531,12 @@ public class Macro
             _e.packageName( packageName );
         }
         
+        
         public void expandTo( _class _tailored, Object...keyValuePairs )            
         {
-            expandTo( _tailored, VarContext.of( keyValuePairs ) );
+            //System.out.println("CLAZZZZ"+ keyValuePairs[ 0 ].getClass() );
+            //expandTo( _tailored, VarContext.ofKeyValueArray( keyValuePairs ) );
+            _tailored.packageName( packageName );
         }
         
         public void expandTo( _class _tailored, Context context )
@@ -585,7 +599,8 @@ public class Macro
         
         public void expandTo( _class _tailored, Object...keyValuePairs )            
         {
-            expandTo( _tailored, VarContext.of( keyValuePairs ) );
+            //expandTo( _tailored, VarContext.ofKeyValueArray( (Object[])keyValuePairs ) );
+            _tailored.imports( _imports.of( imports ) );
         }
         
         public void expandTo( _class _tailored, Context context )
@@ -602,6 +617,11 @@ public class Macro
         private final _imports imports;
         
         private final Form[] add;
+        
+        public static ExpandImports of( _imports _i, String[] remove, String[] adds )
+        {
+            return new ExpandImports( _i, remove, adds );
+        }
         
         public ExpandImports( 
             _imports _source, String[] remove, String[] addMarkup )

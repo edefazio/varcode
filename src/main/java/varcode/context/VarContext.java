@@ -55,6 +55,27 @@ public class VarContext implements Context
         this.scopeBindings.remove( name );
     }
     
+    public static VarContext ofKeyValueArray( Object[] keyValues )
+    {
+        //return ofScope( VarScope.INSTANCE, keyValues );
+        if( keyValues.length % 2 != 0 )
+        {
+            throw new VarBindException(
+                "Pairs values must be passed in as pairs, length ("
+                + keyValues.length + ") not valid" );
+        }
+        VarContext context = new VarContext();
+        
+        for( int i = 0; i < keyValues.length; i += 2 )
+        {
+            context.set( keyValues[ i ].toString(),
+                keyValues[ i + 1 ],
+                VarScope.INSTANCE );
+        }
+        InitVarContextBindings.INSTANCE.registerTo( context );
+        return context;
+    }
+    
     /**
      * Constructs a VarContext and binds values in sequence as key value pairs:
      * for example:

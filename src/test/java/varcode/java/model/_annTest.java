@@ -29,6 +29,10 @@ public class _annTest
     
     public void testAttributesStringArray()
     {
+        String[] ar = _ann._attributes.parseStringArray( "\"public static {+type+} {+name+};\"" );
+        assertEquals( 1, ar.length );
+        assertEquals( "public static {+type+} {+name+};", ar[ 0 ] );
+            
         String[] arr = _ann._attributes.parseStringArray( "{\"A\"}" );
         assertEquals( 1, arr.length );
         assertEquals( "A", arr[0] );

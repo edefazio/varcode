@@ -15,15 +15,11 @@
  */
 package varcode.java.macro;
 
-import com.github.javaparser.ParseException;
-import com.github.javaparser.ast.Node;
-import com.github.javaparser.ast.body.FieldDeclaration;
-import com.github.javaparser.ast.expr.Expression;
 import java.util.ArrayList;
 import java.util.List;
-import varcode.ModelException;
 import varcode.context.Context;
-import varcode.java.ast.JavaAst;
+import varcode.context.VarContext;
+import varcode.java.load._JavaLoad;
 import varcode.java.model._class;
 import varcode.java.model._fields._field;
 import varcode.java.macro.Macro.sig;
@@ -36,6 +32,7 @@ import varcode.java.macro.Macro.ExpandPackage;
 import varcode.java.macro.Macro._typeExpansion;
 import varcode.java.model._Java;
 import varcode.java.model._ann;
+import varcode.java.model._ann._attributes;
 import varcode.java.model._anns;
 import varcode.java.model._fields;
 
@@ -48,6 +45,16 @@ import varcode.java.model._fields;
  */
 public class _classMacro
 {    
+    public static _classMacro of( Class classPrototype )
+    {
+        return new _classMacro( _JavaLoad._classFrom( classPrototype ) );
+    }
+    
+    public static _classMacro of( _class prototype )
+    {
+        return new _classMacro( prototype );
+    }
+    
     /** the prototype _class */
     public _class _prototype;
     
@@ -65,6 +72,7 @@ public class _classMacro
      */
     public interface expansion
     {
+        public void expandTo( _class _tailored, Context context );    
         public void expandTo( _class _tailored, Object...keyValuePairs );    
     }
 
@@ -100,6 +108,18 @@ public class _classMacro
         return null;
     }
     
+    protected static String[] getAnnotationStringArrayProperty(
+        _Java.Annotated _c, Class clazz )
+    {
+        _ann _a = getOneAnnotation( _c, clazz );
+        if( _a != null )
+        {
+            String attr = _a.attributes.values.get( 0 );
+            return _ann._attributes.parseStringArray( attr );
+        }
+        return null;
+    }
+    
     /** methods for 
      * <UL>
      * <LI>transferring components (fields, methods, etc.) from the 
@@ -111,10 +131,8 @@ public class _classMacro
     public List<expansion> _transfers = 
         new ArrayList<expansion>();
         
-    public static _classMacro of( _class prototype )
-    {
-        return new _classMacro( prototype );
-    }
+    
+
     //nests
     
     public _classMacro( _class _c )
@@ -133,7 +151,7 @@ public class _classMacro
         //package
         if( _c.getAnnotations().contains( Macro.packageName.class ) )
         {
-             this._transfers.add(new ExpandPackage( 
+             this._transfers.add( new ExpandPackage( 
                     getAnnotationStringProperty( 
                         _c, Macro.packageName.class ) ) ); 
         }
@@ -144,28 +162,44 @@ public class _classMacro
         
         //free fields
         if( _c.getAnnotations().contains( Macro.fields.class ) )
-        {
-             this._transfers.add(new ExpandField( 
-                    getAnnotationStringProperty( 
-                        _c, Macro.fields.class ) ) ); 
+        {           
+            String[] arr = 
+                getAnnotationStringArrayProperty( _c, Macro.fields.class );
+            for(int i=0; i< arr.length; i++ )
+            {
+                this._transfers.add( new ExpandField( arr[ i ] ) ); 
+            }
         }
          
         //imports
         _ann imports = _c.getAnnotations().getOne( Macro.imports.class );
+        
+        System.out.println( "IMPORTS <<<<< "+ imports );
         if( imports != null )
         {
-            System.out.println( "ADD IMPIORTS ");
-            //this._transfers.add( e )
-            //this._transfers.add( 
-            //    new ExpandField( 
-            //        getAnnotationStringProperty( 
-            //            _c, Macro.fields.class ) ) ); 
+            System.out.println( "ADD IMPORTS " );
+            _attributes _attrs = imports.getAttributes();
+            String adds = _attrs.getRawValueForKey( "add" );
+            String[] addsArr = new String[0];
+            if( adds != null )
+            {
+                addsArr = _attributes.parseStringArray( adds );                
+            }
+            String remove = _attrs.getRawValueForKey( "remove" );
+            String[] removeArr = new String[0];
+            if( remove != null )
+            {
+                removeArr = _attributes.parseStringArray( remove );                
+            }
+            this._transfers.add( 
+                Macro.ExpandImports.of( _c.getImports(), removeArr, addsArr ) );
         }
         else
         {
             System.out.println( "COPY IMPORTS ");
             this._transfers.add( Macro.CopyImports.of( _c.getImports() ) );
         }
+        
         List<_typeExpansion> macroFields = processFields( _c.getFields() );
         this._transfers.addAll( macroFields );
         
@@ -222,6 +256,12 @@ public class _classMacro
             return new CopyField( _f );
         }
         return null;
+    }
+    
+    public _class expand( Object...keyValuePairs )
+    {
+        System.out.println( keyValuePairs.length );
+        return expand( VarContext.ofKeyValueArray( keyValuePairs ) );
     }
     
     public _class expand( Context context )

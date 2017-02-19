@@ -84,17 +84,31 @@ public class MacroFieldsTest
         public int x;
     }
     
-    public void testReadAndProcess()
+    public void testReadAndProcessFields()
     {
         _class _c = Java._classFrom( inner.class );
         
         List<_typeExpansion>te = _classMacro.processFields( _c.getFields() );
         
         _class _target = _class.of("Target");
-        for(int i=0; i< te.size(); i++ )
+        for( int i = 0; i < te.size(); i++ )
         {
             te.get( i ).expandTo( _target, "type", String.class, "name", "theName" );            
         }
         assertEquals( "java.lang.String", _target.getField( "theName" ).getType() );
+        
+        _class _t2 = _class.of("Target");
+        
+        for( int i = 0; i < te.size(); i++ )
+        {
+            te.get( i ).expandTo( _t2, 
+                "type", new Class[]{int.class, String.class}, 
+                "name", new String[]{"y", "theName"} );            
+        }
+        assertEquals( "java.lang.String", _t2.getField( "theName" ).getType() );
+        assertEquals( "int", _t2.getField( "y" ).getType() );
+        
+        System.out.println( _t2 );
+        //_class _c = Java._classFrom( inner.class )        
     }
 }

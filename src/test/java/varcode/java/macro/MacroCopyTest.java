@@ -34,7 +34,7 @@ import varcode.java.model._staticBlock;
  *
  * @author Eric
  */
-public class TransferTest
+public class MacroCopyTest
     extends TestCase
 {
  
