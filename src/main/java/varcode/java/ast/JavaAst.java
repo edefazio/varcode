@@ -22,6 +22,7 @@ import com.github.javaparser.ast.body.AnnotationDeclaration;
 import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.EnumDeclaration;
+import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.expr.Expression;
@@ -87,6 +88,23 @@ public enum JavaAst
         ByteArrayInputStream bais = 
             new ByteArrayInputStream( javaSourceCode.getBytes() );
         return JavaAst.astFrom( bais );
+    }
+    
+    /**
+     * returns the AST representation of a String that represents a field
+     * @param field
+     * @return the FieldDeclaration AST type
+     * @throws ParseException if the String does not represent a syntactically
+     * correct field
+     */
+    public static FieldDeclaration astFieldFrom( String field )
+        throws ParseException 
+    {
+        String classSource = "class A {"+ field + " } ";
+        CompilationUnit cu = astFrom( classSource );
+        FieldDeclaration fd = 
+            (FieldDeclaration)cu.getTypes().get(0).getMembers().get( 0 );
+        return fd;
     }
     
     /**

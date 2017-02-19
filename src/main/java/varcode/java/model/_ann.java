@@ -18,7 +18,9 @@ package varcode.java.model;
 import com.github.javaparser.ParseException;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.expr.AnnotationExpr;
+import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MemberValuePair;
 import java.util.ArrayList;
 import java.util.List;
@@ -205,6 +207,37 @@ public class _ann
     {
         public List<String> keys = new ArrayList<String>();
         public List<String>values = new ArrayList<String>();
+        
+        /**
+         * Takes the array 
+         * @param array
+         * @return 
+         */
+        public static String[] parseStringArray( String array )
+        {
+            try
+            {
+                FieldDeclaration fd = 
+                    JavaAst.astFieldFrom( "String s = " + array + ";" );
+            
+                Expression expr = fd.getVariables().get( 0 ).getInit();
+            
+                List<Node> nodes = expr.getChildrenNodes();
+                String[] values = new String[nodes.size()];
+                for( int i = 0; i < nodes.size(); i++ )
+                {
+                    String s = nodes.get( i ).toString();
+                    //replace the first and last " around the string literal
+                    values[ i ] = s.substring( 1, s.length() - 1 );
+                    //.replace( "\"", "" );
+                }
+                return values;
+            }
+            catch( ParseException e )
+            {
+                throw new ModelException(" bad array representation "+ array, e );
+            }            
+        }
         
         /** Single Annotation attribute value without name: 
         * @Table("value") as apposed to @Table(name = "value")

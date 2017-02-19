@@ -19,9 +19,9 @@ import java.util.Date;
 import junit.framework.TestCase;
 import junit.framework.TestResult;
 import varcode.java.model._class;
-import varcode.java.model.auto._auto;
-import static varcode.java.model.auto._auto.*;
-import varcode.java.model.auto._autoApply._autoMacro;
+import varcode.java.macro.auto._auto;
+import static varcode.java.macro.auto._auto.*;
+import varcode.java.macro.auto._autoApply._autoMacro;
 import howto.java.adhoc.AdHocTest;
 
 /**

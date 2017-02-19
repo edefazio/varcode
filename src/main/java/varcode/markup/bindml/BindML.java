@@ -114,9 +114,13 @@ public enum BindML
     {
         try
         {
+            if( bindMLMarkup == null )
+            {
+                bindMLMarkup = "";
+            }
             ByteArrayInputStream bais
                 = new ByteArrayInputStream(
-                    bindMLMarkup.getBytes( "UTF-8" ) );
+                      bindMLMarkup.getBytes( "UTF-8" ) );
 
             return BindML.compile( bais );
         }

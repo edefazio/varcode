@@ -16,7 +16,8 @@
 package varcode.java.model;
 
 import junit.framework.TestCase;
-import varcode.java.model._ann;
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertTrue;
 
 /**
  *
@@ -25,6 +26,30 @@ import varcode.java.model._ann;
 public class _annTest
     extends TestCase
 {
+    
+    public void testAttributesStringArray()
+    {
+        String[] arr = _ann._attributes.parseStringArray( "{\"A\"}" );
+        assertEquals( 1, arr.length );
+        assertEquals( "A", arr[0] );
+        
+        arr = _ann._attributes.parseStringArray( "{\"A\", \"B\"}" );
+        System.out.println( arr[ 0 ] );
+        assertEquals( 2, arr.length );
+        assertEquals( "A", arr[0] );
+        assertEquals( "B", arr[1] );        
+        
+        //now read the literal string array from the annotation model
+        _fields._field _f = _fields._field.of( "@$({\"a\", \"name\"})", "public int a;" );        
+        _ann _as = _f.getAnnotations().getOne( varcode.java.macro.Macro.$.class );
+        
+        String[] keyValues = _ann._attributes.parseStringArray( 
+            _as.getAttributes().values.get( 0 ) );
+        
+        assertTrue( keyValues.length == 2 );
+        assertEquals( "a", keyValues[ 0 ]);
+        assertEquals( "name", keyValues[ 1 ]);
+    }
     
     public void testNoAttrs()
     {

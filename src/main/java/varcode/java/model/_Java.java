@@ -67,8 +67,6 @@ public interface _Java
 
     /** Visit the "nodes" of Hierarcial Java code */
     void visit( ModelVisitor visitor );
-
-
     
     /**
      * Java language component that can be nested (_class, _enum, _interface)

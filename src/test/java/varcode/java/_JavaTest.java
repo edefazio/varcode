@@ -22,7 +22,7 @@ public class _JavaTest
             .packageName( "metalang.java;") 
             .field( "public int ID = 3;" );
         
-        assertEquals( "int", _c.getFieldByName( "ID" ).getType() );
+        assertEquals( "int", _c.getField( "ID" ).getType() );
         
         Object instanceA = _c.instance(  );//create an instance from model
         assertEquals( 3, Java.getFieldValue( instanceA, "ID" ) );
@@ -34,7 +34,7 @@ public class _JavaTest
         //we can load a _class (metamodel) from a String
         _class _c = Java._classFrom( 
             "package metalang.java; public class A{ public int ID=1; }" );                
-        assertEquals( "int", _c.getFieldByName( "ID" ).getType() );
+        assertEquals( "int", _c.getField( "ID" ).getType() );
         
         Object instanceA = _c.instance(  );//create an instance from model
         assertEquals( 1, Java.getFieldValue( instanceA, "ID" ) );

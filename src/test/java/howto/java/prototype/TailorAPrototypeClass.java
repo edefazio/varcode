@@ -19,10 +19,10 @@ import java.io.Serializable;
 import varcode.context.VarContext;
 import varcode.java.Java;
 import varcode.java.model._class;
-import varcode.markup.java.JavaSource.fields;
-import varcode.markup.java.JavaSource.remove;
-import varcode.markup.java._classTailor;
-import varcode.markup.java.JavaSource.sig;
+import varcode.java.macro.Macro.fields;
+import varcode.java.macro.Macro.remove;
+import varcode.java.macro._classMacro;
+import varcode.java.macro.Macro.sig;
 
 /**
  *
@@ -44,8 +44,8 @@ public class TailorAPrototypeClass
     //retain and remove and add imports
     public static void main( String[] args )
     {
-        _classTailor cm = _classTailor.of( Java._classFrom( Prototype.class ) );        
-        _class _t = cm.tailor( VarContext.of( 
+        _classMacro cm = _classMacro.of( Java._classFrom( Prototype.class ) );        
+        _class _t = cm.expand( VarContext.of( 
             "Name", "Tailored", 
             "fieldName", "a", 
             "fieldType", int.class ) );

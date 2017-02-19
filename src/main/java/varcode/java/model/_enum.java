@@ -201,6 +201,12 @@ public class _enum
         return this.pckage.getName();
     }
 
+    /** Gets an annotation that is of the class */
+    public _ann getAnnotation( Class annotationClass )
+    {
+        return this.annotations.getOne( annotationClass );
+    }
+    
     @Override
     public _anns getAnnotations()
     {
@@ -280,6 +286,11 @@ public class _enum
         return this.constants;
     }
 
+    public List<_method> getMethodsNamed( String name )
+    {
+        return this.methods.getMethodsNamed( name );
+    }
+    
     @Override
     public _methods getMethods()
     {
@@ -634,7 +645,7 @@ public class _enum
         for( int i = 0; i < nesteds.count(); i++ )
         {
             this.imports.mergeBindings(
-                nesteds.models.getByClass( i ).getImports() );
+                nesteds.models.get( i ).getImports() );
         }
         return this.imports;
     }
@@ -742,7 +753,7 @@ public class _enum
         String name = _f.getName();
         String nameCaps
             = Character.toUpperCase( name.charAt( 0 ) ) + name.substring( 1 );
-        //add a getByClass method
+        //add a get method
         return method( 
             "public " + _f.getType() + " get" + nameCaps + "()",
             "return this." + name + ";" );        

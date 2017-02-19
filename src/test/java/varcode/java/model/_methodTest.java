@@ -54,7 +54,7 @@ public class _methodTest
         
         
         _method _mh = Java._classFrom( MHolder.class )
-            .getMethodsByName( "getStuff" ).get( 0 );
+            .getMethodsNamed( "getStuff" ).get( 0 );
         
         _m.getBody().equals( _mh.getBody() );
         

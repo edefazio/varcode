@@ -582,6 +582,15 @@ public class _interface
         return this.fields.getByName( fieldName );
     }
     
+    public _interface fields( String... fields )
+    {
+        for( int i = 0; i < fields.length; i++ )
+        {
+            this.fields.add( _fields._field.of( fields[ i ] ) );
+        }
+        return this;
+    }
+    
     public _interface fields( _fields _fs )
     {
         for( int i = 0; i < _fs.count(); i++ )

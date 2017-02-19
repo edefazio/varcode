@@ -420,6 +420,12 @@ public class _class
         return this.annotations;
     }
     
+    /** Gets an annotation that is of the class */
+    public _ann getAnnotation( Class annotationClass )
+    {
+        return this.annotations.getOne( annotationClass );
+    }
+    
     @Override
     public Context getContext()
     {        
@@ -562,7 +568,7 @@ public class _class
 
         for( int i = 0; i < methods.count(); i++ )
         {
-            List<_method> methodsByName = methods.getByName( methodNames[ i ] );
+            List<_method> methodsByName = methods.getMethodsNamed( methodNames[ i ] );
             for( int j = 0; j < methodsByName.size(); j++ )
             {
                 method( methodsByName.get( j ) );
@@ -685,7 +691,7 @@ public class _class
         String name = _f.getName();
         String nameCaps
             = Character.toUpperCase( name.charAt( 0 ) ) + name.substring( 1 );
-        //add a getByClass method
+        //add a get method
         this.methods.add( "public " + _f.getType() + " get" + nameCaps + "()",
             "return this." + name + ";" );
 
@@ -759,6 +765,11 @@ public class _class
         return this.fields.getByName( fieldName );
     }
 
+    public _field getFieldAt( int fieldIndex )
+    {
+        return this.fields.getAt( fieldIndex );
+    }
+    
     public _class field( Object... parts )
     {
         _field _f = _field.of( parts );
@@ -877,22 +888,12 @@ public class _class
     public _method getMethod( String name )
         throws ModelException
     {
-        List<_method> namedMethods = getMethodsByName( name );
-        if( namedMethods == null || namedMethods.isEmpty() )
-        {
-            return null;
-        }
-        if( namedMethods.size() > 1 )
-        {
-            throw new ModelException(
-                "Multiple Methods have name \"" + name + "\"; ambiguous query" );
-        }
-        return namedMethods.get( 0 );
+        return this.methods.getMethod( name );        
     }
 
-    public List<_method> getMethodsByName( String name )
+    public List<_method> getMethodsNamed( String name )
     {
-        return this.methods.getByName( name );
+        return this.methods.getMethodsNamed( name );
     }
 
     @Override
@@ -1020,11 +1021,6 @@ public class _class
         this.signature.extendsFrom.clear();
         this.signature.extendsFrom.addExtends( baseClass );
         return this;
-    }
-
-    public _field getFieldByName( String name )
-    {
-        return this.fields.getByName( name );
     }
 
     /**

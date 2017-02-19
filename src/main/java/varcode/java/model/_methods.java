@@ -110,7 +110,7 @@ public class _methods
             int idx = 0;
             for( int i = 0; i < names.length; i++ )
             {
-                List<_method> byName = getByName( names[ i ] );
+                List<_method> byName = getMethodsNamed( names[ i ] );
                 if( (byName.size() + idx) > index )
                 {
                     int offset = index - idx;
@@ -246,12 +246,36 @@ public class _methods
     }
 
     /**
-     * atReturn all of the methods by the name
+     * For <B>NON-Overloaded methods</B>, at Return a _method if there is
+     * <B>only ONE method</B> with this <B>exact name</B>
+     *
+     * @param name the name of the method to find
+     * @return the ONLY method that has this name, - or - null if there are no
+     * methods with this name - or - VarException if there are more than one
+     * method with this name
+     * @throws ModelException if more than one method has this name
+     */
+    public _method getMethod( String name )
+    {
+        List<_method> _ms = getMethodsNamed( name );
+        if( _ms.size() == 0 )
+        {
+            return null;            
+        }
+        if( _ms.size() == 1 )
+        {
+            return _ms.get( 0 );
+        }
+        throw new ModelException(
+            "Multiple Methods have name \"" + name + "\"; ambiguous query" );
+    }
+    /**
+     * Return all of the methods by the name
      *
      * @param name the name of the method
      * @return all methods with this name
      */
-    public List<_method> getByName( String name )
+    public List<_method> getMethodsNamed( String name )
     {
         List<_method> byName = new ArrayList<_method>();
 
@@ -314,7 +338,7 @@ public class _methods
 
         for( int i = 0; i < methodNames.length; i++ )
         {
-            List<_method> byName = methods.getByName( methodNames[ i ] );
+            List<_method> byName = methods.getMethodsNamed( methodNames[ i ] );
             for( int j = 0; j < byName.size(); j++ )
             {
                 this.add( byName.get( i ) );

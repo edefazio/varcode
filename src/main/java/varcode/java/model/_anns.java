@@ -19,7 +19,6 @@ package varcode.java.model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import static varcode.Model.N;
 import varcode.ModelException;
 import varcode.author.Author;
 import varcode.context.Context;
@@ -79,11 +78,27 @@ public class _anns
     }
     
     /**
+     * Gets ONLY ONE of the annotations that are of the specific class
+     * or NULL if there is no annotation of this specific class
+     * @param clazz the class of the annotation
+     * @return a single annotation or NULL if there are more than one or 
+     */
+    public _ann getOne( Class clazz )
+    {
+        List<_ann> list = get( clazz );
+        if( list.size() == 1 )
+        {
+            return list.get(0);
+        }
+        return null;
+    }
+    
+    /**
      * Get all Annotations that are of the clazz
      * @param clazz
      * @return 
      */
-    public List<_ann> getByClass( Class clazz )
+    public List<_ann> get( Class clazz )
     {
         String simpleName = clazz.getSimpleName();
         List<_ann> byClass = new ArrayList<_ann>();
@@ -105,7 +120,7 @@ public class _anns
      * @param annotationName
      * @return 
      */
-    public List<_ann> getNamed( String annotationName )
+    public List<_ann> get( String annotationName )
     {
         List<_ann> named = new ArrayList<_ann>();
         for( int i = 0; i< this.listOfAnnotations.size(); i++ )
@@ -159,6 +174,7 @@ public class _anns
         this( new ArrayList<_ann>(), false );
     }
     
+    
     /** 
      * Remove the exact annotation that evaluates to this toString
      * @param ann 
@@ -170,11 +186,11 @@ public class _anns
     {
         for( int i = 0; i < this.listOfAnnotations.size(); i++ )
         {
-            if( this.listOfAnnotations.get( i ).toString().equals( ann ) )
+            if( this.listOfAnnotations.get( i ).getName().equals( ann ) )
             {
                 this.listOfAnnotations.remove( i );
                 return this;
-            }
+            } 
         }
         throw new ModelException( 
             "Unable to find annotation that evaluates to \""+ ann + "\"" );

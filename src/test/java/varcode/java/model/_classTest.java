@@ -80,7 +80,7 @@ public class _classTest
         _class _c = _class.of("public class c").field( "class f = Javac.class");
         _c.setName( "BLAH" ); 
         
-        assertEquals( " = Javac.class", _c.getFieldByName( "f" ).getInit().toString() );
+        assertEquals( " = Javac.class", _c.getField( "f" ).getInit().toString() );
     }
     
     public void testJRR()
