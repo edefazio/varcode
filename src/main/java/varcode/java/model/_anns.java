@@ -175,8 +175,14 @@ public class _anns
     }
     
     
+    public _anns remove( Class clazz )
+    {
+        remove( clazz.getSimpleName() );
+        return remove( clazz.getCanonicalName() );
+    }
+    
     /** 
-     * Remove the exact annotation that evaluates to this toString
+     * Remove the annotation with a given name
      * @param ann 
      * @return the modified _annotations (without "ann")
      * @throws ModelException if there is no annotation that represents "ann"
@@ -188,12 +194,10 @@ public class _anns
         {
             if( this.listOfAnnotations.get( i ).getName().equals( ann ) )
             {
-                this.listOfAnnotations.remove( i );
-                return this;
+                this.listOfAnnotations.remove( i );                
             } 
         }
-        throw new ModelException( 
-            "Unable to find annotation that evaluates to \""+ ann + "\"" );
+        return this;
     }
     
     public boolean contains( Class ann )

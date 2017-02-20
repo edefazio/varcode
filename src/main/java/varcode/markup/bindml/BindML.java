@@ -110,6 +110,20 @@ public enum BindML
         return compile( sb.toString() );
     }
     
+    public static Template compile( String[] bindMLMarkupLines )
+    {
+        StringBuilder sb = new StringBuilder();
+        for( int i = 0; i < bindMLMarkupLines.length; i++ )
+        {
+            if( i > 0 )
+            {
+                sb.append( System.lineSeparator() );
+            }
+            sb.append( bindMLMarkupLines[ i ] );
+        }
+        return compile( sb.toString() );
+    }
+    
     public static Template compile( String bindMLMarkup )
     {
         try

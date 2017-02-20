@@ -30,6 +30,7 @@ import varcode.author.lib.PrintAsLiteral;
 import varcode.author.lib.RemoveEmptyLines;
 import varcode.author.lib.StripMarks;
 import varcode.author.lib.Trim;
+import varcode.author.lib.Quote;
 import varcode.context.Context;
 import varcode.context.Context.alias;
 import varcode.context.VarScript;
@@ -72,6 +73,9 @@ public class InitVarContextBindings
             
     @alias({"#"})
     public static final VarScript count = Count.INSTANCE;
+    
+    @alias({"quot", "\"" })
+    public static final VarScript quote = Quote.INSTANCE;
     
     @alias({"[#]", "indexCount"})
     public static final VarScript countIndex = CountIndex.INSTANCE;

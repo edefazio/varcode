@@ -17,6 +17,7 @@ package varcode.java.macro;
 
 import java.util.ArrayList;
 import java.util.List;
+import varcode.ModelException;
 import varcode.context.Context;
 import varcode.context.VarContext;
 import varcode.java.load._JavaLoad;
@@ -25,16 +26,26 @@ import varcode.java.model._fields._field;
 import varcode.java.macro.Macro.sig;
 import varcode.java.macro.Macro.CopyClassSignature;
 import varcode.java.macro.Macro.CopyField;
+import varcode.java.macro.Macro.CopyMethod;
 import varcode.java.macro.Macro.CopyPackage;
+import varcode.java.macro.Macro.CopyStaticBlock;
 import varcode.java.macro.Macro.ExpandClassSignature;
 import varcode.java.macro.Macro.ExpandField;
+import varcode.java.macro.Macro.ExpandMethod;
 import varcode.java.macro.Macro.ExpandPackage;
+import varcode.java.macro.Macro.ExpandStaticBlock;
 import varcode.java.macro.Macro._typeExpansion;
+import varcode.java.macro.Macro.body;
+import varcode.java.macro.Macro.form;
+import varcode.java.macro.Macro.formAt;
 import varcode.java.model._Java;
 import varcode.java.model._ann;
 import varcode.java.model._ann._attributes;
 import varcode.java.model._anns;
 import varcode.java.model._fields;
+import varcode.java.model._imports;
+import varcode.java.model._methods;
+import varcode.java.model._methods._method;
 
 /**
  * Builds a new {@link _class} by a single {@code _classOrignator} and subsequent
@@ -131,10 +142,7 @@ public class _classMacro
     public List<expansion> _transfers = 
         new ArrayList<expansion>();
         
-    
-
-    //nests
-    
+    //nests    
     public _classMacro( _class _c )
     {
         String sig = getAnnotationStringProperty( _c, sig.class );
@@ -173,12 +181,174 @@ public class _classMacro
          
         //imports
         _ann imports = _c.getAnnotations().getOne( Macro.imports.class );
+        processImports( _c.getImports(), imports, this._transfers );
+        //System.out.println( "IMPORTS <<<<< "+ imports );
         
-        System.out.println( "IMPORTS <<<<< "+ imports );
-        if( imports != null )
+        //Static Block
+        _ann staticB = _c.getAnnotations().getOne( Macro.staticBlock.class );
+        if( staticB != null )
         {
-            System.out.println( "ADD IMPORTS " );
-            _attributes _attrs = imports.getAttributes();
+            String[] s = _attributes.parseStringArray( staticB.attributes.values.get( 0 ) );
+            this._transfers.add( new ExpandStaticBlock( s ) );
+        }
+        else
+        {   //we copy the static block as is
+            if( _c.getStaticBlock() != null )
+            {
+                this._transfers.add( new CopyStaticBlock( _c.getStaticBlock() ) );
+            }
+        }        
+        
+        //List<_typeExpansion> macroFields = ;
+        this._transfers.addAll( processFields( _c.getFields() ) );    
+        
+        processMethods( this._transfers, _c.getMethods() ); 
+    }
+
+    public static final void processMethods( List<expansion> _transfers, _methods _ms )
+    {
+        for( int i = 0; i < _ms.count(); i++ )
+        {
+            _method _m = _ms.getAt( i );
+            if( _m.getAnnotations().contains( form.class ) || 
+                _m.getAnnotations().contains( formAt.class ) )
+            {  //handle form or formAt 
+                _transfers.add( processMethodForms( _m ) );                
+            }
+            else
+            {   //handle sig, body, and remove
+                expansion exp = processMethod( _m );
+                if( exp != null )
+                {
+                    _transfers.add( exp );
+                }   
+            }            
+        }
+    }
+    
+    public static _typeExpansion processMethodForms( _method _m )
+    {
+        _anns _as = _m.getAnnotations();
+        _ann form = _as.getOne( Macro.form.class );
+        _ann formAt = _as.getOne( Macro.formAt.class );
+        
+        if( form != null )
+        {
+            //System.out.println( "doing form" );
+            _method _p = new _method( _m );
+            _p.getAnnotations().remove( form.class ); //remove form  annotation from the target method
+            String beforeForm = "";
+            String afterForm = "";
+            String body = _m.getBody().author();
+            
+            System.out.println( body );
+            //int firstFormIndex = body.indexOf( "form:" );
+            //int lastFormIndex = body.indexOf( "form:", firstFormIndex + 1 );
+            
+            //this is what I WANT to do, but, the EXISTING javaparser is havingt a hard time with
+            // internal comments inside of code 
+            //int firstFormIndex = body.indexOf( "/*{*/" );
+            //int lastFormIndex = body.indexOf( "/*}*/", firstFormIndex + 1 );
+            int firstFormIndex  = body.indexOf( "form:" );
+            int lastFormIndex  = body.indexOf( "/*}*/" );
+            if( firstFormIndex < 0 || lastFormIndex < 0 )
+            {
+                throw new ModelException( 
+                    "expected body to contains /*{*/ and /*}*/ labels" );
+            }
+            beforeForm = body.substring( 0, firstFormIndex );
+            if( lastFormIndex > 0 )
+            {
+                afterForm = body.substring( lastFormIndex + "form:".length() );
+            }
+            String[] attrs = 
+                _attributes.parseStringArray( form.getAttributes().values.get( 0 ) );
+            
+            
+            //I need to make the prefix and postfix for FORMS
+            attrs[ 0 ]= "{{+:" + attrs[ 0 ];
+            attrs[ attrs.length -1 ] = attrs[ attrs.length -1 ] + "+}}";
+            
+            //time to stich the revised form back together
+            String[] stitchedBody = new String[ attrs.length + 2 ];
+            stitchedBody[ 0 ] = beforeForm;
+            System.arraycopy( attrs, 0, stitchedBody, 1, attrs.length);
+            stitchedBody[ stitchedBody.length -1 ] = afterForm;
+            return ExpandMethod.ofBody( _p, stitchedBody );
+        }
+        else if( formAt != null )
+        {
+            System.out.println( "Doing FormAt" );
+        }
+        return null;
+    }
+    
+    public static _typeExpansion processMethod( _method _m )
+    {
+        _anns _as = _m.getAnnotations();
+        if( !_as.contains( Macro.remove.class ) )
+        {   //we are either copying or tailoring the field                           
+            _ann parameter = _as.getOne( Macro.$.class ); //TODO PARAMETER
+            _ann sig = _as.getOne( Macro.sig.class );
+            _ann body = _as.getOne( Macro.body.class );
+            
+            _method _p = new _method( _m );
+            //first param
+            if( parameter != null )
+            {   //you CANNOT have BOTH sig Macros AND parameterization
+                //System.out.println( "processing " + parameter );                
+                String values = parameter.getAttributes().values.get( 0 );
+                //System.out.println( "values " + values );                
+                String[] valuesArray = _ann._attributes.parseStringArray( values );
+                //System.out.println( "values[0]" + valuesArray[0] );                
+                //System.out.println( "values[1]" + valuesArray[1] );                
+                _p.getAnnotations().remove( Macro.$.class );
+                return ExpandMethod.parameterize( _p, valuesArray );   
+            }
+            else if( sig != null )
+            {   //we didnt explicitly tailor or remove it, so copy the method
+                //System.out.println( "processing "+ sig );
+                String[] str = _attributes.parseStringArray( 
+                    sig.getAttributes().values.get( 0 ) );
+                if( body != null )
+                {
+                    _p.getAnnotations().remove( sig.class );
+                    _p.getAnnotations().remove( body.class );
+                    String[] bod = _attributes.parseStringArray( 
+                        body.getAttributes().values.get( 0 ) );
+                    return ExpandMethod.of( _p, str[0], bod );
+                }
+                else
+                {
+                    _p.getAnnotations().remove( sig.class );
+                    return ExpandMethod.ofSignature( _p, str[0] );
+                }
+            }
+            else if( body != null )
+            {
+                String[] bod = _attributes.parseStringArray( 
+                    body.getAttributes().values.get( 0 ) );
+                return ExpandMethod.ofBody( _p, bod );
+            }
+            //just copy the field                        
+            return new CopyMethod( _m );
+        }
+        return null;
+    }
+    
+    /**
+     * Decide how to handle imports (whether to add, remove imports
+     * @param _i
+     * @param importAnnMacro
+     * @param _transfers 
+     */
+    public static void processImports( 
+        _imports _i, _ann importAnnMacro, List<expansion> _transfers )
+    {
+        if( importAnnMacro != null )
+        {
+            //System.out.println( "ADD IMPORTS " );
+            _attributes _attrs = importAnnMacro.getAttributes();
             String adds = _attrs.getRawValueForKey( "add" );
             String[] addsArr = new String[0];
             if( adds != null )
@@ -191,20 +361,16 @@ public class _classMacro
             {
                 removeArr = _attributes.parseStringArray( remove );                
             }
-            this._transfers.add( 
-                Macro.ExpandImports.of( _c.getImports(), removeArr, addsArr ) );
+            _transfers.add( 
+                Macro.ExpandImports.of( _i, removeArr, addsArr ) );
         }
         else
         {
-            System.out.println( "COPY IMPORTS ");
-            this._transfers.add( Macro.CopyImports.of( _c.getImports() ) );
+            //System.out.println( "COPY IMPORTS ");
+            _transfers.add( Macro.CopyImports.of( _i ) );
         }
-        
-        List<_typeExpansion> macroFields = processFields( _c.getFields() );
-        this._transfers.addAll( macroFields );
-        
     }
-
+    
     public static List<_typeExpansion>processFields( _fields _fs )
     {        
         List<_typeExpansion>_macroFields = 
@@ -236,22 +402,22 @@ public class _classMacro
             
             if( parameter != null )
             {   //you CANNOT have BOTH sig Macros AND parameterization
-                System.out.println( "processing " + parameter );
+                //System.out.println( "processing " + parameter );
                 
                 String values = parameter.getAttributes().values.get( 0 );
-                System.out.println( "values " + values );                
+                //System.out.println( "values " + values );                
                 String[] valuesArray = _ann._attributes.parseStringArray( values );
-                System.out.println( "values[0]" + valuesArray[0] );                
-                System.out.println( "values[1]" + valuesArray[1] );                
+                //System.out.println( "values[0]" + valuesArray[0] );                
+                //System.out.println( "values[1]" + valuesArray[1] );                
                 
                 _field _p = new _field( _f );
                 _p.getAnnotations().remove( parameter.getName() );
                 return ExpandField.parameterize( _p, valuesArray );
             }
-            else if( sig != null )
-            {   //we didnt explicitly tailor or remove it, so copy the method
-                System.out.println( "processing "+ sig );
-            }
+            //else if( sig != null )
+            //{   //we didnt explicitly tailor or remove it, so copy the method
+            //    System.out.println( "processing "+ sig );
+            // }
             //just copy the field                        
             return new CopyField( _f );
         }

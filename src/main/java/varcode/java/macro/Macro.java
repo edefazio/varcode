@@ -219,8 +219,8 @@ public class Macro
      * +}} )") public static MyObj doThisMethod( String f1, int f2 ) { //... }
      */
     @Documented
-    @Retention(RetentionPolicy.RUNTIME)
-    //Method & constructor
+    @Retention(RetentionPolicy.RUNTIME)    
+    //Method & constructor & field
     public @interface sig
     {
         /**
@@ -231,9 +231,10 @@ public class Macro
     
     @Documented
     @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.METHOD)
     public @interface form
     {
-        String value();
+        String[] value();
     }
     
     /**
@@ -261,6 +262,7 @@ public class Macro
      */    
     @Documented
     @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.METHOD)
     public @interface formAt
     {
         String form();
@@ -279,6 +281,8 @@ public class Macro
      * public final int names = 5;
      * 
      */
+    @Documented
+    @Retention(RetentionPolicy.RUNTIME)
     public @interface $
     {
         String[] value();
@@ -286,22 +290,6 @@ public class Macro
         //String as() default "*";
     }
     
-    public @interface $sig
-    {
-        String[] value();
-    }
-    
-    public @interface $body
-    {
-        String[] value();
-    }
-    
-    /** Convert all targets to parameters 
-    public @interface parameterize
-    {
-        String[] value();
-    }
-    */ 
     
     /**
      * Macro Annotation for replacing the entire body of a 
@@ -315,6 +303,8 @@ public class Macro
      * ------------
      * 
      */
+    @Documented
+    @Retention(RetentionPolicy.RUNTIME)
     public @interface body
     {
         /**
@@ -327,6 +317,8 @@ public class Macro
      * Macro annotation for removing a component 
      * when tailoring
      */
+    @Documented
+    @Retention(RetentionPolicy.RUNTIME)
     public @interface remove
     {
     }
@@ -344,16 +336,19 @@ public class Macro
             this._prototype = _prototype;
         }
 
+        @Override
         public void expandTo( _class _tailored, Object...keyValuePairs )            
         {
             _tailored.staticBlock( _staticBlock.cloneOf( _prototype ) );
         }
 
+        @Override
         public void expandTo( _class _tailored, Context context )            
         {
             _tailored.staticBlock( _staticBlock.cloneOf( _prototype ) );
         }
         
+        @Override
         public void expandTo( _enum _e, Object...keyValuePairs )            
         {
             _e.staticBlock( _staticBlock.cloneOf( _prototype ) );
@@ -368,7 +363,7 @@ public class Macro
     {
         public Template template;
         
-        public ExpandStaticBlock( String bodyTemplate )
+        public ExpandStaticBlock( String... bodyTemplate )
         {
             this.template = BindML.compile( bodyTemplate );
         }
@@ -851,13 +846,33 @@ public class Macro
     }    
 
     public static class CopyMethod
-        implements _classMacro.expansion, _enumMacro.expansion        
+        implements _typeExpansion //_classMacro.expansion, _enumMacro.expansion        
     {
         public final _method _prototype;
+        
+        public static CopyMethod of( _method _m )
+        {
+            return new CopyMethod( _m );
+        }
         
         public CopyMethod( _method _prototype )
         {
             this._prototype = _prototype;
+        }
+
+        public void expandTo( _interface _i, Context context)
+        {
+            _i.method( new _method( _prototype ) );
+        }
+        
+        public void expandTo( _interface _i, Object...keyValuePairs )
+        {
+            _i.method( new _method( _prototype ) );
+        }
+        
+        public void expandTo( _enum _e, Context context)
+        {
+            _e.method( new _method( _prototype ) );
         }
         
         public void expandTo( _enum _e, Object...keyValuePairs )
@@ -877,13 +892,31 @@ public class Macro
     }
     
     public static class ExpandMethod
-        implements _classMacro.expansion, _enumMacro.expansion
+        implements _typeExpansion //_classMacro.expansion, _enumMacro.expansion
     {
         public final Form signatureForm;
         public final Template bodyTemplate;
         public final _method _prototype;
         
-        public static ExpandMethod of( _method _m, String signature, String body )
+        
+        public static ExpandMethod parameterize( 
+            _method _m, String[] keyValues )
+        {
+            if( keyValues.length %2 != 0 )
+            {
+                throw new ModelException(
+                    "could not parameterize, key values must be even" );
+            }
+            for( int i = 0; i < keyValues.length; i+= 2 )
+            {   //call replace on the prototype (clone)
+                System.out.println( "REPLACE "+keyValues[ i ]+" " + keyValues[ i + 1 ] );
+                _m.replace( keyValues[ i ], "{+" + keyValues[ i + 1 ] +  "*+}" );
+            }
+            //System.out.println("AUTHOR" + _p.author() );
+            return new ExpandMethod( _m, _m.getSignature().author(), _m.getBody().author() );            
+        }
+        
+        public static ExpandMethod of( _method _m, String signature, String... body )
         {
             return new ExpandMethod( _m, signature, body );
         }
@@ -892,11 +925,11 @@ public class Macro
         {
             return new ExpandMethod( _m, signature, null );
         }
-        public static ExpandMethod ofBody( _method _m, String body )
+        public static ExpandMethod ofBody( _method _m, String... body )
         {
             return new ExpandMethod( _m, null, body );
         }
-        public ExpandMethod( _method _m, String signature, String body )
+        public ExpandMethod( _method _m, String signature, String... body )
         {
             this._prototype = _m;
             if( signature != null )
@@ -941,7 +974,7 @@ public class Macro
             }
             else
             {
-                _m = _method.of( _prototype );
+                _m = new _method( _prototype );
             }            
             
             if( bodyTemplate != null )
@@ -953,6 +986,12 @@ public class Macro
                 _m.setBody( new _code( _prototype.getBody() ) );
             }
             return _m;
+        }
+
+        @Override
+        public void expandTo( _interface _i, Object... keyValuePairs )
+        {
+            _i.method( expand( VarContext.of( keyValuePairs ) ) ); 
         }
     }
 }

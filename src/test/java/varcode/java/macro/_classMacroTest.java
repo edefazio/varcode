@@ -28,6 +28,8 @@ import varcode.java.macro.Macro.*;
 public class _classMacroTest
     extends TestCase
 {   
+    //the @imports() annotation allows the annotations to be add or removed
+    // explicitly or by patterns
     public void testExpandImports()
     {   //load this class as a Macro, 
         _class _c = _classMacro.of( _classMacroTest.class ).expand( ); 
@@ -43,14 +45,61 @@ public class _classMacroTest
         assertTrue( !authored.contains( "varcode.java" ) );
         assertTrue( !authored.contains( "junit" ) );
         
+        //add imports 
         _c = _classMacro.of( _classMacroTest.class ).expand( "addImports", "java.util.HashSet" ); 
         assertTrue( _c.getImports().contains( "java.util.HashSet" ) );
         
+        //add mutliple imports by a single parameter
+        _c = _classMacro.of( _classMacroTest.class ).expand( "addImports", 
+            new Object[] {"java.util.Calendar", "java.util.Date"} ); 
+        
+        assertTrue( _c.getImports().contains( "java.util.Calendar" ) );
+        assertTrue( _c.getImports().contains( "java.util.Date" ) );        
     }
         
-    public static class AddImports{}
+    @packageName( "ex.mypackage" )
+    public static class EPackageStatic { }
     
+    public void testPackageStatic()
+    {
+        _class _c = _classMacro.of( EPackageStatic.class ).expand(  );
+        assertEquals( "ex.mypackage", _c.getPackageName() );
+    }
     
+    @packageName( "ex.mypackage.{+subpkg+}" )
+    public static class ExpandPackage{}
+    
+    public void testPackageExpand()
+    {
+        _class _c = _classMacro.of(ExpandPackage.class ).expand("subpkg", "mysub" );
+        assertEquals( "ex.mypackage.mysub", _c.getPackageName() );
+    }
+     
+    
+    //singe line static block
+    @staticBlock( "System.out.println( \"Hello from Static Block\");" )
+    public static class ExpandStaticBlock{}
+    
+    public void testExpandStaticBlock()
+    {
+        _class _c = _classMacro.of( ExpandStaticBlock.class ).expand();
+        
+        assertTrue( _c.getStaticBlock().author().contains( "out.println" ) );
+    }
+    
+    public static class CopyStaticBlock
+    {
+        static
+        {
+            System.out.println( "In static Block" );
+        }
+    }
+    
+    public void testCopyStaticBlock()
+    {
+        _class _c = _classMacro.of(  CopyStaticBlock.class ).expand( );
+        assertTrue( _c.getStaticBlock().author().contains( "In static Block" ) );
+    }
     
     @sig("public class {+Name+}")
     public static class ClassSig{ }
@@ -93,9 +142,6 @@ public class _classMacroTest
         assertEquals( "String",_c.getField( "id" ).getType() );
     }
     
-
-        
-    
     public static class AField
     {
         @$({"x", "name"})
@@ -109,6 +155,7 @@ public class _classMacroTest
         assertEquals( "AField", _q.getName() );
         assertEquals( "int", _q.getField( "theName" ).getType() );
     }
+    
     public void testAField()
     {
         _classMacro _cm = _classMacro.of(Java._classFrom(AField.class ) );
@@ -120,32 +167,123 @@ public class _classMacroTest
         assertEquals( "int", _c.getField("x").getType() );
         assertEquals( "int", _c.getField("y").getType() );
         assertEquals( "int", _c.getField("z").getType() );        
-    }
-    /*
-    public void testField()
+    }   
+    
+    public static class CopyMethod
     {
-        _classMacro.parseField( _field f );
+        public static String sourceMethod()
+        {
+            return "STRING";
+        }
     }
-    */
-    /*
-    public static void main(String[] args)
+    
+    public void testMethodCopy()
     {
-        _class source = _class.of( "public class A" );
-        _method _m = _method.of("public void doIt()", "System.out.println( \"Hey\");"); 
-        CopyMethod fcm = new CopyMethod( _m );
-        
-        _class _tailored = new _class( _signature.cloneOf(  source.getSignature() ) );
-        fcm.transfer( _tailored, null );
-        
-        
-        CopyPackage fp = new CopyPackage( "" );
-        fp.transfer(_tailored, null );
-        
-        source.packageName("ex.mypkg;");
-        fp.transfer(  _tailored, null );
-        
-        
-        System.out.println( _tailored );
+        _class _c = _classMacro.of(CopyMethod.class ).expand(  );
+        assertNotNull( _c.getMethod( "sourceMethod" ) );
     }
-    */
+    
+    public static class ParameterizeMethod
+    {
+        @$({"name", "pname"})
+        public static String aMethod( String name )
+        {
+            return "Hello "+ name;
+        }
+    }
+    
+    public void testMethodParameterize()
+    {
+        _class _c = _classMacro.of( ParameterizeMethod.class )
+            .expand( "pname", "varName" );
+        assertTrue( _c.getMethod( "aMethod" ).getSignature().author().contains( "varName") );
+        assertTrue( _c.getMethod( "aMethod" ).getBody().author().contains( "varName") );        
+    }
+    
+    public static class MethodSigAndBody
+    {
+        @sig( "public static final void itBurns()" )
+        @body("System.out.println( \" HI \" );" )    
+        void original()
+        {}
+    }
+    
+    public void testMethodSigAndBody()
+    {
+        _class _c = _classMacro.of( MethodSigAndBody.class )
+            .expand( );
+        assertTrue( _c.getMethod( "itBurns" ).getBody().author().contains( "HI" ) );
+    }
+    
+    public static class MethodSigOnly
+    {
+        @sig( "public static final void itBurns()" )
+        void original()
+        {}
+    }
+    
+    public void testMethodSigOnly()
+    {
+        _class _c = _classMacro.of( MethodSigOnly.class )
+            .expand( );
+        assertNotNull( _c.getMethod( "itBurns" ) );
+    }
+    
+    public static class MethodBodyOnly
+    {
+        @body("System.out.println( \" HI \" );" )    
+        void original()
+        {}
+    }
+    
+    public void testMethodBodyOnly()
+    {
+        _class _c = _classMacro.of( MethodBodyOnly.class )
+            .expand( );
+        assertTrue( _c.getMethod( "original" ).getBody().author().contains(" HI ") );
+    }
+    
+    @fields( "public String {+name+} = {+$quote(name)+};" )
+    public class MethodForm
+    {        
+        @form( {"sb.append( {+name+} );", "sb.append(System.lineSeparator());"} )
+        public String toString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.append( this.getClass().getName() );            
+            form:
+            sb.append( "Each of the fields will be printed here, this will be replaced" );            
+            /*}*/            
+            return sb.toString();
+        }
+    }
+    
+    public void testMethodForm()
+    {
+        _class _c = _classMacro.of( MethodForm.class )
+            .expand( "name", "fieldName" );
+        
+        System.out.println( _c );
+        assertTrue( _c.getMethod( "toString" ).getBody().author()
+            .contains( "sb.append( fieldName );" ) );
+        
+        // verify that I 
+        Java.call( _c.instance( ), "toString" );
+        
+        // now create a 
+        _c = _classMacro.of( MethodForm.class )
+            .expand( "name", new String[]{"theFirstField", "theSecondField"});
+        
+        //make sure we created (2) fields
+        assertTrue( _c.getField("theFirstField" ).getType().equals( "String" ) );
+        assertTrue( _c.getField("theSecondField" ).getType().equals( "String" ) );
+        
+        //make sure the toString method prints out "theFirstField" and "theSecondField"
+        // the defaults for both fields
+        String res = (String) Java.call( _c.instance(), "toString" );
+        assertTrue( res.contains( "theFirstField" ) );
+        assertTrue( res.contains( "theSecondField" ) );
+        
+    }
+    
 }
