@@ -1,13 +1,9 @@
 <img src="https://github.com/edefazio/varcode/blob/master/varcode_greenOnWhite.png?raw=true" width="60"/>
 varcode combines a **code generator** and **ad-hoc tools** to **compile, load, and run .java source code at runtime**.  
 
-## best of both worlds (statically typed code & dynamic runtime behavior) ##
-varcode extends what traditional "code generators" do by letting you **compile, load and use** generated .java code at runtime. 
+varcode works by **invoking the compiler on dynamic java code at runtime**.
 
-varcode works by **invoking the compiler on dynamic java code at runtime**. _(don't worry, we can compile 1000s of classes sub-second, and after compiling the code is regular bytecode.)_    
-
-## generate and run .java code at runtime ##
-1) generate a model, create instance, run methods, export code and classes: 
+# generate and run .java code at runtime #
 ```java
 //1 generate a model
 _class _model = _class.of( "package mymodel;", 
@@ -18,10 +14,10 @@ _class _model = _class.of( "package mymodel;",
 // 2) create instance        
 Object dynamicModel = _model.instance();        
 
-// 3) run method
+// 3) call a method on the dynamic instance
 String id1 = (String)Java.call( dynamicModel, "createId" ); 
 
-// 4) export (.java code and / or .class files)
+// 4) export .java & .class files:
 //    export "C:\MyApp\src\main\java\mymodel\Model.java"
 Export.dir( "C:\\MyApp\\src\\main\\java\\").toFile( _model );
 //    export "C:\MyApp\traget\classes\mymodel\Model.class"
@@ -42,7 +38,7 @@ public class Model
 }
 ```
 
-## read in, modify, and run existing code ##
+# metaprogramming : read in, modify, and run existing code #
 varcode makes **metaprogramming** easy. **load a  ```( _class, _enum, _interface, _annotationType )```** from an existing class, modify it, then compile, instantiate and invoke methods on it at runtime (no restarting required). 
 
 ```java
