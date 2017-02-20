@@ -38,8 +38,8 @@ public class Model
 }
 ```
 
-# metaprogramming : read in, modify, and run existing code #
-varcode makes **metaprogramming** easy. **load a  ```( _class, _enum, _interface, _annotationType )```** from an existing class, modify it, then compile, instantiate and invoke methods on it at runtime (no restarting required). 
+# metaprogramming : read in existing code, modify it & run it #
+varcode makes **metaprogramming** easy. **load a  ```( _class, _enum, _interface, _annotationType )```** from an existing class, modify it at the source level, then compile & use it at runtime (no restarting required). 
 
 ```java
 // 1. build the _class model from the .java source of the Class
@@ -47,7 +47,7 @@ _class _c = Java._classFrom( OriginalClass.class );
 
 // 2. modify the model
 _c.setName("Tailored");// change the class Name
-_c.field("private static final int ID = 100;");
+_c.field("private static final int ID = 100;"); // add field
 
 // get and modify the "toString" method
 _c.getMethod("toString").body( "return getClass().getSimpleName() + ID;")
