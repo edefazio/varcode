@@ -26,7 +26,7 @@ import varcode.ModelException;
 import varcode.author.Author;
 import varcode.context.Context;
 import varcode.context.VarContext;
-import varcode.java.macro._classMacro._classOriginator;
+import varcode.java.macro._macroClass._classOriginator;
 import varcode.java.model._class;
 import varcode.java.model._code;
 import varcode.java.model._constructors;
@@ -48,10 +48,10 @@ import varcode.markup.forml.ForML;
  * Annotations 
  * @author M. Eric DeFazio eric@varcode.io
  */
-public class Macro
+public class _macro
 {
     public interface _typeExpansion
-        extends _classMacro.expansion, _enumMacro.expansion
+        extends _macroClass.expansion, _macroEnum.expansion
     {
         public void expandTo( _class _c, Object...keyValuePairs );
         
@@ -63,8 +63,8 @@ public class Macro
     
     /**
      * A Way of Documenting and declaring the parameters/ variables
-     * to be used within a Macro (at the _class, _enum, interface, 
-     * _annotationType level)
+ to be used within a _macro (at the _class, _enum, interface, 
+ _annotationType level)
      */
     @Documented
     @Retention(RetentionPolicy.RUNTIME)
@@ -74,7 +74,7 @@ public class Macro
         String[] value();
     }
     
-    /** Macro Annotation to customize the package name
+    /** _macro Annotation to customize the package name
      * @packageName("io.typeframe.fields") //set the packageName statically
      * @packageName("io.typeframe.{+project+}") //set packageName using the "project" var
      */
@@ -87,7 +87,7 @@ public class Macro
     }
     
     /** 
-     * Macro Annotation describing the contents of a static Block 
+     * _macro Annotation describing the contents of a static Block 
      * @staticBlock({"System.out.println( \"Hi\" );}) //constant static block
      * @staticBlock({"{+init+}"}); //set static Block content by var "init"
      */
@@ -99,7 +99,7 @@ public class Macro
         String[] value();
     }
     
-    /** Macro Annotation describing one or more fields
+    /** _macro Annotation describing one or more fields
      * @fields( {"public int a;", "public String name=\"Eric\";"} )
      * <PRE>
      * public class C
@@ -142,8 +142,8 @@ public class Macro
         String[] value();
     }
  
-    /** Macro Annotation for adding annotations to an element
-     * i.e. 
+    /** _macro Annotation for adding annotations to an element
+ i.e. 
      * <PRE>
      * @annotation({"@Deprecated"})
      * public static AtomicBoolean isEmpty;
@@ -168,11 +168,11 @@ public class Macro
     }
     
     /**
-     * Macro Annotation to add / remove imports
+     * _macro Annotation to add / remove imports
      */
     @Documented
     @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.TYPE)
+    @Target({ElementType.TYPE, ElementType.ANNOTATION_TYPE})
     public @interface imports
     {
         /** Remove all imports containing these "patterns" */
@@ -183,9 +183,9 @@ public class Macro
     }
 
     /**
-     * Macro annotation to define the signature 
-     * Annotation applied to the signature of class, enum, interface
-     * definitions, methods, constructors, fields... contains the markup to be
+     * _macro annotation to define the signature 
+ Annotation applied to the signature of class, enum, interface
+ definitions, methods, constructors, fields... contains the markup to be
      * compiled to a {@link Template} for creating the signature:
      * <PRE>
      * @sig("public class A")
@@ -198,7 +198,7 @@ public class Macro
      * 
      * }
      * </PRE>
-     * //a method with as yet underfined arguments
+     * //a method with as yet undefined arguments
      * sig("public static final int getValue( {{+:{+type+} {+name+}+}} )")
      * public static final int getValue( int a, int b )
      * {
@@ -219,25 +219,23 @@ public class Macro
      */
     @Documented
     @Retention(RetentionPolicy.RUNTIME)    
-    //Method & constructor & field
+    @Target({ElementType.TYPE, ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD, ElementType.ANNOTATION_TYPE})
     public @interface sig
     {
-        /**
-         * the BindML markup used to create a Template for the signature
-         */
+        /** BindML markup used to create a Template for the signature*/
         String value();
     }
     
     @Documented
     @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.METHOD)
+    @Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
     public @interface form
     {
         String[] value();
     }
     
     /**
-     * Macro Annotation for replacing code
+     * _macro Annotation for replacing code 
      * within a body of a method between a named label:
      * <PRE>
      * @formAt(form="System.out.println( {+fieldName+} );\n",at="label" )
@@ -261,19 +259,19 @@ public class Macro
      */    
     @Documented
     @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.METHOD)
+    @Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
     public @interface formAt
     {
-        String form();
+        String[] value();
         String at();
     }
     
     /**
-     * Macro Annotation to Replace a key with a parameter
+     * _macro Annotation to Replace a key with a parameter
      * <PRE>
      * @$({"100", "nameCount"})
      * public final int names = 100;
-     * ----------
+     * ---------- produces the BindML:
      * public final int names = {+nameCount+};
      * 
      * ----with ( "nameCount", 5 )
@@ -285,13 +283,11 @@ public class Macro
     public @interface $
     {
         String[] value();
-        //boolean required() default true;
-        //String as() default "*";
     }
     
     
     /**
-     * Macro Annotation for replacing the entire body of a 
+     * _macro Annotation for replacing the entire body of a 
      * constructor or method with a form
      * <PRE>
      * @body("return {{+:{+FIELDNAME+}.storeState( {+name+} ) | +}};" ) 
@@ -313,8 +309,8 @@ public class Macro
     }
 
     /**
-     * Macro annotation for removing a component 
-     * when tailoring
+     * _macro annotation for removing a component 
+     * (field, method, nest, etc.) when tailoring
      */
     @Documented
     @Retention(RetentionPolicy.RUNTIME)
@@ -323,10 +319,10 @@ public class Macro
     }
     
     /**
-     * Macro for Copying a static block to a target class / enum
+     * _macro for Copying a static block to a target class / enum
      */
     public static class CopyStaticBlock
-        implements _typeExpansion //_classMacro.expansion, _enumMacro.expansion
+        implements _typeExpansion //_classMacro.expansion, _macroEnum.expansion
     {
         public _staticBlock _prototype;
             
@@ -361,10 +357,10 @@ public class Macro
     }
     
     /**
-     * Macro expansion for Tailoring a static block to a target class
+     * _macro expansion for Tailoring a static block to a target class
      */
     public static class ExpandStaticBlock
-        implements _typeExpansion //_classMacro.expansion, _enumMacro.expansion
+        implements _typeExpansion //_classMacro.expansion, _macroEnum.expansion
     {
         public Template template;
         
@@ -399,10 +395,10 @@ public class Macro
     }
     
     /**
-     * Macro for copying a constructor to a target class/enum
+     * _macro for copying a constructor to a target class/enum
      */
     public static class CopyConstructor
-        implements _classMacro.expansion
+        implements _macroClass.expansion
     {
         private final _constructors._constructor ctor;
         
@@ -429,11 +425,11 @@ public class Macro
     }
     
     /**
-     * Macro expansion for tailoring and transferring a constructor to a 
-     * _class or _enum
+     * _macro expansion for tailoring and transferring a constructor to a 
+ _class or _enum
      */
     public static class ExpandConstructor
-        implements _classMacro.expansion, _enumMacro.expansion
+        implements _macroClass.expansion, _macroEnum.expansion
     {
         public Form signature;
         public Template body;
@@ -522,11 +518,11 @@ public class Macro
     }
     
     /**
-     * Macro for copying a package to the target _class, _interface
-     * _enum, or _annotationType
+     * _macro for copying a package to the target _class, _interface
+ _enum, or _annotationType
      */
     public static class CopyPackage
-        implements _typeExpansion //_classMacro.expansion, _enumMacro.expansion
+        implements _typeExpansion //_classMacro.expansion, _macroEnum.expansion
     {       
         private String packageName;
         
@@ -570,10 +566,10 @@ public class Macro
     }
     
     /**
-     * Macro Expansion for creating a package
+     * _macro Expansion for creating a package
      */
     public static class ExpandPackage
-        implements _typeExpansion //_classMacro.expansion, _enumMacro.expansion
+        implements _typeExpansion //_classMacro.expansion, _macroEnum.expansion
     {
         public Form packageNameForm;
         
@@ -605,10 +601,10 @@ public class Macro
     }
     
     /**
-     * Macro expansion for copying imports
+     * _macro expansion for copying imports
      */
     public static class CopyImports
-        implements _typeExpansion //_classMacro.expansion, _enumMacro.expansion
+        implements _typeExpansion //_classMacro.expansion, _macroEnum.expansion
     {
         private _imports imports;
         
@@ -645,10 +641,10 @@ public class Macro
         }
     }
     
-    /** Macro expansion for imports
+    /** _macro expansion for imports
      */
     public static class ExpandImports
-        implements _typeExpansion //_classMacro.expansion, _enumMacro.expansion
+        implements _typeExpansion //_classMacro.expansion, _macroEnum.expansion
     {
         private final _imports imports;
         
@@ -767,7 +763,7 @@ public class Macro
     }  
     
     public static class CopyField
-        implements _typeExpansion //_classMacro.expansion, _enumMacro.expansion
+        implements _typeExpansion //_classMacro.expansion, _macroEnum.expansion
     {
         private final _fields._field _prototype;
         
@@ -803,7 +799,7 @@ public class Macro
     }
     
     public static class ExpandField
-        implements _typeExpansion //_classMacro.expansion, _enumMacro.expansion
+        implements _typeExpansion //_classMacro.expansion, _macroEnum.expansion
     {
         public Form fieldForm;
         
@@ -893,7 +889,7 @@ public class Macro
     }    
 
     public static class CopyMethod
-        implements _typeExpansion //_classMacro.expansion, _enumMacro.expansion        
+        implements _typeExpansion //_classMacro.expansion, _macroEnum.expansion        
     {
         public final _method _prototype;
         
@@ -939,7 +935,7 @@ public class Macro
     }
     
     public static class ExpandMethod
-        implements _typeExpansion //_classMacro.expansion, _enumMacro.expansion
+        implements _typeExpansion //_classMacro.expansion, _macroEnum.expansion
     {
         public final Form signatureForm;
         public final Template bodyTemplate;

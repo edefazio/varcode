@@ -16,6 +16,7 @@
 package varcode.java.macro;
 
 import varcode.context.Context;
+import varcode.java.model._class;
 import varcode.java.model._enum;
 
 /**
@@ -24,21 +25,30 @@ import varcode.java.model._enum;
  *   
  * @author Eric
  */
-public class _enumMacro
+public class _macroEnum
 {
     public interface expansion
     {
         public void expandTo( _enum _tailored, Object...keyValuePairs );
     }
 
-    public static _enumMacro of( _enum _e )
+    public static _macroEnum of( _enum _e )
     {
-        return new _enumMacro( _e );
+        return new _macroEnum( _e );
     }
     
     public _enum _prototype;
     
-    public _enumMacro( _enum _prototype )
+    
+    /** method for originating the "tailored" _class */
+    public _enumOriginator _originator;
+    
+    public interface _enumOriginator
+    {
+        public _enum initClass( Context context );
+    }
+    
+    public _macroEnum( _enum _prototype )
     {
         this._prototype = _prototype;
     }

@@ -19,9 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 import junit.framework.TestCase;
 import varcode.java.Java;
-import varcode.java.macro.Macro.ExpandField;
-import varcode.java.macro.Macro._typeExpansion;
-import varcode.java.macro.Macro.$;
+import varcode.java.macro._macro.ExpandField;
+import varcode.java.macro._macro._typeExpansion;
+import varcode.java.macro._macro.$;
 
 import varcode.java.model._class;
 import varcode.java.model._fields;
@@ -31,13 +31,13 @@ import varcode.java.model._fields._field;
  *
  * @author Eric
  */
-public class MacroFieldsTest
+public class _macroFieldsTest
     extends TestCase
 {
     public void testCopyMacroField()
     {
         _typeExpansion te = 
-            _classMacro.processField( _field.of( "public int a;" ) );
+            _macroClass.processField( _field.of( "public int a;" ) );
         _class _c = _class.of("A");
         te.expandTo( _c );
         
@@ -48,8 +48,8 @@ public class MacroFieldsTest
     public void testTailorField()
     {
         _field _f = _field.of( "@$({\"a\",\"name\"})", "public int a;" );
-        Macro.ExpandField te = 
-            (ExpandField)_classMacro.processField( _f );
+        _macro.ExpandField te = 
+            (ExpandField)_macroClass.processField( _f );
         _class _c = _class.of("A");
         te.expandTo( _c, "name", "myFieldName" );
         
@@ -61,8 +61,8 @@ public class MacroFieldsTest
     public void testTailorFields()
     {
         _field _f = _field.of( "@$({\"int\", \"type\", \"a\",\"name\"})", "public int a;" );
-        Macro.ExpandField te = 
-            (ExpandField)_classMacro.processField( _f );
+        _macro.ExpandField te = 
+            (ExpandField)_macroClass.processField( _f );
         _class _c = _class.of("A");
         te.expandTo( _c, "type", "String", "name", "label" );
         
@@ -91,7 +91,7 @@ public class MacroFieldsTest
         
         List<_typeExpansion>te = new ArrayList<_typeExpansion>();
         //List<_typeExpansion>te = 
-        _classMacro.processFields( te, _c.getFields() );
+        _macroClass.processFields( te, _c.getFields() );
         
         _class _target = _class.of("Target");
         for( int i = 0; i < te.size(); i++ )

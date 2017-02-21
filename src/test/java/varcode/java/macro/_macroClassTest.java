@@ -18,21 +18,21 @@ package varcode.java.macro;
 import junit.framework.TestCase;
 import varcode.java.Java;
 import varcode.java.model._class;
-import varcode.java.macro.Macro.*;
+import varcode.java.macro._macro.*;
 
 /**
  *
  * @author Eric
  */
 @imports( remove={"varcode.java", "junit"}, add={"java.util.Map", "java.util.UUID", "{+addImports+}"} )
-public class _classMacroTest
+public class _macroClassTest
     extends TestCase
 {   
     //the @imports() annotation allows the annotations to be add or removed
     // explicitly or by patterns
     public void testExpandImports()
-    {   //load this class as a Macro, 
-        _class _c = _classMacro.of( _classMacroTest.class ).expand( ); 
+    {   //load this class as a _macro, 
+        _class _c = _macroClass.of(_macroClassTest.class ).expand( ); 
         
         assertTrue( _c.getImports().contains( "java.util.Map" ) );
         assertTrue( _c.getImports().contains( "java.util.UUID" ) );
@@ -46,23 +46,39 @@ public class _classMacroTest
         assertTrue( !authored.contains( "junit" ) );
         
         //add imports 
-        _c = _classMacro.of( _classMacroTest.class ).expand( "addImports", "java.util.HashSet" ); 
+        _c = _macroClass.of(_macroClassTest.class ).expand( "addImports", "java.util.HashSet" ); 
         assertTrue( _c.getImports().contains( "java.util.HashSet" ) );
         
         //add mutliple imports by a single parameter
-        _c = _classMacro.of( _classMacroTest.class ).expand( "addImports", 
+        _c = _macroClass.of(_macroClassTest.class ).expand( "addImports", 
             new Object[] {"java.util.Calendar", "java.util.Date"} ); 
         
         assertTrue( _c.getImports().contains( "java.util.Calendar" ) );
         assertTrue( _c.getImports().contains( "java.util.Date" ) );        
     }
         
+    //TODO parameterize the class
+    @sig("public class {+Name+}")
+    public static class ClassName
+    {
+        
+    }
+    
+    public void testNameLower()
+    {
+        _class _c = 
+            _macroClass.of( ClassName.class ).expand( "name", "eric" );
+        
+        assertEquals( "Eric", _c.getName( ) );
+    }
+    
+    
     @packageName( "ex.mypackage" )
     public static class EPackageStatic { }
     
     public void testPackageStatic()
     {
-        _class _c = _classMacro.of( EPackageStatic.class ).expand(  );
+        _class _c = _macroClass.of( EPackageStatic.class ).expand(  );
         assertEquals( "ex.mypackage", _c.getPackageName() );
     }
     
@@ -71,7 +87,7 @@ public class _classMacroTest
     
     public void testPackageExpand()
     {
-        _class _c = _classMacro.of(ExpandPackage.class ).expand("subpkg", "mysub" );
+        _class _c = _macroClass.of(ExpandPackage.class ).expand("subpkg", "mysub" );
         assertEquals( "ex.mypackage.mysub", _c.getPackageName() );
     }
      
@@ -82,7 +98,7 @@ public class _classMacroTest
     
     public void testExpandStaticBlock()
     {
-        _class _c = _classMacro.of( ExpandStaticBlock.class ).expand();
+        _class _c = _macroClass.of( ExpandStaticBlock.class ).expand();
         
         assertTrue( _c.getStaticBlock().author().contains( "out.println" ) );
     }
@@ -97,7 +113,7 @@ public class _classMacroTest
     
     public void testCopyStaticBlock()
     {
-        _class _c = _classMacro.of(  CopyStaticBlock.class ).expand( );
+        _class _c = _macroClass.of(  CopyStaticBlock.class ).expand( );
         assertTrue( _c.getStaticBlock().author().contains( "In static Block" ) );
     }
     
@@ -106,7 +122,7 @@ public class _classMacroTest
     
     public void testClassSig()
     {
-        _class _c = _classMacro.of( ClassSig.class ).expand( "Name", "MyClass" );
+        _class _c = _macroClass.of( ClassSig.class ).expand( "Name", "MyClass" );
         assertEquals( "MyClass", _c.getName() ); 
     }
     
@@ -115,13 +131,13 @@ public class _classMacroTest
     
     public void testClassFields()
     {
-        _class _c = _classMacro.of( ClassFields.class )
+        _class _c = _macroClass.of( ClassFields.class )
             .expand( "type", int.class, "name", "blah" );
         System.out.println( _c );
         assertEquals( "int", _c.getField("blah").getType() );
         
         //create multiple fields
-        _c = _classMacro.of( ClassFields.class )
+        _c = _macroClass.of( ClassFields.class )
             .expand( "type", new Class[]{int.class, float.class}, 
                      "name", new String[]{"x", "y"} );
         
@@ -135,7 +151,7 @@ public class _classMacroTest
     
     public void testClassFieldM()
     {
-        _class _c = _classMacro.of( ClassFieldsMultiple.class )
+        _class _c = _macroClass.of( ClassFieldsMultiple.class )
             .expand( "name", "TheName" );
         
         assertEquals( "int",_c.getField( "TheNameDim" ).getType() );
@@ -151,14 +167,14 @@ public class _classMacroTest
     public void testSimple()
     {
         _class _q = 
-            _classMacro.of(AField.class ).expand( "name", "theName" );
+            _macroClass.of(AField.class ).expand( "name", "theName" );
         assertEquals( "AField", _q.getName() );
         assertEquals( "int", _q.getField( "theName" ).getType() );
     }
     
     public void testAField()
     {
-        _classMacro _cm = _classMacro.of(Java._classFrom(AField.class ) );
+        _macroClass _cm = _macroClass.of(Java._classFrom(AField.class ) );
         _class _c = _cm.expand( "name", "y" );
         assertEquals( "int", _c.getField("y").getType() );
         
@@ -179,7 +195,7 @@ public class _classMacroTest
     
     public void testMethodCopy()
     {
-        _class _c = _classMacro.of(CopyMethod.class ).expand(  );
+        _class _c = _macroClass.of(CopyMethod.class ).expand(  );
         assertNotNull( _c.getMethod( "sourceMethod" ) );
     }
     
@@ -194,7 +210,7 @@ public class _classMacroTest
     
     public void testMethodParameterize()
     {
-        _class _c = _classMacro.of( ParameterizeMethod.class )
+        _class _c = _macroClass.of( ParameterizeMethod.class )
             .expand( "pname", "varName" );
         assertTrue( _c.getMethod( "aMethod" ).getSignature().author().contains( "varName") );
         assertTrue( _c.getMethod( "aMethod" ).getBody().author().contains( "varName") );        
@@ -210,7 +226,7 @@ public class _classMacroTest
     
     public void testMethodSigAndBody()
     {
-        _class _c = _classMacro.of( MethodSigAndBody.class )
+        _class _c = _macroClass.of( MethodSigAndBody.class )
             .expand( );
         assertTrue( _c.getMethod( "itBurns" ).getBody().author().contains( "HI" ) );
     }
@@ -224,7 +240,7 @@ public class _classMacroTest
     
     public void testMethodSigOnly()
     {
-        _class _c = _classMacro.of( MethodSigOnly.class )
+        _class _c = _macroClass.of( MethodSigOnly.class )
             .expand( );
         assertNotNull( _c.getMethod( "itBurns" ) );
     }
@@ -238,7 +254,7 @@ public class _classMacroTest
     
     public void testMethodBodyOnly()
     {
-        _class _c = _classMacro.of( MethodBodyOnly.class )
+        _class _c = _macroClass.of( MethodBodyOnly.class )
             .expand( );
         assertTrue( _c.getMethod( "original" ).getBody().author().contains(" HI ") );
     }
@@ -260,7 +276,7 @@ public class _classMacroTest
     
     public void testMethodForm()
     {
-        _class _c = _classMacro.of( MethodForm.class )
+        _class _c = _macroClass.of( MethodForm.class )
             .expand( "name", "fieldName" );
         
         System.out.println( _c );
@@ -271,7 +287,7 @@ public class _classMacroTest
         Java.call( _c.instance( ), "toString" );
         
         // now create a 
-        _c = _classMacro.of( MethodForm.class )
+        _c = _macroClass.of( MethodForm.class )
             .expand( "name", new String[]{"theFirstField", "theSecondField"});
         
         //make sure we created (2) fields

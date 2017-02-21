@@ -49,8 +49,7 @@ public class _ann
     public _attributes attributes = new _attributes();
     
     public _ann()
-    {
-        
+    {        
     }
     
     public _ann( String name )
@@ -76,6 +75,34 @@ public class _ann
         return name;
     }
     
+    public String getLoneAttributeString()
+    {
+        if( this.attributes.values.size() == 0 )
+        {
+            return null;
+        }
+        if( this.attributes.values.size() == 1 )
+        {
+            return _attributes.parseStringArray( this.attributes.values.get( 0 ) )[ 0 ];
+        }
+        throw new ModelException(
+            "More than one attribute in "+ this.author() );
+    }
+    
+    //ASSUMES ONLY
+    public String[] getLoneAttributeStringArray()
+    {
+        if( this.attributes.values.size() == 0 )
+        {
+            return null;
+        }
+        if( this.attributes.values.size() == 1 )
+        {
+            return _attributes.parseStringArray( this.attributes.values.get( 0 ) );
+        }
+        throw new ModelException(
+            "More than one attribute in "+ this.author() );
+    }
     public _attributes getAttributes()
     {
         return this.attributes;

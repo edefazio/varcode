@@ -23,21 +23,21 @@ import varcode.context.VarContext;
 import varcode.java.load._JavaLoad;
 import varcode.java.model._class;
 import varcode.java.model._fields._field;
-import varcode.java.macro.Macro.sig;
-import varcode.java.macro.Macro.CopyClassSignature;
-import varcode.java.macro.Macro.CopyField;
-import varcode.java.macro.Macro.CopyMethod;
-import varcode.java.macro.Macro.CopyPackage;
-import varcode.java.macro.Macro.CopyStaticBlock;
-import varcode.java.macro.Macro.ExpandClassSignature;
-import varcode.java.macro.Macro.ExpandField;
-import varcode.java.macro.Macro.ExpandMethod;
-import varcode.java.macro.Macro.ExpandPackage;
-import varcode.java.macro.Macro.ExpandStaticBlock;
-import varcode.java.macro.Macro._typeExpansion;
-import varcode.java.macro.Macro.body;
-import varcode.java.macro.Macro.form;
-import varcode.java.macro.Macro.formAt;
+import varcode.java.macro._macro.sig;
+import varcode.java.macro._macro.CopyClassSignature;
+import varcode.java.macro._macro.CopyField;
+import varcode.java.macro._macro.CopyMethod;
+import varcode.java.macro._macro.CopyPackage;
+import varcode.java.macro._macro.CopyStaticBlock;
+import varcode.java.macro._macro.ExpandClassSignature;
+import varcode.java.macro._macro.ExpandField;
+import varcode.java.macro._macro.ExpandMethod;
+import varcode.java.macro._macro.ExpandPackage;
+import varcode.java.macro._macro.ExpandStaticBlock;
+import varcode.java.macro._macro._typeExpansion;
+import varcode.java.macro._macro.body;
+import varcode.java.macro._macro.form;
+import varcode.java.macro._macro.formAt;
 import varcode.java.model._Java;
 import varcode.java.model._ann;
 import varcode.java.model._ann._attributes;
@@ -48,22 +48,25 @@ import varcode.java.model._methods;
 import varcode.java.model._methods._method;
 
 /**
+ * 
+ * Either 
+ * 
  * Builds a new {@link _class} by a single {@code _classOrignator} and subsequent
  * {@code expansion}s that 
  * 
  * @see JavaSource
  * @author M. Eric DeFazio eric@varcode.io
  */
-public class _classMacro
+public class _macroClass
 {    
-    public static _classMacro of( Class classPrototype )
+    public static _macroClass of( Class classPrototype )
     {
-        return new _classMacro( _JavaLoad._classFrom( classPrototype ) );
+        return new _macroClass( _JavaLoad._classFrom( classPrototype ) );
     }
     
-    public static _classMacro of( _class prototype )
+    public static _macroClass of( _class prototype )
     {
-        return new _classMacro( prototype );
+        return new _macroClass( prototype );
     }
     
     /** the prototype _class */
@@ -133,12 +136,26 @@ public class _classMacro
         new ArrayList<_typeExpansion>();
         
     //nests    
-    public _classMacro( _class _c )
+    public _macroClass( _class _c )
     {
-        String sig = getAnnotationStringProperty( _c, sig.class );
-        if( sig != null )
+        //_attributes.parseStringArray( 
+        //    _c.getAnnotation( sig.class ).getAttributes().values.get( 0 ) );
+        
+        //String sig = getAnnotationStringProperty( _c, sig.class );
+        
+        //String sig = "";
+        if( _c.getAnnotation( _macro.sig.class ) != null )
         {
-            this._originator = new ExpandClassSignature( sig );
+            String sig = _c.getAnnotation( sig.class ).getLoneAttributeString();
+            if( sig != null) 
+            {
+                this._originator = new ExpandClassSignature( sig );
+            }
+            else
+            {
+                this._originator = 
+                    new CopyClassSignature( _c.getSignature().author() );
+            }            
         }
         else
         {
@@ -147,11 +164,14 @@ public class _classMacro
         }
         
         //package
-        if( _c.getAnnotations().contains( Macro.packageName.class ) )
+        if( _c.getAnnotations().contains( _macro.packageName.class ) )
         {
-             this._transfers.add( new ExpandPackage( 
-                    getAnnotationStringProperty( 
-                        _c, Macro.packageName.class ) ) ); 
+            this._transfers.add( 
+                new ExpandPackage( 
+                    _c.getAnnotations().getOne( _macro.packageName.class )
+                        .getLoneAttributeString() ) );
+                    //getAnnotationStringProperty( 
+                    //    _c, _macro.packageName.class ) ) ); 
         }
         else
         {
@@ -159,10 +179,10 @@ public class _classMacro
         }
         
         //free fields
-        if( _c.getAnnotations().contains( Macro.fields.class ) )
+        if( _c.getAnnotations().contains( _macro.fields.class ) )
         {           
             String[] arr = 
-                getAnnotationStringArrayProperty( _c, Macro.fields.class );
+                getAnnotationStringArrayProperty( _c, _macro.fields.class );
             for(int i=0; i< arr.length; i++ )
             {
                 this._transfers.add( new ExpandField( arr[ i ] ) ); 
@@ -170,12 +190,12 @@ public class _classMacro
         }
          
         //imports
-        _ann imports = _c.getAnnotations().getOne( Macro.imports.class );
+        _ann imports = _c.getAnnotations().getOne( _macro.imports.class );
         processImports( _c.getImports(), imports, this._transfers );
         //System.out.println( "IMPORTS <<<<< "+ imports );
         
         //Static Block
-        _ann staticB = _c.getAnnotations().getOne( Macro.staticBlock.class );
+        _ann staticB = _c.getAnnotations().getOne( _macro.staticBlock.class );
         if( staticB != null )
         {
             String[] s = _attributes.parseStringArray( staticB.attributes.values.get( 0 ) );
@@ -220,8 +240,8 @@ public class _classMacro
     public static _typeExpansion processMethodForms( _method _m )
     {
         _anns _as = _m.getAnnotations();
-        _ann form = _as.getOne( Macro.form.class );
-        _ann formAt = _as.getOne( Macro.formAt.class );
+        _ann form = _as.getOne( _macro.form.class );
+        _ann formAt = _as.getOne( _macro.formAt.class );
         
         if( form != null )
         {
@@ -277,11 +297,11 @@ public class _classMacro
     public static _typeExpansion processMethod( _method _m )
     {
         _anns _as = _m.getAnnotations();
-        if( !_as.contains( Macro.remove.class ) )
+        if( !_as.contains( _macro.remove.class ) )
         {   //we are either copying or tailoring the field                           
-            _ann parameter = _as.getOne( Macro.$.class ); //TODO PARAMETER
-            _ann sig = _as.getOne( Macro.sig.class );
-            _ann body = _as.getOne( Macro.body.class );
+            _ann parameter = _as.getOne( _macro.$.class ); //TODO PARAMETER
+            _ann sig = _as.getOne( _macro.sig.class );
+            _ann body = _as.getOne( _macro.body.class );
             
             _method _p = new _method( _m );
             //first param
@@ -293,7 +313,7 @@ public class _classMacro
                 String[] valuesArray = _ann._attributes.parseStringArray( values );
                 //System.out.println( "values[0]" + valuesArray[0] );                
                 //System.out.println( "values[1]" + valuesArray[1] );                
-                _p.getAnnotations().remove( Macro.$.class );
+                _p.getAnnotations().remove( _macro.$.class );
                 return ExpandMethod.parameterize( _p, valuesArray );   
             }
             else if( sig != null )
@@ -353,12 +373,12 @@ public class _classMacro
                 removeArr = _attributes.parseStringArray( remove );                
             }
             _transfers.add( 
-                Macro.ExpandImports.of( _i, removeArr, addsArr ) );
+                _macro.ExpandImports.of( _i, removeArr, addsArr ) );
         }
         else
         {
             //System.out.println( "COPY IMPORTS ");
-            _transfers.add( Macro.CopyImports.of( _i ) );
+            _transfers.add( _macro.CopyImports.of( _i ) );
         }
     }
     
@@ -387,10 +407,10 @@ public class _classMacro
     public static _typeExpansion processField( _field _f )
     {
         _anns _as = _f.getAnnotations();
-        if( !_as.contains( Macro.remove.class ) )
+        if( !_as.contains( _macro.remove.class ) )
         {   //we are either copying or tailoring the field                           
-            _ann parameter = _as.getOne( Macro.$.class );
-            _ann sig = _as.getOne( Macro.sig.class );
+            _ann parameter = _as.getOne( _macro.$.class );
+            _ann sig = _as.getOne( _macro.sig.class );
             
             if( parameter != null )
             {   //you CANNOT have BOTH sig Macros AND parameterization

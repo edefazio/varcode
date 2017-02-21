@@ -45,7 +45,7 @@ public class _annTest
         
         //now read the literal string array from the annotation model
         _fields._field _f = _fields._field.of( "@$({\"a\", \"name\"})", "public int a;" );        
-        _ann _as = _f.getAnnotations().getOne( varcode.java.macro.Macro.$.class );
+        _ann _as = _f.getAnnotations().getOne( varcode.java.macro._macro.$.class );
         
         String[] keyValues = _ann._attributes.parseStringArray( 
             _as.getAttributes().values.get( 0 ) );

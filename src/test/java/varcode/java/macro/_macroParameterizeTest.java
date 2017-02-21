@@ -17,8 +17,8 @@ package varcode.java.macro;
 
 import junit.framework.TestCase;
 import varcode.context.Context;
-import varcode.java.macro.Macro.$;
-import varcode.java.macro.Macro.ExpandField;
+import varcode.java.macro._macro.$;
+import varcode.java.macro._macro.ExpandField;
 import varcode.java.model._class;
 import varcode.java.model._enum;
 import varcode.java.model._fields._field;
@@ -26,7 +26,7 @@ import varcode.java.model._fields._field;
  *
  * @author Eric
  */
-public class ParameterizeTest
+public class _macroParameterizeTest
     extends TestCase
 {
      

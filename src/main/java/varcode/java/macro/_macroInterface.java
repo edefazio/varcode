@@ -22,21 +22,21 @@ import varcode.java.model._interface;
  *
  * @author Eric
  */
-public class _interfaceMacro
+public class _macroInterface
 {
     public interface expansion
     {
         public void expandTo( _interface _tailored, Object...keyValuePairs );
     }
     
-    public static _interfaceMacro of( _interface _i )
+    public static _macroInterface of( _interface _i )
     {
-        return new _interfaceMacro( _i );
+        return new _macroInterface( _i );
     }
     
     public _interface _prototype;
     
-    public _interfaceMacro( _interface _prototype )
+    public _macroInterface( _interface _prototype )
     {
         this._prototype = _prototype;
     }

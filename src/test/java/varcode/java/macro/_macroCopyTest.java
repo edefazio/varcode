@@ -15,7 +15,7 @@
  */
 package varcode.java.macro;
 
-import varcode.java.macro.Macro;
+import varcode.java.macro._macro;
 import java.util.AbstractMap;
 import java.util.Map;
 import java.util.UUID;
@@ -23,7 +23,7 @@ import junit.framework.TestCase;
 import varcode.context.Context;
 import varcode.context.VarBindException;
 import varcode.context.VarBindException.NullVar;
-import varcode.java.macro.Macro.ExpandConstructor;
+import varcode.java.macro._macro.ExpandConstructor;
 import varcode.java.model._class;
 import varcode.java.model._constructors._constructor;
 import varcode.java.model._fields;
@@ -35,20 +35,20 @@ import varcode.java.model._staticBlock;
  *
  * @author Eric
  */
-public class MacroCopyTest
+public class _macroCopyTest
     extends TestCase
 {
  
     public void testTailorClassSignature()
     {
-        Macro.ExpandClassSignature tcs = 
-            new Macro.ExpandClassSignature( "public class A" );
+        _macro.ExpandClassSignature tcs = 
+            new _macro.ExpandClassSignature( "public class A" );
         
         _class _c = tcs.initClass( Context.EMPTY );
         
         assertEquals( "A", _c.getName( ) );
         
-        tcs = new Macro.ExpandClassSignature( 
+        tcs = new _macro.ExpandClassSignature( 
             "public class {+className*+} {{+?extends:\n" +
             "    extends {+extends+}+}}" );
         
@@ -71,7 +71,7 @@ public class MacroCopyTest
     {
         _class _c = _class.of("A");
         
-        Macro.ExpandPackage tp = new Macro.ExpandPackage( "package my.pkg;" );
+        _macro.ExpandPackage tp = new _macro.ExpandPackage( "package my.pkg;" );
         
         tp.expandTo( _c, Context.EMPTY );
         
@@ -83,15 +83,15 @@ public class MacroCopyTest
         _class _c = _class.of( "A" );
         
         //transfer nothing (add none remove none)
-        Macro.ExpandImports tti = 
-            new Macro.ExpandImports( new _imports(), null, null );
+        _macro.ExpandImports tti = 
+            new _macro.ExpandImports( new _imports(), null, null );
         tti.expandTo( _c, Context.EMPTY );
         
         assertEquals( 0, _c.getImports().count() );
         
         //transferImports existing
         tti = 
-            new Macro.ExpandImports( _imports.of( UUID.class ), null, null );
+            new _macro.ExpandImports( _imports.of( UUID.class ), null, null );
         tti.expandTo( _c, Context.EMPTY );
         
         assertEquals( 1, _c.getImports().count() );
@@ -99,7 +99,7 @@ public class MacroCopyTest
         
         //transferImports Add
         tti = 
-            new Macro.ExpandImports( new _imports(), null, new String[]{"java.util.Map"} );
+            new _macro.ExpandImports( new _imports(), null, new String[]{"java.util.Map"} );
         tti.expandTo( _c, Context.EMPTY );
         
         //verify that we transferred yet ANOTHER
@@ -114,8 +114,8 @@ public class MacroCopyTest
         _class _c = _class.of("A");
         
         //remove the UUID import, then ADD the Map import
-        Macro.ExpandImports tti = 
-            new Macro.ExpandImports( _imports.of( UUID.class ), 
+        _macro.ExpandImports tti = 
+            new _macro.ExpandImports( _imports.of( UUID.class ), 
                 new String[]{"java.util"}, 
                 new String[]{"java.util.Map"} );
         tti.expandTo( _c, Context.EMPTY );
@@ -125,7 +125,7 @@ public class MacroCopyTest
         
         _c = _class.of( "A" );
         
-        tti = new Macro.ExpandImports( _imports.of( UUID.class ), 
+        tti = new _macro.ExpandImports( _imports.of( UUID.class ), 
             new String[]{"java.util"}, 
             new String[]{"{+baseClass*+}"} );
         
@@ -148,15 +148,15 @@ public class MacroCopyTest
     public void testTailor()
     {
         _class _c = _class.of("A");
-        Macro.ExpandField tf = 
-            Macro.ExpandField.of("public int a;");
+        _macro.ExpandField tf = 
+            _macro.ExpandField.of("public int a;");
         
         tf.expandTo( _c, Context.EMPTY );
         
         assertNotNull( _c.getField( "a" ) );
         
         _c = _class.of("A");
-        tf = Macro.ExpandField.of("public {+type+} {+name+};");
+        tf = _macro.ExpandField.of("public {+type+} {+name+};");
         
         //this should create 0 new fields
         tf.expandTo( _c, Context.EMPTY );
@@ -182,7 +182,7 @@ public class MacroCopyTest
         _constructor _ctor = _constructor.of( "public MyClass( String name)",
                 "this.name = name;" );
         //signature
-        Macro.ExpandConstructor tc = Macro.ExpandConstructor.ofSignature(
+        _macro.ExpandConstructor tc = _macro.ExpandConstructor.ofSignature(
             _ctor, 
             "public StaticClass( String myName)" );
         _class _c = _class.of("A");
@@ -213,8 +213,8 @@ public class MacroCopyTest
      */
     public void testCopy()
     {
-        Macro.CopyClassSignature ccs = 
-            new Macro.CopyClassSignature( 
+        _macro.CopyClassSignature ccs = 
+            new _macro.CopyClassSignature( 
                 "public class MyClass extends BaseClass implements MyInterface" );
         _class _c = ccs.initClass( Context.EMPTY );
         
@@ -222,7 +222,7 @@ public class MacroCopyTest
         assertEquals( "BaseClass", _c.getExtends().getAt( 0 ) );
         assertEquals( "MyInterface", _c.getImplements().getAt( 0 ) );
         
-        Macro.CopyField cf = new Macro.CopyField(
+        _macro.CopyField cf = new _macro.CopyField(
             _fields._field.of("public static final int a = 100;" ) );
         cf.expandTo( _c, Context.EMPTY );
         _fields._field _f = _c.getField( "a" );
@@ -230,25 +230,25 @@ public class MacroCopyTest
         assertEquals( "int", _f.getType() );
         assertEquals( "100", _f.getInit().getCode() );
         
-        Macro.CopyImports ci = 
-            new Macro.CopyImports(_imports.of( UUID.class ));
+        _macro.CopyImports ci = 
+            new _macro.CopyImports(_imports.of( UUID.class ));
         
         ci.expandTo( _c, Context.EMPTY );
         assertTrue( _c.getImports().contains( UUID.class ) );
         
         
-        Macro.CopyMethod cm = new Macro.CopyMethod(
+        _macro.CopyMethod cm = new _macro.CopyMethod(
             _methods._method.of("public static void main(String[] args)",
                 "System.out.println( \"Hi\");" ) );        
         cm.expandTo( _c, Context.EMPTY );
         _methods._method _m = _c.getMethod( "main" );        
         assertTrue( _m.getModifiers().containsAll( "public", "static") );
         
-        Macro.CopyPackage cp = new Macro.CopyPackage("ex.mypackage");
+        _macro.CopyPackage cp = new _macro.CopyPackage("ex.mypackage");
         cp.expandTo( _c, Context.EMPTY );        
         assertEquals( "ex.mypackage", _c.getPackageName() );
         
-        Macro.CopyStaticBlock csb = new Macro.CopyStaticBlock(
+        _macro.CopyStaticBlock csb = new _macro.CopyStaticBlock(
             _staticBlock.of( "System.out.println( \"Hi from static block\");" ) );
         
         csb.expandTo( _c, Context.EMPTY );
