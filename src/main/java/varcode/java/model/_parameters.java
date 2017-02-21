@@ -26,7 +26,6 @@ import varcode.context.Context;
 import varcode.context.Directive;
 import varcode.markup.Template;
 import varcode.java.naming.RefRenamer;
-import varcode.java.model._annotations._annotation;
 import varcode.java.model._Java.Authored;
 import varcode.java.model._Java.Countable;
 import varcode.markup.bindml.BindML;

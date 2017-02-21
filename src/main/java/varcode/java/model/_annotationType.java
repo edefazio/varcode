@@ -24,8 +24,6 @@ import varcode.context.Directive;
 import varcode.context.Context;
 import varcode.context.VarContext;
 import varcode.java.naming.RefRenamer;
-import varcode.java.model._JavaFileModel;
-import varcode.java.model._annotations._annotation;
 import varcode.java.model._Java.Authored;
 import varcode.markup.Template;
 import varcode.markup.bindml.BindML;
@@ -942,7 +940,7 @@ public class _annotationType
     public static class _annotationProperty
         implements _Java, Authored
     {
-        private _annotations annotations = new _annotations(true);
+        private _anns annotations = new _anns(true);
         private String type;
         private String name;
         private String defaultValue;
@@ -958,7 +956,7 @@ public class _annotationType
         public _annotationProperty( _annotationProperty prototype )
         {
             javadoc = _javadoc.cloneOf( prototype.javadoc );
-            annotations = _annotations.cloneOf( prototype.annotations ); 
+            annotations = _anns.cloneOf( prototype.annotations ); 
             type = prototype.type;
             name = prototype.name;
             defaultValue = prototype.defaultValue;
@@ -984,8 +982,8 @@ public class _annotationType
             this.defaultValue = defaultValue;
         }
         
-        public _annotationProperty annotate( Object...annots )
-        {
+        public _annotationProperty annotate( String...annots )
+        {            
             this.annotations.add( annots );
             return this;
         }
@@ -1056,7 +1054,7 @@ public class _annotationType
             return this.defaultValue;
         }
         
-        public _annotations getAnnotations()
+        public _anns getAnnotations()
         {
             return this.annotations;
         }

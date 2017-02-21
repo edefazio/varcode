@@ -23,6 +23,7 @@ import junit.framework.TestCase;
 import varcode.context.Context;
 import varcode.context.VarBindException;
 import varcode.context.VarBindException.NullVar;
+import varcode.java.macro.Macro.ExpandConstructor;
 import varcode.java.model._class;
 import varcode.java.model._constructors._constructor;
 import varcode.java.model._fields;
@@ -188,12 +189,12 @@ public class MacroCopyTest
         tc.expandTo( _c, Context.EMPTY );
         
         assertEquals("StaticClass", _c.getConstructor( 0 ).getName() );
-        assertEquals( "MyName", _c.getConstructor( 0 ).getParameters().getAt( 0 ).getName() );
+        assertEquals( "myName", _c.getConstructor( 0 ).getParameters().getAt( 0 ).getName() );
         
         
         _c = _class.of("A");
         //body
-        tc = Macro.ExpandConstructor.ofBody(
+        tc = ExpandConstructor.ofBody(
             _ctor, 
             "this.theName = name;\n" +
             "System.out.println( theName );" );

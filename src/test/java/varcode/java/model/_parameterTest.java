@@ -6,7 +6,6 @@
 package varcode.java.model;
 
 import junit.framework.TestCase;
-import varcode.java.model._annotations._annotation;
 import varcode.java.model._parameters._parameter;
 
 /**

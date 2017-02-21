@@ -1,6 +1,6 @@
-package varcode.java.macro.auto;
+package varcode.java.macro;
 
-import varcode.java.macro.auto.AutoGetOrCreateSLF4JLogger;
+import varcode.java.macro._autoSLF4JLogger;
 import java.util.List;
 import varcode.java.model._Java._model;
 import varcode.translate.JavaTranslate;
@@ -13,7 +13,7 @@ import varcode.java.model._parameters;
  * 
  * @author M. Eric DeFazio eric@varcode.io
  */
-public class AutoLogMethodParams 
+public class _autoLogMethodParams 
 {
     public static _model forMethod( _model _c, String methodName )
     {
@@ -41,7 +41,7 @@ public class AutoLogMethodParams
         }
         
         //get (or create) the LOG that will print out the method input
-        _field _log = AutoGetOrCreateSLF4JLogger.getOrCreate( _c );
+        _field _log = _autoSLF4JLogger.getOrCreate( _c );
         
         //lets reuse varcodes Java doc Translate (to print parameter values
         //when they are things like arrays)

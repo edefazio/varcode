@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package varcode.java.macro.auto;
+package varcode.java.macro;
 
-import varcode.java.macro.auto._auto;
-import varcode.java.macro.auto._autoGetters;
+import varcode.java.macro._auto;
+import varcode.java.macro._autoGetters;
 import java.lang.reflect.AnnotatedType;
 import java.util.Map;
 import junit.framework.TestCase;
@@ -18,7 +18,7 @@ import varcode.java.model._methods._method;
  *
  * @author Eric
  */
-public class autoGetTest
+public class _autoGettersTest
     extends TestCase
 {
     public void testField()

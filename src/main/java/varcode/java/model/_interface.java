@@ -172,7 +172,7 @@ public class _interface
             {
                 ip.javadoc = (_javadoc)components[ i ];
             }
-            else if( components[ i ] instanceof _annotations )
+            else if( components[ i ] instanceof _anns )
             {
                 ip.annots = (_anns)components[ i ];
             }

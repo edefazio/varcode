@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package varcode.java.macro.auto;
+package varcode.java.macro;
 
 import varcode.java.naming.ClassName;
 import varcode.java.model._class;
@@ -22,7 +22,7 @@ import varcode.java.model._enum;
 import varcode.java.model._fields;
 import varcode.java.model._fields._field;
 import varcode.java.model._methods._method;
-import varcode.java.macro.auto._autoApply._autoMacro;
+import varcode.java.macro._autoApply._autoMacro;
 
 /**
  * API for applying "Automatic Programming" / Macros  to _class models.

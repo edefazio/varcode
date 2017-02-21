@@ -86,18 +86,6 @@ public class _classMacro
         public void expandTo( _class _tailored, Context context );    
         public void expandTo( _class _tailored, Object...keyValuePairs );    
     }
-
-    
-    protected static _ann getOneAnnotation( _Java.Annotated ann, Class clazz )
-    {
-        List<_ann> sig = 
-            ann.getAnnotations().get( clazz );
-        if( sig.size() > 0 )
-        {
-            return sig.get( 0 );
-        }
-        return null;
-    }
     
     /**
      * returns the String content value of an Annotation of clazz
@@ -110,7 +98,8 @@ public class _classMacro
     protected static String getAnnotationStringProperty( 
         _Java.Annotated _c, Class clazz )
     {
-        _ann _a = getOneAnnotation( _c, clazz );
+        //_ann _a = getOneAnnotation( _c, clazz );
+        _ann _a = _c.getAnnotations().getOne( clazz );
         if( _a != null )
         {
             String attr = _a.attributes.values.get( 0 );
@@ -122,7 +111,8 @@ public class _classMacro
     protected static String[] getAnnotationStringArrayProperty(
         _Java.Annotated _c, Class clazz )
     {
-        _ann _a = getOneAnnotation( _c, clazz );
+        //_ann _a = getOneAnnotation( _c, clazz );
+        _ann _a = _c.getAnnotations().getOne( clazz );
         if( _a != null )
         {
             String attr = _a.attributes.values.get( 0 );
@@ -139,8 +129,8 @@ public class _classMacro
      * them in the "tailored" _class
      * </UL>
      */
-    public List<expansion> _transfers = 
-        new ArrayList<expansion>();
+    public List<_typeExpansion> _transfers = 
+        new ArrayList<_typeExpansion>();
         
     //nests    
     public _classMacro( _class _c )
@@ -200,12 +190,13 @@ public class _classMacro
         }        
         
         //List<_typeExpansion> macroFields = ;
-        this._transfers.addAll( processFields( _c.getFields() ) );    
+        //this._transfers.addAll( this._transfers, processFields( _c.getFields() ) );    
         
+        processFields( this._transfers, _c.getFields() );
         processMethods( this._transfers, _c.getMethods() ); 
     }
 
-    public static final void processMethods( List<expansion> _transfers, _methods _ms )
+    public static final void processMethods( List<_typeExpansion> _transfers, _methods _ms )
     {
         for( int i = 0; i < _ms.count(); i++ )
         {
@@ -217,7 +208,7 @@ public class _classMacro
             }
             else
             {   //handle sig, body, and remove
-                expansion exp = processMethod( _m );
+                _typeExpansion exp = processMethod( _m );
                 if( exp != null )
                 {
                     _transfers.add( exp );
@@ -343,7 +334,7 @@ public class _classMacro
      * @param _transfers 
      */
     public static void processImports( 
-        _imports _i, _ann importAnnMacro, List<expansion> _transfers )
+        _imports _i, _ann importAnnMacro, List<_typeExpansion> _transfers )
     {
         if( importAnnMacro != null )
         {
@@ -371,19 +362,20 @@ public class _classMacro
         }
     }
     
-    public static List<_typeExpansion>processFields( _fields _fs )
+    public static void processFields( List<_typeExpansion> _expansions, _fields _fs )
     {        
-        List<_typeExpansion>_macroFields = 
-            new ArrayList<_typeExpansion>();
+        //List<_typeExpansion>_macroFields = 
+        //    new ArrayList<_typeExpansion>();
         for( int i = 0; i < _fs.count(); i++ )
         {
             _typeExpansion e = processField( _fs.getAt( i ) );
             if( e != null )
             {
-                _macroFields.add( e );
+                //_macroFields.add( e );
+                _expansions.add( e );
             }
         }        
-        return _macroFields;
+        //return _macroFields;
     }
     
     /**

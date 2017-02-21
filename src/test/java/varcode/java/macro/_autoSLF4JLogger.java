@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package varcode.java.macro.auto;
+package varcode.java.macro;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,11 +29,11 @@ import varcode.java.model._Java._model;
  * 
  * @author M. Eric DeFazio eric@varcode.io
  */
-public class AutoGetOrCreateSLF4JLogger 
+public class _autoSLF4JLogger 
 {
     public static _field getOrCreate( _model _c )
     {
-        return AutoGetOrCreateSLF4JLogger.getOrCreate( _c, "LOG" );        
+        return _autoSLF4JLogger.getOrCreate( _c, "LOG" );        
     }
     
     /**

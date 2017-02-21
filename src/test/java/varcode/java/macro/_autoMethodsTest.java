@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package varcode.java.macro.auto;
+package varcode.java.macro;
 
-import varcode.java.macro.auto._auto;
+import varcode.java.macro._auto;
 import junit.framework.TestCase;
 import varcode.java.Java;
 import varcode.java.model._class;

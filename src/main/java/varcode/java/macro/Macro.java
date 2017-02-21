@@ -27,7 +27,6 @@ import varcode.author.Author;
 import varcode.context.Context;
 import varcode.context.VarContext;
 import varcode.java.macro._classMacro._classOriginator;
-import varcode.java.model._annotationType;
 import varcode.java.model._class;
 import varcode.java.model._code;
 import varcode.java.model._constructors;
@@ -46,7 +45,7 @@ import varcode.markup.form.Form;
 import varcode.markup.forml.ForML;
 
 /**
- *
+ * Annotations 
  * @author M. Eric DeFazio eric@varcode.io
  */
 public class Macro
@@ -327,7 +326,7 @@ public class Macro
      * Macro for Copying a static block to a target class / enum
      */
     public static class CopyStaticBlock
-        implements _classMacro.expansion, _enumMacro.expansion
+        implements _typeExpansion //_classMacro.expansion, _enumMacro.expansion
     {
         public _staticBlock _prototype;
             
@@ -353,13 +352,19 @@ public class Macro
         {
             _e.staticBlock( _staticBlock.cloneOf( _prototype ) );
         }     
+
+        @Override
+        public void expandTo( _interface _i, Object... keyValuePairs )
+        {
+            throw new ModelException("Cannot add Static Block to an interface " ); 
+        }
     }
     
     /**
      * Macro expansion for Tailoring a static block to a target class
      */
     public static class ExpandStaticBlock
-        implements _classMacro.expansion, _enumMacro.expansion
+        implements _typeExpansion //_classMacro.expansion, _enumMacro.expansion
     {
         public Template template;
         
@@ -385,6 +390,12 @@ public class Macro
             _tailored.staticBlock( 
                 _staticBlock.of( Author.toString( template, context ) ) );
         }        
+
+        @Override
+        public void expandTo( _interface _i, Object... keyValuePairs )
+        {
+            throw new ModelException( "Cannot add static block to interface " ); 
+        }
     }
     
     /**
@@ -450,8 +461,22 @@ public class Macro
         public ExpandConstructor( 
             _constructor _prototype, String signatureForm, String bodyForm )
         {
-            this.signature = ForML.compile( signatureForm );
-            this.body = BindML.compile( bodyForm );
+            if( signatureForm != null )
+            {
+                this.signature = ForML.compile( signatureForm );
+            }
+            else
+            {
+                this.signature = ForML.compile( _prototype.getSignature().author() );
+            }
+            if( bodyForm != null )
+            {
+                this.body = BindML.compile( bodyForm );
+            }
+            else
+            {
+                this.body = BindML.compile( _prototype.getBody().author() ); 
+            }
             this._prototype = _prototype;
         }
 
@@ -501,7 +526,7 @@ public class Macro
      * _enum, or _annotationType
      */
     public static class CopyPackage
-        implements _classMacro.expansion, _enumMacro.expansion
+        implements _typeExpansion //_classMacro.expansion, _enumMacro.expansion
     {       
         private String packageName;
         
@@ -529,8 +554,6 @@ public class Macro
         
         public void expandTo( _class _tailored, Object...keyValuePairs )            
         {
-            //System.out.println("CLAZZZZ"+ keyValuePairs[ 0 ].getClass() );
-            //expandTo( _tailored, VarContext.ofKeyValueArray( keyValuePairs ) );
             _tailored.packageName( packageName );
         }
         
@@ -538,13 +561,19 @@ public class Macro
         {
             _tailored.packageName( packageName );
         }
+
+        @Override
+        public void expandTo( _interface _i, Object... keyValuePairs )
+        {
+            _i.packageName( packageName );            
+        }
     }
     
     /**
      * Macro Expansion for creating a package
      */
     public static class ExpandPackage
-        implements _classMacro.expansion, _enumMacro.expansion
+        implements _typeExpansion //_classMacro.expansion, _enumMacro.expansion
     {
         public Form packageNameForm;
         
@@ -567,13 +596,19 @@ public class Macro
         {
             _tailored.packageName( packageNameForm.author( context ) );
         }        
+
+        @Override
+        public void expandTo( _interface _i, Object... keyValuePairs )
+        {
+            _i.packageName( packageNameForm.author( VarContext.of( keyValuePairs ) ) );
+        }
     }
     
     /**
      * Macro expansion for copying imports
      */
     public static class CopyImports
-        implements _classMacro.expansion, _enumMacro.expansion
+        implements _typeExpansion //_classMacro.expansion, _enumMacro.expansion
     {
         private _imports imports;
         
@@ -602,12 +637,18 @@ public class Macro
         {
             _tailored.imports( _imports.of( imports ) );
         }
+
+        @Override
+        public void expandTo( _interface _i, Object... keyValuePairs )
+        {
+            _i.imports( _imports.of( imports ) );
+        }
     }
     
     /** Macro expansion for imports
      */
     public static class ExpandImports
-        implements _classMacro.expansion, _enumMacro.expansion
+        implements _typeExpansion //_classMacro.expansion, _enumMacro.expansion
     {
         private final _imports imports;
         
@@ -675,6 +716,12 @@ public class Macro
             }  
             return _is;            
         }        
+
+        @Override
+        public void expandTo( _interface _i, Object... keyValuePairs )
+        {
+            _i.imports( expand( VarContext.of( keyValuePairs ) ) );
+        }
     }
     
     

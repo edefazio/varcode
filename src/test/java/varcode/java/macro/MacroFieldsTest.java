@@ -15,6 +15,7 @@
  */
 package varcode.java.macro;
 
+import java.util.ArrayList;
 import java.util.List;
 import junit.framework.TestCase;
 import varcode.java.Java;
@@ -88,7 +89,9 @@ public class MacroFieldsTest
     {
         _class _c = Java._classFrom( inner.class );
         
-        List<_typeExpansion>te = _classMacro.processFields( _c.getFields() );
+        List<_typeExpansion>te = new ArrayList<_typeExpansion>();
+        //List<_typeExpansion>te = 
+        _classMacro.processFields( te, _c.getFields() );
         
         _class _target = _class.of("Target");
         for( int i = 0; i < te.size(); i++ )

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package varcode.java.macro.auto;
+package varcode.java.macro;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;

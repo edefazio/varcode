@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package varcode.java.macro.auto;
+package varcode.java.macro;
 
-import varcode.java.macro.auto._autoHashCode;
+import varcode.java.macro._autoHashCode;
 import junit.framework.TestCase;
 import varcode.java.Java;
 import varcode.java.model._class;
@@ -18,7 +18,7 @@ import varcode.java.model._methods._method;
  *
  * @author Eric
  */
-public class autoHashCodeTest
+public class _autoHashCodeTest
     extends TestCase
 {
     public void testNoFields()

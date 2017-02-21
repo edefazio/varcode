@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package varcode.java.macro.auto;
+package varcode.java.macro;
 
-import varcode.java.macro.auto._auto;
-import varcode.java.macro.auto._autoBuilder;
+import varcode.java.macro._auto;
+import varcode.java.macro._autoBuilder;
 import junit.framework.TestCase;
 import varcode.java.Java;
 import varcode.java.adhoc.AdHoc;
@@ -14,7 +14,7 @@ import varcode.java.adhoc.AdHocClassLoader;
 import varcode.java.adhoc.Publisher;
 import varcode.java.model._class;
 
-import static varcode.java.macro.auto._auto.*;
+import static varcode.java.macro._auto.*;
 /**
  *
  * @author Eric

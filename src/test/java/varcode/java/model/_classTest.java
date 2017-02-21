@@ -1,16 +1,8 @@
 package varcode.java.model;
 
-import varcode.java.model._class;
-import varcode.java.model._imports;
-import java.io.Serializable;
-import java.util.UUID;
 import junit.framework.TestCase;
-import varcode.java.Java;
-import varcode.java.adhoc.Export;
 import varcode.java.naming.RefRenamer;
-import varcode.java.model._annotations._annotation;
 import varcode.java.model._fields._field;
-import varcode.java.model._methods._method;
 
 /**
  *

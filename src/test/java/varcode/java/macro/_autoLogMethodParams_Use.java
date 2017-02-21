@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package varcode.java.macro.auto;
+package varcode.java.macro;
 
-import varcode.java.macro.auto.AutoLogMethodParams;
+import varcode.java.macro._autoLogMethodParams;
 import junit.framework.TestCase;
 import varcode.java.Java;
 import varcode.java.model._class;
@@ -26,7 +26,7 @@ import varcode.java.model._methods;
  * This is 
  * @author Eric
  */
-public class Use_AutoLogMethodParams 
+public class _autoLogMethodParams_Use 
      extends TestCase
 {
 
@@ -80,7 +80,7 @@ public class Use_AutoLogMethodParams
         
         for( int i = 0; i < _ms.count(); i++ )
         {
-            AutoLogMethodParams.forMethod( _p, _ms.getAt( i ) );
+            _autoLogMethodParams.forMethod( _p, _ms.getAt( i ) );
         }
         
         System.out.println( _p.author() );
@@ -96,7 +96,7 @@ public class Use_AutoLogMethodParams
         
         _enum _e = Java._enumFrom( PrototypeEnum.class );
         
-        AutoLogMethodParams.forMethod( _e, "oneArg" );
+        _autoLogMethodParams.forMethod( _e, "oneArg" );
         
         System.out.println( _e.author() );
         

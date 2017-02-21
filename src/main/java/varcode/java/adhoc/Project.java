@@ -23,9 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import varcode.java.Java;
 import varcode.java.model._JavaFileModel;
-import varcode.java.model._Java;
 import varcode.java.model._class;
-import varcode.java.macro.auto._autoTestSuite;
+import varcode.java.macro._autoTestSuite;
 
 /**
  *

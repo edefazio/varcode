@@ -480,7 +480,7 @@ public class _methods
                 {
                     mp.annots.add( (_ann)parts[ i ] );
                 }
-                else if( parts[ i ] instanceof _annotations )
+                else if( parts[ i ] instanceof _anns )
                 {
                     mp.annots = (_anns)parts[ i ];
                 }

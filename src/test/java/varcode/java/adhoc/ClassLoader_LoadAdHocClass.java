@@ -7,7 +7,7 @@ package varcode.java.adhoc;
 
 import junit.framework.TestCase;
 import varcode.java.model._class;
-import varcode.java.macro.auto._autoToString;
+import varcode.java.macro._autoToString;
 
 /**
  *

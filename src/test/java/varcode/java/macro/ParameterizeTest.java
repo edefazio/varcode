@@ -37,24 +37,10 @@ public class ParameterizeTest
         ExpandField tf = 
             ExpandField.parameterize( _f, "100", "count" );
         _class _c = _class.of("public class A");
-        
-        _c.getMethodsNamed( "A" );
-        _c.getMethod("A");
-        _c.getField( "A");
-        _c.getFieldAt( 0 );
-        
-        _c.getAnnotations();
-        _c.getAnnotation( $.class );
-        _enum _e = _enum.of( "public enum Te");
-        _e.getAnnotations();
-        _e.getAnnotation( $.class );
-        _e.getMethods();
-        
-        
+                
         
         //this should work fine
         //tf.expandTo( _c, Context.EMPTY );
-        
         
         tf.expandTo( _c, "count", 1 );
         assertEquals( "1", 

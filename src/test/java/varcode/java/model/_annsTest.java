@@ -15,7 +15,6 @@
  */
 package varcode.java.model;
 
-import varcode.java.model._annotations;
 import junit.framework.TestCase;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;

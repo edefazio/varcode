@@ -3,22 +3,22 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package varcode.java.macro.auto;
+package varcode.java.macro;
 
-import varcode.java.macro.auto._autoEquals;
+import varcode.java.macro._autoEquals;
 import junit.framework.TestCase;
 import varcode.java.Java;
 import varcode.java.model._class;
 import varcode.java.model._fields;
 import varcode.java.model._methods;
 import varcode.java.model._methods._method;
-import static varcode.java.macro.auto._autoEquals.of;
+import static varcode.java.macro._autoEquals.of;
 
 /**
  *
  * @author Eric
  */
-public class autoEqualsTest
+public class _autoEqualsTest
     extends TestCase
 {
     public void testEquals()
