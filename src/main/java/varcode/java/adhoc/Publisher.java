@@ -150,7 +150,7 @@ public class Publisher
     public static void publishToParent( AdHocClassLoader adHocClassLoader )
     {
         JavaClassFile[] adHocClassFiles = 
-            adHocClassLoader.allAdHocClassFiles().toArray(new JavaClassFile[ 0 ] );
+            adHocClassLoader.allAdHocClassFiles().toArray( new JavaClassFile[ 0 ] );
         
         Package[] packages = 
             adHocClassLoader.allAdHocPackages().toArray( new Package[ 0 ] );
@@ -275,7 +275,12 @@ public class Publisher
         catch( InvocationTargetException e ) 
         {
             //noinspection ThrowInsideCatchBlockWhichIgnoresCaughtException
-            throw new AssertionError( e.getCause() );
+            Throwable cause = e.getCause(); 
+            if( cause instanceof LinkageError )
+            {
+                throw new AdHocException( ((LinkageError) cause).getMessage() );
+            }
+            throw new AdHocException( e.getCause() );
         }
     }
     

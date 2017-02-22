@@ -15,11 +15,13 @@
  */
 package varcode.java.adhoc;
 
+import example.ExClass;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLClassLoader;
 import junit.framework.TestCase;
-import varcode.VarException;
+import varcode.java.Java;
+import varcode.java.model._class;
 
 /**
  *
@@ -28,6 +30,60 @@ import varcode.VarException;
 public class AdHocClassLoaderTest
     extends TestCase
 {
+    //what happens if we try to ADHoc load a class that
+    // has already been loaded in it's parent ClassLoader??
+    public void testLoadClassAlreadyLoaded()
+    {
+        //we will load ExClass here in the parent classLoader
+        ExClass ex = new ExClass();
+        ex.name = "Eric";
+        
+        //we can create a _class in the        
+        _class _c = Java._classFrom( ExClass.class );
+        
+        //lets modify the model of ExClass
+        _c.constructor( "public ExClass( String name )", "this.name = name;" );
+        
+        //this will load ExClass in an AdHoc Class Loader
+        Object instance = _c.instance( "Eric" );
+        System.out.println ( instance.getClass().getClassLoader() );
+        String name = (String)Java.get( instance, "name" );
+        assertEquals( "Eric", name );
+               
+        assertEquals( ex.getClass().getName(), instance.getClass().getName() );
+        
+        //the canonical name IS the same
+        assertEquals( ex.getClass().getCanonicalName(), instance.getClass().getCanonicalName() );
+        
+        //the package NAMES ARE equal, the "actual" packages are different
+        assertEquals( ex.getClass().getPackage().getName(), 
+            instance.getClass().getPackage().getName() );
+        
+        //classLoaders are NOT the same
+        assertNotSame( 
+            ex.getClass().getClassLoader(), instance.getClass().getClassLoader() );
+        
+        //they are not Equal
+        assertTrue( !ex.equals( instance ) );
+        
+        //NOTE: keep in mind, you MAY have and USE (2) definitions of classes 
+        //that have the same canonical name (one in an AdHocClassLoader and one in its'
+        // parent classLoader...  This is FINE, but you just can't try to 
+        // "Publish" the AdHoc Class to the parent ClassLoader
+        try
+        {
+            Publisher.publishToParent( (AdHocClassLoader) instance.getClass().getClassLoader() );
+            fail("expected failure trying to redefine an existing class that has already been loaded");
+        }
+        catch( AdHocException e )
+        {
+            System.out.println( e );
+            //OK, HERE is where we have problems, since the Parent ClassLoader
+            //Already has a Class and Package declared... we EXPECT this to fail
+        }
+        
+    }
+    
     public void testEmpty()
     {
         AdHocClassLoader ahcl = new AdHocClassLoader();

@@ -21,13 +21,35 @@ import varcode.java.model._class;
 import varcode.java.macro._macro.*;
 
 /**
- *
+ * Rough Draft
+ * -> changes
+ * 
+ * <LI>
+ * _workspaceMacro wsm = _macro.match( 
+ *  "all classes in package...", Type.Class, Name.contains, Name.statsWith )
+ *    .removeField( "LOG" )
+ *    .removeImport( "
+ * .remove
+ * 
+ * _macroClass.of( MyClass.class )
+ *     .removeField( "fieldName" )
+ *     .removeField( _f )
+ *     .addField("public static final MASK = 
+ * 
+ * 
+ * This is something else
+ * So I could pass in something that would: 
+ * 1) Match a particular method MatchMethod
+ * 2) Match a particular sequence of code MatchCodeSequence
+ * 3) 
+ * 
  * @author Eric
  */
 @imports( remove={"varcode.java", "junit"}, add={"java.util.Map", "java.util.UUID", "{+addImports+}"} )
 public class _macroClassTest
     extends TestCase
 {   
+    
     //the @imports() annotation allows the annotations to be add or removed
     // explicitly or by patterns
     public void testExpandImports()
@@ -57,6 +79,7 @@ public class _macroClassTest
         assertTrue( _c.getImports().contains( "java.util.Date" ) );        
     }
         
+    
     //TODO parameterize the class
     @sig("public class {+Name+}")
     public static class ClassName
@@ -64,6 +87,9 @@ public class _macroClassTest
         
     }
     
+    /** verify that we can "match" {+Name+} with the "name" value and 
+     * apply FirstCaps on it
+     */
     public void testNameLower()
     {
         _class _c = 
@@ -101,6 +127,16 @@ public class _macroClassTest
         _class _c = _macroClass.of( ExpandStaticBlock.class ).expand();
         
         assertTrue( _c.getStaticBlock().author().contains( "out.println" ) );
+    }
+    
+    
+    @Deprecated
+    @annotations(remove={"Deprecated"}, add={"@Drafted", "{+classAnnotations+}"} )
+    public static class CopyAnnotation{ }
+    
+    public void testCopyClassAnnotations()
+    {
+        
     }
     
     public static class CopyStaticBlock

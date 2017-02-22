@@ -17,6 +17,7 @@ package varcode.java.macro;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
+import static java.lang.annotation.ElementType.*;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -84,6 +85,18 @@ public class _macro
     public @interface packageName
     {
         String value();
+    }
+    
+    @Documented
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({TYPE, METHOD})
+    public @interface annotations
+    {
+        /** add annotations explicitly (java.util.Map) or by parameter {+impotts+}*/
+        String[] add() default {};
+        
+        /** Remove all annotations with these name patterns */
+        String[] remove() default {};
     }
     
     /** 

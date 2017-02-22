@@ -20,9 +20,9 @@ public class SnipTest
     
     public void testSimpleEval()
     {
-        assertEquals( 14, Snip.eval("5 + 9") );
         assertEquals( 14, Snip.eval("5 + 9;") );
-        assertEquals( 14, Snip.eval("return 5 + 9") );
+        assertEquals( 14, Snip.eval("5 + 9;") );
+        assertEquals( 14, Snip.eval("return 5 + 9;") );
         assertEquals( 14, Snip.eval("return 5 + 9;") );
         
     }

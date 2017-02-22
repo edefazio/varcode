@@ -16,7 +16,6 @@
 package varcode.java.adhoc;
 
 import junit.framework.TestCase;
-import varcode.java.adhoc.Project;
 import varcode.java.model._class;
 
 /**
@@ -46,6 +45,12 @@ public class ProjectTest
     
     public void testProjectWithTests()
     {
+        //can I combine a class method
+        //this 
+        //ClassAndTest cat = ClassAndTest.of( "ex.proj", "public class Testable")
+        //    .method("public int getCount", "return 1;")
+        //    .expectResult( "=1" );
+        
         _class _testable = 
             _class.of( "package ex.proj", "public class Testable")
                 .method("public int getCount()",
@@ -61,7 +66,7 @@ public class ProjectTest
             .add( _testable )
             .test( _test );
         
-        
+        //now build the project
         Class[] classes = p.build();        
         assertEquals( 1, classes.length );        
         assertEquals( "Testable", classes[0].getSimpleName() );
