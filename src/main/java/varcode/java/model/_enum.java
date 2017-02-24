@@ -281,11 +281,32 @@ public class _enum
         return this.fields;
     }
 
+    public _constant getConstant( String name )
+    {
+        return this.constants.get( name );
+    }
+    
     public _constants getConstants()
     {
         return this.constants;
     }
 
+    /**
+     * For <B>NON-Overloaded methods</B>, at Return a _method if there is
+     * <B>only ONE method</B> with this <B>exact name</B>
+     *
+     * @param name the name of the method to find
+     * @return the ONLY method that has this name, - or - null if there are no
+     * methods with this name - or - VarException if there are more than one
+     * method with this name
+     * @throws ModelException if more than one method has this name
+     */
+    public _method getMethod( String name )
+        throws ModelException
+    {
+        return this.methods.getMethod( name );        
+    }
+    
     public List<_method> getMethodsNamed( String name )
     {
         return this.methods.getMethodsNamed( name );
@@ -901,7 +922,7 @@ public class _enum
             
         }
 
-        public _constant getByName( String name )
+        public _constant get( String name )
         {
             for( int i = 0; i < this.constants.size(); i++ )
             {
@@ -1102,9 +1123,10 @@ public class _enum
          * Individual Enum value const constructor
          */
         public static class _constant
-            implements _Java, Authored
+            implements _Java, Authored, Annotated
         {
             private String name;
+            private _anns annotations = new _anns();
             private _args args;
             
             private _constantBody constantBody = new _constantBody();
@@ -1112,6 +1134,7 @@ public class _enum
             /**
              * So:
              * <PRE>
+             * @Generated // <- annotations
              * ERIC( 42, "Michael" ),
              * ^^^^  ^^^^^^^^^^^^^
              * name    arguments
@@ -1166,6 +1189,23 @@ public class _enum
                 return this;
             }
             
+             /** Gets an annotation that is of the class */
+            public _ann getAnnotation( Class annotationClass )
+            {
+                return this.annotations.getOne( annotationClass );
+            }
+    
+            public _anns getAnnotations()
+            {
+                return this.annotations;
+            }
+
+            public _constant annotate( _anns annotations )
+            {
+                this.annotations = annotations;
+                return this;
+            }
+    
             @Override
             public void visit( ModelVisitor visitor )
             {
@@ -1203,6 +1243,7 @@ public class _enum
                 this.args = _args.cloneOf( prototype.args );
                 this.constantBody = _constantBody.cloneOf( prototype.constantBody );
                 this.name = prototype.name;
+                this.annotations = new _anns( prototype.annotations );
             }
             
             public static _constant cloneOf( _constant prototype )
@@ -1217,12 +1258,12 @@ public class _enum
             }
 
             public Template CONST_CONSTRUCT = BindML.compile(
-                "{+name*+}{+args+}{+constantBody+}" );
+                "{+annotations+}{+name*+}{+args+}{+constantBody+}" );
 
             @Override
             public int hashCode()
             {
-                return Objects.hash( name, args, constantBody );
+                return Objects.hash( name, args, constantBody, annotations );
             }
 
             @Override
@@ -1250,6 +1291,10 @@ public class _enum
                     return false;
                 }
                 if( ! Objects.equals( this.constantBody, other.constantBody ) )
+                {
+                    return false;
+                }
+                if( ! Objects.equals( this.annotations, other.annotations) )
                 {
                     return false;
                 }
@@ -1283,6 +1328,7 @@ public class _enum
                 {
                     vc.set( "args", args );
                 }
+                vc.set( "annotations", this.annotations );
                 vc.set( "constantBody", this.constantBody );
                 return vc;
             }
@@ -1301,6 +1347,7 @@ public class _enum
                     RefRenamer.apply( this.name, target, replacement );
                 this.constantBody = 
                     this.constantBody.replace( target, replacement );
+                this.annotations = this.annotations.replace( target, replacement );
                 return this;
             }
         }
@@ -1320,7 +1367,7 @@ public class _enum
             return  VarContext.of( "constConstructs", constants );
         }
         
-        //@Override
+        @Override
         public Template getTemplate()
         {
             return CONST_CONSTRUCTORS;
@@ -1334,13 +1381,13 @@ public class _enum
                 directives );
         }
 
-        //@Override
+        @Override
         public int count()
         {
             return this.constants.size();
         }
         
-        //@Override
+        @Override
         public boolean isEmpty()
         {
             return count() == 0;

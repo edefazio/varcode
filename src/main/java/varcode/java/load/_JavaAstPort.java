@@ -1028,6 +1028,7 @@ public class _JavaAstPort
             
             _constant _const = _constant.of
                 ( astConstDecl.getName(), astConstDecl.getArgs().toArray() );
+            
             List<BodyDeclaration>bodyDecls = astConstDecl.getClassBody();
             for( int j = 0; j< bodyDecls.size(); j++ )
             {
@@ -1047,6 +1048,8 @@ public class _JavaAstPort
                     System.err.println( "Unknown constant Body type " + bd );
                 }
             }
+            
+            annotate( _const, astConstDecl.getAnnotations() );
             _e.constant( _const );
         }
             

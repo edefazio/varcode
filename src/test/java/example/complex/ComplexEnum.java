@@ -14,6 +14,7 @@ import javax.annotation.Generated;
 public enum ComplexEnum /** 
  * NOTE:  <A HREF="http://openjdk.java.net/jeps/301"> Genericized Enums in Java 9</A> */
 {
+    @Generated("varcode") @Deprecated
     A( "A", new HashMap<Integer,List<String>>(), "a", "b", "c" );
     
     @Deprecated

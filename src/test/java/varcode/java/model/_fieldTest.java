@@ -15,10 +15,17 @@ import varcode.java.model._fields._field;
 public class _fieldTest
     extends TestCase
 {
+    public void testFields()
+    {
+        _field _f = _field.of("public static final int aDim;");
+        System.out.println( _f );
+        
+        _fields _fs = _fields.of( "public static final int aDim;" );
+    }
     public void testFieldInit()
     {
         _field _f = _field.of("public int count = 100;");
-        _field _f2 = _field.of("public int count =100;");
+        _field _f2 = _field.of("public int count = 100;");
         
         assertEquals( _f, _f2 );
     }

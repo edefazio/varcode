@@ -37,7 +37,7 @@ public class _macroFieldsTest
     public void testCopyMacroField()
     {
         _typeExpansion te = 
-            _macroClass.processField( _field.of( "public int a;" ) );
+            _macroFields.prepareField( _field.of( "public int a;" ) );
         _class _c = _class.of("A");
         te.expandTo( _c );
         
@@ -49,7 +49,7 @@ public class _macroFieldsTest
     {
         _field _f = _field.of( "@$({\"a\",\"name\"})", "public int a;" );
         _macro.ExpandField te = 
-            (ExpandField)_macroClass.processField( _f );
+            (ExpandField)_macroFields.prepareField( _f );
         _class _c = _class.of("A");
         te.expandTo( _c, "name", "myFieldName" );
         
@@ -62,7 +62,7 @@ public class _macroFieldsTest
     {
         _field _f = _field.of( "@$({\"int\", \"type\", \"a\",\"name\"})", "public int a;" );
         _macro.ExpandField te = 
-            (ExpandField)_macroClass.processField( _f );
+            (ExpandField)_macroFields.prepareField( _f );
         _class _c = _class.of("A");
         te.expandTo( _c, "type", "String", "name", "label" );
         
@@ -91,7 +91,7 @@ public class _macroFieldsTest
         
         List<_typeExpansion>te = new ArrayList<_typeExpansion>();
         //List<_typeExpansion>te = 
-        _macroClass.processFields( te, _c.getFields() );
+        _macroFields.prepareFields( te, _c.getFields() );
         
         _class _target = _class.of("Target");
         for( int i = 0; i < te.size(); i++ )

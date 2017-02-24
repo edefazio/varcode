@@ -57,7 +57,7 @@ public class VarContext implements Context
     
     public static VarContext ofKeyValueArray( Object[] keyValues )
     {
-        //return ofScope( VarScope.INSTANCE, keyValues );
+        //return ofScope( VarScope.INSTANCE, keyValues );        
         if( keyValues.length % 2 != 0 )
         {
             throw new VarBindException(
@@ -104,6 +104,9 @@ public class VarContext implements Context
     {
         if( keyValuePairs.length % 2 != 0 )
         {
+            System.out.println( "KV " + keyValuePairs );
+            System.out.println( "KV " + keyValuePairs.length );
+            System.out.println( "KV " + keyValuePairs[0] );
             throw new VarBindException(
                 "Pairs values must be passed in as pairs, length ("
                 + keyValuePairs.length + ") not valid" );

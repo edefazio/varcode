@@ -59,13 +59,16 @@ public class Load_ComplexExamples
         CompilationUnit astRoot = Java.astFrom( ComplexEnum.class );
         
         
-        System.out.println( astRoot );
+        //System.out.println( astRoot );
         
         _enum _e1 = _JavaLoad._enumFrom( 
             astRoot, 
             ComplexEnum.class, 
             new FormatJavaCode_AllmanScanStyle() );
-        System.out.println( _e1 );
+        
+        assertNotNull( 
+            _e1.getConstant( "A" ).getAnnotation( Deprecated.class ) );
+        //System.out.println( _e1 );
         
         _enum _e2 = _enum.cloneOf( _e1 );
         assertEquals( _e1, _e2 );

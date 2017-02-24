@@ -15,7 +15,6 @@
  */
 package varcode.java.macro;
 
-import varcode.java.macro._macro;
 import java.util.AbstractMap;
 import java.util.Map;
 import java.util.UUID;
@@ -41,14 +40,14 @@ public class _macroCopyTest
  
     public void testTailorClassSignature()
     {
-        _macro.ExpandClassSignature tcs = 
-            new _macro.ExpandClassSignature( "public class A" );
+        _macroClass.ExpandClassOriginator tcs = 
+            new _macroClass.ExpandClassOriginator( "public class A" );
         
         _class _c = tcs.initClass( Context.EMPTY );
         
         assertEquals( "A", _c.getName( ) );
         
-        tcs = new _macro.ExpandClassSignature( 
+        tcs = new _macroClass.ExpandClassOriginator( 
             "public class {+className*+} {{+?extends:\n" +
             "    extends {+extends+}+}}" );
         
@@ -213,8 +212,8 @@ public class _macroCopyTest
      */
     public void testCopy()
     {
-        _macro.CopyClassSignature ccs = 
-            new _macro.CopyClassSignature( 
+        _macroClass.CopyClassOriginator ccs = 
+            new _macroClass.CopyClassOriginator( 
                 "public class MyClass extends BaseClass implements MyInterface" );
         _class _c = ccs.initClass( Context.EMPTY );
         

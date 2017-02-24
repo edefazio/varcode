@@ -9,6 +9,7 @@ import varcode.java.model._annotationType;
 import varcode.java.model._enum;
 import java.lang.reflect.Modifier;
 import junit.framework.TestCase;
+import varcode.java.Java;
 import varcode.java.model._enum._constants._constant;
 import varcode.java.model._fields._field;
 
@@ -20,6 +21,48 @@ public class _enumTest
     extends TestCase
 {
     
+    @interface Generated {}
+    
+    @Generated
+    enum Rochambo
+    {
+        @Generated
+        ROCK("theRock")
+        {
+            public int count = 100;
+            
+            @Override
+            public String toString()
+            {
+                return count + "";
+            }
+        },
+        PAPER("thePaper"),
+        SCISSORS("theScissors");
+        
+        private final String name;
+          
+        private Rochambo( String name )
+        {
+            this.name = name;
+        }        
+    }
+         
+    public void testReadComplexEnum()
+    {
+        _enum _e = Java._enumFrom( Rochambo.class );
+        assertNotNull( _e.getAnnotation( Generated.class ) );
+        //System.out.println( "CONST \"" + _e.getConstants().get( "ROCK" ).getArguments().getAt( 0 ) + "\"" );
+        
+        System.out.println( _e );
+        //_e.getConstants().get( "ROCK" )
+        assertTrue( 
+            _e.getConstants().get( "ROCK" ).getArguments().getAt( 0 ).toString().equals( "\"theRock\"") );
+        
+        assertNotNull( 
+            _e.getConstants().get( "ROCK" ).getAnnotation( Generated.class ) );
+    }
+
     public void testSimpleThingsSimple()
     {
         _enum _e = _enum.of( "E" );

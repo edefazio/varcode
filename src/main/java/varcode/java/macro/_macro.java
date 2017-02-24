@@ -28,6 +28,8 @@ import varcode.author.Author;
 import varcode.context.Context;
 import varcode.context.VarContext;
 import varcode.java.macro._macroClass._classOriginator;
+import varcode.java.model._ann;
+import varcode.java.model._anns;
 import varcode.java.model._class;
 import varcode.java.model._code;
 import varcode.java.model._constructors;
@@ -51,12 +53,16 @@ import varcode.markup.forml.ForML;
  */
 public class _macro
 {
+    
     public interface _typeExpansion
-        extends _macroClass.expansion, _macroEnum.expansion
+        //extends _macroClass.expansion, _macroEnum.expansion
     {
-        public void expandTo( _class _c, Object...keyValuePairs );
+        public void expandTo( _class _c, Object...keyValuePairs ); 
+        public void expandTo( _class _c, Context context ); 
         
         public void expandTo( _enum _e, Object...keyValuePairs );
+        
+        public void expandTo( _enum _e, Context context  );
         
         public void expandTo( _interface _i, Object...keyValuePairs );
         
@@ -172,13 +178,14 @@ public class _macro
      * @JsonProperty("carModel")
      * public String name;
      * </PRE>
-     */
+    
     @Documented
     @Retention(RetentionPolicy.RUNTIME)
     public @interface annotation 
     {
         String[] values();
     }
+    */ 
     
     /**
      * _macro Annotation to add / remove imports
@@ -323,7 +330,7 @@ public class _macro
 
     /**
      * _macro annotation for removing a component 
-     * (field, method, nest, etc.) when tailoring
+     * (field, method, nest, etc.) when macro expanding
      */
     @Documented
     @Retention(RetentionPolicy.RUNTIME)
@@ -345,15 +352,14 @@ public class _macro
         }
 
         @Override
-        public void expandTo( _class _tailored, Object...keyValuePairs )            
+        public void expandTo( _class _draft, Object...keyValuePairs )            
         {
-            _tailored.staticBlock( _staticBlock.cloneOf( _prototype ) );
+            _draft.staticBlock( _staticBlock.cloneOf( _prototype ) );
         }
 
-        @Override
-        public void expandTo( _class _tailored, Context context )            
+        public void expandTo( _class _draft, Context context )            
         {
-            _tailored.staticBlock( _staticBlock.cloneOf( _prototype ) );
+            _draft.staticBlock( _staticBlock.cloneOf( _prototype ) );
         }
         
         @Override
@@ -361,6 +367,12 @@ public class _macro
         {
             _e.staticBlock( _staticBlock.cloneOf( _prototype ) );
         }     
+        
+        @Override
+        public void expandTo( _enum _draft, Context context )            
+        {
+            _draft.staticBlock( _staticBlock.cloneOf( _prototype ) );
+        }
 
         @Override
         public void expandTo( _interface _i, Object... keyValuePairs )
@@ -382,6 +394,7 @@ public class _macro
             this.template = BindML.compile( bodyTemplate );
         }
         
+        @Override
         public void expandTo( _enum _e, Object...keyValuePairs )            
         {
             _e.staticBlock( 
@@ -389,14 +402,24 @@ public class _macro
                      Author.toString( template, VarContext.of(keyValuePairs) ) ) );
         }
                 
-        public void expandTo( _class _tailored, Object...keyValuePairs )            
+        @Override
+        public void expandTo( _enum _e, Context context )            
         {
-            expandTo( _tailored, VarContext.of( keyValuePairs ) );
+            _e.staticBlock( 
+                 _staticBlock.of( 
+                     Author.toString( template, context ) ) );
         }
         
-        public void expandTo( _class _tailored, Context context )
+        @Override
+        public void expandTo( _class _draft, Object...keyValuePairs )            
         {
-            _tailored.staticBlock( 
+            expandTo( _draft, VarContext.of( keyValuePairs ) );
+        }
+        
+        @Override
+        public void expandTo( _class _draft, Context context )
+        {
+            _draft.staticBlock( 
                 _staticBlock.of( Author.toString( template, context ) ) );
         }        
 
@@ -420,20 +443,20 @@ public class _macro
             this.ctor = ctor;
         }
 
-        public void expandTo( _enum _tailored, Object...keyValuePairs )            
+        public void expandTo( _enum _draft, Object...keyValuePairs )            
         {
-            _tailored.constructor( _constructors._constructor.of( ctor ) );
+            _draft.constructor( _constructors._constructor.of( ctor ) );
         }
                 
-        public void expandTo( _class _tailored, Object...keyValuePairs )            
+        public void expandTo( _class _draft, Object...keyValuePairs )            
         {
-            _tailored.constructor( _constructors._constructor.of( ctor ) );
+            _draft.constructor( _constructors._constructor.of( ctor ) );
         }
         
    
-        public void expandTo( _class _tailored, Context context )
+        public void expandTo( _class _draft, Context context )
         {
-            _tailored.constructor( _constructors._constructor.of( ctor ) );
+            _draft.constructor( _constructors._constructor.of( ctor ) );
         }        
     }
     
@@ -442,7 +465,7 @@ public class _macro
  _class or _enum
      */
     public static class ExpandConstructor
-        implements _macroClass.expansion, _macroEnum.expansion
+        implements _typeExpansion
     {
         public Form signature;
         public Template body;
@@ -490,22 +513,34 @@ public class _macro
         }
 
         
-        public void expandTo( _enum _tailored, Object...keyValuePairs )            
+        public void expandTo( _enum _draft, Object...keyValuePairs )            
         {            
-            _tailored.constructor( expand( VarContext.of( keyValuePairs ) ) );
+            _draft.constructor( expand( VarContext.of( keyValuePairs ) ) );
         }
         
-        
-        public void expandTo( _class _tailored, Object...keyValuePairs )            
+        public void expandTo( _enum _draft, Context context )            
         {
-            _tailored.constructor( expand( VarContext.of( keyValuePairs ) ) );            
-        }
-        
-        public void expandTo( _class _tailored, Context context )            
-        {
-            _tailored.constructor( expand( context ) );            
+            _draft.constructor( expand( context ) );            
         }
                 
+        
+        public void expandTo( _class _draft, Object...keyValuePairs )            
+        {
+            _draft.constructor( expand( VarContext.of( keyValuePairs ) ) );            
+        }
+        
+        public void expandTo( _class _draft, Context context )            
+        {
+            _draft.constructor( expand( context ) );            
+        }
+                
+        
+        @Override
+        public void expandTo( _interface _i, Object... keyValuePairs )
+        {
+            throw new ModelException( "Interfaces cannot have constructors" );
+        }
+        
         public _constructor expand( Context context )
         {
             _constructors._constructor _c = null;
@@ -528,6 +563,7 @@ public class _macro
             }
             return _c;            
         }        
+
     }
     
     /**
@@ -560,15 +596,19 @@ public class _macro
             _e.packageName( packageName );
         }
         
-        
-        public void expandTo( _class _tailored, Object...keyValuePairs )            
+        public void expandTo( _enum _draft, Context context )
         {
-            _tailored.packageName( packageName );
+            _draft.packageName( packageName );
+        }
+                
+        public void expandTo( _class _draft, Object...keyValuePairs )            
+        {
+            _draft.packageName( packageName );
         }
         
-        public void expandTo( _class _tailored, Context context )
+        public void expandTo( _class _draft, Context context )
         {
-            _tailored.packageName( packageName );
+            _draft.packageName( packageName );
         }
 
         @Override
@@ -595,15 +635,20 @@ public class _macro
         {
             _e.packageName( packageNameForm.author( VarContext.of( keyValuePairs) ) );
         }
-        
-        public void expandTo( _class _tailored, Object...keyValuePairs )            
+
+        public void expandTo( _enum _e, Context context )
         {
-            expandTo( _tailored, VarContext.of( keyValuePairs ) );
+            _e.packageName( packageNameForm.author( context ) );
         }
         
-        public void expandTo( _class _tailored, Context context )
+        public void expandTo( _class _draft, Object...keyValuePairs )            
         {
-            _tailored.packageName( packageNameForm.author( context ) );
+            expandTo( _draft, VarContext.of( keyValuePairs ) );
+        }
+        
+        public void expandTo( _class _draft, Context context )
+        {
+            _draft.packageName( packageNameForm.author( context ) );
         }        
 
         @Override
@@ -636,21 +681,124 @@ public class _macro
             _e.imports( _imports.of( imports ) );
         }
         
-        public void expandTo( _class _tailored, Object...keyValuePairs )            
+        public void expandTo( _enum _e, Context context )
         {
-            //expandTo( _tailored, VarContext.ofKeyValueArray( (Object[])keyValuePairs ) );
-            _tailored.imports( _imports.of( imports ) );
+            _e.imports( _imports.of( imports ) );
         }
         
-        public void expandTo( _class _tailored, Context context )
+        public void expandTo( _class _draft, Object...keyValuePairs )            
         {
-            _tailored.imports( _imports.of( imports ) );
+            //expandTo( _draft, VarContext.ofKeyValueArray( (Object[])keyValuePairs ) );
+            _draft.imports( _imports.of( imports ) );
+        }
+        
+        public void expandTo( _class _draft, Context context )
+        {
+            _draft.imports( _imports.of( imports ) );
         }
 
         @Override
         public void expandTo( _interface _i, Object... keyValuePairs )
         {
             _i.imports( _imports.of( imports ) );
+        }
+    }
+    
+    public static class ExpandClassAnnotations
+        implements _typeExpansion
+    {
+        public static ExpandClassAnnotations of (
+            _anns annotations, String[] remove, String[] addMarkup )
+        {
+            return new ExpandClassAnnotations( annotations, remove, addMarkup ); 
+        }
+        
+        private final _anns annotations;
+        
+        private final Form[] add;
+        
+        
+        public ExpandClassAnnotations( 
+            _anns _source, String[] remove, String[] addMarkup )
+        {
+            //create a prototype
+            _anns _as = new _anns( _source );
+            
+            //remove all I need
+            List<_ann> toRemove = new ArrayList<_ann>();
+            if( remove != null )
+            {
+                for( int i = 0; i < remove.length; i++ )
+                {
+                    String rem = remove[ i ];
+                    for( int j = 0; j < _as.count(); j++ )
+                    {
+                        if( _as.getAt( j ).name.equals( rem ) )
+                        {
+                            toRemove.add( _as.getAt( j ) );
+                        }
+                    }                    
+                }
+                _as.remove( toRemove );      
+            }
+            if( addMarkup == null )
+            {
+                this.add = new Form[ 0 ];
+            }
+            else
+            {
+                this.add = new Form[ addMarkup.length ];
+                for( int i = 0; i < addMarkup.length; i++ )
+                {
+                    add[ i ] = ForML.compile(addMarkup[ i ] );
+                }
+            }
+            this.annotations = _as;            
+        }
+         
+        public void expandTo( _class _draft, Object...keyValuePairs )
+        {
+            expandTo( _draft, VarContext.of( keyValuePairs ) );
+        }
+        
+        public void expandTo( _class _draft, Context context )
+        {
+            _draft.annotate( expand( context ) );
+        }
+        
+        public void expandTo( _enum _draft, Context context )
+        {   //create a prototype
+            _draft.annotate( expand( context ) );
+        }
+        
+        public void expandTo( _enum _e, Object...keyValuePairs )
+        {
+            _e.annotate( expand( VarContext.of( keyValuePairs ) ) ); 
+        }
+        
+        public _anns expand( Context context )
+        {
+            _anns _as = new _anns( this.annotations );
+            
+            for( int i = 0; i < this.add.length; i++ )
+            {
+                String[] adds = this.add[ i ].authorSeries( context );
+                if( adds.length > 0 )
+                {
+                    for( int j=0; j< adds.length; j++ )
+                    {
+                        _ann _a = _ann.of( adds[ j ] );
+                        _as.add( _a );
+                    }
+                }
+            }  
+            return _as;            
+        }        
+
+        @Override
+        public void expandTo( _interface _i, Object... keyValuePairs )
+        {
+            _i.annotate( expand( VarContext.of( keyValuePairs ) ) );
         }
     }
     
@@ -699,19 +847,24 @@ public class _macro
             this.imports = _is;            
         }
         
-        public void expandTo( _class _tailored, Object...keyValuePairs )
+        public void expandTo( _class _draft, Object...keyValuePairs )
         {
-            expandTo( _tailored, VarContext.of( keyValuePairs ) );
+            expandTo( _draft, VarContext.of( keyValuePairs ) );
         }
         
-        public void expandTo( _class _tailored, Context context )
+        public void expandTo( _class _draft, Context context )
         {   //create a prototype
-            _tailored.imports( expand( context ) );
+            _draft.imports( expand( context ) );
         }
         
         public void expandTo( _enum _e, Object...keyValuePairs )
         {
             _e.imports( expand( VarContext.of( keyValuePairs ) ) ); 
+        }
+        
+        public void expandTo( _enum _e, Context context )
+        {
+            _e.imports( expand( context ) );
         }
         
         public _imports expand( Context context )
@@ -734,46 +887,7 @@ public class _macro
     }
     
     
-    public static class CopyClassSignature
-        implements _classOriginator
-    {        
-        //_class _prototype;
-        private final String signature;
-        
-        public CopyClassSignature( String signature )
-        {
-            this.signature = signature;
-        }
-        
-        @Override
-        public _class initClass( Context context )
-        {
-            return _class.of( signature );
-        }
-    }
-    
-    public static class ExpandClassSignature
-        implements _classOriginator
-    {
-        public Template signature;
-        
-        public ExpandClassSignature( String form )
-        {
-            System.out.println( form );
-            this.signature = BindML.compile( form );
-        }
-        
-        public _class initClass( Object... keyValuePairs )
-        {
-            return initClass( VarContext.of( keyValuePairs ) );
-        }
-        
-        @Override
-        public _class initClass( Context context )
-        {
-            return _class.of( Author.toString( signature, context ) );
-        }
-    }  
+
     
     public static class CopyField
         implements _typeExpansion //_classMacro.expansion, _macroEnum.expansion
@@ -790,24 +904,25 @@ public class _macro
             _e.field( new _field( _prototype  ) );
         }
         
+        public void expandTo( _enum _e, Context context )
+        {
+            _e.field( new _field( _prototype  ) );
+        }
+        
         public void expandTo( _interface _i, Object...keyValuePairs )
         {
             _i.field( new _field( _prototype ) );
         }
         
-        //public void expandTo( _annotationType _a, Object...keyValuePairs )
-        //{
-        //    _a.field( new _field( _prototype ) );
-        // }
         
-        public void expandTo( _class _tailored, Object...keyValuePairs )            
+        public void expandTo( _class _draft, Object...keyValuePairs )            
         {
-            expandTo( _tailored, VarContext.of( keyValuePairs ) );
+            expandTo( _draft, VarContext.of( keyValuePairs ) );
         }
         
-        public void expandTo( _class _tailored, Context context )
+        public void expandTo( _class _draft, Context context )
         {
-            _tailored.field( new _field( _prototype ) );
+            _draft.field( new _field( _prototype ) );
         }
     }
     
@@ -879,19 +994,28 @@ public class _macro
             this.fieldForm = ForML.compile( fieldMarkup );
         }
         
+        @Override
         public void expandTo( _enum _e, Object...keyValuePairs )
         {
             _e.fields( fieldForm.authorSeries( VarContext.of( keyValuePairs ) ) );
         }
         
-        public void expandTo( _class _tailored, Object...keyValuePairs )            
+        @Override
+        public void expandTo( _enum _e, Context context )
         {
-            expandTo( _tailored, VarContext.of( keyValuePairs ) );
+            _e.fields( fieldForm.authorSeries( context ) );
         }
         
-        public void expandTo( _class _tailored, Context context )
+        @Override
+        public void expandTo( _class _draft, Object...keyValuePairs )            
         {
-            _tailored.fields( fieldForm.authorSeries( context ) );
+            expandTo( _draft, VarContext.of( keyValuePairs ) );
+        }
+        
+        @Override
+        public void expandTo( _class _draft, Context context )
+        {
+            _draft.fields( fieldForm.authorSeries( context ) );
         }
 
         @Override
@@ -921,29 +1045,34 @@ public class _macro
             _i.method( new _method( _prototype ) );
         }
         
+        @Override
         public void expandTo( _interface _i, Object...keyValuePairs )
         {
             _i.method( new _method( _prototype ) );
         }
         
+        @Override
         public void expandTo( _enum _e, Context context)
         {
             _e.method( new _method( _prototype ) );
         }
         
+        @Override
         public void expandTo( _enum _e, Object...keyValuePairs )
         {
             _e.method( new _method( _prototype ) );
         }
         
-        public void expandTo( _class _tailored, Object...keyValuePairs )            
+        @Override
+        public void expandTo( _class _draft, Object...keyValuePairs )            
         {
-            expandTo( _tailored, VarContext.of( keyValuePairs ) );
+            expandTo( _draft, VarContext.of( keyValuePairs ) );
         }
         
-        public void expandTo( _class _tailored, Context context )
+        @Override
+        public void expandTo( _class _draft, Context context )
         {
-            _tailored.method( new _method( _prototype ) );
+            _draft.method( new _method( _prototype ) );
         }
     }
     
@@ -1006,19 +1135,28 @@ public class _macro
             }
         }
         
+        @Override
         public void expandTo( _enum _e, Object...keyValuePairs )
         {
             _e.method( expand( VarContext.of( keyValuePairs ) ) );
         }
         
-        public void expandTo( _class _tailored, Object...keyValuePairs )            
+        @Override
+        public void expandTo( _enum _e, Context context )
         {
-            expandTo( _tailored, VarContext.of( keyValuePairs ) );
+            _e.method( expand( context ) );
+        }
+        
+        @Override
+        public void expandTo( _class _draft, Object...keyValuePairs )            
+        {
+            expandTo( _draft, VarContext.of( keyValuePairs ) );
         }
                 
-        public void expandTo( _class _tailored, Context context )
+        @Override
+        public void expandTo( _class _draft, Context context )
         {
-            _tailored.method( expand( context  ) );
+            _draft.method( expand( context  ) );
         }
         
         public _method expand( Context context )

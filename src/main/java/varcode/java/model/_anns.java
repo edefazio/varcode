@@ -175,6 +175,14 @@ public class _anns
     }
     
     
+    public _anns remove( List<_ann> toRemove )
+    {
+        for(int i=0; i< toRemove.size(); i++ )
+        {
+            this.listOfAnnotations.remove( toRemove.get( i ) );
+        }
+        return this;
+    }
     public _anns remove( Class clazz )
     {
         remove( clazz.getSimpleName() );

@@ -15,7 +15,10 @@
  */
 package varcode.java.macro;
 
+import java.util.UUID;
 import junit.framework.TestCase;
+import varcode.author.lib.Quote;
+import varcode.context.Context;
 import varcode.java.Java;
 import varcode.java.model._class;
 import varcode.java.macro._macro.*;
@@ -132,13 +135,34 @@ public class _macroClassTest
     
     @Deprecated
     @annotations(remove={"Deprecated"}, add={"@Drafted", "{+classAnnotations+}"} )
-    public static class CopyAnnotation{ }
+    public static class ExpandClassAnnotation{ }
+    
+    public void testExpandClassAnnotations()
+    {
+        _class _c = _macroClass.of( ExpandClassAnnotation.class ).expand( );
+        
+        assertEquals( 1,  _c.getAnnotations().get( "Drafted" ).size() );
+        
+        _c = _macroClass.of( ExpandClassAnnotation.class ).expand( "classAnnotations", "@MyAnnotation" );
+        
+        assertEquals( 1,  _c.getAnnotations().get( "Drafted" ).size() );
+        assertEquals( 1,  _c.getAnnotations().get( "MyAnnotation" ).size() );        
+    }
+    
+    @interface Draft{}
+        
+    @sig("public static class TheClass")
+    @Deprecated
+    @Draft
+    public static class CopyClassAnnotations{}
     
     public void testCopyClassAnnotations()
     {
-        
+        _class _c = _macroClass.of( CopyClassAnnotations.class ).expand( );
+        assertTrue( _c.getAnnotation( Deprecated.class ) != null );
+        assertTrue( _c.getAnnotation( Draft.class ) != null );
+        //assertNull( _c.getAnnotation( sig.class ) );
     }
-    
     public static class CopyStaticBlock
     {
         static

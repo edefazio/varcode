@@ -23,8 +23,7 @@ public class SnipTest
         assertEquals( 14, Snip.eval("5 + 9;") );
         assertEquals( 14, Snip.eval("5 + 9;") );
         assertEquals( 14, Snip.eval("return 5 + 9;") );
-        assertEquals( 14, Snip.eval("return 5 + 9;") );
-        
+        assertEquals( 14, Snip.eval("return 5 + 9;") );         
     }
     
     public void testEvalWithInput()

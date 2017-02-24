@@ -75,6 +75,31 @@ public class _ann
         return name;
     }
     
+    public String getAttributeString( String key )
+    {
+        for(int i = 0; i< this.attributes.keys.size(); i++ )
+        {
+            if( this.attributes.keys.get( i ).equals( key ) )
+            {
+                return 
+                    _attributes.parseStringArray( this.attributes.values.get( i ) )[ 0 ];
+            }
+        }
+        return "";
+    }
+    
+    public String[] getAttributeStringArray( String key )
+    {
+        for(int i = 0; i< this.attributes.keys.size(); i++ )
+        {
+            if( this.attributes.keys.get( i ).equals( key ) )
+            {
+                return _attributes.parseStringArray( this.attributes.values.get( i ) );
+            }
+        }
+        return new String[ 0 ];
+    }
+    
     public String getLoneAttributeString()
     {
         if( this.attributes.values.size() == 0 )
