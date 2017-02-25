@@ -1024,6 +1024,7 @@ public class _enum
                 "{{+?methods:{+$>>(methods)+}" + N + "+}}" +
                 "    }");
             
+            @Override
             public Template getTemplate()
             {
                 if( methods.count() + fields.count() == 0 )
@@ -1041,6 +1042,7 @@ public class _enum
             public _constantBody( _constantBody prototype )
             {
                 methods = _methods.cloneOf( prototype.methods );
+                
                 fields = _fields.cloneOf( prototype.fields );
             }
             public static _constantBody cloneOf( _constantBody prototype )
@@ -1081,6 +1083,7 @@ public class _enum
                 return true;
             }
             
+            @Override
             public Context getContext()
             {
                 return VarContext.of( "methods", methods, "fields", fields );
@@ -1585,6 +1588,7 @@ public class _enum
                 }
                 else if( tokens[ i ].equals( "implements" ) )
                 {
+                    System.out.println( "IMPLEMENTS TOKEN " + i );
                     implementsTokenIndex = i;
                 }
             }
@@ -1627,6 +1631,7 @@ public class _enum
                     throw new ModelException(
                         "implements token cannot be the last token" );
                 }
+                //System.out.println( "DOING IMPLEMENTS" );
                 int tokensLeft = tokens.length - (implementsTokenIndex + 1);
                 String[] implementsTokens = new String[ tokensLeft ];
                 System.arraycopy(
@@ -1645,6 +1650,10 @@ public class _enum
                                 normalImplementsTokens.add( tok );
                             }
                         }
+                    }
+                    else
+                    {
+                        normalImplementsTokens.add( implementsTokens[ i ] );
                     }
                 }
                 sig.implementsFrom

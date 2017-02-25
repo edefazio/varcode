@@ -222,6 +222,7 @@ public class _macroEnum
     {
         public _enum._constants._constant enumConst;
         
+        
         public EnumConstExpand( _enum._constants._constant _const )
         {
             this.enumConst = new _enum._constants._constant( _const );
@@ -294,6 +295,7 @@ public class _macroEnum
         }
         
         
+        @Override
         public _enum initEnum( Object... keyValuePairs )
         {
             return initEnum( VarContext.of( keyValuePairs ) );

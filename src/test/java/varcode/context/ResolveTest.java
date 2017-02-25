@@ -41,9 +41,19 @@ public class ResolveTest
             ssr.resolveScript( VarContext.of(), "java.util.UUID.randomUUID", null ) );
     }
 
+    public void testCaps()
+    {
+        Context context = VarContext.of( "name", "eric" );
+        SmartVarResolver svr = SmartVarResolver.INSTANCE;
+        
+        //assertEquals( "ERIC", svr.resolveVar( context, "NAME" ) );
+        assertEquals( "eric", context.resolveVar( "name" ) );
+        assertEquals( "Eric", context.resolveVar( "Name" ) );
+        assertEquals( "ERIC", context.resolveVar( "NAME" ) );
+    }
+    
     public void testSmartVarResolver()
     {
-
         //verify bindings in the Context take precedence
         System.setProperty( "A", "Setski" );
         assertEquals( 1,

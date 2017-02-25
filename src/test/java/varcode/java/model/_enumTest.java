@@ -21,6 +21,22 @@ public class _enumTest
     extends TestCase
 {
     
+    
+    public void testEnumImplementsInterface()
+    {
+        _enum._signature _es = 
+            _enum._signature.of( "public enum MyEnum implements MyInterface" );
+        
+        assertEquals( "MyInterface", 
+            _es.getImplements().getAt( 0 ).toString() );
+            
+        _enum _e = _enum.of( "public enum MyEnum implements MyInterface" );
+        
+        
+        assertEquals( "MyInterface", 
+            _e.getSignature().getImplements().getAt( 0 ).toString() );
+    }
+    
     @interface Generated {}
     
     @Generated

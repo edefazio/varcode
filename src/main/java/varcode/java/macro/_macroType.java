@@ -168,7 +168,7 @@ public abstract class _macroType
         }
         else
         {   //we copy the static block as is
-            if( _sb != null )
+            if( _sb != null && !_sb.isEmpty() )
             {
                 _expansions.add( new _macro.CopyStaticBlock( _sb ) );
             }

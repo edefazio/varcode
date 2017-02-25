@@ -68,6 +68,13 @@ public class _macro
         
     }
     
+    
+    
+    public @interface defaultTo
+    {
+        String[] value();
+    }
+    
     /**
      * A Way of Documenting and declaring the parameters/ variables
  to be used within a _macro (at the _class, _enum, interface, 

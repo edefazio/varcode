@@ -94,13 +94,19 @@ public interface VarResolver
             }
             if( Character.isUpperCase( varName.charAt( 0 ) ) )
             {   //maybe
+                //System.out.println( "try ");
                 var = context.get( Character.toLowerCase( varName.charAt( 0 ) ) 
-                        + varName.substring( 1 ) );
-                return FirstCap.doFirstCaps( var );
+                    + varName.substring( 1 ) );
+                if( var != null )
+                {
+                    return FirstCap.doFirstCaps( var );
+                }
             }
+            //System.out.println( "IS CAPS " + varName );
             //we are trying to bind a varName that is all caps
             if( varName.toUpperCase().equals( varName ) )
             {   //MAYBE they just want to capitalized version
+                //System.out.println( "YES CAPS " + varName );
                 var = context.get( varName.toLowerCase() );
                 if( var != null )
                 {
