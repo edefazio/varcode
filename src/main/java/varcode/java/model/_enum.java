@@ -1588,7 +1588,6 @@ public class _enum
                 }
                 else if( tokens[ i ].equals( "implements" ) )
                 {
-                    System.out.println( "IMPLEMENTS TOKEN " + i );
                     implementsTokenIndex = i;
                 }
             }
