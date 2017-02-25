@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package varcode.java.macro;
+package varcode.java.draft;
 
 import java.util.AbstractMap;
 import java.util.Map;
@@ -22,7 +22,7 @@ import junit.framework.TestCase;
 import varcode.context.Context;
 import varcode.context.VarBindException;
 import varcode.context.VarBindException.NullVar;
-import varcode.java.macro._macro.ExpandConstructor;
+import varcode.java.draft._draft.DraftConstructor;
 import varcode.java.model._class;
 import varcode.java.model._constructors._constructor;
 import varcode.java.model._fields;
@@ -34,26 +34,26 @@ import varcode.java.model._staticBlock;
  *
  * @author Eric
  */
-public class _macroCopyTest
+public class _draftCopyTest
     extends TestCase
 {
  
     public void testTailorClassSignature()
     {
-        _macroClass.ExpandClassOriginator tcs = 
-            new _macroClass.ExpandClassOriginator( "public class A" );
+        _draftClass.DraftClassSignature tcs = 
+            new _draftClass.DraftClassSignature( "public class A" );
         
-        _class _c = tcs.initClass( Context.EMPTY );
+        _class _c = tcs.draftClass( Context.EMPTY );
         
         assertEquals( "A", _c.getName( ) );
         
-        tcs = new _macroClass.ExpandClassOriginator( 
+        tcs = new _draftClass.DraftClassSignature( 
             "public class {+className*+} {{+?extends:\n" +
             "    extends {+extends+}+}}" );
         
         try
         {
-            tcs.initClass( Context.EMPTY );
+            tcs.draftClass( Context.EMPTY );
             fail("expected exception");
         }
         catch( NullVar e )
@@ -70,9 +70,9 @@ public class _macroCopyTest
     {
         _class _c = _class.of("A");
         
-        _macro.ExpandPackage tp = new _macro.ExpandPackage( "package my.pkg;" );
+        _draft.DraftPackage tp = new _draft.DraftPackage( "package my.pkg;" );
         
-        tp.expandTo( _c, Context.EMPTY );
+        tp.draftTo( _c, Context.EMPTY );
         
         assertEquals( "my.pkg", _c.getPackageName() );
     }
@@ -82,24 +82,24 @@ public class _macroCopyTest
         _class _c = _class.of( "A" );
         
         //transfer nothing (add none remove none)
-        _macro.ExpandImports tti = 
-            new _macro.ExpandImports( new _imports(), null, null );
-        tti.expandTo( _c, Context.EMPTY );
+        _draft.DraftImports tti = 
+            new _draft.DraftImports( new _imports(), null, null );
+        tti.draftTo( _c, Context.EMPTY );
         
         assertEquals( 0, _c.getImports().count() );
         
         //transferImports existing
         tti = 
-            new _macro.ExpandImports( _imports.of( UUID.class ), null, null );
-        tti.expandTo( _c, Context.EMPTY );
+            new _draft.DraftImports( _imports.of( UUID.class ), null, null );
+        tti.draftTo( _c, Context.EMPTY );
         
         assertEquals( 1, _c.getImports().count() );
         assertTrue( _c.getImports().contains(UUID.class) );
         
         //transferImports Add
         tti = 
-            new _macro.ExpandImports( new _imports(), null, new String[]{"java.util.Map"} );
-        tti.expandTo( _c, Context.EMPTY );
+            new _draft.DraftImports( new _imports(), null, new String[]{"java.util.Map"} );
+        tti.draftTo( _c, Context.EMPTY );
         
         //verify that we transferred yet ANOTHER
         assertEquals( 2, _c.getImports().count() );
@@ -113,24 +113,24 @@ public class _macroCopyTest
         _class _c = _class.of("A");
         
         //remove the UUID import, then ADD the Map import
-        _macro.ExpandImports tti = 
-            new _macro.ExpandImports( _imports.of( UUID.class ), 
+        _draft.DraftImports tti = 
+            new _draft.DraftImports( _imports.of( UUID.class ), 
                 new String[]{"java.util"}, 
                 new String[]{"java.util.Map"} );
-        tti.expandTo( _c, Context.EMPTY );
+        tti.draftTo( _c, Context.EMPTY );
         
         assertEquals( 1, _c.getImports().count() );
         assertTrue( _c.getImports().contains( Map.class ) ); 
         
         _c = _class.of( "A" );
         
-        tti = new _macro.ExpandImports( _imports.of( UUID.class ), 
+        tti = new _draft.DraftImports( _imports.of( UUID.class ), 
             new String[]{"java.util"}, 
             new String[]{"{+baseClass*+}"} );
         
         try
         {
-            tti.expandTo( _c, Context.EMPTY );
+            tti.draftTo( _c, Context.EMPTY );
             fail( "expected NullVar" );
         }
         catch( VarBindException.NullVar nv )
@@ -138,7 +138,7 @@ public class _macroCopyTest
             //expected
         }
         
-        tti.expandTo( _c, "baseClass", AbstractMap.class  );
+        tti.draftTo( _c, "baseClass", AbstractMap.class  );
         
         assertEquals( 1, _c.getImports().count() );
         assertTrue( _c.getImports().contains( AbstractMap.class ) );                 
@@ -147,28 +147,28 @@ public class _macroCopyTest
     public void testTailor()
     {
         _class _c = _class.of("A");
-        _macro.ExpandField tf = 
-            _macro.ExpandField.of("public int a;");
+        _draft.DraftField tf = 
+            _draft.DraftField.of("public int a;");
         
-        tf.expandTo( _c, Context.EMPTY );
+        tf.draftTo( _c, Context.EMPTY );
         
         assertNotNull( _c.getField( "a" ) );
         
         _c = _class.of("A");
-        tf = _macro.ExpandField.of("public {+type+} {+name+};");
+        tf = _draft.DraftField.of("public {+type+} {+name+};");
         
         //this should create 0 new fields
-        tf.expandTo( _c, Context.EMPTY );
+        tf.draftTo( _c, Context.EMPTY );
         assertEquals( 0, _c.getFields().count() );
         
         //transfer a single field
-        tf.expandTo( _c, "type", int.class, "name", "x" );
+        tf.draftTo( _c, "type", int.class, "name", "x" );
         assertNotNull( _c.getField("x" ) );
         
         _c = _class.of("A");
         
         //Tailor/Transfer MUTLIPLE fields
-        tf.expandTo( _c, 
+        tf.draftTo( _c, 
             "type", new Object[]{int.class, String.class}, 
             "name", new String[]{"y", "name"} );
         assertEquals( "int", _c.getField("y" ).getType() );
@@ -181,11 +181,11 @@ public class _macroCopyTest
         _constructor _ctor = _constructor.of( "public MyClass( String name)",
                 "this.name = name;" );
         //signature
-        _macro.ExpandConstructor tc = _macro.ExpandConstructor.ofSignature(
+        _draft.DraftConstructor tc = _draft.DraftConstructor.ofSignature(
             _ctor, 
             "public StaticClass( String myName)" );
         _class _c = _class.of("A");
-        tc.expandTo( _c, Context.EMPTY );
+        tc.draftTo( _c, Context.EMPTY );
         
         assertEquals("StaticClass", _c.getConstructor( 0 ).getName() );
         assertEquals( "myName", _c.getConstructor( 0 ).getParameters().getAt( 0 ).getName() );
@@ -193,12 +193,12 @@ public class _macroCopyTest
         
         _c = _class.of("A");
         //body
-        tc = ExpandConstructor.ofBody(
+        tc = DraftConstructor.ofBody(
             _ctor, 
             "this.theName = name;\n" +
             "System.out.println( theName );" );
         
-        tc.expandTo( _c, Context.EMPTY );
+        tc.draftTo( _c, Context.EMPTY );
         
         assertEquals("MyClass", _c.getConstructor( 0 ).getName() );
         assertEquals( "name", _c.getConstructor( 0 ).getParameters().getAt( 0 ).getName() );
@@ -212,45 +212,45 @@ public class _macroCopyTest
      */
     public void testCopy()
     {
-        _macroClass.CopyClassOriginator ccs = 
-            new _macroClass.CopyClassOriginator( 
+        _draftClass.CopyClassSignature ccs = 
+            new _draftClass.CopyClassSignature( 
                 "public class MyClass extends BaseClass implements MyInterface" );
-        _class _c = ccs.initClass( Context.EMPTY );
+        _class _c = ccs.draftClass( Context.EMPTY );
         
         assertEquals( "MyClass", _c.getName() );        
         assertEquals( "BaseClass", _c.getExtends().getAt( 0 ) );
         assertEquals( "MyInterface", _c.getImplements().getAt( 0 ) );
         
-        _macro.CopyField cf = new _macro.CopyField(
+        _draft.CopyField cf = new _draft.CopyField(
             _fields._field.of("public static final int a = 100;" ) );
-        cf.expandTo( _c, Context.EMPTY );
+        cf.draftTo( _c, Context.EMPTY );
         _fields._field _f = _c.getField( "a" );
         assertTrue( _f.getModifiers().containsAll( "public", "static", "final" ) );
         assertEquals( "int", _f.getType() );
         assertEquals( "100", _f.getInit().getCode() );
         
-        _macro.CopyImports ci = 
-            new _macro.CopyImports(_imports.of( UUID.class ));
+        _draft.CopyImports ci = 
+            new _draft.CopyImports(_imports.of( UUID.class ));
         
-        ci.expandTo( _c, Context.EMPTY );
+        ci.draftTo( _c, Context.EMPTY );
         assertTrue( _c.getImports().contains( UUID.class ) );
         
         
-        _macro.CopyMethod cm = new _macro.CopyMethod(
+        _draft.CopyMethod cm = new _draft.CopyMethod(
             _methods._method.of("public static void main(String[] args)",
                 "System.out.println( \"Hi\");" ) );        
-        cm.expandTo( _c, Context.EMPTY );
+        cm.draftTo( _c, Context.EMPTY );
         _methods._method _m = _c.getMethod( "main" );        
         assertTrue( _m.getModifiers().containsAll( "public", "static") );
         
-        _macro.CopyPackage cp = new _macro.CopyPackage("ex.mypackage");
-        cp.expandTo( _c, Context.EMPTY );        
+        _draft.CopyPackage cp = new _draft.CopyPackage("ex.mypackage");
+        cp.draftTo( _c, Context.EMPTY );        
         assertEquals( "ex.mypackage", _c.getPackageName() );
         
-        _macro.CopyStaticBlock csb = new _macro.CopyStaticBlock(
+        _draft.CopyStaticBlock csb = new _draft.CopyStaticBlock(
             _staticBlock.of( "System.out.println( \"Hi from static block\");" ) );
         
-        csb.expandTo( _c, Context.EMPTY );
+        csb.draftTo( _c, Context.EMPTY );
         assertNotNull( _c.getStaticBlock() );
         
     }

@@ -13,38 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package varcode.java.macro;
+package varcode.java.draft;
 
 import junit.framework.TestCase;
 import varcode.java.Java;
 import varcode.java.model._enum;
-import varcode.java.macro._macro.*;
+import varcode.java.draft._draft.*;
 
 /**
  * Rough Draft -> changes
  *
  * <LI>
- * _workspaceMacro wsm = _macro.match( "all classes in package...", Type.Class,
- * Name.contains, Name.statsWith ) .removeField( "LOG" ) .removeImport( "
- * .remove
- *
- * _macroEnum.of( MyClass.class ) .removeField( "fieldName" ) .removeField( _f )
- * .addField("public static final MASK =
- *
- *
- * This is something else So I could pass in something that would: 1) Match a
- * particular method MatchMethod 2) Match a particular sequence of code
- * MatchCodeSequence 3)
+ _workspaceMacro wsm = _draft.match( "all classes in package...", Type.Class,
+ Name.contains, Name.statsWith ) .removeField( "LOG" ) .removeImport( "
+ .remove
+
+ _macroEnum.of( MyClass.class ) .removeField( "fieldName" ) .removeField( _f )
+ .addField("public static final MASK =
+
+
+ This is something else So I could pass in something that would: 1) Match a
+ particular method MatchMethod 2) Match a particular sequence of code
+ MatchCodeSequence 3)
  *
  * @author M. Eric DeFazio
  */
 @imports(remove={"varcode.java", "junit"},add={"java.util.Map", "java.util.UUID", "{+addImports+}"})
-public enum _macroEnumDraft
+public enum _enumDraft
 {
     INSTANCE;
     
-    
-
     //TODO parameterize the class
     @sig("public enum {+Name+}")
     public enum ClassName

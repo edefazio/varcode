@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package varcode.java.macro;
+package varcode.java.draft;
 
 import java.util.List;
 import varcode.java.model._ann;
@@ -24,14 +24,14 @@ import varcode.java.model._fields;
  * 
  * @author Eric
  */
-public class _macroFields
+public class _draftFields
 {
     
-    public static void prepareFields( List<_macro._typeExpansion> _expansions, _fields _fs )
+    public static void prepareFields( List<_draft._typeDraft> _expansions, _fields _fs )
     {        
         for( int i = 0; i < _fs.count(); i++ )
         {
-            _macro._typeExpansion e = prepareField( _fs.getAt( i ) );
+            _draft._typeDraft e = prepareField( _fs.getAt( i ) );
             if( e != null )
             {
                 _expansions.add( e );
@@ -44,13 +44,13 @@ public class _macroFields
      * @param _f
      * @return 
      */
-    public static _macro._typeExpansion prepareField( _fields._field _f )
+    public static _draft._typeDraft prepareField( _fields._field _f )
     {
         _anns _as = _f.getAnnotations();
-        if( !_as.contains( _macro.remove.class ) )
+        if( !_as.contains( _draft.remove.class ) )
         {   //we are either copying or tailoring the field                           
-            _ann parameter = _as.getOne( _macro.$.class );
-            _ann sig = _as.getOne( _macro.sig.class );
+            _ann parameter = _as.getOne( _draft.$.class );
+            _ann sig = _as.getOne( _draft.sig.class );
             
             if( parameter != null )
             {   //you CANNOT have BOTH sig Macros AND parameterization
@@ -64,14 +64,14 @@ public class _macroFields
                 
                 _fields._field _p = new _fields._field( _f );
                 _p.getAnnotations().remove( parameter.getName() );
-                return _macro.ExpandField.parameterize( _p, valuesArray );
+                return _draft.DraftField.parameterize( _p, valuesArray );
             }
             //else if( sig != null )
             //{   //we didnt explicitly tailor or remove it, so copy the method
             //    System.out.println( "processing "+ sig );
             // }
             //just copy the field                        
-            return new _macro.CopyField( _f );
+            return new _draft.CopyField( _f );
         }
         return null;
     }

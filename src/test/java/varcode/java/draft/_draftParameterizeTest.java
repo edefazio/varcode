@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package varcode.java.macro;
+package varcode.java.draft;
 
 import junit.framework.TestCase;
-import varcode.java.macro._macro.$;
-import varcode.java.macro._macro.ExpandField;
+import varcode.java.draft._draft.$;
+import varcode.java.draft._draft.DraftField;
 import varcode.java.model._class;
 import varcode.java.model._fields._field;
 /**
  *
  * @author Eric
  */
-public class _macroParameterizeTest
+public class _draftParameterizeTest
     extends TestCase
 {
      
@@ -32,38 +32,38 @@ public class _macroParameterizeTest
     {
         
         _field _f = _field.of( "public int count = 100;" );
-        ExpandField tf = 
-            ExpandField.parameterize( _f, "100", "count" );
+        DraftField tf = 
+            DraftField.parameterize( _f, "100", "count" );
         _class _c = _class.of("public class A");
                 
         
         //this should work fine
-        //tf.expandTo( _c, Context.EMPTY );
+        //tf.draftTo( _c, Context.EMPTY );
         
-        tf.expandTo( _c, "count", 1 );
+        tf.draftTo( _c, "count", 1 );
         assertEquals( "1", 
             _c.getField("count").getInit().getCode().toString() );
         
         
         //System.out.println( _c );        
-        //tf.expandTo( _c, Context.EMPTY );
+        //tf.draftTo( _c, Context.EMPTY );
     }
     
     public void testParameterizeFields()
     {
         _field _f = _field.of( "public int count;" );
-        ExpandField tf = 
-            ExpandField.parameterize( _f, "int", "type", "count", "name" );
+        DraftField tf = 
+            DraftField.parameterize( _f, "int", "type", "count", "name" );
         
         _class _c = _class.of("public class A");
-        tf.expandTo( _c, 
+        tf.draftTo( _c, 
             "type", long.class, 
             "name", "a" );
         
         assertEquals( "long", _c.getField("a").getType() );
         
         _c = _class.of("public class A");
-        tf.expandTo( _c, "name", new String[]{"a", "b"}, "type", new Class[]{long.class, int.class} );
+        tf.draftTo( _c, "name", new String[]{"a", "b"}, "type", new Class[]{long.class, int.class} );
         assertEquals( "long", _c.getField("a").getType() );
         assertEquals( "int", _c.getField("b").getType() );
         
@@ -73,8 +73,8 @@ public class _macroParameterizeTest
         // this will add (3) int fields
         // @$({"count", "name"})
         _f = _field.of( "public int count;" );
-        tf = ExpandField.parameterize( _f, "count", "name" );
-        tf.expandTo( _c, "name", new String[]{"x", "y", "z"} );        
+        tf = DraftField.parameterize( _f, "count", "name" );
+        tf.draftTo( _c, "name", new String[]{"x", "y", "z"} );        
         assertEquals( "int", _c.getField( "x" ).getType() );
         assertEquals( "int", _c.getField( "y" ).getType() );
         assertEquals( "int", _c.getField( "z" ).getType() );        
@@ -84,9 +84,9 @@ public class _macroParameterizeTest
     public void testParamOptional()
     {
          _field _f = _field.of( "public int count = 100;" );
-         ExpandField tf = ExpandField.parameterizeOptional( _f, " = 100", "value" );
+         DraftField tf = DraftField.parameterizeOptional( _f, " = 100", "value" );
          _class _c = _class.of("A");
-         tf.expandTo( _c, Context.EMPTY );
+         tf.draftTo( _c, Context.EMPTY );
          
          System.out.println( _c );
     }

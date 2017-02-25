@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package varcode.java.macro;
+package varcode.java.draft;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -27,7 +27,7 @@ import varcode.ModelException;
 import varcode.author.Author;
 import varcode.context.Context;
 import varcode.context.VarContext;
-import varcode.java.macro._macroClass._classOriginator;
+import varcode.java.draft._draftClass._classOriginator;
 import varcode.java.model._ann;
 import varcode.java.model._anns;
 import varcode.java.model._class;
@@ -48,38 +48,57 @@ import varcode.markup.form.Form;
 import varcode.markup.forml.ForML;
 
 /**
- * Annotations 
+ * A draft makes the act of building SPECIALIZED code Easy.
+ * 
+ * A Draft is a fully functional Java Class/ Enum / Interface or AnnotationType
+ * that can have have _draft annotations associated with entities that denote
+ * "instructions" for creating a new draft or (specialized) version of the code.
+ * 
+ * <UL>
+ * <LI>@annotations signify which aspects of the code are parameterized/variable
+ * <LI>the _typeDraft entities are the "workers" who enact the creation of the
+ * 
+ * components of the Draft.
+ * there are:
+ * <UL>
+ *  <LI> Copy... variants which do simple copies of existing models to the 
+ *  <LI> Draft... variants that create new parameterized 
+ * </UL>
+ * </UL>
+ * 
+ * In a similar vein it seems the JVM may be headed for a similar kind of dynamicity
+ * this tries to make the act 
+ * <A HREF="https://youtu.be/gii6ySfsVfs?t=22m47s">John Rose, JVMLS 2016 "templates Classes"</A> 
+ * @sig("public class {+className+}")
+ * 
  * @author M. Eric DeFazio eric@varcode.io
  */
-public class _macro
-{
-    
-    public interface _typeExpansion
-        //extends _macroClass.expansion, _macroEnum.expansion
+public class _draft
+{   
+    public interface _typeDraft
     {
-        public void expandTo( _class _c, Object...keyValuePairs ); 
-        public void expandTo( _class _c, Context context ); 
+        public void draftTo( _class _c, Object...keyValuePairs ); 
         
-        public void expandTo( _enum _e, Object...keyValuePairs );
+        public void draftTo( _class _c, Context context ); 
         
-        public void expandTo( _enum _e, Context context  );
+        public void draftTo( _enum _e, Object...keyValuePairs );
         
-        public void expandTo( _interface _i, Object...keyValuePairs );
+        public void draftTo( _enum _e, Context context  );
+        
+        public void draftTo( _interface _i, Object...keyValuePairs );
         
     }
     
-    
-    
-    public @interface defaultTo
-    {
-        String[] value();
-    }
+    //public @interface defaultTo
+   // {
+   //     String[] value();
+   // }
     
     /**
      * A Way of Documenting and declaring the parameters/ variables
- to be used within a _macro (at the _class, _enum, interface, 
- _annotationType level)
-     */
+ to be used within a _draft (at the _class, _enum, interface, 
+  _annotationType level)
+     
     @Documented
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.TYPE)
@@ -87,8 +106,9 @@ public class _macro
     {
         String[] value();
     }
+    */ 
     
-    /** _macro Annotation to customize the package name
+    /** _draft Annotation to customize the package name
      * @packageName("io.typeframe.fields") //set the packageName statically
      * @packageName("io.typeframe.{+project+}") //set packageName using the "project" var
      */
@@ -113,7 +133,7 @@ public class _macro
     }
     
     /** 
-     * _macro Annotation describing the contents of a static Block 
+     * _draft Annotation describing the contents of a static Block 
      * @staticBlock({"System.out.println( \"Hi\" );}) //constant static block
      * @staticBlock({"{+init+}"}); //set static Block content by var "init"
      */
@@ -125,7 +145,7 @@ public class _macro
         String[] value();
     }
     
-    /** _macro Annotation describing one or more fields
+    /** _draft Annotation describing one or more fields
      * @fields( {"public int a;", "public String name=\"Eric\";"} )
      * <PRE>
      * public class C
@@ -167,35 +187,9 @@ public class _macro
     {
         String[] value();
     }
- 
-    /** _macro Annotation for adding annotations to an element
- i.e. 
-     * <PRE>
-     * @annotation({"@Deprecated"})
-     * public static AtomicBoolean isEmpty;
-     * -----
-     * @Deprecated
-     * public static AtomicBoolean isEmpty;
-     * 
-     * @annotation({"{+json+}"})
-     * public String model;
-     * 
-     * ----------- with ( "json", "@JsonProperty(\"carModel\")" );
-     * 
-     * @JsonProperty("carModel")
-     * public String name;
-     * </PRE>
-    
-    @Documented
-    @Retention(RetentionPolicy.RUNTIME)
-    public @interface annotation 
-    {
-        String[] values();
-    }
-    */ 
-    
+     
     /**
-     * _macro Annotation to add / remove imports
+     * _draft Annotation to add / remove imports
      */
     @Documented
     @Retention(RetentionPolicy.RUNTIME)
@@ -210,7 +204,7 @@ public class _macro
     }
 
     /**
-     * _macro annotation to define the signature 
+     * _draft annotation to define the signature 
  Annotation applied to the signature of class, enum, interface
  definitions, methods, constructors, fields... contains the markup to be
      * compiled to a {@link Template} for creating the signature:
@@ -262,8 +256,7 @@ public class _macro
     }
     
     /**
-     * _macro Annotation for replacing code 
-     * within a body of a method between a named label:
+     * _draft Annotation for replacing code within a body of a method between a named label:
      * <PRE>
      * @formAt(form="System.out.println( {+fieldName+} );\n",at="label" )
      * public void describe()
@@ -294,7 +287,7 @@ public class _macro
     }
     
     /**
-     * _macro Annotation to Replace a key with a parameter
+     * _draft Annotation to Replace a key with a parameter
      * <PRE>
      * @$({"100", "nameCount"})
      * public final int names = 100;
@@ -314,8 +307,8 @@ public class _macro
     
     
     /**
-     * _macro Annotation for replacing the entire body of a 
-     * constructor or method with a form
+     * _draft Annotation for replacing the entire body of a 
+ constructor or method with a form
      * <PRE>
      * @body("return {{+:{+FIELDNAME+}.storeState( {+name+} ) | +}};" ) 
      * public long store( Boolean value1, Boolean value2 ) 
@@ -329,15 +322,13 @@ public class _macro
     @Retention(RetentionPolicy.RUNTIME)
     public @interface body
     {
-        /**
-         * the BindML markup used to create a Template for the body
-         */
-        String value();
+        /** the BindML markup used to create a Template for the body*/
+        String[] value();
     }
 
     /**
-     * _macro annotation for removing a component 
-     * (field, method, nest, etc.) when macro expanding
+     * _draft annotation for removing a component 
+ (field, method, nest, etc.) when macro expanding
      */
     @Documented
     @Retention(RetentionPolicy.RUNTIME)
@@ -346,10 +337,10 @@ public class _macro
     }
     
     /**
-     * _macro for Copying a static block to a target class / enum
+     * _draft for Copying a static block to a target class / enum
      */
     public static class CopyStaticBlock
-        implements _typeExpansion //_classMacro.expansion, _macroEnum.expansion
+        implements _typeDraft //_classMacro.expansion, _macroEnum.expansion
     {
         public _staticBlock _prototype;
             
@@ -359,50 +350,50 @@ public class _macro
         }
 
         @Override
-        public void expandTo( _class _draft, Object...keyValuePairs )            
+        public void draftTo( _class _draft, Object...keyValuePairs )            
         {
             _draft.staticBlock( _staticBlock.cloneOf( _prototype ) );
         }
 
-        public void expandTo( _class _draft, Context context )            
+        public void draftTo( _class _draft, Context context )            
         {
             _draft.staticBlock( _staticBlock.cloneOf( _prototype ) );
         }
         
         @Override
-        public void expandTo( _enum _e, Object...keyValuePairs )            
+        public void draftTo( _enum _e, Object...keyValuePairs )            
         {
             _e.staticBlock( _staticBlock.cloneOf( _prototype ) );
         }     
         
         @Override
-        public void expandTo( _enum _draft, Context context )            
+        public void draftTo( _enum _draft, Context context )            
         {
             _draft.staticBlock( _staticBlock.cloneOf( _prototype ) );
         }
 
         @Override
-        public void expandTo( _interface _i, Object... keyValuePairs )
+        public void draftTo( _interface _i, Object... keyValuePairs )
         {
             throw new ModelException("Cannot add Static Block to an interface " ); 
         }
     }
     
     /**
-     * _macro expansion for Tailoring a static block to a target class
+     * _draft expansion for Tailoring a static block to a target class
      */
-    public static class ExpandStaticBlock
-        implements _typeExpansion //_classMacro.expansion, _macroEnum.expansion
+    public static class DraftStaticBlock
+        implements _typeDraft //_classMacro.expansion, _macroEnum.expansion
     {
         public Template template;
         
-        public ExpandStaticBlock( String... bodyTemplate )
+        public DraftStaticBlock( String... bodyTemplate )
         {
             this.template = BindML.compile( bodyTemplate );
         }
         
         @Override
-        public void expandTo( _enum _e, Object...keyValuePairs )            
+        public void draftTo( _enum _e, Object...keyValuePairs )            
         {
             _e.staticBlock( 
                  _staticBlock.of( 
@@ -410,7 +401,7 @@ public class _macro
         }
                 
         @Override
-        public void expandTo( _enum _e, Context context )            
+        public void draftTo( _enum _e, Context context )            
         {
             _e.staticBlock( 
                  _staticBlock.of( 
@@ -418,30 +409,30 @@ public class _macro
         }
         
         @Override
-        public void expandTo( _class _draft, Object...keyValuePairs )            
+        public void draftTo( _class _draft, Object...keyValuePairs )            
         {
-            expandTo( _draft, VarContext.of( keyValuePairs ) );
+            draftTo( _draft, VarContext.of( keyValuePairs ) );
         }
         
         @Override
-        public void expandTo( _class _draft, Context context )
+        public void draftTo( _class _draft, Context context )
         {
             _draft.staticBlock( 
                 _staticBlock.of( Author.toString( template, context ) ) );
         }        
 
         @Override
-        public void expandTo( _interface _i, Object... keyValuePairs )
+        public void draftTo( _interface _i, Object... keyValuePairs )
         {
             throw new ModelException( "Cannot add static block to interface " ); 
         }
     }
     
     /**
-     * _macro for copying a constructor to a target class/enum
+     * _draft for copying a constructor to a target class/enum
      */
     public static class CopyConstructor
-        implements _macroClass.expansion
+        implements _draftClass.expansion
     {
         private final _constructors._constructor ctor;
         
@@ -468,36 +459,36 @@ public class _macro
     }
     
     /**
-     * _macro expansion for tailoring and transferring a constructor to a 
+     * _draft expansion for tailoring and transferring a constructor to a 
  _class or _enum
      */
-    public static class ExpandConstructor
-        implements _typeExpansion
+    public static class DraftConstructor
+        implements _typeDraft
     {
         public Form signature;
         public Template body;
         public _constructor _prototype;
         
         
-        public static ExpandConstructor of( 
+        public static DraftConstructor of( 
             _constructor _prototype, String signatureForm, String bodyForm )
         {
-            return new ExpandConstructor( _prototype, signatureForm, bodyForm );
+            return new DraftConstructor( _prototype, signatureForm, bodyForm );
         }
         
-        public static ExpandConstructor ofSignature( 
+        public static DraftConstructor ofSignature( 
             _constructor _prototype, String signatureForm )
         {
-            return new ExpandConstructor( _prototype, signatureForm, null );
+            return new DraftConstructor( _prototype, signatureForm, null );
         }
         
-        public static ExpandConstructor ofBody( 
+        public static DraftConstructor ofBody( 
             _constructor _prototype, String bodyForm )
         {
-            return new ExpandConstructor( _prototype, null, bodyForm );
+            return new DraftConstructor( _prototype, null, bodyForm );
         }
         
-        public ExpandConstructor( 
+        public DraftConstructor( 
             _constructor _prototype, String signatureForm, String bodyForm )
         {
             if( signatureForm != null )
@@ -520,30 +511,30 @@ public class _macro
         }
 
         
-        public void expandTo( _enum _draft, Object...keyValuePairs )            
+        public void draftTo( _enum _draft, Object...keyValuePairs )            
         {            
             _draft.constructor( expand( VarContext.of( keyValuePairs ) ) );
         }
         
-        public void expandTo( _enum _draft, Context context )            
+        public void draftTo( _enum _draft, Context context )            
         {
             _draft.constructor( expand( context ) );            
         }
                 
         
-        public void expandTo( _class _draft, Object...keyValuePairs )            
+        public void draftTo( _class _draft, Object...keyValuePairs )            
         {
             _draft.constructor( expand( VarContext.of( keyValuePairs ) ) );            
         }
         
-        public void expandTo( _class _draft, Context context )            
+        public void draftTo( _class _draft, Context context )            
         {
             _draft.constructor( expand( context ) );            
         }
                 
         
         @Override
-        public void expandTo( _interface _i, Object... keyValuePairs )
+        public void draftTo( _interface _i, Object... keyValuePairs )
         {
             throw new ModelException( "Interfaces cannot have constructors" );
         }
@@ -574,11 +565,11 @@ public class _macro
     }
     
     /**
-     * _macro for copying a package to the target _class, _interface
+     * _draft for copying a package to the target _class, _interface
  _enum, or _annotationType
      */
     public static class CopyPackage
-        implements _typeExpansion //_classMacro.expansion, _macroEnum.expansion
+        implements _typeDraft //_classMacro.expansion, _macroEnum.expansion
     {       
         private String packageName;
         
@@ -598,78 +589,78 @@ public class _macro
             this.packageName = packageName;
         }
         
-        public void expandTo( _enum _e, Object...keyValuePairs )
+        public void draftTo( _enum _e, Object...keyValuePairs )
         {
             _e.packageName( packageName );
         }
         
-        public void expandTo( _enum _draft, Context context )
+        public void draftTo( _enum _draft, Context context )
         {
             _draft.packageName( packageName );
         }
                 
-        public void expandTo( _class _draft, Object...keyValuePairs )            
+        public void draftTo( _class _draft, Object...keyValuePairs )            
         {
             _draft.packageName( packageName );
         }
         
-        public void expandTo( _class _draft, Context context )
+        public void draftTo( _class _draft, Context context )
         {
             _draft.packageName( packageName );
         }
 
         @Override
-        public void expandTo( _interface _i, Object... keyValuePairs )
+        public void draftTo( _interface _i, Object... keyValuePairs )
         {
             _i.packageName( packageName );            
         }
     }
     
     /**
-     * _macro Expansion for creating a package
+     * _draft Expansion for creating a package
      */
-    public static class ExpandPackage
-        implements _typeExpansion //_classMacro.expansion, _macroEnum.expansion
+    public static class DraftPackage
+        implements _typeDraft //_classMacro.expansion, _macroEnum.expansion
     {
         public Form packageNameForm;
         
-        public ExpandPackage( String packageNameForm )
+        public DraftPackage( String packageNameForm )
         {
             this.packageNameForm = ForML.compile(packageNameForm );
         }
         
-        public void expandTo( _enum _e, Object...keyValuePairs )
+        public void draftTo( _enum _e, Object...keyValuePairs )
         {
             _e.packageName( packageNameForm.author( VarContext.of( keyValuePairs) ) );
         }
 
-        public void expandTo( _enum _e, Context context )
+        public void draftTo( _enum _e, Context context )
         {
             _e.packageName( packageNameForm.author( context ) );
         }
         
-        public void expandTo( _class _draft, Object...keyValuePairs )            
+        public void draftTo( _class _draft, Object...keyValuePairs )            
         {
-            expandTo( _draft, VarContext.of( keyValuePairs ) );
+            draftTo( _draft, VarContext.of( keyValuePairs ) );
         }
         
-        public void expandTo( _class _draft, Context context )
+        public void draftTo( _class _draft, Context context )
         {
             _draft.packageName( packageNameForm.author( context ) );
         }        
 
         @Override
-        public void expandTo( _interface _i, Object... keyValuePairs )
+        public void draftTo( _interface _i, Object... keyValuePairs )
         {
             _i.packageName( packageNameForm.author( VarContext.of( keyValuePairs ) ) );
         }
     }
     
     /**
-     * _macro expansion for copying imports
+     * _draft expansion for copying imports
      */
     public static class CopyImports
-        implements _typeExpansion //_classMacro.expansion, _macroEnum.expansion
+        implements _typeDraft //_classMacro.expansion, _macroEnum.expansion
     {
         private _imports imports;
         
@@ -683,41 +674,41 @@ public class _macro
             this.imports = _imports.of( imports );
         }
         
-        public void expandTo( _enum _e, Object...keyValuePairs )
+        public void draftTo( _enum _e, Object...keyValuePairs )
         {
             _e.imports( _imports.of( imports ) );
         }
         
-        public void expandTo( _enum _e, Context context )
+        public void draftTo( _enum _e, Context context )
         {
             _e.imports( _imports.of( imports ) );
         }
         
-        public void expandTo( _class _draft, Object...keyValuePairs )            
+        public void draftTo( _class _draft, Object...keyValuePairs )            
         {
             //expandTo( _draft, VarContext.ofKeyValueArray( (Object[])keyValuePairs ) );
             _draft.imports( _imports.of( imports ) );
         }
         
-        public void expandTo( _class _draft, Context context )
+        public void draftTo( _class _draft, Context context )
         {
             _draft.imports( _imports.of( imports ) );
         }
 
         @Override
-        public void expandTo( _interface _i, Object... keyValuePairs )
+        public void draftTo( _interface _i, Object... keyValuePairs )
         {
             _i.imports( _imports.of( imports ) );
         }
     }
     
-    public static class ExpandClassAnnotations
-        implements _typeExpansion
+    public static class DraftClassAnnotations
+        implements _typeDraft
     {
-        public static ExpandClassAnnotations of (
+        public static DraftClassAnnotations of (
             _anns annotations, String[] remove, String[] addMarkup )
         {
-            return new ExpandClassAnnotations( annotations, remove, addMarkup ); 
+            return new DraftClassAnnotations( annotations, remove, addMarkup ); 
         }
         
         private final _anns annotations;
@@ -725,7 +716,7 @@ public class _macro
         private final Form[] add;
         
         
-        public ExpandClassAnnotations( 
+        public DraftClassAnnotations( 
             _anns _source, String[] remove, String[] addMarkup )
         {
             //create a prototype
@@ -763,22 +754,22 @@ public class _macro
             this.annotations = _as;            
         }
          
-        public void expandTo( _class _draft, Object...keyValuePairs )
+        public void draftTo( _class _draft, Object...keyValuePairs )
         {
-            expandTo( _draft, VarContext.of( keyValuePairs ) );
+            draftTo( _draft, VarContext.of( keyValuePairs ) );
         }
         
-        public void expandTo( _class _draft, Context context )
+        public void draftTo( _class _draft, Context context )
         {
             _draft.annotate( expand( context ) );
         }
         
-        public void expandTo( _enum _draft, Context context )
+        public void draftTo( _enum _draft, Context context )
         {   //create a prototype
             _draft.annotate( expand( context ) );
         }
         
-        public void expandTo( _enum _e, Object...keyValuePairs )
+        public void draftTo( _enum _e, Object...keyValuePairs )
         {
             _e.annotate( expand( VarContext.of( keyValuePairs ) ) ); 
         }
@@ -803,27 +794,27 @@ public class _macro
         }        
 
         @Override
-        public void expandTo( _interface _i, Object... keyValuePairs )
+        public void draftTo( _interface _i, Object... keyValuePairs )
         {
             _i.annotate( expand( VarContext.of( keyValuePairs ) ) );
         }
     }
     
-    /** _macro expansion for imports
+    /** _draft expansion for imports
      */
-    public static class ExpandImports
-        implements _typeExpansion //_classMacro.expansion, _macroEnum.expansion
+    public static class DraftImports
+        implements _typeDraft //_classMacro.expansion, _macroEnum.expansion
     {
         private final _imports imports;
         
         private final Form[] add;
         
-        public static ExpandImports of( _imports _i, String[] remove, String[] adds )
+        public static DraftImports of( _imports _i, String[] remove, String[] adds )
         {
-            return new ExpandImports( _i, remove, adds );
+            return new DraftImports( _i, remove, adds );
         }
         
-        public ExpandImports( 
+        public DraftImports( 
             _imports _source, String[] remove, String[] addMarkup )
         {
             //create a prototype
@@ -854,27 +845,27 @@ public class _macro
             this.imports = _is;            
         }
         
-        public void expandTo( _class _draft, Object...keyValuePairs )
+        public void draftTo( _class _draft, Object...keyValuePairs )
         {
-            expandTo( _draft, VarContext.of( keyValuePairs ) );
+            draftTo( _draft, VarContext.of( keyValuePairs ) );
         }
         
-        public void expandTo( _class _draft, Context context )
+        public void draftTo( _class _draft, Context context )
         {   //create a prototype
-            _draft.imports( expand( context ) );
+            _draft.imports( draft( context ) );
         }
         
-        public void expandTo( _enum _e, Object...keyValuePairs )
+        public void draftTo( _enum _e, Object...keyValuePairs )
         {
-            _e.imports( expand( VarContext.of( keyValuePairs ) ) ); 
+            _e.imports( draft( VarContext.of( keyValuePairs ) ) ); 
         }
         
-        public void expandTo( _enum _e, Context context )
+        public void draftTo( _enum _e, Context context )
         {
-            _e.imports( expand( context ) );
+            _e.imports( draft( context ) );
         }
         
-        public _imports expand( Context context )
+        public _imports draft( Context context )
         {
             _imports _is = new _imports( this.imports );
             
@@ -887,17 +878,14 @@ public class _macro
         }        
 
         @Override
-        public void expandTo( _interface _i, Object... keyValuePairs )
+        public void draftTo( _interface _i, Object... keyValuePairs )
         {
-            _i.imports( expand( VarContext.of( keyValuePairs ) ) );
+            _i.imports(draft( VarContext.of( keyValuePairs ) ) );
         }
     }
     
-    
-
-    
     public static class CopyField
-        implements _typeExpansion //_classMacro.expansion, _macroEnum.expansion
+        implements _typeDraft //_classMacro.expansion, _macroEnum.expansion
     {
         private final _fields._field _prototype;
         
@@ -906,41 +894,41 @@ public class _macro
             this._prototype = _prototype;
         }
         
-        public void expandTo( _enum _e, Object...keyValuePairs )
+        public void draftTo( _enum _e, Object...keyValuePairs )
         {
             _e.field( new _field( _prototype  ) );
         }
         
-        public void expandTo( _enum _e, Context context )
+        public void draftTo( _enum _e, Context context )
         {
             _e.field( new _field( _prototype  ) );
         }
         
-        public void expandTo( _interface _i, Object...keyValuePairs )
+        public void draftTo( _interface _i, Object...keyValuePairs )
         {
             _i.field( new _field( _prototype ) );
         }
         
         
-        public void expandTo( _class _draft, Object...keyValuePairs )            
+        public void draftTo( _class _draft, Object...keyValuePairs )            
         {
-            expandTo( _draft, VarContext.of( keyValuePairs ) );
+            draftTo( _draft, VarContext.of( keyValuePairs ) );
         }
         
-        public void expandTo( _class _draft, Context context )
+        public void draftTo( _class _draft, Context context )
         {
             _draft.field( new _field( _prototype ) );
         }
     }
     
-    public static class ExpandField
-        implements _typeExpansion //_classMacro.expansion, _macroEnum.expansion
+    public static class DraftField
+        implements _typeDraft //_classMacro.expansion, _macroEnum.expansion
     {
         public Form fieldForm;
         
-        public static ExpandField of( String markup )
+        public static DraftField of( String markup )
         {
-            return new ExpandField( markup );
+            return new DraftField( markup );
         }
         
         /**
@@ -978,7 +966,7 @@ public class _macro
          * @param keyValues
          * @return 
          */
-        public static ExpandField parameterize( _field _f, String...keyValues )
+        public static DraftField parameterize( _field _f, String...keyValues )
         {          
             _field _p = new _field( _f ); //create a prototype as to not "break" client assumptions
             if( keyValues.length %2 != 0 )
@@ -992,48 +980,48 @@ public class _macro
                 _p.replace( keyValues[ i ], "{+" + keyValues[ i + 1 ] +  "*+}" );
             }
             System.out.println("AUTHOR" + _p.author() );
-            return new ExpandField( _p.author() );
+            return new DraftField( _p.author() );
         }
         
         
-        public ExpandField( String fieldMarkup )
+        public DraftField( String fieldMarkup )
         {
             this.fieldForm = ForML.compile( fieldMarkup );
         }
         
         @Override
-        public void expandTo( _enum _e, Object...keyValuePairs )
+        public void draftTo( _enum _e, Object...keyValuePairs )
         {
             _e.fields( fieldForm.authorSeries( VarContext.of( keyValuePairs ) ) );
         }
         
         @Override
-        public void expandTo( _enum _e, Context context )
+        public void draftTo( _enum _e, Context context )
         {
             _e.fields( fieldForm.authorSeries( context ) );
         }
         
         @Override
-        public void expandTo( _class _draft, Object...keyValuePairs )            
+        public void draftTo( _class _draft, Object...keyValuePairs )            
         {
-            expandTo( _draft, VarContext.of( keyValuePairs ) );
+            draftTo( _draft, VarContext.of( keyValuePairs ) );
         }
         
         @Override
-        public void expandTo( _class _draft, Context context )
+        public void draftTo( _class _draft, Context context )
         {
             _draft.fields( fieldForm.authorSeries( context ) );
         }
 
         @Override
-        public void expandTo( _interface _i, Object... keyValuePairs )
+        public void draftTo( _interface _i, Object... keyValuePairs )
         {
             _i.fields( fieldForm.authorSeries( VarContext.of( keyValuePairs ) ) );
         }
     }    
 
     public static class CopyMethod
-        implements _typeExpansion //_classMacro.expansion, _macroEnum.expansion        
+        implements _typeDraft //_classMacro.expansion, _macroEnum.expansion        
     {
         public final _method _prototype;
         
@@ -1053,45 +1041,45 @@ public class _macro
         }
         
         @Override
-        public void expandTo( _interface _i, Object...keyValuePairs )
+        public void draftTo( _interface _i, Object...keyValuePairs )
         {
             _i.method( new _method( _prototype ) );
         }
         
         @Override
-        public void expandTo( _enum _e, Context context)
+        public void draftTo( _enum _e, Context context)
         {
             _e.method( new _method( _prototype ) );
         }
         
         @Override
-        public void expandTo( _enum _e, Object...keyValuePairs )
+        public void draftTo( _enum _e, Object...keyValuePairs )
         {
             _e.method( new _method( _prototype ) );
         }
         
         @Override
-        public void expandTo( _class _draft, Object...keyValuePairs )            
+        public void draftTo( _class _draft, Object...keyValuePairs )            
         {
-            expandTo( _draft, VarContext.of( keyValuePairs ) );
+            draftTo( _draft, VarContext.of( keyValuePairs ) );
         }
         
         @Override
-        public void expandTo( _class _draft, Context context )
+        public void draftTo( _class _draft, Context context )
         {
             _draft.method( new _method( _prototype ) );
         }
     }
     
-    public static class ExpandMethod
-        implements _typeExpansion //_classMacro.expansion, _macroEnum.expansion
+    public static class DraftMethod
+        implements _typeDraft //_classMacro.expansion, _macroEnum.expansion
     {
         public final Form signatureForm;
         public final Template bodyTemplate;
         public final _method _prototype;
         
         
-        public static ExpandMethod parameterize( 
+        public static DraftMethod parameterize( 
             _method _m, String[] keyValues )
         {
             if( keyValues.length %2 != 0 )
@@ -1105,23 +1093,23 @@ public class _macro
                 _m.replace( keyValues[ i ], "{+" + keyValues[ i + 1 ] +  "*+}" );
             }
             //System.out.println("AUTHOR" + _p.author() );
-            return new ExpandMethod( _m, _m.getSignature().author(), _m.getBody().author() );            
+            return new DraftMethod( _m, _m.getSignature().author(), _m.getBody().author() );            
         }
         
-        public static ExpandMethod of( _method _m, String signature, String... body )
+        public static DraftMethod of( _method _m, String signature, String... body )
         {
-            return new ExpandMethod( _m, signature, body );
+            return new DraftMethod( _m, signature, body );
         }
         
-        public static ExpandMethod ofSignature( _method _m, String signature )
+        public static DraftMethod ofSignature( _method _m, String signature )
         {
-            return new ExpandMethod( _m, signature, null );
+            return new DraftMethod( _m, signature, null );
         }
-        public static ExpandMethod ofBody( _method _m, String... body )
+        public static DraftMethod ofBody( _method _m, String... body )
         {
-            return new ExpandMethod( _m, null, body );
+            return new DraftMethod( _m, null, body );
         }
-        public ExpandMethod( _method _m, String signature, String... body )
+        public DraftMethod( _method _m, String signature, String... body )
         {
             this._prototype = _m;
             if( signature != null )
@@ -1143,25 +1131,25 @@ public class _macro
         }
         
         @Override
-        public void expandTo( _enum _e, Object...keyValuePairs )
+        public void draftTo( _enum _e, Object...keyValuePairs )
         {
             _e.method( expand( VarContext.of( keyValuePairs ) ) );
         }
         
         @Override
-        public void expandTo( _enum _e, Context context )
+        public void draftTo( _enum _e, Context context )
         {
             _e.method( expand( context ) );
         }
         
         @Override
-        public void expandTo( _class _draft, Object...keyValuePairs )            
+        public void draftTo( _class _draft, Object...keyValuePairs )            
         {
-            expandTo( _draft, VarContext.of( keyValuePairs ) );
+            draftTo( _draft, VarContext.of( keyValuePairs ) );
         }
                 
         @Override
-        public void expandTo( _class _draft, Context context )
+        public void draftTo( _class _draft, Context context )
         {
             _draft.method( expand( context  ) );
         }
@@ -1190,7 +1178,7 @@ public class _macro
         }
 
         @Override
-        public void expandTo( _interface _i, Object... keyValuePairs )
+        public void draftTo( _interface _i, Object... keyValuePairs )
         {
             _i.method( expand( VarContext.of( keyValuePairs ) ) ); 
         }

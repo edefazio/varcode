@@ -50,6 +50,13 @@ public class ResolveTest
         assertEquals( "eric", context.resolveVar( "name" ) );
         assertEquals( "Eric", context.resolveVar( "Name" ) );
         assertEquals( "ERIC", context.resolveVar( "NAME" ) );
+        
+        //test mid caps
+        context = VarContext.of( "fieldName", "length" );
+        assertEquals( "length", context.resolveVar( "fieldName" ) );
+        assertEquals( "Length", context.resolveVar( "FieldName" ) );
+        assertEquals( "LENGTH", context.resolveVar( "FIELDNAME" ) );
+        
     }
     
     public void testSmartVarResolver()

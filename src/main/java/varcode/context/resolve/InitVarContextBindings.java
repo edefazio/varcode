@@ -24,6 +24,7 @@ import varcode.author.lib.CountIndex;
 import varcode.author.lib.EscapeString;
 import varcode.author.lib.FirstCap;
 import varcode.author.lib.FirstLower;
+import varcode.author.lib.LineBreak;
 import varcode.author.lib.LowerCase;
 import varcode.author.lib.Prefix;
 import varcode.author.lib.PrintAsLiteral;
@@ -76,6 +77,9 @@ public class InitVarContextBindings
     
     @alias({"quot", "\"" })
     public static final VarScript quote = Quote.INSTANCE;
+    
+    @alias({"linebreak"})
+    public static final VarScript lineBreak = LineBreak.INSTANCE;
     
     @alias({"[#]", "indexCount"})
     public static final VarScript countIndex = CountIndex.INSTANCE;

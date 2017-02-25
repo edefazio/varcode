@@ -137,6 +137,7 @@ public class _code
      *
      * @return context prior to Authoring
      */
+    @Override
     public Context getContext()
     {
         return VarContext.of(
@@ -166,6 +167,7 @@ public class _code
         return sb.toString();
     }
 
+    @Override
     public Template getTemplate()
     {
         return CODEBLOCK;
@@ -231,7 +233,7 @@ public class _code
      */
     public _code addTailCode( Object... codeLines )
     {
-        for(int i=0; i< codeLines.length; i++ )
+        for( int i = 0; i < codeLines.length; i++ )
         {
             this.codeSequence.add( codeLines[ i ].toString() );
         }            

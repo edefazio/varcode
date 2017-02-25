@@ -21,7 +21,6 @@ public class _enumTest
     extends TestCase
 {
     
-    
     public void testEnumImplementsInterface()
     {
         _enum._signature _es = 

@@ -13,37 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package varcode.java.macro;
+package varcode.author.lib;
 
 import varcode.context.Context;
-import varcode.java.model._interface;
+import varcode.context.VarBindException;
+import varcode.context.VarScript;
 
 /**
- *
+ * adds double quotes around a String
+ * 
  * @author Eric
  */
-public class _macroInterface
+public class LineBreak
+    extends ApplyToOneOrMore
+    implements VarScript
 {
-    public interface expansion
-    {
-        public void expandTo( _interface _tailored, Object...keyValuePairs );
+    public static final LineBreak INSTANCE = new LineBreak();
+    
+    /** use INSTANCE */
+    private LineBreak()
+    {        
     }
     
-    public static _macroInterface of( _interface _i )
+    @Override
+    public Object applyToOne( Object object )
     {
-        return new _macroInterface( _i );
-    }
-    
-    public _interface _prototype;
-    
-    public _macroInterface( _interface _prototype )
-    {
-        this._prototype = _prototype;
-    }
-    
-    
-    public _interface expand( Context context )
-    {
-        return null;
+        String s = object.toString();
+        return s + System.lineSeparator();
     }    
+
+    @Override
+    public Object eval( Context context, String input )
+        throws VarBindException
+    {
+        return this.apply( context.resolveVar( input ) );
+    }
 }

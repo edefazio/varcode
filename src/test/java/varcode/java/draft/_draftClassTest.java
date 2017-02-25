@@ -13,51 +13,52 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package varcode.java.macro;
+package varcode.java.draft;
 
+import varcode.java.draft._draftClass;
 import java.util.UUID;
 import junit.framework.TestCase;
 import varcode.author.lib.Quote;
 import varcode.context.Context;
 import varcode.java.Java;
 import varcode.java.model._class;
-import varcode.java.macro._macro.*;
+import varcode.java.draft._draft.*;
 
 /**
  * Rough Draft
  * -> changes
  * 
  * <LI>
- * _workspaceMacro wsm = _macro.match( 
- *  "all classes in package...", Type.Class, Name.contains, Name.statsWith )
- *    .removeField( "LOG" )
- *    .removeImport( "
- * .remove
- * 
- * _macroClass.of( MyClass.class )
- *     .removeField( "fieldName" )
- *     .removeField( _f )
- *     .addField("public static final MASK = 
- * 
- * 
- * This is something else
- * So I could pass in something that would: 
- * 1) Match a particular method MatchMethod
- * 2) Match a particular sequence of code MatchCodeSequence
- * 3) 
+ _workspaceMacro wsm = _draft.match( 
+  "all classes in package...", Type.Class, Name.contains, Name.statsWith )
+    .removeField( "LOG" )
+    .removeImport( "
+ .remove
+ 
+ _draftClass.of( MyClass.class )
+     .removeField( "fieldName" )
+     .removeField( _f )
+     .addField("public static final MASK = 
+ 
+ 
+ This is something else
+ So I could pass in something that would: 
+ 1) Match a particular method MatchMethod
+ 2) Match a particular sequence of code MatchCodeSequence
+ 3) 
  * 
  * @author Eric
  */
 @imports( remove={"varcode.java", "junit"}, add={"java.util.Map", "java.util.UUID", "{+addImports+}"} )
-public class _macroClassTest
+public class _draftClassTest
     extends TestCase
 {   
     
     //the @imports() annotation allows the annotations to be add or removed
     // explicitly or by patterns
     public void testExpandImports()
-    {   //load this class as a _macro, 
-        _class _c = _macroClass.of(_macroClassTest.class ).expand( ); 
+    {   //load this class as a _draft, 
+        _class _c = _draftClass.of(_draftClassTest.class ).draft( ); 
         
         assertTrue( _c.getImports().contains( "java.util.Map" ) );
         assertTrue( _c.getImports().contains( "java.util.UUID" ) );
@@ -71,11 +72,11 @@ public class _macroClassTest
         assertTrue( !authored.contains( "junit" ) );
         
         //add imports 
-        _c = _macroClass.of(_macroClassTest.class ).expand( "addImports", "java.util.HashSet" ); 
+        _c = _draftClass.of(_draftClassTest.class ).draft( "addImports", "java.util.HashSet" ); 
         assertTrue( _c.getImports().contains( "java.util.HashSet" ) );
         
         //add mutliple imports by a single parameter
-        _c = _macroClass.of(_macroClassTest.class ).expand( "addImports", 
+        _c = _draftClass.of(_draftClassTest.class ).draft( "addImports", 
             new Object[] {"java.util.Calendar", "java.util.Date"} ); 
         
         assertTrue( _c.getImports().contains( "java.util.Calendar" ) );
@@ -96,7 +97,7 @@ public class _macroClassTest
     public void testNameLower()
     {
         _class _c = 
-            _macroClass.of( ClassName.class ).expand( "name", "eric" );
+            _draftClass.of( ClassName.class ).draft( "name", "eric" );
         
         assertEquals( "Eric", _c.getName( ) );
     }
@@ -107,7 +108,7 @@ public class _macroClassTest
     
     public void testPackageStatic()
     {
-        _class _c = _macroClass.of( EPackageStatic.class ).expand(  );
+        _class _c = _draftClass.of( EPackageStatic.class ).draft(  );
         assertEquals( "ex.mypackage", _c.getPackageName() );
     }
     
@@ -116,7 +117,7 @@ public class _macroClassTest
     
     public void testPackageExpand()
     {
-        _class _c = _macroClass.of(ExpandPackage.class ).expand("subpkg", "mysub" );
+        _class _c = _draftClass.of(ExpandPackage.class ).draft("subpkg", "mysub" );
         assertEquals( "ex.mypackage.mysub", _c.getPackageName() );
     }
      
@@ -127,7 +128,7 @@ public class _macroClassTest
     
     public void testExpandStaticBlock()
     {
-        _class _c = _macroClass.of( ExpandStaticBlock.class ).expand();
+        _class _c = _draftClass.of( ExpandStaticBlock.class ).draft();
         
         assertTrue( _c.getStaticBlock().author().contains( "out.println" ) );
     }
@@ -139,11 +140,11 @@ public class _macroClassTest
     
     public void testExpandClassAnnotations()
     {
-        _class _c = _macroClass.of( ExpandClassAnnotation.class ).expand( );
+        _class _c = _draftClass.of( ExpandClassAnnotation.class ).draft( );
         
         assertEquals( 1,  _c.getAnnotations().get( "Drafted" ).size() );
         
-        _c = _macroClass.of( ExpandClassAnnotation.class ).expand( "classAnnotations", "@MyAnnotation" );
+        _c = _draftClass.of( ExpandClassAnnotation.class ).draft( "classAnnotations", "@MyAnnotation" );
         
         assertEquals( 1,  _c.getAnnotations().get( "Drafted" ).size() );
         assertEquals( 1,  _c.getAnnotations().get( "MyAnnotation" ).size() );        
@@ -158,7 +159,7 @@ public class _macroClassTest
     
     public void testCopyClassAnnotations()
     {
-        _class _c = _macroClass.of( CopyClassAnnotations.class ).expand( );
+        _class _c = _draftClass.of( CopyClassAnnotations.class ).draft( );
         assertTrue( _c.getAnnotation( Deprecated.class ) != null );
         assertTrue( _c.getAnnotation( Draft.class ) != null );
         //assertNull( _c.getAnnotation( sig.class ) );
@@ -173,7 +174,7 @@ public class _macroClassTest
     
     public void testCopyStaticBlock()
     {
-        _class _c = _macroClass.of(  CopyStaticBlock.class ).expand( );
+        _class _c = _draftClass.of(  CopyStaticBlock.class ).draft( );
         assertTrue( _c.getStaticBlock().author().contains( "In static Block" ) );
     }
     
@@ -182,7 +183,7 @@ public class _macroClassTest
     
     public void testClassSig()
     {
-        _class _c = _macroClass.of( ClassSig.class ).expand( "Name", "MyClass" );
+        _class _c = _draftClass.of( ClassSig.class ).draft( "Name", "MyClass" );
         assertEquals( "MyClass", _c.getName() ); 
     }
     
@@ -191,14 +192,14 @@ public class _macroClassTest
     
     public void testClassFields()
     {
-        _class _c = _macroClass.of( ClassFields.class )
-            .expand( "type", int.class, "name", "blah" );
+        _class _c = _draftClass.of( ClassFields.class )
+            .draft( "type", int.class, "name", "blah" );
         System.out.println( _c );
         assertEquals( "int", _c.getField("blah").getType() );
         
         //create multiple fields
-        _c = _macroClass.of( ClassFields.class )
-            .expand( "type", new Class[]{int.class, float.class}, 
+        _c = _draftClass.of( ClassFields.class )
+            .draft( "type", new Class[]{int.class, float.class}, 
                      "name", new String[]{"x", "y"} );
         
         assertEquals( "int", _c.getField("x").getType() );
@@ -211,8 +212,8 @@ public class _macroClassTest
     
     public void testClassFieldM()
     {
-        _class _c = _macroClass.of( ClassFieldsMultiple.class )
-            .expand( "name", "TheName" );
+        _class _c = _draftClass.of( ClassFieldsMultiple.class )
+            .draft( "name", "TheName" );
         
         assertEquals( "int",_c.getField( "TheNameDim" ).getType() );
         assertEquals( "String",_c.getField( "id" ).getType() );
@@ -227,19 +228,19 @@ public class _macroClassTest
     public void testSimple()
     {
         _class _q = 
-            _macroClass.of(AField.class ).expand( "name", "theName" );
+            _draftClass.of(AField.class ).draft( "name", "theName" );
         assertEquals( "AField", _q.getName() );
         assertEquals( "int", _q.getField( "theName" ).getType() );
     }
     
     public void testAField()
     {
-        _macroClass _cm = _macroClass.of(Java._classFrom(AField.class ) );
-        _class _c = _cm.expand( "name", "y" );
+        _draftClass _cm = _draftClass.of(Java._classFrom(AField.class ) );
+        _class _c = _cm.draft( "name", "y" );
         assertEquals( "int", _c.getField("y").getType() );
         
         //expand a single field macro to mutliple fields (3) fields (x, y, and z)
-        _c = _cm.expand( "name", new String[]{"x", "y", "z"} );
+        _c = _cm.draft( "name", new String[]{"x", "y", "z"} );
         assertEquals( "int", _c.getField("x").getType() );
         assertEquals( "int", _c.getField("y").getType() );
         assertEquals( "int", _c.getField("z").getType() );        
@@ -255,7 +256,7 @@ public class _macroClassTest
     
     public void testMethodCopy()
     {
-        _class _c = _macroClass.of(CopyMethod.class ).expand(  );
+        _class _c = _draftClass.of(CopyMethod.class ).draft(  );
         assertNotNull( _c.getMethod( "sourceMethod" ) );
     }
     
@@ -270,8 +271,8 @@ public class _macroClassTest
     
     public void testMethodParameterize()
     {
-        _class _c = _macroClass.of( ParameterizeMethod.class )
-            .expand( "pname", "varName" );
+        _class _c = _draftClass.of( ParameterizeMethod.class )
+            .draft( "pname", "varName" );
         assertTrue( _c.getMethod( "aMethod" ).getSignature().author().contains( "varName") );
         assertTrue( _c.getMethod( "aMethod" ).getBody().author().contains( "varName") );        
     }
@@ -279,17 +280,40 @@ public class _macroClassTest
     public static class MethodSigAndBody
     {
         @sig( "public static final void itBurns()" )
-        @body("System.out.println( \" HI \" );" )    
+        @body("System.out.println( \" HI \" );" )  //here body is single line  
         void original()
         {}
     }
     
     public void testMethodSigAndBody()
     {
-        _class _c = _macroClass.of( MethodSigAndBody.class )
-            .expand( );
+        _class _c = _draftClass.of( MethodSigAndBody.class )
+            .draft( );
         assertTrue( _c.getMethod( "itBurns" ).getBody().author().contains( "HI" ) );
     }
+    
+    /**
+     * A Class that uses the body tag with multiple lines
+     */
+    public static class MethodBodyMultiline
+    {
+        @body( { "System.out.println(\"Hey\");",   //<-- will add line breaks 
+            "System.out.println( \"line 2\");" } ) //between each array element
+        void methodBody()
+        {
+            
+        }
+    }
+    public void testBodyMultiLine()
+    {
+        _class _c = _draftClass.of( MethodBodyMultiline.class ).draft();
+        
+        System.out.println( _c.getMethod( "methodBody" ) );
+        
+        assertTrue(_c.getMethod( "methodBody" )
+            .getBody().author().contains( "line 2" ) );
+    }
+    
     
     public static class MethodSigOnly
     {
@@ -300,8 +324,8 @@ public class _macroClassTest
     
     public void testMethodSigOnly()
     {
-        _class _c = _macroClass.of( MethodSigOnly.class )
-            .expand( );
+        _class _c = _draftClass.of( MethodSigOnly.class )
+            .draft( );
         assertNotNull( _c.getMethod( "itBurns" ) );
     }
     
@@ -314,8 +338,8 @@ public class _macroClassTest
     
     public void testMethodBodyOnly()
     {
-        _class _c = _macroClass.of( MethodBodyOnly.class )
-            .expand( );
+        _class _c = _draftClass.of( MethodBodyOnly.class )
+            .draft( );
         assertTrue( _c.getMethod( "original" ).getBody().author().contains(" HI ") );
     }
     
@@ -336,8 +360,8 @@ public class _macroClassTest
     
     public void testMethodForm()
     {
-        _class _c = _macroClass.of( MethodForm.class )
-            .expand( "name", "fieldName" );
+        _class _c = _draftClass.of( MethodForm.class )
+            .draft( "name", "fieldName" );
         
         System.out.println( _c );
         assertTrue( _c.getMethod( "toString" ).getBody().author()
@@ -347,8 +371,8 @@ public class _macroClassTest
         Java.call( _c.instance( ), "toString" );
         
         // now create a 
-        _c = _macroClass.of( MethodForm.class )
-            .expand( "name", new String[]{"theFirstField", "theSecondField"});
+        _c = _draftClass.of( MethodForm.class )
+            .draft( "name", new String[]{"theFirstField", "theSecondField"});
         
         //make sure we created (2) fields
         assertTrue( _c.getField("theFirstField" ).getType().equals( "String" ) );

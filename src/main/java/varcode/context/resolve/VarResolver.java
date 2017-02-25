@@ -92,9 +92,9 @@ public interface VarResolver
             {
                 return systemProp;
             }
+            //check if they want the FirstCaps variant
             if( Character.isUpperCase( varName.charAt( 0 ) ) )
-            {   //maybe
-                //System.out.println( "try ");
+            {   
                 var = context.get( Character.toLowerCase( varName.charAt( 0 ) ) 
                     + varName.substring( 1 ) );
                 if( var != null )
@@ -103,22 +103,20 @@ public interface VarResolver
                 }
             }
             //System.out.println( "IS CAPS " + varName );
-            //we are trying to bind a varName that is all caps
+            //IF the var we want to resolve is ALL CAPS: 
+            // search the keys of the context for any keys that equalIgnoreCase
+            // then capitalize the result
             if( varName.toUpperCase().equals( varName ) )
-            {   //MAYBE they just want to capitalized version
-                //System.out.println( "YES CAPS " + varName );
-                var = context.get( varName.toLowerCase() );
-                if( var != null )
+            {   
+                String[] keys = context.keySet().toArray( new String[ 0 ]);
+                for( int i = 0; i < keys.length; i++ )
                 {
-                    return AllCap.doAllCaps( var );
+                    if( keys[ i ].equalsIgnoreCase( varName ) )
+                    {
+                        var = context.get( keys[ i ] );
+                        return AllCap.doAllCaps( var );
+                    }
                 }
-                var = 
-                    context.get( Character.toUpperCase( varName.charAt( 0 ) ) 
-                        + varName.substring( 1 ) );
-                if( var != null )
-                {
-                    return FirstCap.doFirstCaps( var );
-                }                
             }
             //TODO ? Check ThreadLocal
             return null;

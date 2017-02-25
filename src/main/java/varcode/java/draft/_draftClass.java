@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package varcode.java.macro;
+package varcode.java.draft;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,35 +21,35 @@ import varcode.author.Author;
 import varcode.context.Context;
 import varcode.context.VarContext;
 import varcode.java.load._JavaLoad;
-import varcode.java.macro._macro._typeExpansion;
 import varcode.java.model._class;
-import varcode.java.macro._macro.sig;
+import varcode.java.draft._draft.sig;
 import varcode.markup.Template;
 import varcode.markup.bindml.BindML;
+import varcode.java.draft._draft._typeDraft;
 
 
 /**
  * Reads in a Class / _class model, and (based on macro annotations) prepares
- * to expand a _class model through macro expansion
- * 
- * Builds a new {@link _class} by a single {@code _classOrignator} and subsequent
+ to draft a _class model through macro expansion
+ 
+ Builds a new {@link _class} by a single {@code _classOrignator} and subsequent
  * {@code expansion}s that 
  * 
  * @see JavaSource
  * @author M. Eric DeFazio eric@varcode.io
  */
-public class _macroClass
-    extends _macroType
+public class _draftClass
+    extends _draftType
 {    
     /**
      * Reads in the _class Model from the class, and "prepares" it for 
      * Macro expansion
      * @param draft the "draft" class containing @annotation markup for macro expansion
-     * @return the _macroClass 
+     * @return the _draftClass 
      */
-    public static _macroClass of( Class draft )
+    public static _draftClass of( Class draft )
     {
-        return new _macroClass( _JavaLoad._classFrom( draft ) );
+        return new _draftClass( _JavaLoad._classFrom( draft ) );
     }
     
     /**
@@ -57,9 +57,9 @@ public class _macroClass
      * @param _prototype
      * @return the macroClass
      */
-    public static _macroClass of( _class _prototype )
+    public static _draftClass of( _class _prototype )
     {
-        return new _macroClass( _prototype );
+        return new _draftClass( _prototype );
     }
     
     /** 
@@ -71,8 +71,8 @@ public class _macroClass
      * them in the "tailored" _class
      * </UL>
      */
-    public final List<_typeExpansion> typeExpansion = 
-        new ArrayList<_typeExpansion>();
+    public final List<_typeDraft> typeExpansion = 
+        new ArrayList<_typeDraft>();
     
     /** the prototype _class */
     public final _class _prototype;
@@ -83,101 +83,102 @@ public class _macroClass
     /** */
     public interface _classOriginator
     {
-        public _class initClass( Context context );
+        public _class draftClass( Context context );
     }
     
     //nests    
-    public _macroClass( _class _c )
+    public _draftClass( _class _c )
     {
         this._prototype = new _class( _c );
-        this._originator = prepareClassOriginator( _prototype );
+        this._originator = prepareClassDraft( _prototype );
         
         prepareTypePackage( this.typeExpansion, _c.getPackageName(), 
-            _c.getAnnotations().getOne( _macro.packageName.class ) );
+            _c.getAnnotations().getOne( _draft.packageName.class ) );
         
         prepareTypeImports( this.typeExpansion, _c.getImports(), 
-            _c.getAnnotation( _macro.imports.class )  );
+            _c.getAnnotation( _draft.imports.class )  );
         
         //annotations
         prepareTypeAnnotations( this.typeExpansion, _c.getAnnotations(), 
-            _c.getAnnotation( _macro.annotations.class ) );
+            _c.getAnnotation( _draft.annotations.class ) );
         
         prepareTypeFields( this.typeExpansion, 
-            _c.getAnnotations().getOne( _macro.fields.class ) );
+            _c.getAnnotations().getOne( _draft.fields.class ) );
         
         prepareStaticBlock( this.typeExpansion, 
-            _c.getAnnotations().getOne( _macro.staticBlock.class ),
+            _c.getAnnotations().getOne( _draft.staticBlock.class ),
             _c.getStaticBlock() );
         
         //TODO fieldANNOTATIONS, methodANNOTATIONS, fieldJDOC methodJDOC
         //go through the individual member fields and methods and process them
-        _macroFields.prepareFields( this.typeExpansion, _c.getFields() );
-        _macroMethods.prepareMethods( this.typeExpansion, _c.getMethods() ); 
+        _draftFields.prepareFields( this.typeExpansion, _c.getFields() );
+        _draftMethods.prepareMethods( this.typeExpansion, _c.getMethods() ); 
     }
 
     
-    public static _classOriginator prepareClassOriginator( _class _c )
+    public static _classOriginator prepareClassDraft( _class _c )
     {
-        if( _c.getAnnotation( _macro.sig.class ) != null )
+        if( _c.getAnnotation( _draft.sig.class ) != null )
         {
             String sig = _c.getAnnotation( sig.class ).getLoneAttributeString();
             if( sig != null) 
             {
-                return new ExpandClassOriginator( sig );
+                _c.getAnnotations().remove( sig.class );
+                return new DraftClassSignature( sig );
             }
             else
             {
                 return
-                    new CopyClassOriginator( _c.getSignature().author() );
+                    new CopyClassSignature( _c.getSignature().author() );
             }            
         }
-        return new CopyClassOriginator( _c.getSignature().author() );        
+        return new CopyClassSignature( _c.getSignature().author() );        
     }
     
     
-    public _class expand( Object...keyValuePairs )
+    public _class draft( Object...keyValuePairs )
     {
         //System.out.println( keyValuePairs.length );
-        return expand( VarContext.of( keyValuePairs ) );
+        return draft( VarContext.of( keyValuePairs ) );
     }
     
-    public _class expand( Context context )
+    public _class draft( Context context )
     {
         //create the tailored target class
-        _class _tailored = this._originator.initClass( context );
+        _class _tailored = this._originator.draftClass( context );
         
         for( int i = 0; i < this.typeExpansion.size(); i++ )
         {
-            this.typeExpansion.get( i ).expandTo( _tailored, context );
+            this.typeExpansion.get( i ).draftTo( _tailored, context );
         }
         return _tailored;
     }
     
     
-    public static class CopyClassOriginator
+    public static class CopyClassSignature
         implements _classOriginator
     {        
         //_class _prototype;
         private final String signature;
         
-        public CopyClassOriginator( String signature )
+        public CopyClassSignature( String signature )
         {
             this.signature = signature;
         }
         
         @Override
-        public _class initClass( Context context )
+        public _class draftClass( Context context )
         {
             return _class.of( signature );
         }
     }
     
-    public static class ExpandClassOriginator
+    public static class DraftClassSignature
         implements _classOriginator
     {
         public Template signature;
         
-        public ExpandClassOriginator( String form )
+        public DraftClassSignature( String form )
         {
             System.out.println( form );
             this.signature = BindML.compile( form );
@@ -185,11 +186,11 @@ public class _macroClass
         
         public _class initClass( Object... keyValuePairs )
         {
-            return initClass( VarContext.of( keyValuePairs ) );
+            return draftClass( VarContext.of( keyValuePairs ) );
         }
         
         @Override
-        public _class initClass( Context context )
+        public _class draftClass( Context context )
         {
             return _class.of( Author.toString( signature, context ) );
         }
