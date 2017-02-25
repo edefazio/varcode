@@ -81,7 +81,6 @@ public interface VarResolver
             {
                 return null;
             }
-
             Object var = context.get( varName );
             if( var != null )
             {
@@ -102,7 +101,6 @@ public interface VarResolver
                     return FirstCap.doFirstCaps( var );
                 }
             }
-            //System.out.println( "IS CAPS " + varName );
             //IF the var we want to resolve is ALL CAPS: 
             // search the keys of the context for any keys that equalIgnoreCase
             // then capitalize the result
@@ -122,5 +120,4 @@ public interface VarResolver
             return null;
         }
     }
-
 }
