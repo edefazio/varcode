@@ -1599,7 +1599,7 @@ public class _enum
                     "enum token cant be not found or the last token for \""
                     + enumSignature + "\"" );
             }
-            sig.enumName = tokens[ enumTokenIndex + 1 ];
+            sig.enumName = tokens[ enumTokenIndex + 1 ].trim();
 
             if( enumTokenIndex > 0 )
             {   //modifier provided
