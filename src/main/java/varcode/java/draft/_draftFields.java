@@ -38,6 +38,7 @@ public class _draftFields
             }
         }        
     }
+    
     /**
      * processes a single field of a class, enum, interface or annotationType
      * return the 
@@ -66,10 +67,13 @@ public class _draftFields
                 _p.getAnnotations().remove( parameter.getName() );
                 return _draft.DraftField.parameterize( _p, valuesArray );
             }
-            //else if( sig != null )
-            //{   //we didnt explicitly tailor or remove it, so copy the method
-            //    System.out.println( "processing "+ sig );
-            // }
+            else if( sig != null )
+            {   //we didnt explicitly tailor or remove it, so copy the method
+                System.out.println( "processing "+ sig );
+                _fields._field _p = new _fields._field( _f );
+                _p.getAnnotations().remove( _draft.sig.class );
+                return _draft.DraftField.of( sig.getLoneAttributeString() );
+            }
             //just copy the field                        
             return new _draft.CopyField( _f );
         }

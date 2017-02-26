@@ -432,7 +432,8 @@ public class _draft
      * _draft for copying a constructor to a target class/enum
      */
     public static class CopyConstructor
-        implements _draftClass.expansion
+        implements _typeDraft
+        //implements _draftClass.expansion
     {
         private final _constructors._constructor ctor;
         
@@ -441,21 +442,34 @@ public class _draft
             this.ctor = ctor;
         }
 
-        public void expandTo( _enum _draft, Object...keyValuePairs )            
+        public void draftTo( _enum _draft, Object...keyValuePairs )            
         {
             _draft.constructor( _constructors._constructor.of( ctor ) );
         }
                 
-        public void expandTo( _class _draft, Object...keyValuePairs )            
+        public void draftTo( _class _draft, Object...keyValuePairs )            
         {
             _draft.constructor( _constructors._constructor.of( ctor ) );
         }
         
    
-        public void expandTo( _class _draft, Context context )
+        public void draftTo( _class _draft, Context context )
         {
             _draft.constructor( _constructors._constructor.of( ctor ) );
         }        
+
+       
+        @Override
+        public void draftTo( _enum _e, Context context )
+        {
+            _e.constructor( _constructors._constructor.of( ctor ) );
+        }
+
+        @Override
+        public void draftTo( _interface _i, Object... keyValuePairs )
+        {
+            throw new UnsupportedOperationException( "Interfaces have no constructor" ); 
+        }
     }
     
     /**
@@ -471,7 +485,7 @@ public class _draft
         
         
         public static DraftConstructor of( 
-            _constructor _prototype, String signatureForm, String bodyForm )
+            _constructor _prototype, String signatureForm, String[] bodyForm )
         {
             return new DraftConstructor( _prototype, signatureForm, bodyForm );
         }
@@ -483,13 +497,30 @@ public class _draft
         }
         
         public static DraftConstructor ofBody( 
-            _constructor _prototype, String bodyForm )
+            _constructor _prototype, String[] bodyForm )
         {
             return new DraftConstructor( _prototype, null, bodyForm );
         }
         
+        public static DraftConstructor parameterize( 
+            _constructor _m, String[] keyValues )
+        {
+            if( keyValues.length %2 != 0 )
+            {
+                throw new ModelException(
+                    "could not parameterize, key values must be even" );
+            }
+            for( int i = 0; i < keyValues.length; i+= 2 )
+            {   //call replace on the prototype (clone)
+                System.out.println( "REPLACE "+keyValues[ i ]+" " + keyValues[ i + 1 ] );
+                _m.replace( keyValues[ i ], "{+" + keyValues[ i + 1 ] +  "*+}" );
+            }
+            //System.out.println("AUTHOR" + _p.author() );
+            return new DraftConstructor( _m, _m.getSignature().author(), new String[]{_m.getBody().author()} );            
+        }
+        
         public DraftConstructor( 
-            _constructor _prototype, String signatureForm, String bodyForm )
+            _constructor _prototype, String signatureForm, String[] bodyForm )
         {
             if( signatureForm != null )
             {
@@ -922,7 +953,7 @@ public class _draft
     }
     
     public static class DraftField
-        implements _typeDraft //_classMacro.expansion, _macroEnum.expansion
+        implements _typeDraft
     {
         public Form fieldForm;
         
@@ -976,10 +1007,10 @@ public class _draft
             }
             for( int i = 0; i < keyValues.length; i+= 2 )
             {   //call replace on the prototype (clone)
-                System.out.println( "REPLACE "+keyValues[ i ]+" " + keyValues[ i + 1 ] );
+                //System.out.println( "REPLACE "+keyValues[ i ]+" " + keyValues[ i + 1 ] );
                 _p.replace( keyValues[ i ], "{+" + keyValues[ i + 1 ] +  "*+}" );
             }
-            System.out.println("AUTHOR" + _p.author() );
+            //System.out.println("AUTHOR" + _p.author() );
             return new DraftField( _p.author() );
         }
         

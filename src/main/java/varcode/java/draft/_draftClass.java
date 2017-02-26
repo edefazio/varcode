@@ -92,16 +92,18 @@ public class _draftClass
         this._prototype = new _class( _c );
         this._originator = prepareClassDraft( _prototype );
         
-        prepareTypePackage( this.typeExpansion, _c.getPackageName(), 
+        prepareTypePackage( this.typeExpansion, this._prototype.getPackageName(), 
             _c.getAnnotations().getOne( _draft.packageName.class ) );
         
-        prepareTypeImports( this.typeExpansion, _c.getImports(), 
+        prepareTypeImports( this.typeExpansion, this._prototype.getImports(), 
             _c.getAnnotation( _draft.imports.class )  );
         
         //annotations
-        prepareTypeAnnotations( this.typeExpansion, _c.getAnnotations(), 
+        prepareTypeAnnotations( this.typeExpansion, this._prototype.getAnnotations(), 
             _c.getAnnotation( _draft.annotations.class ) );
         
+        
+            
         prepareTypeFields( this.typeExpansion, 
             _c.getAnnotations().getOne( _draft.fields.class ) );
         
@@ -109,10 +111,12 @@ public class _draftClass
             _c.getAnnotations().getOne( _draft.staticBlock.class ),
             _c.getStaticBlock() );
         
+        _draftConstructors.prepareConstructors( this.typeExpansion, _c.getConstructors() );
+        
         //TODO fieldANNOTATIONS, methodANNOTATIONS, fieldJDOC methodJDOC
         //go through the individual member fields and methods and process them
-        _draftFields.prepareFields( this.typeExpansion, _c.getFields() );
-        _draftMethods.prepareMethods( this.typeExpansion, _c.getMethods() ); 
+        _draftFields.prepareFields( this.typeExpansion, this._prototype.getFields() );
+        _draftMethods.prepareMethods( this.typeExpansion, this._prototype.getMethods() ); 
     }
 
     
@@ -122,8 +126,9 @@ public class _draftClass
         {
             String sig = _c.getAnnotation( sig.class ).getLoneAttributeString();
             if( sig != null) 
-            {
+            {   
                 _c.getAnnotations().remove( sig.class );
+                System.out.println( _c.getAnnotations() );
                 return new DraftClassSignature( sig );
             }
             else
@@ -180,7 +185,7 @@ public class _draftClass
         
         public DraftClassSignature( String form )
         {
-            System.out.println( form );
+            //System.out.println( form );
             this.signature = BindML.compile( form );
         }
         

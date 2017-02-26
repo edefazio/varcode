@@ -109,16 +109,17 @@ public abstract class _draftType
             String[] add = 
                 annAnnotation.getAttributeStringArray( "add" );
             
-            expansions.add(_draft.DraftClassAnnotations.of(typeAnnotations, remove, add ) );                        
+            expansions.add(_draft.DraftClassAnnotations.of( typeAnnotations, remove, add ) );                        
         }
         else
         {
-            System.out.println( "Copy Class Annotations " );
+            //System.out.println( "Copy Class Annotations " );
             //copy over all accept the known macro annotations
             expansions.add(_draft.DraftClassAnnotations.of(typeAnnotations, 
                 new String[]{
                     _draft.annotations.class.getSimpleName(),
                     _draft.imports.class.getSimpleName(),
+                    _draft.sig.class.getSimpleName(),
                     //_draft.declare.class.getSimpleName(),
                     _draft.$.class.getSimpleName(),
                     _draft.staticBlock.class.getSimpleName(),
