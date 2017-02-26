@@ -525,7 +525,6 @@ public class Java
     
     // * * * REFLECTION RELATED * * * //
     
-    
     public static Object instance( _class _c, Object...constructorArgs )
     {
         AdHocClassLoader adHocClassLoader = 
@@ -550,6 +549,20 @@ public class Java
         Class<?> theClass, Object... constructorArgs )
     {
         return JavaReflection.instance( theClass, constructorArgs );
+    }
+    
+    /**
+     * Given a model, compile and load 
+     * @param <E> specifies an Enum Class
+     * @param _e the _enum model
+     * @param constantName the name of the constant in the _e model
+     * @return an Enum Constant
+     */
+    public static <E extends Enum<E>> Enum loadEnumConst( 
+        _enum _e, String constantName )
+    {
+        Class<E> enumClass = _e.loadClass();
+        return JavaReflection.loadEnumConst( enumClass, constantName );        
     }
     
     /**

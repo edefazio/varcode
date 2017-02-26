@@ -52,6 +52,22 @@ public class JavaReflection
         return getTopLevelClass( clazz.getDeclaringClass() );
     }
 
+    public static <E extends Enum<E>> Enum loadEnumConst( 
+        Class<E> enumClass, String constantName )
+    {
+        Object[] enumConstants = enumClass.getEnumConstants();
+        for( int i = 0; i < enumConstants.length; i++ )
+        {
+            Enum e = (Enum)enumConstants[ i ];
+            if( e.name().equals( constantName ) )
+            {
+                return e;
+            }
+        }
+        throw new JavaException(
+            "No enum constant named \"" + constantName+"\"" );
+    }
+        
     /**
      * <UL>
      * <LI>creates an instance of the tailored class constructor (given the
