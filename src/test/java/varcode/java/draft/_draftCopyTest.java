@@ -195,8 +195,8 @@ public class _draftCopyTest
         //body
         tc = DraftConstructor.ofBody(
             _ctor, 
-            "this.theName = name;\n" +
-            "System.out.println( theName );" );
+            new String[]{"this.theName = name;",
+            "System.out.println( theName );"} );
         
         tc.draftTo( _c, Context.EMPTY );
         
