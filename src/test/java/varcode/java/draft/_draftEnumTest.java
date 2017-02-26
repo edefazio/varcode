@@ -15,7 +15,6 @@
  */
 package varcode.java.draft;
 
-import varcode.java.draft._draftEnum;
 import junit.framework.TestCase;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;

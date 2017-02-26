@@ -120,6 +120,16 @@ public class _draft
         String value();
     }
     
+    /** shorthand for packageName */
+    @Documented
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.TYPE)
+    public @interface p
+    {
+        String value();
+    }
+    
+    
     @Documented
     @Retention(RetentionPolicy.RUNTIME)
     @Target({TYPE, METHOD})
@@ -131,6 +141,20 @@ public class _draft
         /** Remove all annotations with these name patterns */
         String[] remove() default {};
     }
+
+    /** shorthand for annotations */
+    @Documented
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({TYPE, METHOD})
+    public @interface a
+    {
+        /** add annotations explicitly (java.util.Map) or by parameter {+impotts+}*/
+        String[] add() default {};
+        
+        /** Remove all annotations with these name patterns */
+        String[] remove() default {};
+    }    
+    
     
     /** 
      * _draft Annotation describing the contents of a static Block 
@@ -187,7 +211,15 @@ public class _draft
     {
         String[] value();
     }
-     
+
+    @Documented
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.TYPE)
+    public @interface f
+    {
+        String[] value();
+    }
+    
     /**
      * _draft Annotation to add / remove imports
      */
@@ -203,6 +235,18 @@ public class _draft
         String[] add() default {};
     }
 
+    @Documented
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({ElementType.TYPE, ElementType.ANNOTATION_TYPE})
+    public @interface i
+    {
+        /** Remove all imports containing these "patterns" */
+        String[] remove() default {};
+
+        /** Add all imports expanded by these BinML markup strings */ 
+        String[] add() default {};
+    }
+        
     /**
      * _draft annotation to define the signature 
  Annotation applied to the signature of class, enum, interface
@@ -247,6 +291,15 @@ public class _draft
         String value();
     }
     
+    @Documented
+    @Retention(RetentionPolicy.RUNTIME)    
+    @Target({ElementType.TYPE, ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD, ElementType.ANNOTATION_TYPE})
+    public @interface s
+    {
+        /** BindML markup used to create a Template for the signature*/
+        String value();
+    }
+        
     @Documented
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
@@ -326,15 +379,35 @@ public class _draft
         String[] value();
     }
 
+    /** shorthand for body */
+    @Documented
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface b
+    {
+        /** the BindML markup used to create a Template for the body*/
+        String[] value();
+    }
+        
     /**
      * _draft annotation for removing a component 
- (field, method, nest, etc.) when macro expanding
+     * (field, method, nest, etc.) when macro expanding
      */
     @Documented
     @Retention(RetentionPolicy.RUNTIME)
     public @interface remove
     {
     }
+
+    /** shorthand for remove above*/
+    /**
+     * _draft annotation for removing a component 
+     * (field, method, nest, etc.) when macro expanding
+     */
+    @Documented
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface r
+    {
+    }    
     
     /**
      * _draft for Copying a static block to a target class / enum
@@ -381,9 +454,11 @@ public class _draft
     
     /**
      * _draft expansion for Tailoring a static block to a target class
+     * 
+     * {@link staticBlock}
      */
     public static class DraftStaticBlock
-        implements _typeDraft //_classMacro.expansion, _macroEnum.expansion
+        implements _typeDraft
     {
         public Template template;
         
@@ -433,7 +508,6 @@ public class _draft
      */
     public static class CopyConstructor
         implements _typeDraft
-        //implements _draftClass.expansion
     {
         private final _constructors._constructor ctor;
         
@@ -474,12 +548,18 @@ public class _draft
     
     /**
      * _draft expansion for tailoring and transferring a constructor to a 
- _class or _enum
+     * _class or _enum
+     * 
+     * {@link sig}
+     * {@link s}
+     * {@link body}
+     * {@link b}
+     * {@link $}
      */
     public static class DraftConstructor
         implements _typeDraft
     {
-        public Form signature;
+        public Template signature;
         public Template body;
         public _constructor _prototype;
         
@@ -512,7 +592,7 @@ public class _draft
             }
             for( int i = 0; i < keyValues.length; i+= 2 )
             {   //call replace on the prototype (clone)
-                System.out.println( "REPLACE "+keyValues[ i ]+" " + keyValues[ i + 1 ] );
+                //System.out.println( "REPLACE "+keyValues[ i ]+" " + keyValues[ i + 1 ] );
                 _m.replace( keyValues[ i ], "{+" + keyValues[ i + 1 ] +  "*+}" );
             }
             //System.out.println("AUTHOR" + _p.author() );
@@ -524,11 +604,11 @@ public class _draft
         {
             if( signatureForm != null )
             {
-                this.signature = ForML.compile( signatureForm );
+                this.signature = BindML.compile( signatureForm );
             }
             else
             {
-                this.signature = ForML.compile( _prototype.getSignature().author() );
+                this.signature = BindML.compile( _prototype.getSignature().author() );
             }
             if( bodyForm != null )
             {
@@ -542,40 +622,42 @@ public class _draft
         }
 
         
+        @Override
         public void draftTo( _enum _draft, Object...keyValuePairs )            
         {            
-            _draft.constructor( expand( VarContext.of( keyValuePairs ) ) );
+            _draft.constructor( draft( VarContext.of( keyValuePairs ) ) );
         }
         
+        @Override
         public void draftTo( _enum _draft, Context context )            
         {
-            _draft.constructor( expand( context ) );            
+            _draft.constructor( draft( context ) );            
         }
                 
-        
+        @Override
         public void draftTo( _class _draft, Object...keyValuePairs )            
         {
-            _draft.constructor( expand( VarContext.of( keyValuePairs ) ) );            
+            _draft.constructor( draft( VarContext.of( keyValuePairs ) ) );            
         }
         
+        @Override
         public void draftTo( _class _draft, Context context )            
         {
-            _draft.constructor( expand( context ) );            
+            _draft.constructor( draft( context ) );            
         }
                 
-        
         @Override
         public void draftTo( _interface _i, Object... keyValuePairs )
         {
             throw new ModelException( "Interfaces cannot have constructors" );
         }
         
-        public _constructor expand( Context context )
+        public _constructor draft( Context context )
         {
             _constructors._constructor _c = null;
             if( signature != null )
             {
-                _c = _constructors._constructor.of( signature.author( context ) );
+                _c = _constructors._constructor.of( Author.toString( signature, context ) );
             }
             else
             {
@@ -596,8 +678,8 @@ public class _draft
     }
     
     /**
-     * _draft for copying a package to the target _class, _interface
- _enum, or _annotationType
+     * _draft for copying a package to the target _class, _interface,
+     * _enum, or _annotationType
      */
     public static class CopyPackage
         implements _typeDraft //_classMacro.expansion, _macroEnum.expansion
@@ -620,21 +702,25 @@ public class _draft
             this.packageName = packageName;
         }
         
+        @Override
         public void draftTo( _enum _e, Object...keyValuePairs )
         {
             _e.packageName( packageName );
         }
         
+        @Override
         public void draftTo( _enum _draft, Context context )
         {
             _draft.packageName( packageName );
         }
                 
+        @Override
         public void draftTo( _class _draft, Object...keyValuePairs )            
         {
             _draft.packageName( packageName );
         }
         
+        @Override
         public void draftTo( _class _draft, Context context )
         {
             _draft.packageName( packageName );
@@ -651,30 +737,34 @@ public class _draft
      * _draft Expansion for creating a package
      */
     public static class DraftPackage
-        implements _typeDraft //_classMacro.expansion, _macroEnum.expansion
+        implements _typeDraft
     {
         public Form packageNameForm;
         
         public DraftPackage( String packageNameForm )
         {
-            this.packageNameForm = ForML.compile(packageNameForm );
+            this.packageNameForm = ForML.compile( packageNameForm );
         }
         
+        @Override
         public void draftTo( _enum _e, Object...keyValuePairs )
         {
             _e.packageName( packageNameForm.author( VarContext.of( keyValuePairs) ) );
         }
 
+        @Override
         public void draftTo( _enum _e, Context context )
         {
             _e.packageName( packageNameForm.author( context ) );
         }
         
+        @Override
         public void draftTo( _class _draft, Object...keyValuePairs )            
         {
             draftTo( _draft, VarContext.of( keyValuePairs ) );
         }
         
+        @Override
         public void draftTo( _class _draft, Context context )
         {
             _draft.packageName( packageNameForm.author( context ) );
@@ -693,7 +783,7 @@ public class _draft
     public static class CopyImports
         implements _typeDraft //_classMacro.expansion, _macroEnum.expansion
     {
-        private _imports imports;
+        private final _imports imports;
         
         public static CopyImports of( _imports _im )
         {
@@ -705,22 +795,25 @@ public class _draft
             this.imports = _imports.of( imports );
         }
         
+        @Override
         public void draftTo( _enum _e, Object...keyValuePairs )
         {
             _e.imports( _imports.of( imports ) );
         }
         
+        @Override
         public void draftTo( _enum _e, Context context )
         {
             _e.imports( _imports.of( imports ) );
         }
         
+        @Override
         public void draftTo( _class _draft, Object...keyValuePairs )            
         {
-            //expandTo( _draft, VarContext.ofKeyValueArray( (Object[])keyValuePairs ) );
             _draft.imports( _imports.of( imports ) );
         }
         
+        @Override
         public void draftTo( _class _draft, Context context )
         {
             _draft.imports( _imports.of( imports ) );
@@ -785,21 +878,25 @@ public class _draft
             this.annotations = _as;            
         }
          
+        @Override
         public void draftTo( _class _draft, Object...keyValuePairs )
         {
             draftTo( _draft, VarContext.of( keyValuePairs ) );
         }
         
+        @Override
         public void draftTo( _class _draft, Context context )
         {
             _draft.annotate( expand( context ) );
         }
         
+        @Override
         public void draftTo( _enum _draft, Context context )
         {   //create a prototype
             _draft.annotate( expand( context ) );
         }
         
+        @Override
         public void draftTo( _enum _e, Object...keyValuePairs )
         {
             _e.annotate( expand( VarContext.of( keyValuePairs ) ) ); 
@@ -876,21 +973,25 @@ public class _draft
             this.imports = _is;            
         }
         
+        @Override
         public void draftTo( _class _draft, Object...keyValuePairs )
         {
             draftTo( _draft, VarContext.of( keyValuePairs ) );
         }
         
+        @Override
         public void draftTo( _class _draft, Context context )
         {   //create a prototype
             _draft.imports( draft( context ) );
         }
         
+        @Override
         public void draftTo( _enum _e, Object...keyValuePairs )
         {
             _e.imports( draft( VarContext.of( keyValuePairs ) ) ); 
         }
         
+        @Override
         public void draftTo( _enum _e, Context context )
         {
             _e.imports( draft( context ) );
@@ -900,7 +1001,7 @@ public class _draft
         {
             _imports _is = new _imports( this.imports );
             
-            for(int i=0; i< this.add.length; i++ )
+            for( int i = 0; i < this.add.length; i++ )
             {
                 String[] adds = this.add[ i ].authorSeries( context );
                 _is.add( (Object[])adds );
@@ -925,27 +1026,32 @@ public class _draft
             this._prototype = _prototype;
         }
         
+        @Override
         public void draftTo( _enum _e, Object...keyValuePairs )
         {
             _e.field( new _field( _prototype  ) );
         }
         
+        @Override
         public void draftTo( _enum _e, Context context )
         {
             _e.field( new _field( _prototype  ) );
         }
         
+        @Override
         public void draftTo( _interface _i, Object...keyValuePairs )
         {
             _i.field( new _field( _prototype ) );
         }
         
         
+        @Override
         public void draftTo( _class _draft, Object...keyValuePairs )            
         {
             draftTo( _draft, VarContext.of( keyValuePairs ) );
         }
         
+        @Override
         public void draftTo( _class _draft, Context context )
         {
             _draft.field( new _field( _prototype ) );
@@ -1103,9 +1209,9 @@ public class _draft
     }
     
     public static class DraftMethod
-        implements _typeDraft //_classMacro.expansion, _macroEnum.expansion
+        implements _typeDraft
     {
-        public final Form signatureForm;
+        public final Template signatureTemplate;
         public final Template bodyTemplate;
         public final _method _prototype;
         
@@ -1145,11 +1251,11 @@ public class _draft
             this._prototype = _m;
             if( signature != null )
             {
-                this.signatureForm = ForML.compile( signature );
+                this.signatureTemplate = BindML.compile( signature );
             }
             else
             {
-                this.signatureForm = null;
+                this.signatureTemplate = null;
             }
             if( body != null )
             {
@@ -1188,9 +1294,9 @@ public class _draft
         public _method expand( Context context )
         {
             _method _m = null;
-            if( signatureForm != null )
+            if( signatureTemplate != null )
             {
-                _m = _method.of( signatureForm.author( context ) );
+                _m = _method.of(Author.toString(this.signatureTemplate, context ) );
             }
             else
             {

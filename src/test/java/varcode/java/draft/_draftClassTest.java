@@ -15,11 +15,7 @@
  */
 package varcode.java.draft;
 
-import varcode.java.draft._draftClass;
-import java.util.UUID;
 import junit.framework.TestCase;
-import varcode.author.lib.Quote;
-import varcode.context.Context;
 import varcode.java.Java;
 import varcode.java.model._class;
 import varcode.java.draft._draft.*;

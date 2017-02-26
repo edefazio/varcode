@@ -93,8 +93,12 @@ public interface VarNameAudit
             {
                 if( !Character.isJavaIdentifierPart( varName.charAt( i ) ) )
                 {
-                    throw new VarBindException( "var name cannot contain the character '"
-                        + varName.charAt( i ) + "' at [" + i + "]" );
+                    if( varName.charAt( i ) != '.' )
+                    {
+                        throw new VarBindException( "var name \""+ varName + "\" "
+                            + "\n  cannot contain the character '"
+                            + varName.charAt( i ) + "' at [" + i + "]" );
+                    }
                 }
             }           
             return varName;

@@ -15,9 +15,13 @@
  */
 package varcode.context.resolve;
 
+import java.lang.reflect.Array;
+import java.util.Collection;
 import varcode.author.lib.AllCap;
 import varcode.author.lib.FirstCap;
 import varcode.context.Context;
+import varcode.java.Java;
+import varcode.java.JavaException;
 
 /**
  * Resolves Variables
@@ -113,6 +117,68 @@ public interface VarResolver
                     {
                         var = context.get( keys[ i ] );
                         return AllCap.doAllCaps( var );
+                    }
+                }
+            }
+            
+            //Here we check if we are trying to access a var with a "."
+            // so "field.name", we might want to try accessing "field" first
+            //
+            // then reflectively invoking Java.get( instance, "name" ) property
+            
+            if( varName.contains( "." ) )
+            {
+                //System.out.println( "Varname contains . "+ varName );
+                String containerVar = varName.substring( 0, varName.indexOf( "." ) );
+                String fieldVar = varName.substring(  varName.indexOf( "." ) +1 );
+                //System.out.println( "Searching container \""+ containerVar+ "\"" );
+                //System.out.println( "for field \"" + fieldVar +"\"" );
+                Object container = resolveVar( context, containerVar );
+                if( container != null )
+                {
+                    if( container instanceof Collection )
+                    {
+                        //convert it to an array and then process it like that
+                        container = ((Collection)container).toArray();                        
+                    }
+                    // Converts From AOS (Arrays of Structs) like:
+                    // Point[] ps =
+                    //  new Point[]{ new Point(1,4), new Point(2,5), new Point(3,6)};
+                    //
+                    // to Struct of arrays
+                    // int[] point.x = {1,2,3};
+                    // int[] point.y = {4,5,6};
+                    // for the purposes of serializing the contents to templates
+                    if( container.getClass().isArray() )
+                    {                        
+                        int length = Array.getLength( container );
+                        //System.out.println( "IS ARRAY ["+length+"]" );
+                        Object[] fieldValueArray = new Object[length];
+                        for( int i = 0; i < length; i++ )
+                        {
+                            Object cont = Array.get( container, i );
+                            //what if field var is an index?? (it shouldnt be, but)
+                            try
+                            {
+                                Object val = Java.get( cont, fieldVar );
+                                fieldValueArray[ i ] = val;
+                            }
+                            catch( JavaException je )
+                            {
+                                return null;
+                            }
+                            //System.out.println( "Setting fieldValue["+i+"] = "+ val );
+                            
+                        }
+                        return fieldValueArray;
+                    }                    
+                    try
+                    {
+                        return Java.get( container, fieldVar );
+                    }
+                    catch( JavaException je )
+                    {   //swallow this and return null
+                        return null;
                     }
                 }
             }

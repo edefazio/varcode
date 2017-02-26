@@ -777,7 +777,7 @@ public class _constructors
                 if( openIndex < 0 )
                 {
                     throw new ModelException(
-                        "constructor signature must contain '(' " );
+                        "constructor signature \"" + ctorSignature+ "\"\n must contain '(' " );
                 }
                 String ctorCapped = ctorSignature.substring( 0, openIndex ).trim();
                 //now backtrack until 

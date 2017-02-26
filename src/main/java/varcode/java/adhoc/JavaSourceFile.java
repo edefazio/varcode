@@ -141,6 +141,7 @@ public class JavaSourceFile
         String packageName, String className, String code )
         throws AdHocException
     {
+        
         super( 
             URI.create( 
                 "string:///" + ( packageName + "." + className ).replace( '.', '/' ) 

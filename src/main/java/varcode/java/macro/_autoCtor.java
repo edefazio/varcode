@@ -24,6 +24,8 @@ import varcode.java.model._constructors._constructor;
 import varcode.java.model._enum;
 import varcode.java.model._fields;
 import varcode.java.model._fields._field;
+import varcode.markup.Template;
+import varcode.markup.bindml.BindML;
 
 /**
  * Given fields on an Object, creates a constructor
@@ -52,7 +54,7 @@ import varcode.java.model._fields._field;
  * </PRE>
  * @author M. Eric DeFazio eric@varcode.io
  */
-public enum _autoConstructor    
+public enum _autoCtor    
     implements _autoApply
 {
     INSTANCE;
@@ -135,6 +137,9 @@ public enum _autoConstructor
         
         return ofFields( name, uninitializedFinalFields );
     }    
+    
+    public static final Template CTOR_SIG = 
+        BindML.compile("public {+name*+} ( {{+:final {+fieldType+} {+fieldName+}, +}} )");
     
     public static _constructor ofFields( String name, List<_field> fields )
     {

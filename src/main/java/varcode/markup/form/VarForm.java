@@ -148,7 +148,8 @@ public class VarForm
      * @param context
      * @return
      */
-    private int getFormInstanceCount( Context context )
+    @Override
+    public int getCardinality( Context context )
     {
         Set<String> varNames = getVarNames();
 
@@ -166,6 +167,7 @@ public class VarForm
         {
             String next = it.next();
             //Object value = context.get( next );
+            //System.out.println( "Resolving "+ next );
             Object value = context.getVarResolver().resolveVar( context, next );
             if( value != null )
             {
@@ -208,7 +210,7 @@ public class VarForm
     public void deriveTo( Context context, TranslateBuffer out )
     {
         //find out the number of Forms
-        int cardinality = getFormInstanceCount( context );
+        int cardinality = getCardinality( context );
 
         //now generate Each Form
         String[] eachForm = new String[ cardinality ];
@@ -309,7 +311,7 @@ public class VarForm
         TranslateBuffer textBuffer = new TranslateBuffer();
         
         //find out the number of Forms
-        int cardinality = getFormInstanceCount( context );
+        int cardinality = getCardinality( context );
 
         //now generate Each Form
         String[] series = new String[ cardinality ];

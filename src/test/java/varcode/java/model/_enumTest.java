@@ -5,13 +5,10 @@
  */
 package varcode.java.model;
 
-import varcode.java.model._annotationType;
-import varcode.java.model._enum;
 import java.lang.reflect.Modifier;
 import junit.framework.TestCase;
 import varcode.java.Java;
 import varcode.java.model._enum._constants._constant;
-import varcode.java.model._fields._field;
 
 /**
  *
@@ -21,12 +18,13 @@ public class _enumTest
     extends TestCase
 {
     /** 
-     * This was a bug we had because the enum name COULD contain a carriage return
+     * This test was a bug we had because the enum name COULD contain a carriage return
      * when we manually parsed it
      */
     public void testEnumNameTrim()
     {
-        _enum _e = _enum.of("public enum MyEnum" + System.lineSeparator() +"    implements MyInterface" );
+        _enum _e = _enum.of("public enum MyEnum" + System.lineSeparator() 
+            +"    implements MyInterface" );
         
         assertEquals( "MyEnum", _e.getName() );
     }

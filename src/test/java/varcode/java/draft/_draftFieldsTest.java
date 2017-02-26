@@ -15,8 +15,6 @@
  */
 package varcode.java.draft;
 
-import varcode.java.draft._draft;
-import varcode.java.draft._draftFields;
 import java.util.ArrayList;
 import java.util.List;
 import junit.framework.TestCase;
@@ -25,7 +23,6 @@ import varcode.java.draft._draft.DraftField;
 import varcode.java.draft._draft.$;
 
 import varcode.java.model._class;
-import varcode.java.model._fields;
 import varcode.java.model._fields._field;
 import varcode.java.draft._draft._typeDraft;
 

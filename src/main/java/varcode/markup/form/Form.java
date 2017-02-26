@@ -25,13 +25,22 @@ import varcode.markup.mark.Mark;
  * 
  * @author M. Eric DeFazio eric@varcode.io
  * 
- * @see VarForm Form containing static text mixed with variables 
- * @see StaticForm unchanging, immutable form (static String)
+ * {@link VarForm} Form containing static text mixed with variables 
+ * {@link StaticForm} unchanging, immutable form (static String)
  * 
  */
 public interface Form
     extends Mark.HasVars
 {
+    /** 
+     * Gets the count of Forms instances that will be created 
+     * based on the Var values sotred within the context
+     * 
+     * @param context the context containing vars to be 
+     * @return 
+     */
+    int getCardinality( Context context );
+        
     /** 
      * gets all Marks of the Form
      * @return  all Marks in the form
@@ -79,6 +88,13 @@ public interface Form
             this.text = text;
         }
 
+        /** static text Form that always prints itself out ONCE*/
+        @Override
+        public int getCardinality( Context context )
+        {
+            return 1;
+        }
+        
         @Override
         public String toString()
         {

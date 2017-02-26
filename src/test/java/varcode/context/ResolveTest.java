@@ -1,5 +1,7 @@
 package varcode.context;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -10,11 +12,15 @@ import varcode.markup.Template;
 import varcode.markup.bindml.BindML;
 import varcode.context.resolve.VarScriptResolver.SmartScriptResolver;
 import varcode.context.resolve.VarResolver.SmartVarResolver;
+import varcode.java.model._fields._field;
+import varcode.markup.form.Form;
+import varcode.markup.forml.ForML;
 
 public class ResolveTest
     extends TestCase
-{
+{    
     static final SmartScriptResolver ssr = SmartScriptResolver.INSTANCE;
+
 
     public void testSmartScriptResolver()
     {
@@ -41,6 +47,116 @@ public class ResolveTest
             ssr.resolveScript( VarContext.of(), "java.util.UUID.randomUUID", null ) );
     }
 
+    public void testResolveDotPath()
+    {
+        Context context = VarContext.of( "field.name", "count" );
+        assertEquals( "count", context.resolveVar( "field.name" ) );
+        
+        Template t = BindML.compile( "{+field.type+} {+field.name+}");
+        String str = 
+            Author.toString( t, "field.type", int.class, "field.name", "count" );
+        
+        assertEquals( "int count", str );
+        
+        Template tf = BindML.compile( "{{+:{+field.type+} {+field.name+}, +}}");
+        
+        str = 
+            Author.toString( tf, "field.type", int.class, "field.name", "count" );
+        assertEquals( "int count", str );
+        
+        str = 
+            Author.toString( tf, 
+                "field.type", new Object[]{int.class, String.class}, 
+                "field.name", new String[]{"count", "name"} );
+        
+        System.out.println( str );
+        
+        assertEquals( "int count, java.lang.String name", str );        
+    }
+    
+    public void testFormResolveDot()
+    {
+        Form f = ForML.compile("{+field.type+} {+field.name+}, ");
+        
+        VarContext vc = VarContext.of(
+            "field.type", new Object[]{int.class, String.class}, 
+            "field.name", new String[]{"count", "name"} );
+        
+        assertEquals( 2, f.getCardinality( vc ) );
+        
+        String s = f.author( vc );
+        assertEquals("int count, java.lang.String name", s);
+        //System.out.println("S : \""+ s +"\"" );        
+    }
+    
+    public void testResolveDotDereference()
+    {
+        Context ctx = VarContext.of( "field", _field.of( "public int count;" ) ); 
+        assertEquals("count", ctx.resolveVar( "field.name" ) );
+    }
+    public void testResolveDereferenceDot()
+    {
+        _field _count = _field.of( "public int count;" );
+        
+        
+        Form f = ForML.compile("{+field.type+} {+field.name+}, ");
+        
+        String str = f.author( 
+            VarContext.of("field", _count ) );
+         
+        assertEquals( "int count", str );
+    }
+
+    /**
+     * Verify that I can resolve variables within the context 
+     * using a "." notation
+     * 
+     * "
+     */
+    public void testResolveDereferenceDotArray()
+    {
+        _field _count = _field.of( "public int count;" );
+        _field _name = _field.of( "public String name;" );
+        
+        Form f = ForML.compile( "{+field.type+} {+field.name+}, ");
+        
+        assertEquals( 2, f.getCardinality( 
+            VarContext.of( "field", new _field[]{_count, _name} ) ) );
+        
+        String str = f.author( 
+            VarContext.of( "field", new _field[]{_count, _name} ) );
+        
+        assertEquals( "int count, String name", str );
+    }
+
+    /**
+     * Verify that I can resolve variables within the context 
+     * using a "." notation
+     * 
+     * "
+     */
+    public void testResolveDereferenceDotCollection()
+    {
+        _field _count = _field.of( "public int count;" );
+        _field _name = _field.of( "public String name;" );
+        
+        Form f = ForML.compile( "{+field.type+} {+field.name+}, ");
+        
+        List<_field> l = new ArrayList<_field>();
+        l.add( _count );
+        l.add( _name );
+        
+        assertEquals( 2, f.getCardinality( 
+            VarContext.of( "field", l ) ) );
+        
+        String str = f.author( 
+            VarContext.of( "field", l ) );
+        
+        assertEquals( "int count, String name", str );
+    }
+    
+    
+        
     public void testCaps()
     {
         Context context = VarContext.of( "name", "eric" );

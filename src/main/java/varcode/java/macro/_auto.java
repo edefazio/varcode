@@ -317,6 +317,11 @@ public class _auto
         return _autoConstructor.of( _e );
     }
     
+    public static _enum constructorTo( _enum _e )
+    {
+        return _e.add( constructor( _e ) );
+    }
+    
     public static _constructor constructor( String name, _fields _fields )
     {
         return _autoConstructor.of( name, _fields );

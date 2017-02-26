@@ -130,11 +130,11 @@ public class _draftConstructors
      *  <LI>DON'T INCLUDE IT (if the method contains an {@link _macro.remove} annotation
      *  <LI>EXPAND IT (if it includes ANY OF THESE:
      *     {@link _macro.$} parameterize
-     *     {@link _macro.sig} macro expand method signature
-     *     {@link _macro.body} macro expand body
-     *     {@link _macro.form} macro expand body within the form
-     *     {@link _macro.formAt} macro expand body at location
-     *  <LI>COPY IT AS IS if it contains NONE of the above annotations
+     *     {@link _macro.sig} macro draft method signature
+     {@link _macro.body} macro draft body
+     {@link _macro.form} macro draft body within the form
+     {@link _macro.formAt} macro draft body at location
+  <LI>COPY IT AS IS if it contains NONE of the above annotations
      * </UL>
      * @param _m the method
      * @return 
