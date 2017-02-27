@@ -64,14 +64,11 @@ package varcode;
  * @author M. Eric DeFazio eric@varcode.io
  */
 public interface Model
-{
-    public static final String N = "\r\n";
-	
+{	
     /** 
      * Strings passed in with this prefix signify they are 
      * Literals and not a String representation of an entity
      */
     public static final String STRING_LITERAL_PREFIX = "$$";
     
-
 }

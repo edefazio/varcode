@@ -342,6 +342,8 @@ public class _class
         this.nesteds = _nests.cloneOf( prototype.nesteds );
     }
 
+    public static final String N = System.lineSeparator();
+    
     public static final Template CLASS
         = BindML.compile(
             "{+package+}"

@@ -15,7 +15,7 @@
  */
 package varcode.java;
 
-import varcode.java.load.BaseJavaSourceLoader;
+import varcode.java.load.JavaSourceLoader.BaseJavaSourceLoader;
 import com.github.javaparser.ParseException;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.TypeDeclaration;

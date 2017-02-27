@@ -159,7 +159,7 @@ public class _anns
     private List<_ann> listOfAnnotations  = new ArrayList<_ann>();
     
     public static final Template ANNOTATION_LIST = 
-        BindML.compile( "{{+:{+annotation+}" + N + "+}}" );
+        BindML.compile( "{{+:{+annotation+}" + System.lineSeparator() + "+}}" );
     
     /** INLINE annotation Style (i.e." 
      *  public int doIt( @Deprecated @SafeVarArgs String... names )

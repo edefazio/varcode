@@ -31,6 +31,7 @@ import varcode.java.model._enum;
 import varcode.java.model._interface;
 import varcode.load.Source.SourceLoader;
 import varcode.load.Source.SourceStream;
+import static varcode.java.load.JavaSourceLoader.BaseJavaSourceLoader;
 
 /**
  * Combines the operation of finding and loading Java code, with the operation of
@@ -149,7 +150,7 @@ public class _JavaLoad
         public static _class _classFrom( Class clazz )
         {
             return _classFrom(
-                BaseJavaSourceLoader.INSTANCE,
+                JavaSourceLoader.BaseJavaSourceLoader.INSTANCE,
                 clazz,
                 new FormatJavaCode_AllmanScanStyle() );
         }

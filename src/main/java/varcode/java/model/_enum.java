@@ -52,6 +52,8 @@ public class _enum
     private _methods methods = new _methods();
     private _nests nests = new _nests();
 
+    public static final String N = System.lineSeparator();
+    
     public static final Template ENUM
         = BindML.compile(
             "{+package+}"

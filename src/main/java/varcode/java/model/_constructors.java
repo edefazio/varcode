@@ -53,6 +53,8 @@ public class _constructors
 {
     private List<_constructor> constructors = new ArrayList<_constructor>();
 
+    public static final String N = System.lineSeparator();
+    
     @Override
     public void visit( ModelVisitor visitor )
     {

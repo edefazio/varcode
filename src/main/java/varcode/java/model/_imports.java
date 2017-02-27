@@ -46,6 +46,8 @@ import varcode.java.naming.ClassNameQualified;
 public class _imports      
     implements _Java, _facet, Countable, Authored
 {
+    public static final String N = System.lineSeparator();
+    
     public _imports( _imports prototype )
     {
         if( prototype != null )

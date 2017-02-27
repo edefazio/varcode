@@ -30,9 +30,8 @@ import varcode.java.ast.JavaAst;
 import varcode.markup.Template;
 
 /**
- * An specialization of {@link Author} for authoring {@code AdHocJavaFile}s 
- * specifically for creating AdHocJavFiles that are usable within the 
- * {@link varcode.java.adhoc.*} toolkit.
+ * An specialization of {@link Author} for creating {@link JavaSourceFile}s 
+ * usable for compiling within the {@link varcode.java.adhoc.*} toolkit.
  * 
  * (instead of {@link Author.toString()} to a String or AuthorState)
  * 

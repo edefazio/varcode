@@ -70,11 +70,11 @@ import varcode.java.model._ann;
 
 /**
  * "Ports" Java code from the Java AST (Node-based) representation 
- * of Code into {@code _class, _interface, _enum } models.
+ * of Code into {@code _class, _interface, _enum, _annotationType } models.
  *
  * We do NOT load source code (as a String) directly into _class, _enum, 
  * _interface, _annotationType models, instead we convert the String to an AST 
- * and then into the model.
+ * and then into the (_class, _enum...) model.
  * 
  * @author Eric DeFazio eric@varcode.io
  */
@@ -102,7 +102,7 @@ public class _JavaAstPort
     
     /**
      * Creates and atReturn an _interface MetaLang model from the AST Root node 
- containing a astInterfaceDecl
+     * containing a astInterfaceDecl
      *
      * @param astRoot the top level AST CompilationUnit node of an interface
      * (contains package imports, etc. of the File)
@@ -269,9 +269,7 @@ public class _JavaAstPort
             {
                 System.err.println( 
                     " UNKNOWN AST MEMBER " + astMember + System.lineSeparator() 
-                    + " of " + astMember.getClass() );         
-                //LOG.error(" UNKNOWN AST MEMBER " + astMember + System.lineSeparator() 
-                //    + " of " + astMember.getClass() );         
+                    + " of " + astMember.getClass() );       
             }
         }            
         return _i;            

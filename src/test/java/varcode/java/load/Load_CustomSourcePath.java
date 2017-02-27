@@ -7,6 +7,7 @@ package varcode.java.load;
 
 import junit.framework.TestCase;
 import varcode.java.adhoc.Export;
+import varcode.java.load.JavaSourceLoader.BaseJavaSourceLoader;
 import varcode.java.model._class;
 import varcode.load.Source.SourceStream;
 

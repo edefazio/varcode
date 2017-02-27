@@ -39,6 +39,8 @@ public class _extends
     implements _Java, Countable, Authored
 {
     public static final _extends NONE = new _extends();
+    public static final String N = System.lineSeparator();
+    
 
     private List<String> extendsFrom = new ArrayList<String>();
 

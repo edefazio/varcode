@@ -44,6 +44,8 @@ import varcode.markup.Fill;
 public class _javadoc
     implements _Java, Authored
 {    
+    private static final String N = System.lineSeparator();
+    
     public _javadoc( _javadoc prototype )
     {
         if( prototype != null )

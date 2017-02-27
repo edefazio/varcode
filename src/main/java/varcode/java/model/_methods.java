@@ -52,6 +52,8 @@ import varcode.ModelException;
 public class _methods
     implements _Java, Countable, Authored
 {
+    private static final String N = System.lineSeparator();
+    
     private List<_method> methods = new ArrayList<_method>();
 
     public static _methods of( _method... _meths )

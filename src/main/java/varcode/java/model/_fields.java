@@ -42,6 +42,8 @@ import varcode.ModelException;
 public class _fields
     implements _Java, Countable, Authored
 {
+    public static final String N = System.lineSeparator();
+    
     public static final Template FIELDS
         = BindML.compile(
             "{{+?staticFields:{+staticFields+}" + N

@@ -32,6 +32,8 @@ import varcode.markup.bindml.BindML;
 public class _staticBlock
     implements _Java, Authored
 {
+    private static final String N = System.lineSeparator();
+    
     public static final Template STATIC_BLOCK
         = BindML.compile(
             "static" + N

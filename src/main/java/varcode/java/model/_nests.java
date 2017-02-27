@@ -53,6 +53,8 @@ public class _nests
     //all nested components of a declaring class (_class, _enum, _interface)
     public List<_model> models = new ArrayList<_model>();
 
+    private static final String N = System.lineSeparator();
+    
     public static _nests of( _model... _ms )
     {
         _nests _ns = new _nests();

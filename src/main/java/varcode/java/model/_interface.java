@@ -47,6 +47,8 @@ public class _interface
     extends _JavaFileModel
     implements _model
 {
+    public static final String N = System.lineSeparator();
+    
     public static final Template INTERFACE
         = BindML.compile(
             "{+package+}"

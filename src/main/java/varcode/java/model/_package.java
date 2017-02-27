@@ -33,6 +33,8 @@ import varcode.markup.bindml.BindML;
 public class _package
     implements _Java, Authored
 {
+    private static final String N = System.lineSeparator();
+    
     public static final Template PACKAGE
         = BindML.compile(
             "{{+?name:package {+name+};" + N + N

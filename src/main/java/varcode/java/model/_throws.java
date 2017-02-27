@@ -37,6 +37,8 @@ import varcode.ModelException;
 public class _throws
     implements _Java, Countable, Authored
 {
+    private static final String N = System.lineSeparator();
+    
     public static final _throws NONE = new _throws();
 
     private List<String> throwsException = new ArrayList<String>();

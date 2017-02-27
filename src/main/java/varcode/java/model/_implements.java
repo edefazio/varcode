@@ -38,6 +38,8 @@ import varcode.ModelException;
 public class _implements
     implements _Java, _facet, Countable, Authored
 {
+    public static final String N = System.lineSeparator();
+    
     public _implements( _implements prototype )
     {
         if( prototype != null )

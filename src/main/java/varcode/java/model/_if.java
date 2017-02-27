@@ -34,6 +34,8 @@ import varcode.markup.bindml.BindML;
 public class _if
     implements _Java, Serializable
 {
+    public static final String N = System.lineSeparator();
+    
     public static _if is( Object condition, Object... bodyLines )
     {
         return new _if( condition, bodyLines );

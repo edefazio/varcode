@@ -15,15 +15,10 @@
  */
 package varcode.java.model;
 
-import java.util.ArrayList;
 import java.util.List;
 import varcode.context.Context;
 import varcode.context.Directive;
-import varcode.java.naming.ClassNameQualified;
-import varcode.java.JavaAuthor;
-import varcode.java.adhoc.AdHoc;
 import varcode.markup.Template;
-import varcode.java.adhoc.JavaSourceFile;
 import varcode.Model;
 
 /**
