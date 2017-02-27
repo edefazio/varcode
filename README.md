@@ -1,7 +1,7 @@
 <img src="https://github.com/edefazio/varcode/blob/master/varcode_greenOnWhite.png?raw=true" width="60"/>
 combines a **code generator** and **ad-hoc tools** to **compile, load, and run .java source code at runtime**.  
 
-# generate / run / export .java code at runtime #
+## generate / run / export .java code at runtime ##
 ```java
 //1 generate a model
 _class _model = _class.of( "package mymodel;", 
@@ -36,7 +36,7 @@ public class Model
 }
 ```
 
-# metaprogramming : read in existing code, modify it & run it #
+## metaprogramming : read in existing code, modify it & run it ##
 varcode makes **metaprogramming** easy. **load a  ```( _class, _enum, _interface, _annotationType )```** from an existing class, modify it at the source level, then compile & use it at runtime (no restarting required). 
 
 ```java
@@ -55,7 +55,7 @@ Object tailored = _c.instance(); // create a new instance of "Tailored"
 System.out.println( tailored );  //prints "Tailored100"
 ```
 
-## construct classes step by step##
+## construct classes step by step ##
 classes for ( [\_class](https://gist.github.com/edefazio/b491989cd6ef72ad7ea2bc0005895c81), [\_interface](https://gist.github.com/edefazio/adbbd9cd500617d3202b2a2a3c7ebf68), [\_enum](https://gist.github.com/edefazio/0e566868ab5f134720cfde6db24b9b11), [\_annotationType](https://gist.github.com/edefazio/f1bed02ff66524149c215311c6d6f356) ) can be built in a single compound statement or incrementally using simple mutator methods. 
 ```java 
 _class _c = _class.of( "package ex.mutable;",
