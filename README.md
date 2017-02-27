@@ -1,9 +1,7 @@
 <img src="https://github.com/edefazio/varcode/blob/master/varcode_greenOnWhite.png?raw=true" width="60"/>
-varcode combines a **code generator** and **ad-hoc tools** to **compile, load, and run .java source code at runtime**.  
+combines a **code generator** and **ad-hoc tools** to **compile, load, and run .java source code at runtime**.  
 
-varcode works by **invoking the compiler on dynamic java code at runtime**.
-
-# generate and run .java code at runtime #
+# generate / run / export .java code at runtime #
 ```java
 //1 generate a model
 _class _model = _class.of( "package mymodel;", 
