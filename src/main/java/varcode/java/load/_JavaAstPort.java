@@ -277,7 +277,7 @@ public class _JavaAstPort
     
      /**
      * Creates and atReturn a _class MetaLang model from the AST Root node 
- containing a AST Class Declaration.
+     * containing a AST Class Declaration.
      *
      * @param astRoot the top level AST CompilationUnit node of an interface
      * (contains package imports, etc. of the File)
@@ -296,7 +296,7 @@ public class _JavaAstPort
     
     /**
      * Creates and atReturn a _class MetaLang model from the AST Root node 
- containing a AST Class Declaration.
+     * containing a AST Class Declaration.
      *
      * @param astRoot the top level AST CompilationUnit node of an interface
      * (contains package imports, etc. of the File)
@@ -469,7 +469,7 @@ public class _JavaAstPort
     
     /**
      * Creates and atReturn a _class MetaLang model from the AST Root node 
- containing a AST Class Declaration.
+     * containing a AST Class Declaration.
      *
      * @param astRoot the top level AST CompilationUnit node of an interface
      * (contains package imports, etc. of the File)
@@ -492,7 +492,7 @@ public class _JavaAstPort
     
     /**
      * Creates and atReturn a _class MetaLang model from the AST Root node 
- containing a AST Class Declaration.
+     * containing a AST Class Declaration.
      *
      * @param astRoot the top level AST CompilationUnit node of an interface
      * (contains package imports, etc. of the File)
