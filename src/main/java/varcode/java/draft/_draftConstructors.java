@@ -17,12 +17,8 @@ package varcode.java.draft;
 
 import java.util.List;
 import varcode.ModelException;
-import varcode.java.draft._draft.formAt;
 import varcode.java.model._ann;
 import varcode.java.model._anns;
-import varcode.java.model._methods;
-import varcode.java.model._methods._method;
-import varcode.java.draft._draft._typeDraft;
 import varcode.java.model._constructors;
 import varcode.java.model._constructors._constructor;
 
@@ -34,26 +30,25 @@ public class _draftConstructors
 {
     /**
      * Prepares methods for macro expansion based on the presence of 
- annotations (@remove, @sig, @body, @form, @formAt) on each method 
- 
- Adds the appropriate _typeDraft for the method
+     * annotations (@remove, @sig, @body, @form, @formAt) on each method 
+     * Adds the appropriate draftAction for the method
      * @param expansions 
      * @param _ms the methods of a type
      */
     public static final void prepareConstructors( 
-        List<_typeDraft> expansions, _constructors _cs )
+        List<DraftAction> expansions, _constructors _cs )
     {
         for( int i = 0; i < _cs.count(); i++ )
         {
             _constructor _m = _cs.getAt( i );
-            if( _m.getAnnotations().contains( _draft.form.class ) || 
+            if( _m.getAnnotations().contains( form.class ) || 
                 _m.getAnnotations().contains( formAt.class ) )
             {  //handle form or formAt 
                 expansions.add( processConstructorForms( _m ) );                
             }
             else
             {   //handle sig, body, and remove
-                _draft._typeDraft exp = processConstructor( _m );
+                DraftAction exp = processConstructor( _m );
                 if( exp != null )
                 {
                     expansions.add( exp );
@@ -66,17 +61,17 @@ public class _draftConstructors
      * @param _m
      * @return 
      */
-    public static _draft._typeDraft processConstructorForms( _constructor _m )
+    public static DraftAction processConstructorForms( _constructor _m )
     {
         _anns _as = _m.getAnnotations();
-        _ann form = _as.getOne( _draft.form.class );
-        _ann formAt = _as.getOne( _draft.formAt.class );
+        _ann form = _as.getOne( form.class );
+        _ann formAt = _as.getOne( formAt.class );
         
         if( form != null )
         {
             //System.out.println( "doing form" );
             _constructor _p = new _constructor( _m );
-            _p.getAnnotations().remove( _draft.form.class ); //remove form  annotation from the target method
+            _p.getAnnotations().remove( form.class ); //remove form  annotation from the target method
             String beforeForm = "";
             String afterForm = "";
             String body = _m.getBody().author();
@@ -114,7 +109,7 @@ public class _draftConstructors
             stitchedBody[ 0 ] = beforeForm;
             System.arraycopy( attrs, 0, stitchedBody, 1, attrs.length);
             stitchedBody[ stitchedBody.length -1 ] = afterForm;
-            return _draft.DraftConstructor.ofBody( _p, stitchedBody );
+            return DraftAction.ExpandConstructor.ofBody( _p, stitchedBody );
         }
         else if( formAt != null )
         {
@@ -139,14 +134,14 @@ public class _draftConstructors
      * @param _m the method
      * @return 
      */
-    public static _draft._typeDraft processConstructor( _constructor _m )
+    public static DraftAction processConstructor( _constructor _m )
     {
         _anns _as = _m.getAnnotations();
-        if( !_as.contains( _draft.remove.class ) )
+        if( !_as.contains( remove.class ) )
         {   //we are either copying or tailoring the field                           
-            _ann parameter = _as.getOne( _draft.$.class ); //TODO PARAMETER
-            _ann sig = _as.getOne( _draft.sig.class );
-            _ann body = _as.getOne( _draft.body.class );
+            _ann parameter = _as.getOne( $.class ); //TODO PARAMETER
+            _ann sig = _as.getOne( sig.class );
+            _ann body = _as.getOne( body.class );
             
             _constructor _p = new _constructor( _m );
             //first param
@@ -158,8 +153,8 @@ public class _draftConstructors
                 String[] valuesArray = _ann._attributes.parseStringArray( values );
                 //System.out.println( "values[0]" + valuesArray[0] );                
                 //System.out.println( "values[1]" + valuesArray[1] );                
-                _p.getAnnotations().remove( _draft.$.class );
-                return _draft.DraftConstructor.parameterize( _p, valuesArray );   
+                _p.getAnnotations().remove( $.class );
+                return DraftAction.ExpandConstructor.parameterize( _p, valuesArray );   
             }
             else if( sig != null )
             {   //we didnt explicitly tailor or remove it, so copy the method
@@ -168,27 +163,27 @@ public class _draftConstructors
                     sig.getAttributes().values.get( 0 ) );
                 if( body != null )
                 {
-                    _p.getAnnotations().remove( _draft.sig.class );
-                    _p.getAnnotations().remove( _draft.body.class );
+                    _p.getAnnotations().remove( sig.class );
+                    _p.getAnnotations().remove( body.class );
                     String[] bod = _ann._attributes.parseStringArray( 
                         body.getAttributes().values.get( 0 ) );
-                    return _draft.DraftConstructor.of( _p, str[0], bod );
+                    return DraftAction.ExpandConstructor.of( _p, str[0], bod );
                 }
                 else
                 {
-                    _p.getAnnotations().remove( _draft.sig.class );
-                    return _draft.DraftConstructor.ofSignature( _p, str[0] );
+                    _p.getAnnotations().remove( sig.class );
+                    return DraftAction.ExpandConstructor.ofSignature( _p, str[0] );
                 }
             }
             else if( body != null )
             {
                 String[] bod = _ann._attributes.parseStringArray( 
                     body.getAttributes().values.get( 0 ) );
-                _p.getAnnotations().remove( _draft.body.class );
-                return _draft.DraftConstructor.ofBody( _p, bod );
+                _p.getAnnotations().remove( body.class );
+                return DraftAction.ExpandConstructor.ofBody( _p, bod );
             }
             //just copy the field                        
-            return new _draft.CopyConstructor( _m );
+            return new DraftAction.CopyConstructor( _m );
         }
         return null;
     }

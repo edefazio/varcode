@@ -236,8 +236,14 @@ public class FormTemplate
     private static List<String> parseVars( String str )
     {
         List<String> vList = new ArrayList<String>();
-        if( str == null )
+        if( str == null || str.trim().length() == 0 )
         {
+            return vList;
+        }
+        
+        if( str.indexOf( "," ) < 0 )
+        {            
+            vList.add( str );
             return vList;
         }
         String[] vars = str.split( "," );
@@ -259,14 +265,16 @@ public class FormTemplate
             	HasVar hv = (HasVar)marks[ i ];
                 varNames.add( hv.getVarName() );
             }
-            if( marks[ i ] instanceof HasVars )
+            else if( marks[ i ] instanceof HasVars )
             {
                 Mark.HasVars hvs = (HasVars)marks[ i ];
                 varNames.addAll( hvs.getVarNames() );
             }
-            if( marks[ i ] instanceof HasVarScript )
+            else if( marks[ i ] instanceof HasVarScript )
             {
-                varNames.addAll(parseVars(((HasVarScript)marks[ i ]).getVarScriptInput() ) );
+                HasVarScript hvs = (HasVarScript)marks[ i ];
+                List<String> varNamesE = parseVars( hvs.getVarScriptInput() );
+                varNames.addAll( varNamesE );
             }
         }
         return varNames;

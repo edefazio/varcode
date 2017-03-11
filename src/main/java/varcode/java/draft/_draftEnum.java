@@ -22,14 +22,13 @@ import varcode.context.Context;
 import varcode.context.VarContext;
 import varcode.java.load._JavaLoad;
 import varcode.java.model._class;
-import varcode.java.draft._draft.sig;
 import varcode.java.model._enum;
 import varcode.java.model._enum._constants;
 import varcode.java.model._enum._constants._constant;
 import varcode.java.model._interface;
 import varcode.markup.Template;
 import varcode.markup.bindml.BindML;
-import varcode.java.draft._draft._typeDraft;
+import varcode.java.draft.DraftAction;
 
 
 /**
@@ -75,17 +74,17 @@ public class _draftEnum
      * them in the "tailored" _class
      * </UL>
      */
-    public final List<_typeDraft> typeExpansion = 
-        new ArrayList<_typeDraft>();
+    public final List<DraftAction> typeExpansion = 
+        new ArrayList<DraftAction>();
     
     /** the prototype _class */
     public final _enum _prototype;
     
     /** method for originating the "tailored" _class */
-    public final _enumOriginator _originator;
+    public final _enumAction _originator;
     
     /** */
-    public interface _enumOriginator
+    public interface _enumAction
     {
         public _enum initEnum( Context context );
         
@@ -99,30 +98,30 @@ public class _draftEnum
         this._originator = prepareEnumOriginator( _prototype );
         
         prepareTypePackage( this.typeExpansion, _c.getPackageName(), 
-            _c.getAnnotations().getOne( _draft.packageName.class ) );
+            _c.getAnnotations().getOne( packageName.class ) );
         
         prepareTypeImports( this.typeExpansion, _c.getImports(), 
-            _c.getAnnotation( _draft.imports.class )  );
+            _c.getAnnotation( imports.class )  );
         
         //annotations
         prepareTypeAnnotations( this.typeExpansion, _c.getAnnotations(), 
-            _c.getAnnotation( _draft.annotations.class ) );
+            _c.getAnnotation( annotations.class ) );
         
         //constants
         _constants _consts = _prototype.getConstants();
         for( int i = 0; i < _consts.count(); i++ )
         {
             _constant _const = _consts.getAt( i );
-            if( !( _const.getAnnotation( _draft.remove.class ) != null ) )
+            if( !( _const.getAnnotation( remove.class ) != null ) )
             {   //for now just COPY over the constant
-                this.typeExpansion.add( new EnumConstCopy( _const ) );
+                this.typeExpansion.add( new CopyEnumConst( _const ) );
             }
         }
         prepareTypeFields( this.typeExpansion, 
-            _c.getAnnotations().getOne( _draft.fields.class ) );
+            _c.getAnnotations().getOne( fields.class ) );
         
         prepareStaticBlock( this.typeExpansion, 
-            _c.getAnnotations().getOne( _draft.staticBlock.class ),
+            _c.getAnnotations().getOne( staticBlock.class ),
             _c.getStaticBlock() );
         
         //TODO fieldANNOTATIONS, methodANNOTATIONS, fieldJDOC methodJDOC
@@ -132,15 +131,15 @@ public class _draftEnum
     }
 
     
-    public static _enumOriginator prepareEnumOriginator( _enum _c )
+    public static _enumAction prepareEnumOriginator( _enum _c )
     {
-        if( _c.getAnnotation( _draft.sig.class ) != null )
+        if( _c.getAnnotation( sig.class ) != null )
         {
             String sig = _c.getAnnotation( sig.class ).getLoneAttributeString();
             if( sig != null) 
             {
                 _c.getAnnotations().remove( sig.class );
-                return new DraftEnumSignature( sig );
+                return new ExpandEnumSignature( sig );
             }
             else
             {
@@ -173,12 +172,12 @@ public class _draftEnum
      * This code is specific to Enums, but we extend _typeDraft just to make
  it work more easily with the existing 
      */
-    public static class EnumConstCopy
-        implements _typeDraft
+    public static class CopyEnumConst
+        implements DraftAction
     {
         public _enum._constants._constant enumConst;
         
-        public EnumConstCopy( _enum._constants._constant _const )
+        public CopyEnumConst( _enum._constants._constant _const )
         {
             this.enumConst = new _enum._constants._constant( _const );
         }
@@ -216,15 +215,15 @@ public class _draftEnum
     
     /**
      * This code is specific to Enums, but we extend _typeDraft just to make
- it work more easily with the existing 
+     * it work more easily with the existing 
      */
-    public static class EnumConstDraft
-        implements _typeDraft
+    public static class ExpandEnumConst
+        implements DraftAction
     {
         public _enum._constants._constant enumConst;
         
         
-        public EnumConstDraft( _enum._constants._constant _const )
+        public ExpandEnumConst( _enum._constants._constant _const )
         {
             this.enumConst = new _enum._constants._constant( _const );
         }
@@ -261,7 +260,7 @@ public class _draftEnum
     }
     
     public static class CopyEnumSignature
-        implements _enumOriginator
+        implements _enumAction
     {        
         //_class _prototype;
         private final String signature;
@@ -284,12 +283,12 @@ public class _draftEnum
         }
     }
     
-    public static class DraftEnumSignature
-        implements _enumOriginator
+    public static class ExpandEnumSignature
+        implements _enumAction
     {
         public Template signature;
         
-        public DraftEnumSignature( String form )
+        public ExpandEnumSignature( String form )
         {
             //System.out.println( form );
             this.signature = BindML.compile( form );

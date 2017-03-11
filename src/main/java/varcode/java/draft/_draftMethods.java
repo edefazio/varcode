@@ -17,12 +17,10 @@ package varcode.java.draft;
 
 import java.util.List;
 import varcode.ModelException;
-import varcode.java.draft._draft.formAt;
 import varcode.java.model._ann;
 import varcode.java.model._anns;
 import varcode.java.model._methods;
 import varcode.java.model._methods._method;
-import varcode.java.draft._draft._typeDraft;
 
 /**
  *
@@ -39,19 +37,19 @@ public class _draftMethods
      * @param _ms the methods of a type
      */
     public static final void prepareMethods( 
-        List<_typeDraft> expansions, _methods _ms )
+        List<DraftAction> expansions, _methods _ms )
     {
         for( int i = 0; i < _ms.count(); i++ )
         {
             _methods._method _m = _ms.getAt( i );
-            if( _m.getAnnotations().contains( _draft.form.class ) || 
+            if( _m.getAnnotations().contains( form.class ) || 
                 _m.getAnnotations().contains( formAt.class ) )
             {  //handle form or formAt 
                 expansions.add( processMethodForms( _m ) );                
             }
             else
             {   //handle sig, body, and remove
-                _draft._typeDraft exp = processMethod( _m );
+                DraftAction exp = processMethod( _m );
                 if( exp != null )
                 {
                     expansions.add( exp );
@@ -64,17 +62,17 @@ public class _draftMethods
      * @param _m
      * @return 
      */
-    public static _draft._typeDraft processMethodForms( _method _m )
+    public static DraftAction processMethodForms( _method _m )
     {
         _anns _as = _m.getAnnotations();
-        _ann form = _as.getOne( _draft.form.class );
-        _ann formAt = _as.getOne( _draft.formAt.class );
+        _ann form = _as.getOne( form.class );
+        _ann formAt = _as.getOne( formAt.class );
         
         if( form != null )
         {
             //System.out.println( "doing form" );
             _methods._method _p = new _methods._method( _m );
-            _p.getAnnotations().remove( _draft.form.class ); //remove form  annotation from the target method
+            _p.getAnnotations().remove( form.class ); //remove form  annotation from the target method
             String beforeForm = "";
             String afterForm = "";
             String body = _m.getBody().author();
@@ -112,7 +110,7 @@ public class _draftMethods
             stitchedBody[ 0 ] = beforeForm;
             System.arraycopy( attrs, 0, stitchedBody, 1, attrs.length);
             stitchedBody[ stitchedBody.length -1 ] = afterForm;
-            return _draft.DraftMethod.ofBody( _p, stitchedBody );
+            return DraftAction.ExpandMethod.ofBody( _p, stitchedBody );
         }
         else if( formAt != null )
         {
@@ -137,14 +135,14 @@ public class _draftMethods
      * @param _m the method
      * @return 
      */
-    public static _draft._typeDraft processMethod( _method _m )
+    public static DraftAction processMethod( _method _m )
     {
         _anns _as = _m.getAnnotations();
-        if( !_as.contains( _draft.remove.class ) )
+        if( !_as.contains( remove.class ) )
         {   //we are either copying or tailoring the field                           
-            _ann parameter = _as.getOne( _draft.$.class ); //TODO PARAMETER
-            _ann sig = _as.getOne( _draft.sig.class );
-            _ann body = _as.getOne( _draft.body.class );
+            _ann parameter = _as.getOne( $.class ); //TODO PARAMETER
+            _ann sig = _as.getOne( sig.class );
+            _ann body = _as.getOne( body.class );
             
             _method _p = new _methods._method( _m );
             //first param
@@ -156,8 +154,8 @@ public class _draftMethods
                 String[] valuesArray = _ann._attributes.parseStringArray( values );
                 //System.out.println( "values[0]" + valuesArray[0] );                
                 //System.out.println( "values[1]" + valuesArray[1] );                
-                _p.getAnnotations().remove( _draft.$.class );
-                return _draft.DraftMethod.parameterize( _p, valuesArray );   
+                _p.getAnnotations().remove( $.class );
+                return DraftAction.ExpandMethod.parameterize( _p, valuesArray );   
             }
             else if( sig != null )
             {   //we didnt explicitly tailor or remove it, so copy the method
@@ -166,27 +164,27 @@ public class _draftMethods
                     sig.getAttributes().values.get( 0 ) );
                 if( body != null )
                 {
-                    _p.getAnnotations().remove( _draft.sig.class );
-                    _p.getAnnotations().remove( _draft.body.class );
+                    _p.getAnnotations().remove( sig.class );
+                    _p.getAnnotations().remove( body.class );
                     String[] bod = _ann._attributes.parseStringArray( 
                         body.getAttributes().values.get( 0 ) );
-                    return _draft.DraftMethod.of( _p, str[0], bod );
+                    return DraftAction.ExpandMethod.of( _p, str[0], bod );
                 }
                 else
                 {
-                    _p.getAnnotations().remove( _draft.sig.class );
-                    return _draft.DraftMethod.ofSignature( _p, str[0] );
+                    _p.getAnnotations().remove( sig.class );
+                    return DraftAction.ExpandMethod.ofSignature( _p, str[0] );
                 }
             }
             else if( body != null )
             {
                 String[] bod = _ann._attributes.parseStringArray( 
                     body.getAttributes().values.get( 0 ) );
-                _p.getAnnotations().remove( _draft.body.class );
-                return _draft.DraftMethod.ofBody( _p, bod );
+                _p.getAnnotations().remove( body.class );
+                return DraftAction.ExpandMethod.ofBody( _p, bod );
             }
             //just copy the field                        
-            return new _draft.CopyMethod( _m );
+            return new DraftAction.CopyMethod( _m );
         }
         return null;
     }

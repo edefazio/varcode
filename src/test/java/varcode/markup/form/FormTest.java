@@ -12,6 +12,36 @@ import varcode.markup.forml.ForML;
 public class FormTest 
     extends TestCase
 {
+    public void testGetVars()
+    {
+        Form f = ForML.compile("{+a+}" );
+        assertTrue( f.getVarNames().contains( "a" ) );
+        assertEquals( 3, f.getCardinality( VarContext.of("a", new int[3] ) ) );
+    }
+    
+    public void testGetVarsScript()
+    {
+        Form f = ForML.compile("{+$#(a)+}");
+        VarForm vf = (VarForm)f;
+        
+        assertEquals( 1, vf.getVarNames().size() );
+        assertTrue( vf.getVarNames().contains( "a" ) );
+    }
+    
+    public void testFormCardinaliity()
+    {
+        assertEquals(3, ForML.compile( "{+a+}" ).getCardinality(VarContext.of( "a", new int[3] ) ) );
+        
+        
+        Form f = ForML.compile( "System.out.println( \"Hello {+$[#](helloCount)+}\" );" );
+        //System.out.println( 
+        assertTrue( f.getClass().isAssignableFrom( VarForm.class) );
+        VarForm vf = (VarForm)f;
+        
+        
+        assertEquals( 3, vf.getCardinality( VarContext.of( "helloCount", new int[3] ) ) );
+        
+    }
     /**
      * Instead of having the Form return a single String
      * have the form return a String Array of results

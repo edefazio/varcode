@@ -18,13 +18,13 @@ package varcode.java.draft;
 import junit.framework.TestCase;
 import varcode.java.Java;
 import varcode.java.model._enum;
-import varcode.java.draft._draft.*;
+import varcode.java.draft.DraftAction.*;
 
 /**
  * Rough Draft -> changes
  *
  * <LI>
- _workspaceMacro wsm = _draft.match( "all classes in package...", Type.Class,
+ _workspaceMacro wsm = DraftAction.match( "all classes in package...", Type.Class,
  Name.contains, Name.statsWith ) .removeField( "LOG" ) .removeImport( "
  .remove
 

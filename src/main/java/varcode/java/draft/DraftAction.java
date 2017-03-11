@@ -15,19 +15,12 @@
  */
 package varcode.java.draft;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import static java.lang.annotation.ElementType.*;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.List;
 import varcode.ModelException;
 import varcode.author.Author;
 import varcode.context.Context;
 import varcode.context.VarContext;
-import varcode.java.draft._draftClass._classOriginator;
 import varcode.java.model._ann;
 import varcode.java.model._anns;
 import varcode.java.model._class;
@@ -51,10 +44,10 @@ import varcode.markup.forml.ForML;
  * A draft makes the act of building SPECIALIZED code Easy.
  * 
  * A Draft is a fully functional Java Class/ Enum / Interface or AnnotationType
- * that can have have _draft annotations associated with entities that denote
- * "instructions" for creating a new draft or (specialized) version of the code.
- * 
- * <UL>
+ that can have have DraftAction annotations associated with entities that denote
+ "instructions" for creating a new draft or (specialized) version of the code.
+ 
+ <UL>
  * <LI>@annotations signify which aspects of the code are parameterized/variable
  * <LI>the _typeDraft entities are the "workers" who enact the creation of the
  * 
@@ -73,347 +66,31 @@ import varcode.markup.forml.ForML;
  * 
  * @author M. Eric DeFazio eric@varcode.io
  */
-public class _draft
+public interface DraftAction
 {   
+
+    public void draftTo( _class _c, Object...keyValuePairs ); 
+        
+    public void draftTo( _class _c, Context context ); 
+        
+    public void draftTo( _enum _e, Object...keyValuePairs );
+        
+    public void draftTo( _enum _e, Context context  );
+        
+    public void draftTo( _interface _i, Object...keyValuePairs );
+       
+    /*
     public interface _typeDraft
     {
-        public void draftTo( _class _c, Object...keyValuePairs ); 
         
-        public void draftTo( _class _c, Context context ); 
         
-        public void draftTo( _enum _e, Object...keyValuePairs );
-        
-        public void draftTo( _enum _e, Context context  );
-        
-        public void draftTo( _interface _i, Object...keyValuePairs );
-        
-    }
-    
-    //public @interface defaultTo
-   // {
-   //     String[] value();
-   // }
-    
+    }     
+    */
     /**
-     * A Way of Documenting and declaring the parameters/ variables
- to be used within a _draft (at the _class, _enum, interface, 
-  _annotationType level)
-     
-    @Documented
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.TYPE)
-    public @interface declare
-    {
-        String[] value();
-    }
-    */ 
-    
-    /** _draft Annotation to customize the package name
-     * @packageName("io.typeframe.fields") //set the packageName statically
-     * @packageName("io.typeframe.{+project+}") //set packageName using the "project" var
-     */
-    @Documented
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.TYPE)
-    public @interface packageName
-    {
-        String value();
-    }
-    
-    /** shorthand for packageName */
-    @Documented
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.TYPE)
-    public @interface p
-    {
-        String value();
-    }
-    
-    
-    @Documented
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target({TYPE, METHOD})
-    public @interface annotations
-    {
-        /** add annotations explicitly (java.util.Map) or by parameter {+impotts+}*/
-        String[] add() default {};
-        
-        /** Remove all annotations with these name patterns */
-        String[] remove() default {};
-    }
-
-    /** shorthand for annotations */
-    @Documented
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target({TYPE, METHOD})
-    public @interface a
-    {
-        /** add annotations explicitly (java.util.Map) or by parameter {+impotts+}*/
-        String[] add() default {};
-        
-        /** Remove all annotations with these name patterns */
-        String[] remove() default {};
-    }    
-    
-    
-    /** 
-     * _draft Annotation describing the contents of a static Block 
-     * @staticBlock({"System.out.println( \"Hi\" );}) //constant static block
-     * @staticBlock({"{+init+}"}); //set static Block content by var "init"
-     */
-    @Documented
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.TYPE)
-    public @interface staticBlock
-    {
-        String[] value();
-    }
-    
-    /** _draft Annotation describing one or more fields
-     * @fields( {"public int a;", "public String name=\"Eric\";"} )
-     * <PRE>
-     * public class C
-     * {
-     * 
-     * }
-     * -----------------(Expands to) 
-     * 
-     * public class C
-     * {
-     *    public int a;
-     *    public String name = \"Eric\";
-     * }
-     * </PRE>
-     * 
-     * @fields( {"public int {+fieldName+};"} )
-     * <PRE>
-     * public class MyPrototype
-     * {
-     * }
-     * --------(Expands with ("fieldName", "x"))
-     * public class MyPrototype
-     * {
-     *    public int x;
-     * }
-     * --------(Expands with ("fieldName", new String[]{"x", "y", "z"}))
-     * public class MyPrototype
-     * {
-     *     public int x;
-     *     public int y;
-     *     public int z;
-     * }
-     * </PRE>
-     */
-    @Documented
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.TYPE)
-    public @interface fields
-    {
-        String[] value();
-    }
-
-    @Documented
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.TYPE)
-    public @interface f
-    {
-        String[] value();
-    }
-    
-    /**
-     * _draft Annotation to add / remove imports
-     */
-    @Documented
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target({ElementType.TYPE, ElementType.ANNOTATION_TYPE})
-    public @interface imports
-    {
-        /** Remove all imports containing these "patterns" */
-        String[] remove() default {};
-
-        /** Add all imports expanded by these BinML markup strings */ 
-        String[] add() default {};
-    }
-
-    @Documented
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target({ElementType.TYPE, ElementType.ANNOTATION_TYPE})
-    public @interface i
-    {
-        /** Remove all imports containing these "patterns" */
-        String[] remove() default {};
-
-        /** Add all imports expanded by these BinML markup strings */ 
-        String[] add() default {};
-    }
-        
-    /**
-     * _draft annotation to define the signature 
- Annotation applied to the signature of class, enum, interface
- definitions, methods, constructors, fields... contains the markup to be
-     * compiled to a {@link Template} for creating the signature:
-     * <PRE>
-     * @sig("public class A")
-     * class B
-     * {
-     * }
-     * ------------
-     * public class A
-     * {
-     * 
-     * }
-     * </PRE>
-     * //a method with as yet undefined arguments
-     * sig("public static final int getValue( {{+:{+type+} {+name+}+}} )")
-     * public static final int getValue( int a, int b )
-     * {
-     * 
-     * }
-     * --------------(with "type" and "name" == null)
-     * public static final int getValue( )
-     * {
-     * 
-     * }
-     * --------------(with ("type", "String", "name", "label" ))
-     * public static final int getValue( String label )
-     * {
-     *    
-     * }
-     * @sig("public static {+returnType+} doThisMethod( {{+:{+type+} {+name+},
-     * +}} )") public static MyObj doThisMethod( String f1, int f2 ) { //... }
-     */
-    @Documented
-    @Retention(RetentionPolicy.RUNTIME)    
-    @Target({ElementType.TYPE, ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD, ElementType.ANNOTATION_TYPE})
-    public @interface sig
-    {
-        /** BindML markup used to create a Template for the signature*/
-        String value();
-    }
-    
-    @Documented
-    @Retention(RetentionPolicy.RUNTIME)    
-    @Target({ElementType.TYPE, ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD, ElementType.ANNOTATION_TYPE})
-    public @interface s
-    {
-        /** BindML markup used to create a Template for the signature*/
-        String value();
-    }
-        
-    @Documented
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
-    public @interface form
-    {
-        String[] value();
-    }
-    
-    /**
-     * _draft Annotation for replacing code within a body of a method between a named label:
-     * <PRE>
-     * @formAt(form="System.out.println( {+fieldName+} );\n",at="label" )
-     * public void describe()
-     * {
-     *     System.out.println( this.getClass().getSimpleName() );
-     *     label:
-     *     System.out.println( myField );
-     *     label:
-     * }
-     * ------If we pass in ("fieldName", new String[]{"a", "b", "c"})
-     * ------Will Expand to:
-     * public void describe()
-     * {
-     *     System.out.println( this.getClass().getSimpleName() );
-     *     System.out.println( a );
-     *     System.out.println( b );
-     *     System.out.println( c );
-     * }
-     * 
-     */    
-    @Documented
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
-    public @interface formAt
-    {
-        String[] value();
-        String at();
-    }
-    
-    /**
-     * _draft Annotation to Replace a key with a parameter
-     * <PRE>
-     * @$({"100", "nameCount"})
-     * public final int names = 100;
-     * ---------- produces the BindML:
-     * public final int names = {+nameCount+};
-     * 
-     * ----with ( "nameCount", 5 )
-     * public final int names = 5;
-     * 
-     */
-    @Documented
-    @Retention(RetentionPolicy.RUNTIME)
-    public @interface $
-    {
-        String[] value();
-    }
-    
-    
-    /**
-     * _draft Annotation for replacing the entire body of a 
- constructor or method with a form
-     * <PRE>
-     * @body("return {{+:{+FIELDNAME+}.storeState( {+name+} ) | +}};" ) 
-     * public long store( Boolean value1, Boolean value2 ) 
-     * { 
-     *     return FIELD1.storeState( value1 ) | FIELD2.storeState( value2 ); 
-     * }
-     * ------------
-     * 
-     */
-    @Documented
-    @Retention(RetentionPolicy.RUNTIME)
-    public @interface body
-    {
-        /** the BindML markup used to create a Template for the body*/
-        String[] value();
-    }
-
-    /** shorthand for body */
-    @Documented
-    @Retention(RetentionPolicy.RUNTIME)
-    public @interface b
-    {
-        /** the BindML markup used to create a Template for the body*/
-        String[] value();
-    }
-        
-    /**
-     * _draft annotation for removing a component 
-     * (field, method, nest, etc.) when macro expanding
-     */
-    @Documented
-    @Retention(RetentionPolicy.RUNTIME)
-    public @interface remove
-    {
-    }
-
-    /** shorthand for remove above*/
-    /**
-     * _draft annotation for removing a component 
-     * (field, method, nest, etc.) when macro expanding
-     */
-    @Documented
-    @Retention(RetentionPolicy.RUNTIME)
-    public @interface r
-    {
-    }    
-    
-    /**
-     * _draft for Copying a static block to a target class / enum
+     * DraftAction for Copying a static block to a target class / enum
      */
     public static class CopyStaticBlock
-        implements _typeDraft //_classMacro.expansion, _macroEnum.expansion
+        implements DraftAction //_classMacro.expansion, _macroEnum.expansion
     {
         public _staticBlock _prototype;
             
@@ -428,6 +105,7 @@ public class _draft
             _draft.staticBlock( _staticBlock.cloneOf( _prototype ) );
         }
 
+        @Override
         public void draftTo( _class _draft, Context context )            
         {
             _draft.staticBlock( _staticBlock.cloneOf( _prototype ) );
@@ -453,16 +131,16 @@ public class _draft
     }
     
     /**
-     * _draft expansion for Tailoring a static block to a target class
-     * 
-     * {@link staticBlock}
+     * DraftAction expansion for Tailoring a static block to a target class
+ 
+ {@link staticBlock}
      */
-    public static class DraftStaticBlock
-        implements _typeDraft
+    public static class ExpandStaticBlock
+        implements DraftAction
     {
         public Template template;
         
-        public DraftStaticBlock( String... bodyTemplate )
+        public ExpandStaticBlock( String... bodyTemplate )
         {
             this.template = BindML.compile( bodyTemplate );
         }
@@ -504,10 +182,10 @@ public class _draft
     }
     
     /**
-     * _draft for copying a constructor to a target class/enum
+     * DraftAction for copying a constructor to a target class/enum
      */
     public static class CopyConstructor
-        implements _typeDraft
+        implements DraftAction
     {
         private final _constructors._constructor ctor;
         
@@ -516,17 +194,20 @@ public class _draft
             this.ctor = ctor;
         }
 
+        @Override
         public void draftTo( _enum _draft, Object...keyValuePairs )            
         {
             _draft.constructor( _constructors._constructor.of( ctor ) );
         }
                 
+        @Override
         public void draftTo( _class _draft, Object...keyValuePairs )            
         {
             _draft.constructor( _constructors._constructor.of( ctor ) );
         }
         
    
+        @Override
         public void draftTo( _class _draft, Context context )
         {
             _draft.constructor( _constructors._constructor.of( ctor ) );
@@ -547,42 +228,42 @@ public class _draft
     }
     
     /**
-     * _draft expansion for tailoring and transferring a constructor to a 
-     * _class or _enum
-     * 
-     * {@link sig}
+     * DraftAction expansion for tailoring and transferring a constructor to a 
+ _class or _enum
+ 
+ {@link sig}
      * {@link s}
      * {@link body}
      * {@link b}
      * {@link $}
      */
-    public static class DraftConstructor
-        implements _typeDraft
+    public static class ExpandConstructor
+        implements DraftAction
     {
         public Template signature;
         public Template body;
         public _constructor _prototype;
         
         
-        public static DraftConstructor of( 
+        public static ExpandConstructor of( 
             _constructor _prototype, String signatureForm, String[] bodyForm )
         {
-            return new DraftConstructor( _prototype, signatureForm, bodyForm );
+            return new ExpandConstructor( _prototype, signatureForm, bodyForm );
         }
         
-        public static DraftConstructor ofSignature( 
+        public static ExpandConstructor ofSignature( 
             _constructor _prototype, String signatureForm )
         {
-            return new DraftConstructor( _prototype, signatureForm, null );
+            return new ExpandConstructor( _prototype, signatureForm, null );
         }
         
-        public static DraftConstructor ofBody( 
+        public static ExpandConstructor ofBody( 
             _constructor _prototype, String[] bodyForm )
         {
-            return new DraftConstructor( _prototype, null, bodyForm );
+            return new ExpandConstructor( _prototype, null, bodyForm );
         }
         
-        public static DraftConstructor parameterize( 
+        public static ExpandConstructor parameterize( 
             _constructor _m, String[] keyValues )
         {
             if( keyValues.length %2 != 0 )
@@ -596,10 +277,10 @@ public class _draft
                 _m.replace( keyValues[ i ], "{+" + keyValues[ i + 1 ] +  "*+}" );
             }
             //System.out.println("AUTHOR" + _p.author() );
-            return new DraftConstructor( _m, _m.getSignature().author(), new String[]{_m.getBody().author()} );            
+            return new ExpandConstructor( _m, _m.getSignature().author(), new String[]{_m.getBody().author()} );            
         }
         
-        public DraftConstructor( 
+        public ExpandConstructor( 
             _constructor _prototype, String signatureForm, String[] bodyForm )
         {
             if( signatureForm != null )
@@ -678,11 +359,11 @@ public class _draft
     }
     
     /**
-     * _draft for copying a package to the target _class, _interface,
-     * _enum, or _annotationType
+     * DraftAction for copying a package to the target _class, _interface,
+ _enum, or _annotationType
      */
     public static class CopyPackage
-        implements _typeDraft //_classMacro.expansion, _macroEnum.expansion
+        implements DraftAction //_classMacro.expansion, _macroEnum.expansion
     {       
         private String packageName;
         
@@ -734,14 +415,14 @@ public class _draft
     }
     
     /**
-     * _draft Expansion for creating a package
+     * DraftAction Expansion for creating a package
      */
-    public static class DraftPackage
-        implements _typeDraft
+    public static class ExpandPackage
+        implements DraftAction
     {
         public Form packageNameForm;
         
-        public DraftPackage( String packageNameForm )
+        public ExpandPackage( String packageNameForm )
         {
             this.packageNameForm = ForML.compile( packageNameForm );
         }
@@ -778,10 +459,10 @@ public class _draft
     }
     
     /**
-     * _draft expansion for copying imports
+     * DraftAction expansion for copying imports
      */
     public static class CopyImports
-        implements _typeDraft //_classMacro.expansion, _macroEnum.expansion
+        implements DraftAction //_classMacro.expansion, _macroEnum.expansion
     {
         private final _imports imports;
         
@@ -826,13 +507,13 @@ public class _draft
         }
     }
     
-    public static class DraftClassAnnotations
-        implements _typeDraft
+    public static class ExpandClassAnnotations
+        implements DraftAction
     {
-        public static DraftClassAnnotations of (
+        public static ExpandClassAnnotations of (
             _anns annotations, String[] remove, String[] addMarkup )
         {
-            return new DraftClassAnnotations( annotations, remove, addMarkup ); 
+            return new ExpandClassAnnotations( annotations, remove, addMarkup ); 
         }
         
         private final _anns annotations;
@@ -840,7 +521,7 @@ public class _draft
         private final Form[] add;
         
         
-        public DraftClassAnnotations( 
+        public ExpandClassAnnotations( 
             _anns _source, String[] remove, String[] addMarkup )
         {
             //create a prototype
@@ -928,21 +609,21 @@ public class _draft
         }
     }
     
-    /** _draft expansion for imports
+    /** DraftAction expansion for imports
      */
-    public static class DraftImports
-        implements _typeDraft //_classMacro.expansion, _macroEnum.expansion
+    public static class ExpandImports
+        implements DraftAction //_classMacro.expansion, _macroEnum.expansion
     {
         private final _imports imports;
         
         private final Form[] add;
         
-        public static DraftImports of( _imports _i, String[] remove, String[] adds )
+        public static ExpandImports of( _imports _i, String[] remove, String[] adds )
         {
-            return new DraftImports( _i, remove, adds );
+            return new ExpandImports( _i, remove, adds );
         }
         
-        public DraftImports( 
+        public ExpandImports( 
             _imports _source, String[] remove, String[] addMarkup )
         {
             //create a prototype
@@ -1017,7 +698,7 @@ public class _draft
     }
     
     public static class CopyField
-        implements _typeDraft //_classMacro.expansion, _macroEnum.expansion
+        implements DraftAction //_classMacro.expansion, _macroEnum.expansion
     {
         private final _fields._field _prototype;
         
@@ -1058,14 +739,14 @@ public class _draft
         }
     }
     
-    public static class DraftField
-        implements _typeDraft
+    public static class ExpandField
+        implements DraftAction
     {
         public Form fieldForm;
         
-        public static DraftField of( String markup )
+        public static ExpandField of( String markup )
         {
-            return new DraftField( markup );
+            return new ExpandField( markup );
         }
         
         /**
@@ -1103,7 +784,7 @@ public class _draft
          * @param keyValues
          * @return 
          */
-        public static DraftField parameterize( _field _f, String...keyValues )
+        public static ExpandField parameterize( _field _f, String...keyValues )
         {          
             _field _p = new _field( _f ); //create a prototype as to not "break" client assumptions
             if( keyValues.length %2 != 0 )
@@ -1117,11 +798,11 @@ public class _draft
                 _p.replace( keyValues[ i ], "{+" + keyValues[ i + 1 ] +  "*+}" );
             }
             //System.out.println("AUTHOR" + _p.author() );
-            return new DraftField( _p.author() );
+            return new ExpandField( _p.author() );
         }
         
         
-        public DraftField( String fieldMarkup )
+        public ExpandField( String fieldMarkup )
         {
             this.fieldForm = ForML.compile( fieldMarkup );
         }
@@ -1158,7 +839,7 @@ public class _draft
     }    
 
     public static class CopyMethod
-        implements _typeDraft //_classMacro.expansion, _macroEnum.expansion        
+        implements DraftAction //_classMacro.expansion, _macroEnum.expansion        
     {
         public final _method _prototype;
         
@@ -1208,15 +889,15 @@ public class _draft
         }
     }
     
-    public static class DraftMethod
-        implements _typeDraft
+    public static class ExpandMethod
+        implements DraftAction
     {
         public final Template signatureTemplate;
         public final Template bodyTemplate;
         public final _method _prototype;
         
         
-        public static DraftMethod parameterize( 
+        public static ExpandMethod parameterize( 
             _method _m, String[] keyValues )
         {
             if( keyValues.length %2 != 0 )
@@ -1230,23 +911,23 @@ public class _draft
                 _m.replace( keyValues[ i ], "{+" + keyValues[ i + 1 ] +  "*+}" );
             }
             //System.out.println("AUTHOR" + _p.author() );
-            return new DraftMethod( _m, _m.getSignature().author(), _m.getBody().author() );            
+            return new ExpandMethod( _m, _m.getSignature().author(), _m.getBody().author() );            
         }
         
-        public static DraftMethod of( _method _m, String signature, String... body )
+        public static ExpandMethod of( _method _m, String signature, String... body )
         {
-            return new DraftMethod( _m, signature, body );
+            return new ExpandMethod( _m, signature, body );
         }
         
-        public static DraftMethod ofSignature( _method _m, String signature )
+        public static ExpandMethod ofSignature( _method _m, String signature )
         {
-            return new DraftMethod( _m, signature, null );
+            return new ExpandMethod( _m, signature, null );
         }
-        public static DraftMethod ofBody( _method _m, String... body )
+        public static ExpandMethod ofBody( _method _m, String... body )
         {
-            return new DraftMethod( _m, null, body );
+            return new ExpandMethod( _m, null, body );
         }
-        public DraftMethod( _method _m, String signature, String... body )
+        public ExpandMethod( _method _m, String signature, String... body )
         {
             this._prototype = _m;
             if( signature != null )

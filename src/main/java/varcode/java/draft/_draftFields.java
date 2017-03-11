@@ -27,11 +27,11 @@ import varcode.java.model._fields;
 public class _draftFields
 {
     
-    public static void prepareFields( List<_draft._typeDraft> _expansions, _fields _fs )
+    public static void prepareFields( List<DraftAction> _expansions, _fields _fs )
     {        
         for( int i = 0; i < _fs.count(); i++ )
         {
-            _draft._typeDraft e = prepareField( _fs.getAt( i ) );
+            DraftAction e = prepareField( _fs.getAt( i ) );
             if( e != null )
             {
                 _expansions.add( e );
@@ -45,13 +45,13 @@ public class _draftFields
      * @param _f
      * @return 
      */
-    public static _draft._typeDraft prepareField( _fields._field _f )
+    public static DraftAction prepareField( _fields._field _f )
     {
         _anns _as = _f.getAnnotations();
-        if( !_as.contains( _draft.remove.class ) )
+        if( !_as.contains( remove.class ) )
         {   //we are either copying or tailoring the field                           
-            _ann parameter = _as.getOne( _draft.$.class );
-            _ann sig = _as.getOne( _draft.sig.class );
+            _ann parameter = _as.getOne( $.class );
+            _ann sig = _as.getOne( sig.class );
             
             if( parameter != null )
             {   //you CANNOT have BOTH sig Macros AND parameterization
@@ -65,17 +65,17 @@ public class _draftFields
                 
                 _fields._field _p = new _fields._field( _f );
                 _p.getAnnotations().remove( parameter.getName() );
-                return _draft.DraftField.parameterize( _p, valuesArray );
+                return DraftAction.ExpandField.parameterize( _p, valuesArray );
             }
             else if( sig != null )
             {   //we didnt explicitly tailor or remove it, so copy the method
                 System.out.println( "processing "+ sig );
                 _fields._field _p = new _fields._field( _f );
-                _p.getAnnotations().remove( _draft.sig.class );
-                return _draft.DraftField.of( sig.getLoneAttributeString() );
+                _p.getAnnotations().remove( sig.class );
+                return DraftAction.ExpandField.of( sig.getLoneAttributeString() );
             }
             //just copy the field                        
-            return new _draft.CopyField( _f );
+            return new DraftAction.CopyField( _f );
         }
         return null;
     }

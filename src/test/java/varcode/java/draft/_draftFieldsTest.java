@@ -19,12 +19,12 @@ import java.util.ArrayList;
 import java.util.List;
 import junit.framework.TestCase;
 import varcode.java.Java;
-import varcode.java.draft._draft.DraftField;
-import varcode.java.draft._draft.$;
+import varcode.java.draft.DraftAction.ExpandField;
+import varcode.java.draft.*;
 
 import varcode.java.model._class;
 import varcode.java.model._fields._field;
-import varcode.java.draft._draft._typeDraft;
+
 
 /**
  *
@@ -35,7 +35,7 @@ public class _draftFieldsTest
 {
     public void testCopyMacroField()
     {
-        _typeDraft te = 
+        DraftAction te = 
             _draftFields.prepareField( _field.of( "public int a;" ) );
         _class _c = _class.of("A");
         te.draftTo( _c );
@@ -47,8 +47,8 @@ public class _draftFieldsTest
     public void testTailorField()
     {
         _field _f = _field.of( "@$({\"a\",\"name\"})", "public int a;" );
-        _draft.DraftField te = 
-            (DraftField)_draftFields.prepareField( _f );
+        DraftAction.ExpandField te = 
+            (ExpandField)_draftFields.prepareField( _f );
         _class _c = _class.of("A");
         te.draftTo( _c, "name", "myFieldName" );
         
@@ -60,8 +60,8 @@ public class _draftFieldsTest
     public void testTailorFields()
     {
         _field _f = _field.of( "@$({\"int\", \"type\", \"a\",\"name\"})", "public int a;" );
-        _draft.DraftField te = 
-            (DraftField)_draftFields.prepareField( _f );
+        DraftAction.ExpandField te = 
+            (ExpandField)_draftFields.prepareField( _f );
         _class _c = _class.of("A");
         te.draftTo( _c, "type", "String", "name", "label" );
         
@@ -88,7 +88,7 @@ public class _draftFieldsTest
     {
         _class _c = Java._classFrom( inner.class );
         
-        List<_typeDraft>te = new ArrayList<_typeDraft>();
+        List<DraftAction>te = new ArrayList<DraftAction>();
         //List<_typeExpansion>te = 
         _draftFields.prepareFields( te, _c.getFields() );
         

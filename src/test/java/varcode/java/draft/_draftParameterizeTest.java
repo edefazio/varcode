@@ -16,8 +16,8 @@
 package varcode.java.draft;
 
 import junit.framework.TestCase;
-import varcode.java.draft._draft.$;
-import varcode.java.draft._draft.DraftField;
+import varcode.java.draft.$;
+import varcode.java.draft.DraftAction.ExpandField;
 import varcode.java.model._class;
 import varcode.java.model._fields._field;
 /**
@@ -32,8 +32,8 @@ public class _draftParameterizeTest
     {
         
         _field _f = _field.of( "public int count = 100;" );
-        DraftField tf = 
-            DraftField.parameterize( _f, "100", "count" );
+        ExpandField tf = 
+            ExpandField.parameterize( _f, "100", "count" );
         _class _c = _class.of("public class A");
                 
         
@@ -52,8 +52,8 @@ public class _draftParameterizeTest
     public void testParameterizeFields()
     {
         _field _f = _field.of( "public int count;" );
-        DraftField tf = 
-            DraftField.parameterize( _f, "int", "type", "count", "name" );
+        ExpandField tf = 
+            ExpandField.parameterize( _f, "int", "type", "count", "name" );
         
         _class _c = _class.of("public class A");
         tf.draftTo( _c, 
@@ -73,7 +73,7 @@ public class _draftParameterizeTest
         // this will add (3) int fields
         // @$({"count", "name"})
         _f = _field.of( "public int count;" );
-        tf = DraftField.parameterize( _f, "count", "name" );
+        tf = ExpandField.parameterize( _f, "count", "name" );
         tf.draftTo( _c, "name", new String[]{"x", "y", "z"} );        
         assertEquals( "int", _c.getField( "x" ).getType() );
         assertEquals( "int", _c.getField( "y" ).getType() );
@@ -84,7 +84,7 @@ public class _draftParameterizeTest
     public void testParamOptional()
     {
          _field _f = _field.of( "public int count = 100;" );
-         DraftField tf = DraftField.parameterizeOptional( _f, " = 100", "value" );
+         ExpandField tf = ExpandField.parameterizeOptional( _f, " = 100", "value" );
          _class _c = _class.of("A");
          tf.draftTo( _c, Context.EMPTY );
          

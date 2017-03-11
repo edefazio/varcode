@@ -22,7 +22,7 @@ import junit.framework.TestCase;
 import varcode.context.Context;
 import varcode.context.VarBindException;
 import varcode.context.VarBindException.NullVar;
-import varcode.java.draft._draft.DraftConstructor;
+import varcode.java.draft.DraftAction.ExpandConstructor;
 import varcode.java.model._class;
 import varcode.java.model._constructors._constructor;
 import varcode.java.model._fields;
@@ -40,14 +40,14 @@ public class _draftCopyTest
  
     public void testTailorClassSignature()
     {
-        _draftClass.DraftClassSignature tcs = 
-            new _draftClass.DraftClassSignature( "public class A" );
+        _draftClass.ExpandClassSignature tcs = 
+            new _draftClass.ExpandClassSignature( "public class A" );
         
         _class _c = tcs.draftClass( Context.EMPTY );
         
         assertEquals( "A", _c.getName( ) );
         
-        tcs = new _draftClass.DraftClassSignature( 
+        tcs = new _draftClass.ExpandClassSignature( 
             "public class {+className*+} {{+?extends:\n" +
             "    extends {+extends+}+}}" );
         
@@ -70,7 +70,7 @@ public class _draftCopyTest
     {
         _class _c = _class.of("A");
         
-        _draft.DraftPackage tp = new _draft.DraftPackage( "package my.pkg;" );
+        DraftAction.ExpandPackage tp = new DraftAction.ExpandPackage( "package my.pkg;" );
         
         tp.draftTo( _c, Context.EMPTY );
         
@@ -82,15 +82,15 @@ public class _draftCopyTest
         _class _c = _class.of( "A" );
         
         //transfer nothing (add none remove none)
-        _draft.DraftImports tti = 
-            new _draft.DraftImports( new _imports(), null, null );
+        DraftAction.ExpandImports tti = 
+            new DraftAction.ExpandImports( new _imports(), null, null );
         tti.draftTo( _c, Context.EMPTY );
         
         assertEquals( 0, _c.getImports().count() );
         
         //transferImports existing
         tti = 
-            new _draft.DraftImports( _imports.of( UUID.class ), null, null );
+            new DraftAction.ExpandImports( _imports.of( UUID.class ), null, null );
         tti.draftTo( _c, Context.EMPTY );
         
         assertEquals( 1, _c.getImports().count() );
@@ -98,7 +98,7 @@ public class _draftCopyTest
         
         //transferImports Add
         tti = 
-            new _draft.DraftImports( new _imports(), null, new String[]{"java.util.Map"} );
+            new DraftAction.ExpandImports( new _imports(), null, new String[]{"java.util.Map"} );
         tti.draftTo( _c, Context.EMPTY );
         
         //verify that we transferred yet ANOTHER
@@ -113,8 +113,8 @@ public class _draftCopyTest
         _class _c = _class.of("A");
         
         //remove the UUID import, then ADD the Map import
-        _draft.DraftImports tti = 
-            new _draft.DraftImports( _imports.of( UUID.class ), 
+        DraftAction.ExpandImports tti = 
+            new DraftAction.ExpandImports( _imports.of( UUID.class ), 
                 new String[]{"java.util"}, 
                 new String[]{"java.util.Map"} );
         tti.draftTo( _c, Context.EMPTY );
@@ -124,7 +124,7 @@ public class _draftCopyTest
         
         _c = _class.of( "A" );
         
-        tti = new _draft.DraftImports( _imports.of( UUID.class ), 
+        tti = new DraftAction.ExpandImports( _imports.of( UUID.class ), 
             new String[]{"java.util"}, 
             new String[]{"{+baseClass*+}"} );
         
@@ -147,15 +147,15 @@ public class _draftCopyTest
     public void testTailor()
     {
         _class _c = _class.of("A");
-        _draft.DraftField tf = 
-            _draft.DraftField.of("public int a;");
+        DraftAction.ExpandField tf = 
+            DraftAction.ExpandField.of("public int a;");
         
         tf.draftTo( _c, Context.EMPTY );
         
         assertNotNull( _c.getField( "a" ) );
         
         _c = _class.of("A");
-        tf = _draft.DraftField.of("public {+type+} {+name+};");
+        tf = DraftAction.ExpandField.of("public {+type+} {+name+};");
         
         //this should create 0 new fields
         tf.draftTo( _c, Context.EMPTY );
@@ -181,7 +181,7 @@ public class _draftCopyTest
         _constructor _ctor = _constructor.of( "public MyClass( String name)",
                 "this.name = name;" );
         //signature
-        _draft.DraftConstructor tc = _draft.DraftConstructor.ofSignature(
+        DraftAction.ExpandConstructor tc = DraftAction.ExpandConstructor.ofSignature(
             _ctor, 
             "public StaticClass( String myName)" );
         _class _c = _class.of("A");
@@ -193,7 +193,7 @@ public class _draftCopyTest
         
         _c = _class.of("A");
         //body
-        tc = DraftConstructor.ofBody(
+        tc = ExpandConstructor.ofBody(
             _ctor, 
             new String[]{"this.theName = name;",
             "System.out.println( theName );"} );
@@ -221,7 +221,7 @@ public class _draftCopyTest
         assertEquals( "BaseClass", _c.getExtends().getAt( 0 ) );
         assertEquals( "MyInterface", _c.getImplements().getAt( 0 ) );
         
-        _draft.CopyField cf = new _draft.CopyField(
+        DraftAction.CopyField cf = new DraftAction.CopyField(
             _fields._field.of("public static final int a = 100;" ) );
         cf.draftTo( _c, Context.EMPTY );
         _fields._field _f = _c.getField( "a" );
@@ -229,25 +229,25 @@ public class _draftCopyTest
         assertEquals( "int", _f.getType() );
         assertEquals( "100", _f.getInit().getCode() );
         
-        _draft.CopyImports ci = 
-            new _draft.CopyImports(_imports.of( UUID.class ));
+        DraftAction.CopyImports ci = 
+            new DraftAction.CopyImports(_imports.of( UUID.class ));
         
         ci.draftTo( _c, Context.EMPTY );
         assertTrue( _c.getImports().contains( UUID.class ) );
         
         
-        _draft.CopyMethod cm = new _draft.CopyMethod(
+        DraftAction.CopyMethod cm = new DraftAction.CopyMethod(
             _methods._method.of("public static void main(String[] args)",
                 "System.out.println( \"Hi\");" ) );        
         cm.draftTo( _c, Context.EMPTY );
         _methods._method _m = _c.getMethod( "main" );        
         assertTrue( _m.getModifiers().containsAll( "public", "static") );
         
-        _draft.CopyPackage cp = new _draft.CopyPackage("ex.mypackage");
+        DraftAction.CopyPackage cp = new DraftAction.CopyPackage("ex.mypackage");
         cp.draftTo( _c, Context.EMPTY );        
         assertEquals( "ex.mypackage", _c.getPackageName() );
         
-        _draft.CopyStaticBlock csb = new _draft.CopyStaticBlock(
+        DraftAction.CopyStaticBlock csb = new DraftAction.CopyStaticBlock(
             _staticBlock.of( "System.out.println( \"Hi from static block\");" ) );
         
         csb.draftTo( _c, Context.EMPTY );

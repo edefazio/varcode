@@ -22,10 +22,8 @@ import varcode.context.Context;
 import varcode.context.VarContext;
 import varcode.java.load._JavaLoad;
 import varcode.java.model._class;
-import varcode.java.draft._draft.sig;
 import varcode.markup.Template;
 import varcode.markup.bindml.BindML;
-import varcode.java.draft._draft._typeDraft;
 
 
 /**
@@ -71,17 +69,17 @@ public class _draftClass
      * them in the "tailored" _class
      * </UL>
      */
-    public final List<_typeDraft> typeExpansion = 
-        new ArrayList<_typeDraft>();
+    public final List<DraftAction> typeExpansion = 
+        new ArrayList<DraftAction>();
     
     /** the prototype _class */
     public final _class _prototype;
     
     /** method for originating the "tailored" _class */
-    public final _classOriginator _originator;
+    public final _classAction _originator;
     
     /** */
-    public interface _classOriginator
+    public interface _classAction
     {
         public _class draftClass( Context context );
     }
@@ -90,25 +88,25 @@ public class _draftClass
     public _draftClass( _class _c )
     {
         this._prototype = new _class( _c );
-        this._originator = prepareClassDraft( _prototype );
+        this._originator = prepareClassAction( _prototype );
         
         prepareTypePackage( this.typeExpansion, this._prototype.getPackageName(), 
-            _c.getAnnotations().getOne( _draft.packageName.class ) );
+            _c.getAnnotations().getOne( packageName.class ) );
         
         prepareTypeImports( this.typeExpansion, this._prototype.getImports(), 
-            _c.getAnnotation( _draft.imports.class )  );
+            _c.getAnnotation( imports.class )  );
         
         //annotations
         prepareTypeAnnotations( this.typeExpansion, this._prototype.getAnnotations(), 
-            _c.getAnnotation( _draft.annotations.class ) );
+            _c.getAnnotation( annotations.class ) );
         
         
             
         prepareTypeFields( this.typeExpansion, 
-            _c.getAnnotations().getOne( _draft.fields.class ) );
+            _c.getAnnotations().getOne( fields.class ) );
         
         prepareStaticBlock( this.typeExpansion, 
-            _c.getAnnotations().getOne( _draft.staticBlock.class ),
+            _c.getAnnotations().getOne( staticBlock.class ),
             _c.getStaticBlock() );
         
         _draftConstructors.prepareConstructors( this.typeExpansion, _c.getConstructors() );
@@ -120,16 +118,16 @@ public class _draftClass
     }
 
     
-    public static _classOriginator prepareClassDraft( _class _c )
+    public static _classAction prepareClassAction( _class _c )
     {
-        if( _c.getAnnotation( _draft.sig.class ) != null )
+        if( _c.getAnnotation( sig.class ) != null )
         {
             String sig = _c.getAnnotation( sig.class ).getLoneAttributeString();
             if( sig != null) 
             {   
                 _c.getAnnotations().remove( sig.class );
                 System.out.println( _c.getAnnotations() );
-                return new DraftClassSignature( sig );
+                return new ExpandClassSignature( sig );
             }
             else
             {
@@ -161,7 +159,7 @@ public class _draftClass
     
     
     public static class CopyClassSignature
-        implements _classOriginator
+        implements _classAction
     {        
         //_class _prototype;
         private final String signature;
@@ -178,12 +176,12 @@ public class _draftClass
         }
     }
     
-    public static class DraftClassSignature
-        implements _classOriginator
+    public static class ExpandClassSignature
+        implements _classAction
     {
         public Template signature;
         
-        public DraftClassSignature( String form )
+        public ExpandClassSignature( String form )
         {
             //System.out.println( form );
             this.signature = BindML.compile( form );

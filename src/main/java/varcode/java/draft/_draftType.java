@@ -16,13 +16,10 @@
 package varcode.java.draft;
 
 import java.util.List;
-import varcode.context.Context;
 import varcode.java.model._ann;
 import varcode.java.model._anns;
-import varcode.java.model._class;
 import varcode.java.model._imports;
 import varcode.java.model._staticBlock;
-import varcode.java.draft._draft._typeDraft;
 
 /**
  * Abstract Base class for preparing and expanding Types from Macros 
@@ -30,28 +27,18 @@ import varcode.java.draft._draft._typeDraft;
  * @author M. Eric DeFazio eric@varcode.io 
  */
 public abstract class _draftType
-{
-    /**
-     * Mutates the _class model by transferring (either a copy or new "tailored"
-     * instance)
-     */
-    public interface expansion
-    {
-        public void expandTo( _class _tailored, Context context );    
-        public void expandTo( _class _tailored, Object...keyValuePairs );    
-    }
-        
+{        
     protected static void prepareTypePackage( 
-        List<_typeDraft> _expansions, String packageName, _ann pkgAnn )
+        List<DraftAction> _expansions, String packageName, _ann pkgAnn )
     {
         if( pkgAnn != null )
         {
-            _expansions.add( new _draft.DraftPackage( 
+            _expansions.add( new DraftAction.ExpandPackage( 
                 pkgAnn.getLoneAttributeString() ) );
         }
         else
         {
-           _expansions.add( new _draft.CopyPackage( packageName ) ); 
+           _expansions.add( new DraftAction.CopyPackage( packageName ) ); 
         }
     }
         
@@ -62,7 +49,7 @@ public abstract class _draftType
      * @param _expansions the existing macro expansions
      */
     protected static void prepareTypeImports( 
-        List<_typeDraft> _expansions, _imports _i, _ann importAnn )
+        List<DraftAction> _expansions, _imports _i, _ann importAnn )
     {
         if( importAnn != null )
         {
@@ -81,12 +68,12 @@ public abstract class _draftType
                 removeArr = _ann._attributes.parseStringArray( remove );                
             }
             _expansions.add( 
-                _draft.DraftImports.of( _i, removeArr, addsArr ) );
+                DraftAction.ExpandImports.of( _i, removeArr, addsArr ) );
         }
         else
         {
             //System.out.println( "COPY IMPORTS ");
-            _expansions.add( _draft.CopyImports.of( _i ) );
+            _expansions.add( DraftAction.CopyImports.of( _i ) );
         }
     }
     
@@ -99,7 +86,7 @@ public abstract class _draftType
      * @param annAnnotation the @annotations annotation describing the macro expansion (or null)
      */
     protected static void prepareTypeAnnotations( 
-        List<_typeDraft> expansions, _anns typeAnnotations, _ann annAnnotation )
+        List<DraftAction> expansions, _anns typeAnnotations, _ann annAnnotation )
     {        
         if( annAnnotation != null )
         {
@@ -109,24 +96,24 @@ public abstract class _draftType
             String[] add = 
                 annAnnotation.getAttributeStringArray( "add" );
             
-            expansions.add(_draft.DraftClassAnnotations.of( typeAnnotations, remove, add ) );                        
+            expansions.add(DraftAction.ExpandClassAnnotations.of( typeAnnotations, remove, add ) );                        
         }
         else
         {
             //System.out.println( "Copy Class Annotations " );
             //copy over all accept the known macro annotations
-            expansions.add(_draft.DraftClassAnnotations.of(typeAnnotations, 
+            expansions.add(DraftAction.ExpandClassAnnotations.of(typeAnnotations, 
                 new String[]{
-                    _draft.annotations.class.getSimpleName(),
-                    _draft.imports.class.getSimpleName(),
-                    _draft.sig.class.getSimpleName(),
+                    annotations.class.getSimpleName(),
+                    imports.class.getSimpleName(),
+                    sig.class.getSimpleName(),
                     //_draft.declare.class.getSimpleName(),
-                    _draft.$.class.getSimpleName(),
-                    _draft.staticBlock.class.getSimpleName(),
-                    _draft.packageName.class.getSimpleName(),
-                    _draft.fields.class.getSimpleName()
+                    $.class.getSimpleName(),
+                    staticBlock.class.getSimpleName(),
+                    packageName.class.getSimpleName(),
+                    fields.class.getSimpleName()
                 },
-                new String[0] ) ); 
+                new String[ 0 ] ) ); 
         }            
     }
     
@@ -137,7 +124,7 @@ public abstract class _draftType
      * @param fieldsAnn 
      */
     protected static void prepareTypeFields( 
-        List<_typeDraft> _expansions, _ann fieldsAnn )
+        List<DraftAction> _expansions, _ann fieldsAnn )
     {
         if( fieldsAnn != null )
         {
@@ -145,7 +132,7 @@ public abstract class _draftType
             
             for( int i = 0; i < arr.length; i++ )
             {
-                _draft.DraftField ef = new _draft.DraftField( arr[ i ] );
+                DraftAction.ExpandField ef = new DraftAction.ExpandField( arr[ i ] );
                 //System.out.println( "ADDING "+ ef );
                 _expansions.add( ef ); 
             }
@@ -159,19 +146,19 @@ public abstract class _draftType
      * @param _sb 
      */
     protected static void prepareStaticBlock( 
-        List<_typeDraft> _expansions, _ann staticBlockAnn, _staticBlock _sb )
+        List<DraftAction> _expansions, _ann staticBlockAnn, _staticBlock _sb )
     {
         //Static Block        
         if( staticBlockAnn != null )
         {
             String[] s = _ann._attributes.parseStringArray(staticBlockAnn.attributes.values.get( 0 ) );
-            _expansions.add( new _draft.DraftStaticBlock( s ) );
+            _expansions.add( new DraftAction.ExpandStaticBlock( s ) );
         }
         else
         {   //we copy the static block as is
             if( _sb != null && !_sb.isEmpty() )
             {
-                _expansions.add( new _draft.CopyStaticBlock( _sb ) );
+                _expansions.add( new DraftAction.CopyStaticBlock( _sb ) );
             }
         }                
     }

@@ -18,14 +18,14 @@ package varcode.java.draft;
 import junit.framework.TestCase;
 import varcode.java.Java;
 import varcode.java.model._class;
-import varcode.java.draft._draft.*;
+import varcode.java.draft.DraftAction.*;
 
 /**
  * Rough Draft
  * -> changes
  * 
  * <LI>
- _workspaceMacro wsm = _draft.match( 
+ _workspaceMacro wsm = DraftAction.match( 
   "all classes in package...", Type.Class, Name.contains, Name.statsWith )
     .removeField( "LOG" )
     .removeImport( "
@@ -53,7 +53,7 @@ public class _draftClassTest
     //the @imports() annotation allows the annotations to be add or removed
     // explicitly or by patterns
     public void testExpandImports()
-    {   //load this class as a _draft, 
+    {   //load this class as a DraftAction, 
         _class _c = _draftClass.of(_draftClassTest.class ).draft( ); 
         
         assertTrue( _c.getImports().contains( "java.util.Map" ) );
