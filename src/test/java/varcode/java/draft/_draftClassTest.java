@@ -18,7 +18,6 @@ package varcode.java.draft;
 import junit.framework.TestCase;
 import varcode.java.Java;
 import varcode.java.model._class;
-import varcode.java.draft.DraftAction.*;
 
 /**
  * Rough Draft

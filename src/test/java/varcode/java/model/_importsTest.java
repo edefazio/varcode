@@ -13,22 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package varcode.java.draft;
+package varcode.java.model;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import junit.framework.TestCase;
+import java.util.*;
+import varcode.java.Java;
 
 /**
- * shorthand for body
- * {@link bo dy}
+ *
+ * @author Eric
  */
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-public @interface b
+public class _importsTest
+    extends TestCase
 {
-    /**
-     * the BindML markup used to create a Template for the body
-     */
-    String[] value();
+    public void testImports()
+    {
+        _class _c = Java._classFrom( _importsTest.class );
+        System.out.println( _c.getImports() );
+        assertTrue( _c.getImports().contains( "java.util.*" ) );
+        
+    }
 }

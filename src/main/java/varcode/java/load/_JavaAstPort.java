@@ -88,13 +88,29 @@ public class _JavaAstPort
         {
             if( astImports.get( i ).isStatic() )
             {
-                _imps.addStaticImport(
-                     astImports.get( i ).getName().toStringWithoutComments()+ ".*" );                    
+                if( astImports.get( i ).isAsterisk() )
+                {
+                    _imps.addStaticImport( 
+                        astImports.get( i ).getName().toStringWithoutComments() + ".*" );
+                }
+                else
+                {
+                    _imps.addStaticImport(
+                         astImports.get( i ).getName().toStringWithoutComments());                    
+                }
             }
             else
             {
-                _imps.addImport(
-                    astImports.get( i ).getName().toStringWithoutComments() );                
+                if( astImports.get( i ).isAsterisk() )
+                {
+                    _imps.addImport( 
+                        astImports.get( i ).getName().toStringWithoutComments() + ".*" );
+                }
+                else
+                {
+                    _imps.addImport(
+                        astImports.get( i ).getName().toStringWithoutComments() );                
+                }
             }
         }
         /*FORM

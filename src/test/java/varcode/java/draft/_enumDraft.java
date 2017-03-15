@@ -15,10 +15,6 @@
  */
 package varcode.java.draft;
 
-import junit.framework.TestCase;
-import varcode.java.Java;
-import varcode.java.model._enum;
-import varcode.java.draft.DraftAction.*;
 
 /**
  * Rough Draft -> changes

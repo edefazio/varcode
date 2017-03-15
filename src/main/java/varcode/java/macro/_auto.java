@@ -46,18 +46,17 @@ public class _auto
     public static final _autoMethodJavadocs METHOD_JAVADOCS = _autoMethodJavadocs.INSTANCE;
     public static final _autoToString TO_STRING = _autoToString.INSTANCE;
     
-    public static class macro
-    {
-        /**
-         * A MACRO to apply to a _class to make it an 
-         * Immutable Data Class
-         */
-        public static final _autoMacro IMMUTABLE_DATA_CLASS =         
-            macro( CONSTRUCTOR, BUILDER, EQUALS, HASHCODE, GETTERS, TO_STRING );
+    public static final _autoMacro DATA_CLASS =
+        macro( GETTERS, SETTERS, EQUALS, HASHCODE, TO_STRING );
+    
+    /**
+     * A MACRO to apply to a _class to make it an 
+     * Immutable Data Class
+     */
+    public static final _autoMacro IMMUTABLE_DATA_CLASS =         
+        macro( CONSTRUCTOR, BUILDER, EQUALS, HASHCODE, GETTERS, TO_STRING );
         
-        public static final _autoMacro DATA_CLASS =
-            macro( GETTERS, SETTERS, EQUALS, HASHCODE, TO_STRING );
-    }
+    
     /**
      * Returns an instance of an _autoMacro 
      * (an ordered list of autoprogramming macros)

@@ -30,12 +30,14 @@ import varcode.author.Author;
 import varcode.context.Context;
 import varcode.context.Directive;
 import varcode.context.VarContext;
+import varcode.java.ast.FormatJavaCode_AllmanScanStyle;
 import varcode.java.ast.JavaAst;
 import varcode.java.model._Java.Authored;
 import varcode.java.model._Java._facet;
 import varcode.java.naming.RefRenamer;
 import varcode.markup.Template;
-import varcode.markup.bindml.BindML;
+import varcode.markup.bindml.BindML; 
+import varcode.translate.UnescapeJavaString;
 
 /**
  * Revised Annotation instance
@@ -321,9 +323,8 @@ public class _ann
                 for( int i = 0; i < nodes.size(); i++ )
                 {
                     String s = nodes.get( i ).toString();
-                    //replace the first and last " around the string literal
+                    s = UnescapeJavaString.unescapeJavaString( s );
                     values[ i ] = s.substring( 1, s.length() - 1 );
-                    //.replace( "\"", "" );
                 }
                 return values;
             }

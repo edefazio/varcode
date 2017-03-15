@@ -17,7 +17,6 @@ package varcode.java.draft;
 
 import junit.framework.TestCase;
 import varcode.context.Context;
-import varcode.java.draft.DraftAction;
 import varcode.java.model._class;
 import varcode.java.model._constructors._constructor;
 

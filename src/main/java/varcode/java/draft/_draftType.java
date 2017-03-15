@@ -102,7 +102,7 @@ public abstract class _draftType
         {
             //System.out.println( "Copy Class Annotations " );
             //copy over all accept the known macro annotations
-            expansions.add(DraftAction.ExpandClassAnnotations.of(typeAnnotations, 
+            expansions.add( DraftAction.ExpandClassAnnotations.of( typeAnnotations, 
                 new String[]{
                     annotations.class.getSimpleName(),
                     imports.class.getSimpleName(),
@@ -151,7 +151,8 @@ public abstract class _draftType
         //Static Block        
         if( staticBlockAnn != null )
         {
-            String[] s = _ann._attributes.parseStringArray(staticBlockAnn.attributes.values.get( 0 ) );
+            String[] s = _ann._attributes.parseStringArray( 
+                staticBlockAnn.attributes.values.get( 0 ) );
             _expansions.add( new DraftAction.ExpandStaticBlock( s ) );
         }
         else
