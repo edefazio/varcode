@@ -31,22 +31,22 @@ public class _draftConstructorsTest
     {
         //we copy constructors 
         assertTrue( 
-            _draftConstructors.processConstructor( 
+            draftConstructors.processConstructor( 
                 _constructor.of( "public MyClass()" ) )
-            instanceof DraftAction.CopyConstructor );
+            instanceof draftAction.CopyConstructor );
     }
 
     public void testCtorRemove()
     {
         assertNull( 
-            _draftConstructors.processConstructor( 
+            draftConstructors.processConstructor( 
                 _constructor.of( "@remove", "public MyClass()" ) )
             );
     }
     
     public void testCtorStaticSig()
     {
-        DraftAction td = _draftConstructors.processConstructor( 
+        draftAction td = draftConstructors.processConstructor( 
             _constructor.of( "@sig(\"public TheClass()\")", "public MyClass()" ) );
         _class _c = _class.of("TheClass");
         td.draftTo( _c, Context.EMPTY );
@@ -57,7 +57,7 @@ public class _draftConstructorsTest
     
     public void testCtorStaticBody()
     {
-        DraftAction td = _draftConstructors.processConstructor( 
+        draftAction td = draftConstructors.processConstructor( 
             _constructor.of(
                 "@body(\"System.out.println(getClass().getName());\" )", 
                 "public MyClass()" ) );
@@ -72,7 +72,7 @@ public class _draftConstructorsTest
     
     public void testCtorStaticSigBody()
     {
-        DraftAction td = _draftConstructors.processConstructor( 
+        draftAction td = draftConstructors.processConstructor( 
             _constructor.of( "@sig(\"public TheClass()\")", 
                 "@body(\"System.out.println(getClass().getName());\" )", 
                 "public MyClass()" ) );
@@ -87,7 +87,7 @@ public class _draftConstructorsTest
     
     public void testCtorDraftSigBody()
     {
-        DraftAction td = _draftConstructors.processConstructor( 
+        draftAction td = draftConstructors.processConstructor( 
             _constructor.of( "@sig(\"public {+ClassName+}()\")", 
                 "@body(\"System.out.println( {+$quote(saying)+} );\" )", 
                 "public MyClass()" ) );

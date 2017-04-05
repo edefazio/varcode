@@ -36,18 +36,18 @@ import varcode.markup.bindml.BindML;
  * @see JavaSource
  * @author M. Eric DeFazio eric@varcode.io
  */
-public class _draftClass
-    extends _draftType
+public class draftClass
+    extends draftType
 {    
     /**
      * Reads in the _class Model from the class, and "prepares" it for 
      * Macro expansion
      * @param draft the "draft" class containing @annotation markup for macro expansion
-     * @return the _draftClass 
+     * @return the draftClass 
      */
-    public static _draftClass of( Class draft )
+    public static draftClass of( Class draft )
     {
-        return new _draftClass( _JavaLoad._classFrom( draft ) );
+        return new draftClass( _JavaLoad._classFrom( draft ) );
     }
     
     /**
@@ -55,9 +55,9 @@ public class _draftClass
      * @param _prototype
      * @return the macroClass
      */
-    public static _draftClass of( _class _prototype )
+    public static draftClass of( _class _prototype )
     {
-        return new _draftClass( _prototype );
+        return new draftClass( _prototype );
     }
     
     /** 
@@ -69,8 +69,8 @@ public class _draftClass
      * them in the "tailored" _class
      * </UL>
      */
-    public final List<DraftAction> typeExpansion = 
-        new ArrayList<DraftAction>();
+    public final List<draftAction> typeExpansion = 
+        new ArrayList<draftAction>();
     
     /** the prototype _class */
     public final _class _prototype;
@@ -85,7 +85,7 @@ public class _draftClass
     }
     
     //nests    
-    public _draftClass( _class _c )
+    public draftClass( _class _c )
     {
         this._prototype = new _class( _c );
         this._originator = prepareClassAction( _prototype );
@@ -109,12 +109,12 @@ public class _draftClass
             _c.getAnnotations().getOne( staticBlock.class ),
             _c.getStaticBlock() );
         
-        _draftConstructors.prepareConstructors( this.typeExpansion, _c.getConstructors() );
+        draftConstructors.prepareConstructors( this.typeExpansion, _c.getConstructors() );
         
         //TODO fieldANNOTATIONS, methodANNOTATIONS, fieldJDOC methodJDOC
         //go through the individual member fields and methods and process them
-        _draftFields.prepareFields( this.typeExpansion, this._prototype.getFields() );
-        _draftMethods.prepareMethods( this.typeExpansion, this._prototype.getMethods() ); 
+        draftFields.prepareFields( this.typeExpansion, this._prototype.getFields() );
+        draftMethods.prepareMethods( this.typeExpansion, this._prototype.getMethods() ); 
     }
 
     
@@ -122,7 +122,7 @@ public class _draftClass
     {
         if( _c.getAnnotation( sig.class ) != null )
         {
-            String sig = _c.getAnnotation( sig.class ).getLoneAttributeString();
+            String sig = _c.getAnnotation( sig.class ).getAttrString();
             if( sig != null) 
             {   
                 _c.getAnnotations().remove( sig.class );

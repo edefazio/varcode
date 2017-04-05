@@ -26,7 +26,7 @@ import varcode.java.model._constructors._constructor;
  *
  * @author Eric
  */
-public class _draftConstructors
+public class draftConstructors
 {
     /**
      * Prepares methods for macro expansion based on the presence of 
@@ -36,7 +36,7 @@ public class _draftConstructors
      * @param _ms the methods of a type
      */
     public static final void prepareConstructors( 
-        List<DraftAction> expansions, _constructors _cs )
+        List<draftAction> expansions, _constructors _cs )
     {
         for( int i = 0; i < _cs.count(); i++ )
         {
@@ -48,7 +48,7 @@ public class _draftConstructors
             }
             else
             {   //handle sig, body, and remove
-                DraftAction exp = processConstructor( _m );
+                draftAction exp = processConstructor( _m );
                 if( exp != null )
                 {
                     expansions.add( exp );
@@ -61,7 +61,7 @@ public class _draftConstructors
      * @param _m
      * @return 
      */
-    public static DraftAction processConstructorForms( _constructor _m )
+    public static draftAction processConstructorForms( _constructor _m )
     {
         _anns _as = _m.getAnnotations();
         _ann form = _as.getOne( form.class );
@@ -97,7 +97,7 @@ public class _draftConstructors
                 afterForm = body.substring( lastFormIndex + "form:".length() );
             }
             String[] attrs = 
-                _ann._attributes.parseStringArray( form.getAttributes().values.get( 0 ) );
+                _ann._attrs.parseStringArray( form.getAttrs().values.get( 0 ) );
             
             
             //I need to make the prefix and postfix for FORMS
@@ -109,7 +109,7 @@ public class _draftConstructors
             stitchedBody[ 0 ] = beforeForm;
             System.arraycopy( attrs, 0, stitchedBody, 1, attrs.length);
             stitchedBody[ stitchedBody.length -1 ] = afterForm;
-            return DraftAction.ExpandConstructor.ofBody( _p, stitchedBody );
+            return draftAction.ExpandConstructor.ofBody( _p, stitchedBody );
         }
         else if( formAt != null )
         {
@@ -134,7 +134,7 @@ public class _draftConstructors
      * @param _m the method
      * @return 
      */
-    public static DraftAction processConstructor( _constructor _m )
+    public static draftAction processConstructor( _constructor _m )
     {
         _anns _as = _m.getAnnotations();
         if( !_as.contains( remove.class ) )
@@ -148,42 +148,42 @@ public class _draftConstructors
             if( parameter != null )
             {   //you CANNOT have BOTH sig Macros AND parameterization
                 //System.out.println( "processing " + parameter );                
-                String values = parameter.getAttributes().values.get( 0 );
+                String values = parameter.getAttrs().values.get( 0 );
                 //System.out.println( "values " + values );                
-                String[] valuesArray = _ann._attributes.parseStringArray( values );
+                String[] valuesArray = _ann._attrs.parseStringArray( values );
                 //System.out.println( "values[0]" + valuesArray[0] );                
                 //System.out.println( "values[1]" + valuesArray[1] );                
                 _p.getAnnotations().remove( $.class );
-                return DraftAction.ExpandConstructor.parameterize( _p, valuesArray );   
+                return draftAction.ExpandConstructor.parameterize( _p, valuesArray );   
             }
             else if( sig != null )
             {   //we didnt explicitly tailor or remove it, so copy the method
                 //System.out.println( "processing "+ sig );
-                String[] str = _ann._attributes.parseStringArray( 
-                    sig.getAttributes().values.get( 0 ) );
+                String[] str = _ann._attrs.parseStringArray( 
+                    sig.getAttrs().values.get( 0 ) );
                 if( body != null )
                 {
                     _p.getAnnotations().remove( sig.class );
                     _p.getAnnotations().remove( body.class );
-                    String[] bod = _ann._attributes.parseStringArray( 
-                        body.getAttributes().values.get( 0 ) );
-                    return DraftAction.ExpandConstructor.of( _p, str[0], bod );
+                    String[] bod = _ann._attrs.parseStringArray( 
+                        body.getAttrs().values.get( 0 ) );
+                    return draftAction.ExpandConstructor.of( _p, str[0], bod );
                 }
                 else
                 {
                     _p.getAnnotations().remove( sig.class );
-                    return DraftAction.ExpandConstructor.ofSignature( _p, str[0] );
+                    return draftAction.ExpandConstructor.ofSignature( _p, str[0] );
                 }
             }
             else if( body != null )
             {
-                String[] bod = _ann._attributes.parseStringArray( 
-                    body.getAttributes().values.get( 0 ) );
+                String[] bod = _ann._attrs.parseStringArray( 
+                    body.getAttrs().values.get( 0 ) );
                 _p.getAnnotations().remove( body.class );
-                return DraftAction.ExpandConstructor.ofBody( _p, bod );
+                return draftAction.ExpandConstructor.ofBody( _p, bod );
             }
             //just copy the field                        
-            return new DraftAction.CopyConstructor( _m );
+            return new draftAction.CopyConstructor( _m );
         }
         return null;
     }

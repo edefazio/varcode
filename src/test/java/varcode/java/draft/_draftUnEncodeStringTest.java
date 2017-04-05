@@ -49,7 +49,7 @@ public class _draftUnEncodeStringTest
     public void testUnEncodeString()
     {
         //build and load a MyClass, call themain method, which should print "Hi"
-        Class c = Draft._classOf( MyClass.class )
+        Class c = draft._classOf( MyClass.class )
             .setModifiers( "public" ).loadClass();
         Java.callMain( c );
         

@@ -48,7 +48,7 @@ public class _ann
     implements _Java, _facet, Authored
 {
     public String name;    
-    public _attributes attributes = new _attributes();
+    public _attrs attributes = new _attrs();
     
     public _ann()
     {        
@@ -69,7 +69,7 @@ public class _ann
     public _ann( _ann prototype )
     {
         this.name = prototype.name;
-        this.attributes = new _attributes( prototype.attributes );
+        this.attributes = new _attrs( prototype.attributes );
     }
     
     public String getName()
@@ -77,60 +77,119 @@ public class _ann
         return name;
     }
     
-    public String getAttributeString( String key )
+    /**
+     * gets the value of the _attr by name:
+     * 
+     * NOTE: if 
+     * @param key
+     * @return 
+     */
+    public String getAttr( String key )
     {
-        for(int i = 0; i< this.attributes.keys.size(); i++ )
+        for( int i = 0; i < this.attributes.keys.size(); i++ )
         {
             if( this.attributes.keys.get( i ).equals( key ) )
             {
-                return 
-                    _attributes.parseStringArray( this.attributes.values.get( i ) )[ 0 ];
+                return this.attributes.values.get( i );                                
             }
         }
         return "";
     }
     
-    public String[] getAttributeStringArray( String key )
+    /**
+     * Just like getAttr() gets the _attr by name
+     * except strings (starting with and ending quotes removed)
+     * i.e. @a(key="value")
+     * _ann a = _ann.of("@a(key=\"value\")");
+     * a.getAttrString("key"); //returns "value", NOT "\"value\"" 
+     * 
+     * Gets the value of the attr by it's name
+     * 
+     * @param key
+     * @return 
+     */
+    public String getAttrString( String key )
     {
-        for(int i = 0; i< this.attributes.keys.size(); i++ )
+        for( int i = 0; i < this.attributes.keys.size(); i++ )
         {
             if( this.attributes.keys.get( i ).equals( key ) )
             {
-                return _attributes.parseStringArray( this.attributes.values.get( i ) );
+                if( this.attributes.values.get( i ).startsWith( "\"" ) )
+                {
+                    //its a string
+                    return 
+                        _attrs.parseStringArray( this.attributes.values.get( i ) )[ 0 ];
+                }
+                else
+                {
+                    return this.attributes.values.get( i );
+                }                
             }
         }
-        return new String[ 0 ];
+        return "";
     }
     
-    public String getLoneAttributeString()
+    public String[] getAttrStringArray( String key )
     {
-        if( this.attributes.values.size() == 0 )
+        
+        for( int i = 0; i < this.attributes.keys.size(); i++ )
+        {
+            if( this.attributes.keys.get( i ).equals( key ) )
+            {
+                return _attrs.parseStringArray( this.attributes.values.get( i ) );
+            }
+        }
+        return null;
+    }
+    
+    public String getAttr()
+    {
+        if( this.attributes.values.isEmpty() )
         {
             return null;
         }
         if( this.attributes.values.size() == 1 )
         {
-            return _attributes.parseStringArray( this.attributes.values.get( 0 ) )[ 0 ];
+            return this.attributes.values.get( 0 );
+        }        
+        throw new ModelException(
+            "More than one attribute in "+ this.author() );
+    }
+    
+    public String getAttrString()
+    {
+        if( this.attributes.values.isEmpty() )
+        {
+            return null;
         }
+        if( this.attributes.values.size() == 1 )
+        {
+            if( this.attributes.values.get( 0 ).startsWith( "\"" ) )
+            {
+                return _attrs.parseStringArray( this.attributes.values.get( 0 ) )[ 0 ];
+            }
+            return this.attributes.values.get( 0 );
+        }        
         throw new ModelException(
             "More than one attribute in "+ this.author() );
     }
     
     //ASSUMES ONLY
-    public String[] getLoneAttributeStringArray()
+    public String[] getAttrStringArray()
     {
-        if( this.attributes.values.size() == 0 )
+        if( this.attributes.values.isEmpty() )
         {
             return null;
         }
         if( this.attributes.values.size() == 1 )
         {
-            return _attributes.parseStringArray( this.attributes.values.get( 0 ) );
+            return _attrs.parseStringArray( 
+                this.attributes.values.get( 0 ) );
         }
         throw new ModelException(
             "More than one attribute in "+ this.author() );
     }
-    public _attributes getAttributes()
+    public _attrs getAttrs()
     {
         return this.attributes;
     }
@@ -175,14 +234,14 @@ public class _ann
             if( n instanceof MemberValuePair )
             {
                 MemberValuePair mvp = (MemberValuePair)n;
-                _a.addAttribute( mvp.getName(), mvp.getValue().toString() );                   
+                _a.addAttr( mvp.getName(), mvp.getValue().toString() );                   
             }
             else
             {
                 String s = n.toString().trim();
                 if( s.length() > 0 )
                 {
-                    _a.addAttribute( n.toString() );                   
+                    _a.addAttr( n.toString() );                   
                 }
             }
         }        
@@ -196,13 +255,13 @@ public class _ann
     }
 
     
-    public _ann addAttribute( String name, String value )
+    public _ann addAttr( String name, String value )
     {
         this.attributes.add( name, value);
         return this;
     }
     
-    public _ann addAttribute( String value )
+    public _ann addAttr( String value )
     {
         this.attributes.add( value );
         return this;
@@ -255,12 +314,18 @@ public class _ann
         return VarContext.of( "name", this.name, "attributes", this.attributes );
     }
     
-    
-    public static class _attributes
+    /**
+     * Attributes applied to the instance of the annotation
+     * <PRE>
+     * @a( key1 = "value", key2 = 1900 )
+     *     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     * </PRE>
+     */
+    public static class _attrs
         implements _Java, _facet, Authored
     {
         public List<String> keys = new ArrayList<String>();
-        public List<String>values = new ArrayList<String>();
+        public List<String> values = new ArrayList<String>();
         
         /**
          * gets the raw String value for a key
@@ -270,9 +335,9 @@ public class _ann
          * @param key the key of the attribute
          * @return the Raw value associated with this key, or null
          */
-        public String getRawValueForKey( String key )
+        public String getValueOf( String key )
         {
-            for(int i=0; i< this.keys.size(); i++ )
+            for( int i = 0; i < this.keys.size(); i++ )
             {
                 if( keys.get( i ).equals( key ) )
                 {
@@ -319,12 +384,23 @@ public class _ann
                 Expression expr = fd.getVariables().get( 0 ).getInit();
             
                 List<Node> nodes = expr.getChildrenNodes();
+                System.out.println( "NODES"+ nodes );
                 String[] values = new String[nodes.size()];
                 for( int i = 0; i < nodes.size(); i++ )
                 {
                     String s = nodes.get( i ).toString();
+                    
+                    System.out.println( "BEFORE" + s );
                     s = UnescapeJavaString.unescapeJavaString( s );
-                    values[ i ] = s.substring( 1, s.length() - 1 );
+                    System.out.println( "AFTER" + s );
+                    if( s.startsWith("\"" ) )
+                    {
+                        values[ i ] = s.substring( 1, s.length() - 1 );
+                    }
+                    else
+                    {
+                        values[ i ] = s;
+                    }
                 }
                 return values;
             }
@@ -344,11 +420,11 @@ public class _ann
         public static final Template ATTRIBUTES = 
             BindML.compile( "{{+:{+name*+} = {+value*+}, +}}" );
     
-        public _attributes()
+        public _attrs()
         {            
         }
         
-        public _attributes( _attributes prototype )
+        public _attrs( _attrs prototype )
         {
             for( int i = 0; i < prototype.keys.size(); i++ )
             {
@@ -381,7 +457,7 @@ public class _ann
             {
                 return false;
             }
-            final _attributes other = (_attributes)obj;
+            final _attrs other = (_attrs)obj;
             if( this.keys != other.keys && (this.keys == null || !this.keys.equals( other.keys )) )
             {
                 return false;
@@ -394,7 +470,7 @@ public class _ann
         }
         
         @Override
-        public _attributes replace( String target, String replacement )
+        public _attrs replace( String target, String replacement )
         {
             for( int i = 0; i < this.keys.size(); i++ )
             {
@@ -417,13 +493,13 @@ public class _ann
             return count() == 0;
         }
         
-        public _attributes add( String valueOnly )
+        public _attrs add( String valueOnly )
         {
             values.add( valueOnly );
             return this;
         }
         
-        public _attributes add( String key, String value )
+        public _attrs add( String key, String value )
         {
             keys.add( key );
             values.add( value );

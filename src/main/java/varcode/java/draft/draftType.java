@@ -26,19 +26,19 @@ import varcode.java.model._staticBlock;
  * 
  * @author M. Eric DeFazio eric@varcode.io 
  */
-public abstract class _draftType
+public abstract class draftType
 {        
     protected static void prepareTypePackage( 
-        List<DraftAction> _expansions, String packageName, _ann pkgAnn )
+        List<draftAction> _expansions, String packageName, _ann pkgAnn )
     {
         if( pkgAnn != null )
         {
-            _expansions.add( new DraftAction.ExpandPackage( 
-                pkgAnn.getLoneAttributeString() ) );
+            _expansions.add( new draftAction.ExpandPackage( 
+                pkgAnn.getAttrString() ) );
         }
         else
         {
-           _expansions.add( new DraftAction.CopyPackage( packageName ) ); 
+           _expansions.add( new draftAction.CopyPackage( packageName ) ); 
         }
     }
         
@@ -49,31 +49,31 @@ public abstract class _draftType
      * @param _expansions the existing macro expansions
      */
     protected static void prepareTypeImports( 
-        List<DraftAction> _expansions, _imports _i, _ann importAnn )
+        List<draftAction> _expansions, _imports _i, _ann importAnn )
     {
         if( importAnn != null )
         {
             //System.out.println( "ADD IMPORTS " );
-            _ann._attributes _attrs = importAnn.getAttributes();
-            String adds = _attrs.getRawValueForKey( "add" );
+            _ann._attrs _attrs = importAnn.getAttrs();
+            String adds = _attrs.getValueOf( "add" );
             String[] addsArr = new String[0];
             if( adds != null )
             {
-                addsArr = _ann._attributes.parseStringArray( adds );                
+                addsArr = _ann._attrs.parseStringArray( adds );                
             }
-            String remove = _attrs.getRawValueForKey( "remove" );
+            String remove = _attrs.getValueOf( "remove" );
             String[] removeArr = new String[0];
             if( remove != null )
             {
-                removeArr = _ann._attributes.parseStringArray( remove );                
+                removeArr = _ann._attrs.parseStringArray( remove );                
             }
             _expansions.add( 
-                DraftAction.ExpandImports.of( _i, removeArr, addsArr ) );
+                draftAction.ExpandImports.of( _i, removeArr, addsArr ) );
         }
         else
         {
             //System.out.println( "COPY IMPORTS ");
-            _expansions.add( DraftAction.CopyImports.of( _i ) );
+            _expansions.add( draftAction.CopyImports.of( _i ) );
         }
     }
     
@@ -86,23 +86,23 @@ public abstract class _draftType
      * @param annAnnotation the @annotations annotation describing the macro expansion (or null)
      */
     protected static void prepareTypeAnnotations( 
-        List<DraftAction> expansions, _anns typeAnnotations, _ann annAnnotation )
+        List<draftAction> expansions, _anns typeAnnotations, _ann annAnnotation )
     {        
         if( annAnnotation != null )
         {
             //System.out.println( "Update Class Annotations" );
             String[] remove = 
-                annAnnotation.getAttributeStringArray( "remove" );
+                annAnnotation.getAttrStringArray( "remove" );
             String[] add = 
-                annAnnotation.getAttributeStringArray( "add" );
+                annAnnotation.getAttrStringArray( "add" );
             
-            expansions.add(DraftAction.ExpandClassAnnotations.of( typeAnnotations, remove, add ) );                        
+            expansions.add(draftAction.ExpandClassAnnotations.of( typeAnnotations, remove, add ) );                        
         }
         else
         {
             //System.out.println( "Copy Class Annotations " );
             //copy over all accept the known macro annotations
-            expansions.add( DraftAction.ExpandClassAnnotations.of( typeAnnotations, 
+            expansions.add( draftAction.ExpandClassAnnotations.of( typeAnnotations, 
                 new String[]{
                     annotations.class.getSimpleName(),
                     imports.class.getSimpleName(),
@@ -124,15 +124,15 @@ public abstract class _draftType
      * @param fieldsAnn 
      */
     protected static void prepareTypeFields( 
-        List<DraftAction> _expansions, _ann fieldsAnn )
+        List<draftAction> _expansions, _ann fieldsAnn )
     {
         if( fieldsAnn != null )
         {
-            String[] arr = fieldsAnn.getLoneAttributeStringArray();
+            String[] arr = fieldsAnn.getAttrStringArray();
             
             for( int i = 0; i < arr.length; i++ )
             {
-                DraftAction.ExpandField ef = new DraftAction.ExpandField( arr[ i ] );
+                draftAction.ExpandField ef = new draftAction.ExpandField( arr[ i ] );
                 //System.out.println( "ADDING "+ ef );
                 _expansions.add( ef ); 
             }
@@ -146,20 +146,35 @@ public abstract class _draftType
      * @param _sb 
      */
     protected static void prepareStaticBlock( 
-        List<DraftAction> _expansions, _ann staticBlockAnn, _staticBlock _sb )
+        List<draftAction> _expansions, _ann staticBlockAnn, _staticBlock _sb )
     {
-        //Static Block        
+        //Static Block    
+        //System.out.println("STATIC BLOCK ANNOTATION :"+ staticBlockAnn);
+        
         if( staticBlockAnn != null )
         {
-            String[] s = _ann._attributes.parseStringArray( 
-                staticBlockAnn.attributes.values.get( 0 ) );
-            _expansions.add( new DraftAction.ExpandStaticBlock( s ) );
+            //System.out.println("STATIC BLOCK ANNOTATION NOT NULL" );
+            //System.out.println("STATIC BLOCK" + staticBlockAnn.attributes );
+            //System.out.println( staticBlockAnn.attributes.keys );
+            //System.out.println( staticBlockAnn.attributes.values );
+            String rem = staticBlockAnn.getAttrString( "remove" );
+            //System.out.println( rem );                
+            if( rem != null && rem.equals( "true" ) )
+            {
+                //System.out.println( "REMOVE STATIC");                
+            }
+            else
+            {
+                String[] s = _ann._attrs.parseStringArray( 
+                    staticBlockAnn.attributes.values.get( 0 ) );
+                _expansions.add( new draftAction.ExpandStaticBlock( s ) );
+            }
         }
         else
         {   //we copy the static block as is
             if( _sb != null && !_sb.isEmpty() )
-            {
-                _expansions.add( new DraftAction.CopyStaticBlock( _sb ) );
+            {                
+                _expansions.add( new draftAction.CopyStaticBlock( _sb ) );
             }
         }                
     }

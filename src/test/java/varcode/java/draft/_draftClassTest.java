@@ -30,7 +30,7 @@ import varcode.java.model._class;
     .removeImport( "
  .remove
  
- _draftClass.of( MyClass.class )
+ draftClass.of( MyClass.class )
      .removeField( "fieldName" )
      .removeField( _f )
      .addField("public static final MASK = 
@@ -53,7 +53,7 @@ public class _draftClassTest
     // explicitly or by patterns
     public void testExpandImports()
     {   //load this class as a DraftAction, 
-        _class _c = _draftClass.of(_draftClassTest.class ).draft( ); 
+        _class _c = draftClass.of(_draftClassTest.class ).draft( ); 
         
         assertTrue( _c.getImports().contains( "java.util.Map" ) );
         assertTrue( _c.getImports().contains( "java.util.UUID" ) );
@@ -67,11 +67,11 @@ public class _draftClassTest
         assertTrue( !authored.contains( "junit" ) );
         
         //add imports 
-        _c = _draftClass.of(_draftClassTest.class ).draft( "addImports", "java.util.HashSet" ); 
+        _c = draftClass.of(_draftClassTest.class ).draft( "addImports", "java.util.HashSet" ); 
         assertTrue( _c.getImports().contains( "java.util.HashSet" ) );
         
         //add mutliple imports by a single parameter
-        _c = _draftClass.of(_draftClassTest.class ).draft( "addImports", 
+        _c = draftClass.of(_draftClassTest.class ).draft( "addImports", 
             new Object[] {"java.util.Calendar", "java.util.Date"} ); 
         
         assertTrue( _c.getImports().contains( "java.util.Calendar" ) );
@@ -92,7 +92,7 @@ public class _draftClassTest
     public void testNameLower()
     {
         _class _c = 
-            _draftClass.of( ClassName.class ).draft( "name", "eric" );
+            draftClass.of( ClassName.class ).draft( "name", "eric" );
         
         assertEquals( "Eric", _c.getName( ) );
     }
@@ -103,7 +103,7 @@ public class _draftClassTest
     
     public void testPackageStatic()
     {
-        _class _c = _draftClass.of( EPackageStatic.class ).draft(  );
+        _class _c = draftClass.of( EPackageStatic.class ).draft(  );
         assertEquals( "ex.mypackage", _c.getPackageName() );
     }
     
@@ -112,7 +112,7 @@ public class _draftClassTest
     
     public void testPackageExpand()
     {
-        _class _c = _draftClass.of(ExpandPackage.class ).draft("subpkg", "mysub" );
+        _class _c = draftClass.of(ExpandPackage.class ).draft("subpkg", "mysub" );
         assertEquals( "ex.mypackage.mysub", _c.getPackageName() );
     }
      
@@ -123,7 +123,7 @@ public class _draftClassTest
     
     public void testExpandStaticBlock()
     {
-        _class _c = _draftClass.of( ExpandStaticBlock.class ).draft();
+        _class _c = draftClass.of( ExpandStaticBlock.class ).draft();
         
         assertTrue( _c.getStaticBlock().author().contains( "out.println" ) );
     }
@@ -135,11 +135,11 @@ public class _draftClassTest
     
     public void testExpandClassAnnotations()
     {
-        _class _c = _draftClass.of( ExpandClassAnnotation.class ).draft( );
+        _class _c = draftClass.of( ExpandClassAnnotation.class ).draft( );
         
         assertEquals( 1,  _c.getAnnotations().get( "Drafted" ).size() );
         
-        _c = _draftClass.of( ExpandClassAnnotation.class ).draft( "classAnnotations", "@MyAnnotation" );
+        _c = draftClass.of( ExpandClassAnnotation.class ).draft( "classAnnotations", "@MyAnnotation" );
         
         assertEquals( 1,  _c.getAnnotations().get( "Drafted" ).size() );
         assertEquals( 1,  _c.getAnnotations().get( "MyAnnotation" ).size() );        
@@ -154,7 +154,7 @@ public class _draftClassTest
     
     public void testCopyClassAnnotations()
     {
-        _class _c = _draftClass.of( CopyClassAnnotations.class ).draft( );
+        _class _c = draftClass.of( CopyClassAnnotations.class ).draft( );
         assertTrue( _c.getAnnotation( Deprecated.class ) != null );
         assertTrue( _c.getAnnotation( Draft.class ) != null );
         //assertNull( _c.getAnnotation( sig.class ) );
@@ -169,7 +169,7 @@ public class _draftClassTest
     
     public void testCopyStaticBlock()
     {
-        _class _c = _draftClass.of(  CopyStaticBlock.class ).draft( );
+        _class _c = draftClass.of(  CopyStaticBlock.class ).draft( );
         assertTrue( _c.getStaticBlock().author().contains( "In static Block" ) );
     }
     
@@ -178,7 +178,7 @@ public class _draftClassTest
     
     public void testClassSig()
     {
-        _class _c = _draftClass.of( ClassSig.class ).draft( "Name", "MyClass" );
+        _class _c = draftClass.of( ClassSig.class ).draft( "Name", "MyClass" );
         assertEquals( "MyClass", _c.getName() ); 
     }
     
@@ -187,13 +187,13 @@ public class _draftClassTest
     
     public void testClassFields()
     {
-        _class _c = _draftClass.of( ClassFields.class )
+        _class _c = draftClass.of( ClassFields.class )
             .draft( "type", int.class, "name", "blah" );
         System.out.println( _c );
         assertEquals( "int", _c.getField("blah").getType() );
         
         //create multiple fields
-        _c = _draftClass.of( ClassFields.class )
+        _c = draftClass.of( ClassFields.class )
             .draft( "type", new Class[]{int.class, float.class}, 
                      "name", new String[]{"x", "y"} );
         
@@ -207,7 +207,7 @@ public class _draftClassTest
     
     public void testClassFieldM()
     {
-        _class _c = _draftClass.of( ClassFieldsMultiple.class )
+        _class _c = draftClass.of( ClassFieldsMultiple.class )
             .draft( "name", "TheName" );
         
         assertEquals( "int",_c.getField( "TheNameDim" ).getType() );
@@ -223,14 +223,14 @@ public class _draftClassTest
     public void testSimple()
     {
         _class _q = 
-            _draftClass.of(AField.class ).draft( "name", "theName" );
+            draftClass.of(AField.class ).draft( "name", "theName" );
         assertEquals( "AField", _q.getName() );
         assertEquals( "int", _q.getField( "theName" ).getType() );
     }
     
     public void testAField()
     {
-        _draftClass _cm = _draftClass.of(Java._classFrom(AField.class ) );
+        draftClass _cm = draftClass.of(Java._classFrom(AField.class ) );
         _class _c = _cm.draft( "name", "y" );
         assertEquals( "int", _c.getField("y").getType() );
         
@@ -251,7 +251,7 @@ public class _draftClassTest
     
     public void testMethodCopy()
     {
-        _class _c = _draftClass.of(CopyMethod.class ).draft(  );
+        _class _c = draftClass.of(CopyMethod.class ).draft(  );
         assertNotNull( _c.getMethod( "sourceMethod" ) );
     }
     
@@ -266,7 +266,7 @@ public class _draftClassTest
     
     public void testMethodParameterize()
     {
-        _class _c = _draftClass.of( ParameterizeMethod.class )
+        _class _c = draftClass.of( ParameterizeMethod.class )
             .draft( "pname", "varName" );
         assertTrue( _c.getMethod( "aMethod" ).getSignature().author().contains( "varName") );
         assertTrue( _c.getMethod( "aMethod" ).getBody().author().contains( "varName") );        
@@ -282,7 +282,7 @@ public class _draftClassTest
     
     public void testMethodSigAndBody()
     {
-        _class _c = _draftClass.of( MethodSigAndBody.class )
+        _class _c = draftClass.of( MethodSigAndBody.class )
             .draft( );
         assertTrue( _c.getMethod( "itBurns" ).getBody().author().contains( "HI" ) );
     }
@@ -301,7 +301,7 @@ public class _draftClassTest
     }
     public void testBodyMultiLine()
     {
-        _class _c = _draftClass.of( MethodBodyMultiline.class ).draft();
+        _class _c = draftClass.of( MethodBodyMultiline.class ).draft();
         
         System.out.println( _c.getMethod( "methodBody" ) );
         
@@ -319,7 +319,7 @@ public class _draftClassTest
     
     public void testMethodSigOnly()
     {
-        _class _c = _draftClass.of( MethodSigOnly.class )
+        _class _c = draftClass.of( MethodSigOnly.class )
             .draft( );
         assertNotNull( _c.getMethod( "itBurns" ) );
     }
@@ -333,7 +333,7 @@ public class _draftClassTest
     
     public void testMethodBodyOnly()
     {
-        _class _c = _draftClass.of( MethodBodyOnly.class )
+        _class _c = draftClass.of( MethodBodyOnly.class )
             .draft( );
         assertTrue( _c.getMethod( "original" ).getBody().author().contains(" HI ") );
     }
@@ -355,7 +355,7 @@ public class _draftClassTest
     
     public void testMethodForm()
     {
-        _class _c = _draftClass.of( MethodForm.class )
+        _class _c = draftClass.of( MethodForm.class )
             .draft( "name", "fieldName" );
         
         System.out.println( _c );
@@ -366,7 +366,7 @@ public class _draftClassTest
         Java.call( _c.instance( ), "toString" );
         
         // now create a 
-        _c = _draftClass.of( MethodForm.class )
+        _c = draftClass.of( MethodForm.class )
             .draft( "name", new String[]{"theFirstField", "theSecondField"});
         
         //make sure we created (2) fields

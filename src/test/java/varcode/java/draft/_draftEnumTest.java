@@ -29,7 +29,7 @@ public class _draftEnumTest
     // explicitly or by patterns
     public void testExpandImports()
     {   //load this class as a _macro, 
-        _enum _c = _draftEnum.of( _enumDraft.class ).draft();
+        _enum _c = draftEnum.of( _enumDraft.class ).draft();
 
         assertTrue( _c.getImports().contains( "java.util.Map" ) );
         assertTrue( _c.getImports().contains( "java.util.UUID" ) );
@@ -43,11 +43,11 @@ public class _draftEnumTest
         assertTrue( !authored.contains( "junit" ) );
 
         //add imports 
-        _c = _draftEnum.of( _enumDraft.class ).draft( "addImports", "java.util.HashSet" );
+        _c = draftEnum.of( _enumDraft.class ).draft( "addImports", "java.util.HashSet" );
         assertTrue( _c.getImports().contains( "java.util.HashSet" ) );
 
         //add mutliple imports by a single parameter
-        _c = _draftEnum.of( _enumDraft.class ).draft( "addImports",
+        _c = draftEnum.of( _enumDraft.class ).draft( "addImports",
             new Object[]
             {
                 "java.util.Calendar", "java.util.Date"
@@ -64,37 +64,37 @@ public class _draftEnumTest
     public void testNameLower()
     {
         _enum _c
-            = _draftEnum.of( _enumDraft.ClassName.class ).draft( "name", "eric" );
+            = draftEnum.of( _enumDraft.ClassName.class ).draft( "name", "eric" );
 
         assertEquals( "Eric", _c.getName() );
     }
 
     public void testPackageStatic()
     {
-        _enum _c = _draftEnum.of( _enumDraft.EPackageStatic.class ).draft();
+        _enum _c = draftEnum.of( _enumDraft.EPackageStatic.class ).draft();
         assertEquals( "ex.mypackage", _c.getPackageName() );
     }
 
     public void testPackageExpand()
     {
-        _enum _c = _draftEnum.of( _enumDraft.ExpandPackage.class ).draft( "subpkg", "mysub" );
+        _enum _c = draftEnum.of( _enumDraft.ExpandPackage.class ).draft( "subpkg", "mysub" );
         assertEquals( "ex.mypackage.mysub", _c.getPackageName() );
     }
 
     public void testExpandStaticBlock()
     {
-        _enum _c = _draftEnum.of( _enumDraft.ExpandStaticBlock.class ).draft();
+        _enum _c = draftEnum.of( _enumDraft.ExpandStaticBlock.class ).draft();
 
         assertTrue( _c.getStaticBlock().author().contains( "out.println" ) );
     }
 
     public void testExpandClassAnnotations()
     {
-        _enum _c = _draftEnum.of( _enumDraft.ExpandClassAnnotation.class ).draft();
+        _enum _c = draftEnum.of( _enumDraft.ExpandClassAnnotation.class ).draft();
 
         assertEquals( 1, _c.getAnnotations().get( "Drafted" ).size() );
 
-        _c = _draftEnum.of( _enumDraft.ExpandClassAnnotation.class ).draft( "classAnnotations", "@MyAnnotation" );
+        _c = draftEnum.of( _enumDraft.ExpandClassAnnotation.class ).draft( "classAnnotations", "@MyAnnotation" );
 
         assertEquals( 1, _c.getAnnotations().get( "Drafted" ).size() );
         assertEquals( 1, _c.getAnnotations().get( "MyAnnotation" ).size() );
@@ -102,7 +102,7 @@ public class _draftEnumTest
 
     public void testCopyClassAnnotations()
     {
-        _enum _c = _draftEnum.of( _enumDraft.CopyClassAnnotations.class ).draft();
+        _enum _c = draftEnum.of( _enumDraft.CopyClassAnnotations.class ).draft();
         assertTrue( _c.getAnnotation( Deprecated.class ) != null );
         assertTrue( _c.getAnnotation( _enumDraft.Draft.class ) != null );
         //assertNull( _c.getAnnotation( sig.class ) );
@@ -110,25 +110,25 @@ public class _draftEnumTest
 
     public void testCopyStaticBlock()
     {
-        _enum _c = _draftEnum.of( _enumDraft.CopyStaticBlock.class ).draft();
+        _enum _c = draftEnum.of( _enumDraft.CopyStaticBlock.class ).draft();
         assertTrue( _c.getStaticBlock().author().contains( "In static Block" ) );
     }
 
     public void testClassSig()
     {
-        _enum _c = _draftEnum.of( _enumDraft.ClassSig.class ).draft( "Name", "MyClass" );
+        _enum _c = draftEnum.of( _enumDraft.ClassSig.class ).draft( "Name", "MyClass" );
         assertEquals( "MyClass", _c.getName() );
     }
 
     public void testClassFields()
     {
-        _enum _c = _draftEnum.of( _enumDraft.ClassFields.class )
+        _enum _c = draftEnum.of( _enumDraft.ClassFields.class )
             .draft( "type", int.class, "name", "blah" );
         System.out.println( _c );
         assertEquals( "int", _c.getField( "blah" ).getType() );
 
         //create multiple fields
-        _c = _draftEnum.of( _enumDraft.ClassFields.class )
+        _c = draftEnum.of( _enumDraft.ClassFields.class )
             .draft( "type", new Class[]
             {
                 int.class, float.class
@@ -144,7 +144,7 @@ public class _draftEnumTest
 
     public void testClassFieldM()
     {
-        _enum _c = _draftEnum.of( _enumDraft.ClassFieldsMultiple.class )
+        _enum _c = draftEnum.of( _enumDraft.ClassFieldsMultiple.class )
             .draft( "name", "TheName" );
 
         assertEquals( "int", _c.getField( "TheNameDim" ).getType() );
@@ -154,14 +154,14 @@ public class _draftEnumTest
     public void testSimple()
     {
         _enum _q
-            = _draftEnum.of( _enumDraft.AField.class ).draft( "name", "theName" );
+            = draftEnum.of( _enumDraft.AField.class ).draft( "name", "theName" );
         assertEquals( "AField", _q.getName() );
         assertEquals( "int", _q.getField( "theName" ).getType() );
     }
 
     public void testAField()
     {
-        _draftEnum _cm = _draftEnum.of( Java._enumFrom( _enumDraft.AField.class ) );
+        draftEnum _cm = draftEnum.of( Java._enumFrom( _enumDraft.AField.class ) );
         _enum _c = _cm.draft( "name", "y" );
         assertEquals( "int", _c.getField( "y" ).getType() );
 
@@ -177,13 +177,13 @@ public class _draftEnumTest
 
     public void testMethodCopy()
     {
-        _enum _c = _draftEnum.of( _enumDraft.CopyMethod.class ).draft();
+        _enum _c = draftEnum.of( _enumDraft.CopyMethod.class ).draft();
         assertNotNull( _c.getMethod( "sourceMethod" ) );
     }
 
     public void testMethodParameterize()
     {
-        _enum _c = _draftEnum.of( _enumDraft.ParameterizeMethod.class )
+        _enum _c = draftEnum.of( _enumDraft.ParameterizeMethod.class )
             .draft( "pname", "varName" );
         assertTrue( _c.getMethod( "aMethod" ).getSignature().author().contains( "varName" ) );
         assertTrue( _c.getMethod( "aMethod" ).getBody().author().contains( "varName" ) );
@@ -191,28 +191,28 @@ public class _draftEnumTest
 
     public void testMethodSigAndBody()
     {
-        _enum _c = _draftEnum.of( _enumDraft.MethodSigAndBody.class )
+        _enum _c = draftEnum.of( _enumDraft.MethodSigAndBody.class )
             .draft();
         assertTrue( _c.getMethod( "itBurns" ).getBody().author().contains( "HI" ) );
     }
 
     public void testMethodSigOnly()
     {
-        _enum _c = _draftEnum.of( _enumDraft.MethodSigOnly.class )
+        _enum _c = draftEnum.of( _enumDraft.MethodSigOnly.class )
             .draft();
         assertNotNull( _c.getMethod( "itBurns" ) );
     }
 
     public void testMethodBodyOnly()
     {
-        _enum _c = _draftEnum.of( _enumDraft.MethodBodyOnly.class )
+        _enum _c = draftEnum.of( _enumDraft.MethodBodyOnly.class )
             .draft();
         assertTrue( _c.getMethod( "original" ).getBody().author().contains( " HI " ) );
     }
 
     public void testMethodForm()
     {
-        _enum _c = _draftEnum.of( _enumDraft.MethodForm.class )
+        _enum _c = draftEnum.of( _enumDraft.MethodForm.class )
             .draft( "name", "fieldName" );
 
         System.out.println( _c );
@@ -223,7 +223,7 @@ public class _draftEnumTest
         Java.call( _c.loadConstant( "INSTANCE" ), "toString" );
 
         // now create a 
-        _c = _draftEnum.of( _enumDraft.MethodForm.class )
+        _c = draftEnum.of( _enumDraft.MethodForm.class )
             .draft( "name", new String[]
             {
                 "theFirstField", "theSecondField"

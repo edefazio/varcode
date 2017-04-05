@@ -22,15 +22,27 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * _draft Annotation describing the contents of a static Block
- *
+ * draft Annotation manipulating the contents of a static Block
+ * 
+ * <PRE>
+ * a constant static block:
  * @staticBlock({"System.out.println( \"Hi\" );}) //constant static block
- * @staticBlock({"{+init+}"}); //set static Block content by var "init"
+ * 
+ * a variable static block:
+ * @staticBlock("{+init*+}"); //content contained in var "init"
+ * 
+ * remove the static block:
+ * @staticBlock(remove=true)
+ * </PRE>
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface staticBlock
 {
-    String[] value();
+    /** Defines the (Form) contents to use win the Static block */ 
+    String[] value() default {};
+    
+    /** Remove the static block entirely (if true) */
+    boolean remove() default false; 
 }

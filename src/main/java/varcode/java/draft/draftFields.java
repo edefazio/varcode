@@ -24,14 +24,14 @@ import varcode.java.model._fields;
  * 
  * @author Eric
  */
-public class _draftFields
+public class draftFields
 {
     
-    public static void prepareFields( List<DraftAction> _expansions, _fields _fs )
+    public static void prepareFields( List<draftAction> _expansions, _fields _fs )
     {        
         for( int i = 0; i < _fs.count(); i++ )
         {
-            DraftAction e = prepareField( _fs.getAt( i ) );
+            draftAction e = prepareField( _fs.getAt( i ) );
             if( e != null )
             {
                 _expansions.add( e );
@@ -45,7 +45,7 @@ public class _draftFields
      * @param _f
      * @return 
      */
-    public static DraftAction prepareField( _fields._field _f )
+    public static draftAction prepareField( _fields._field _f )
     {
         _anns _as = _f.getAnnotations();
         if( !_as.contains( remove.class ) )
@@ -57,25 +57,25 @@ public class _draftFields
             {   //you CANNOT have BOTH sig Macros AND parameterization
                 //System.out.println( "processing " + parameter );
                 
-                String values = parameter.getAttributes().values.get( 0 );
+                String values = parameter.getAttrs().values.get( 0 );
                 //System.out.println( "values " + values );                
-                String[] valuesArray = _ann._attributes.parseStringArray( values );
+                String[] valuesArray = _ann._attrs.parseStringArray( values );
                 //System.out.println( "values[0]" + valuesArray[0] );                
                 //System.out.println( "values[1]" + valuesArray[1] );                
                 
                 _fields._field _p = new _fields._field( _f );
                 _p.getAnnotations().remove( parameter.getName() );
-                return DraftAction.ExpandField.parameterize( _p, valuesArray );
+                return draftAction.ExpandField.parameterize( _p, valuesArray );
             }
             else if( sig != null )
             {   //we didnt explicitly tailor or remove it, so copy the method
                 System.out.println( "processing "+ sig );
                 _fields._field _p = new _fields._field( _f );
                 _p.getAnnotations().remove( sig.class );
-                return DraftAction.ExpandField.of( sig.getLoneAttributeString() );
+                return draftAction.ExpandField.of( sig.getAttrString() );
             }
             //just copy the field                        
-            return new DraftAction.CopyField( _f );
+            return new draftAction.CopyField( _f );
         }
         return null;
     }

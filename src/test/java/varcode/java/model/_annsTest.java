@@ -98,7 +98,7 @@ public class _annsTest
     public void testOne()
     {
         _ann al = new _ann( "@Path" );
-        al.addAttribute("\"book\"" );
+        al.addAttr("\"book\"" );
         assertEquals("@Path(\"book\")", al.author( ) );        
         
         

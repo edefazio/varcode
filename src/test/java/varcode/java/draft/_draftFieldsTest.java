@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import junit.framework.TestCase;
 import varcode.java.Java;
-import varcode.java.draft.DraftAction.ExpandField;
+import varcode.java.draft.draftAction.ExpandField;
 import varcode.java.draft.*;
 
 import varcode.java.model._class;
@@ -35,8 +35,8 @@ public class _draftFieldsTest
 {
     public void testCopyMacroField()
     {
-        DraftAction te = 
-            _draftFields.prepareField( _field.of( "public int a;" ) );
+        draftAction te = 
+            draftFields.prepareField( _field.of( "public int a;" ) );
         _class _c = _class.of("A");
         te.draftTo( _c );
         
@@ -47,8 +47,8 @@ public class _draftFieldsTest
     public void testTailorField()
     {
         _field _f = _field.of( "@$({\"a\",\"name\"})", "public int a;" );
-        DraftAction.ExpandField te = 
-            (ExpandField)_draftFields.prepareField( _f );
+        draftAction.ExpandField te = 
+            (ExpandField)draftFields.prepareField( _f );
         _class _c = _class.of("A");
         te.draftTo( _c, "name", "myFieldName" );
         
@@ -60,8 +60,8 @@ public class _draftFieldsTest
     public void testTailorFields()
     {
         _field _f = _field.of( "@$({\"int\", \"type\", \"a\",\"name\"})", "public int a;" );
-        DraftAction.ExpandField te = 
-            (ExpandField)_draftFields.prepareField( _f );
+        draftAction.ExpandField te = 
+            (ExpandField)draftFields.prepareField( _f );
         _class _c = _class.of("A");
         te.draftTo( _c, "type", "String", "name", "label" );
         
@@ -88,9 +88,9 @@ public class _draftFieldsTest
     {
         _class _c = Java._classFrom( inner.class );
         
-        List<DraftAction>te = new ArrayList<DraftAction>();
+        List<draftAction>te = new ArrayList<draftAction>();
         //List<_typeExpansion>te = 
-        _draftFields.prepareFields( te, _c.getFields() );
+        draftFields.prepareFields( te, _c.getFields() );
         
         _class _target = _class.of("Target");
         for( int i = 0; i < te.size(); i++ )

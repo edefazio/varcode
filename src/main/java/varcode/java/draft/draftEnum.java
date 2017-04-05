@@ -28,7 +28,7 @@ import varcode.java.model._enum._constants._constant;
 import varcode.java.model._interface;
 import varcode.markup.Template;
 import varcode.markup.bindml.BindML;
-import varcode.java.draft.DraftAction;
+import varcode.java.draft.draftAction;
 
 
 /**
@@ -41,8 +41,8 @@ import varcode.java.draft.DraftAction;
  * @see JavaSource
  * @author M. Eric DeFazio eric@varcode.io
  */
-public class _draftEnum
-    extends _draftType
+public class draftEnum
+    extends draftType
 {    
     /**
      * Reads in the _class Model from the class, and "prepares" it for 
@@ -50,9 +50,9 @@ public class _draftEnum
      * @param draft the "draft" class containing @annotation markup for macro expansion
      * @return the _macroClass 
      */
-     public static _draftEnum of( Class draft )
+     public static draftEnum of( Class draft )
     {
-        return new _draftEnum( _JavaLoad._enumFrom( draft ) );
+        return new draftEnum( _JavaLoad._enumFrom( draft ) );
     }
     
     /**
@@ -60,9 +60,9 @@ public class _draftEnum
      * @param _prototype
      * @return the macroClass
      */
-    public static _draftEnum of( _enum _prototype )
+    public static draftEnum of( _enum _prototype )
     {
-        return new _draftEnum( _prototype );
+        return new draftEnum( _prototype );
     }
     
     /** 
@@ -74,8 +74,8 @@ public class _draftEnum
      * them in the "tailored" _class
      * </UL>
      */
-    public final List<DraftAction> typeExpansion = 
-        new ArrayList<DraftAction>();
+    public final List<draftAction> typeExpansion = 
+        new ArrayList<draftAction>();
     
     /** the prototype _class */
     public final _enum _prototype;
@@ -92,7 +92,7 @@ public class _draftEnum
     }
     
     //nests    
-    public _draftEnum( _enum _c )
+    public draftEnum( _enum _c )
     {
         this._prototype = new _enum( _c );
         this._originator = prepareEnumOriginator( _prototype );
@@ -126,8 +126,8 @@ public class _draftEnum
         
         //TODO fieldANNOTATIONS, methodANNOTATIONS, fieldJDOC methodJDOC
         //go through the individual member fields and methods and process them
-        _draftFields.prepareFields( this.typeExpansion, _c.getFields() );
-        _draftMethods.prepareMethods( this.typeExpansion, _c.getMethods() ); 
+        draftFields.prepareFields( this.typeExpansion, _c.getFields() );
+        draftMethods.prepareMethods( this.typeExpansion, _c.getMethods() ); 
     }
 
     
@@ -135,7 +135,7 @@ public class _draftEnum
     {
         if( _c.getAnnotation( sig.class ) != null )
         {
-            String sig = _c.getAnnotation( sig.class ).getLoneAttributeString();
+            String sig = _c.getAnnotation( sig.class ).getAttrString();
             if( sig != null) 
             {
                 _c.getAnnotations().remove( sig.class );
@@ -173,7 +173,7 @@ public class _draftEnum
  it work more easily with the existing 
      */
     public static class CopyEnumConst
-        implements DraftAction
+        implements draftAction
     {
         public _enum._constants._constant enumConst;
         
@@ -218,7 +218,7 @@ public class _draftEnum
      * it work more easily with the existing 
      */
     public static class ExpandEnumConst
-        implements DraftAction
+        implements draftAction
     {
         public _enum._constants._constant enumConst;
         

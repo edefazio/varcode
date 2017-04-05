@@ -17,7 +17,7 @@ package varcode.java.draft;
 
 import junit.framework.TestCase;
 import varcode.java.draft.$;
-import varcode.java.draft.DraftAction.ExpandField;
+import varcode.java.draft.draftAction.ExpandField;
 import varcode.java.model._class;
 import varcode.java.model._fields._field;
 /**
